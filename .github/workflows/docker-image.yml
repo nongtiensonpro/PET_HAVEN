@@ -19,7 +19,10 @@ jobs:
           distribution: 'temurin'
           java-version: '17'
 
-      - name: Build Java backend  
+      - name: Grant execute permission for gradlew
+        run: chmod +x backend/gradlew
+
+      - name: Build Java backend
         run: |
           cd backend
           ./gradlew clean build  # Dọn dẹp và build lại JAR file
@@ -39,6 +42,6 @@ jobs:
         run: |
           docker-compose -f deployment/docker-compose.yml build
 
-      - name: Push Docker Images using Docker Compose
+      - name: Push Docker Images using Docker Compose 
         run: |
           docker-compose -f deployment/docker-compose.yml push
