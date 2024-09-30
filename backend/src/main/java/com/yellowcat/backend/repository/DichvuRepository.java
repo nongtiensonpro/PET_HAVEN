@@ -1,13 +1,10 @@
 package com.yellowcat.backend.repository;
 
-import com.yellowcat.backend.model.Dichvu;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.Pageable;
+import com.yellowcat.backend.model.DichVu;
 import org.springframework.data.jpa.repository.JpaRepository;
-import org.springframework.stereotype.Repository;
 
 
-public interface DichvuRepository extends JpaRepository<Dichvu, Long> {
+public interface DichvuRepository extends JpaRepository<DichVu, Long> {
 
 
 }
