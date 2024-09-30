@@ -1,12 +1,12 @@
 import { createRouter, createWebHistory } from 'vue-router';
-import AnimalList from '../components/AnimalList.vue';
+import App from '../App.vue';
 
-// Định nghĩa các route
+
 const routes = [
     {
         path: '/',
         name: 'Home',
-        component: AnimalList,
+        component: App,
     },
     // Bạn có thể thêm các route khác ở đây
 ];
