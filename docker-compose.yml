@@ -3,8 +3,8 @@ version: '3.8'
 services:
   backend:
     build:
-      context: ../backend
-      dockerfile: Dockerfile
+      context: backend
+      dockerfile: backend/Dockerfile
     ports:
       - "8080:8080"
     environment:
@@ -16,8 +16,8 @@ services:
 
   frontend:
     build:
-      context: ../frontend
-      dockerfile: Dockerfile
+      context: frontend
+      dockerfile: frontend/Dockerfile
     ports:
       - "9200:80"
 
@@ -33,7 +33,7 @@ services:
 
   nginx:
     build:
-      context: ./nginx
+      context: deployment/nginx
     image: nginx:latest
     ports:
       - "80:80"
