@@ -38,7 +38,7 @@ jobs:
 
       - name: Build and push Docker images
         run: |
-          # Build and push images defined in docker-compose.yml
-          docker-compose -f docker-compose.yml build
-          docker-compose -f docker-compose.yml push
+          docker-compose -f ./docker-compose.yml build
+          docker-compose -f ./docker-compose.yml push
+      
 
