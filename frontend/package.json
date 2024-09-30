@@ -9,6 +9,9 @@
     "preview": "vite preview"
   },
   "devDependencies": {
+    "@nuxt/types": "^2.18.1",
+    "@nuxtjs/axios": "^5.13.6",
+    "@types/node": "^22.7.4",
     "@vitejs/plugin-vue": "^5.1.4",
     "typescript": "^5.5.3",
     "vite": "^5.4.1"
