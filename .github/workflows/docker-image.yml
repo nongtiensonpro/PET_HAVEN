@@ -55,7 +55,7 @@ jobs:
       - name: Build and push nginx image
         uses: docker/build-push-action@v2
         with:
-          context: ./nginx
-          file: ./nginx/Dockerfile
+          context: ./deployment/nginx
+          file: ./deployment/nginx/Dockerfile
           push: true
           tags: nongtiensonpro/nginx:latest
