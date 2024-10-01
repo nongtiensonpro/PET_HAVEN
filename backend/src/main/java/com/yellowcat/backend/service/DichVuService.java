@@ -7,6 +7,8 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
+
 @Service
 public class DichVuService {
 
@@ -21,4 +23,7 @@ public class DichVuService {
         return dichvuRepository.findAll(pageable);
     }
 
+    public List<Dichvu> getAllDichVu() {
+        return dichvuRepository.findAll();
+    }
 }

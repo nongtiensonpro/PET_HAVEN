@@ -26,4 +26,8 @@ public class DichVuController {
         Pageable pageable = PageRequest.of(page, 10); // 10 items per page
         return dichVuService.getAllDichVu(pageable);
     }
+    @RequestMapping("/all2")
+    public List<Dichvu> getList(){
+        return dichVuService.getAllDichVu();
+    }
 }
