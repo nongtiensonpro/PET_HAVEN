@@ -42,6 +42,6 @@ jobs:
         run: |
           docker-compose -f deployment/docker-compose.yml build
 
-      - name: Push Docker Images using Docker Compose 
+      - name: Push Docker Images using Docker Compose
         run: |
           docker-compose -f deployment/docker-compose.yml push
