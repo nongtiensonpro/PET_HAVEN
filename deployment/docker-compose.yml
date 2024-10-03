@@ -11,6 +11,10 @@ services:
     volumes:
       - postgres_data:/var/lib/postgresql/data
       - ./postgres/init.sql:/docker-entrypoint-initdb.d/init.sql
+    networks:
+      local:
+
+
 
   backend:
     build:
@@ -48,5 +52,34 @@ services:
       - backend
       - frontend
 
+  keycloak:
+    image: quay.io/keycloak/keycloak:25.0.0
+    command: start-dev
+    restart: always
+    ports:
+      - "9082:8080"
+    environment:
+      KEYCLOAK_ADMIN: admin
+      KEYCLOAK_ADMIN_PASSWORD: admin
+      KC_DB: postgres
+      KC_DB_USERNAME: postgres  # Đảm bảo user này đúng
+      KC_DB_PASSWORD: changemeinprod  # Mật khẩu đúng
+      KC_DB_URL: jdbc:postgresql://postgres:5432/backend_server  # Địa chỉ database
+      KC_HOSTNAME: localhost
+      KC_FEATURES: token-exchange,admin-fine-grained-authz
+    depends_on:
+      - postgres
+    networks:
+      - local
+    volumes:
+      - keycloak_data:/opt/keycloak/data
+
+
+
 volumes:
   postgres_data:
+  keycloak_data:
+
+networks:
+  local:
+    driver: bridge
