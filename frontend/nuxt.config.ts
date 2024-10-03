@@ -27,9 +27,11 @@ export default {
       enabled: true
     }
   },
-
+    server: {
+        port: 3000
+    },
   compatibilityDate: '2024-10-03',
-    modules: ['@pinia/nuxt'],
+    modules: ['@pinia/nuxt', '@nuxt/image'],
     alias: {
         pinia: '/node_modules/@pinia/nuxt/node_modules/pinia/dist/pinia.mjs',
     }

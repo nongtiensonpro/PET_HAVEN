@@ -1,8 +1,8 @@
 <template>
   <div id="app">
 
-    <nav-bar/>
-  <nuxt-page/>
+    <CustomerHome/>
+
     <!--    <NuxtRouteAnnouncer />-->
     <!--    <NuxtWelcome />-->
   </div>
@@ -10,16 +10,15 @@
 
 
 <script setup lang="ts">
-import NavBar from "~/components/NavBar.vue";
+import CustomerHome from "~/components/CustomerHome.vue";
 </script>
 
 <style scoped>
 html, body, #app {
   height: 100%; /* Đặt chiều cao cho toàn bộ trang */
   margin: 0; /* Bỏ margin mặc định */
+  background: #F2F0D8 !important;
+  color: #400D01 !important;
 }
 
-#app {
-  background: #F2F0D8 !important;
-}
 </style>
