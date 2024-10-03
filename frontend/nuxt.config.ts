@@ -1,38 +1,38 @@
-import { defineNuxtConfig } from 'nuxt';
-import vue from '@vitejs/plugin-vue';
-import path from 'path';
+export default {
+  // Global page headers
+  head: {
+      title: 'My Nuxt App',
+      meta: [
+          {charset: 'utf-8'},
+          {name: 'viewport', content: 'width=device-width, initial-scale=1'},
+      ],
+  },
 
-export default defineNuxtConfig({
-    app: {
-        head: {
-            title: 'My Nuxt App',
-            meta: [
-                { name: 'viewport', content: 'width=device-width, initial-scale=1' },
-                { charset: 'utf-8' },
-            ],
-        },
+  css: [
+      './assets/css/bootstrap.min.css'
+  ],
+
+  js: [
+      './assets/js/bootstrap.min.js'
+  ],
+
+  buildModules: [
+          '@nuxt/typescript-build',
+      ],
+
+  devtools: {
+    enabled: true,
+
+    timeline: {
+      enabled: true
+    }
+  },
+    server: {
+        port: 3000
     },
-    vite: {
-        plugins: [
-            vue(), // Đảm bảo plugin Vue được thêm vào đây
-        ],
-        resolve: {
-            alias: {
-                '@': path.resolve(__dirname, './src'),
-            },
-        },
-        server: {
-            port: 9200,
-            proxy: {
-                '/api': {
-                    target: 'http://localhost:8081', // Địa chỉ của server Node.js
-                    changeOrigin: true,
-                    rewrite: (path) => path.replace(/^\/api/, ''),
-                },
-            },
-        },
-    },
-    typescript: {
-        strict: true, // Bật chế độ kiểm tra nghiêm ngặt của TypeScript
-    },
-});
+  compatibilityDate: '2024-10-03',
+    modules: ['@pinia/nuxt', '@nuxt/image'],
+    alias: {
+        pinia: '/node_modules/@pinia/nuxt/node_modules/pinia/dist/pinia.mjs',
+    }
+};
