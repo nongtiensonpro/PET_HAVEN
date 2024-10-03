@@ -26,24 +26,14 @@
     <!--  -&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#-->
     <nav class="navbar navbar-expand-lg bg-body-tertiary">
       <div class="container-fluid">
-        <a class="navbar-brand" href="#">Navbar</a>
+        <NuxtLink class="nav-link active" aria-current="page" to="/">Nhà Pet Haven</NuxtLink>
         <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
           <span class="navbar-toggler-icon"></span>
         </button>
         <div class="collapse navbar-collapse" id="navbar">
           <ul class="navbar-nav">
-            <li class="nav-item">
-<!--              <a class="nav-link active" aria-current="page" href="#">Home</a>-->
-              <NuxtLink class="nav-link active" aria-current="page" to="/">Home</NuxtLink>
-            </li>
-            <li class="nav-item">
-              <a class="nav-link" href="#">Features</a>
-            </li>
-            <li class="nav-item">
-              <a class="nav-link" href="#">Pricing</a>
-            </li>
-            <li class="nav-item">
-              <a class="nav-link disabled" aria-disabled="true">Disabled</a>
+            <li class="nav-item" v-for="service in services" :key="service.id">
+              <NuxtLink class="nav-link" :to="`/services/${service.id}`" aria-current="page">{{ service.tendichvu }}</NuxtLink>
             </li>
           </ul>
         </div>
@@ -76,3 +66,26 @@
   line-height: normal;
 }
 </style>
+
+
+<script lang="ts">
+import { useServiceStore } from '~/stores/DichVuStores';
+import { onMounted, computed } from 'vue';
+import DichVu from '~/models/DichVu';
+
+export default {
+  setup() {
+    const serviceStore = useServiceStore();
+
+    onMounted(() => {
+      serviceStore.fetchServices();
+    });
+
+    const services = computed((): DichVu[] => serviceStore.services);
+
+    return {
+      services,
+    };
+  },
+};
+</script>
