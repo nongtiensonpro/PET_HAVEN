@@ -16,5 +16,5 @@ export default {
   facebook: 'Facebook: PetHaven',
   footerCopyright: '© 2024 PetHaven. Bản quyền thuộc về chúng tôi.',
   serviceNotAvailable: 'Dịch vụ không khả dụng',
-  login:'Đăng nhập'
-};
+  login: 'Đăng nhập'
+} as const;

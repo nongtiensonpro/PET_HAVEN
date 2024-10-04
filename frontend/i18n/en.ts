@@ -17,4 +17,4 @@ export default {
   footerCopyright: '© 2024 PetHaven. Copyright belongs to us.',
   serviceNotAvailable: 'Service not available',
   login:'Login'
-};
+}as const;

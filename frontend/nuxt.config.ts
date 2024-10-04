@@ -1,6 +1,5 @@
 export default {
     // Global page headers
-    ssr: true,
     head: {
         title: 'My Nuxt App',
         meta: [
