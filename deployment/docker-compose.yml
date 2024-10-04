@@ -64,7 +64,7 @@ services:
       KC_DB: postgres
       KC_DB_USERNAME: postgres  # Đảm bảo user này đúng
       KC_DB_PASSWORD: changemeinprod  # Mật khẩu đúng
-      KC_DB_URL: jdbc:postgresql://postgres:5432/backend_server  # Địa chỉ database
+      KC_DB_URL: jdbc:postgresql://postgres:5432/keycloak  # Địa chỉ database
       KC_HOSTNAME: localhost
       KC_FEATURES: token-exchange,admin-fine-grained-authz
     depends_on:
