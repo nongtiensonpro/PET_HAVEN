@@ -21,7 +21,9 @@
     "vue-router": "^4.0.0"
   },
   "devDependencies": {
+    "@nuxtjs/google-fonts": "^3.2.0",
     "@pinia/nuxt": "^0.5.5",
-    "@vue/compiler-sfc": "^3.5.11"
+    "@vue/compiler-sfc": "^3.5.11",
+    "usebootstrap": "^3.5.59"
   }
 }

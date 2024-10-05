@@ -193,7 +193,7 @@ export default {
 }
 .text-logo {
   color: #400D01;
-  font-family: Pacifico;
+  font-family: Pacifico, sans-serif;
   font-size: 40px;
   font-style: normal;
   font-weight: 400;

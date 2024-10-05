@@ -13,7 +13,7 @@ export default {
     ],
 
     js: [
-        './assets/js/bootstrap.min.js'
+        './assets/js/bootstrap.bundle.min.js'
     ],
 
     buildModules: [
@@ -33,23 +33,23 @@ export default {
 
     compatibilityDate: '2024-10-03',
 
-    modules: [
-        '@nuxtjs/i18n',
-        '@pinia/nuxt',
-        '@nuxt/image',
-    ],
+    modules: ['@nuxtjs/i18n', '@pinia/nuxt', '@nuxt/image', '@nuxtjs/google-fonts'],
 
     i18n: {
         locales: [
             { code: 'en', name: 'English', file: 'en.ts' },
             { code: 'vi', name: 'Tiếng Việt', file: 'vi.ts' }
         ],
-        defaultLocale: 'vi',
+        defaultLocale: 'en',
         lazy: true,
         langDir: 'i18n/',
         debug: true,
     },
-
+    googleFonts: {
+        families: {
+            'Pacifico': true,
+            'Baloo+2': true
+        }},
     alias: {
         pinia: '/node_modules/@pinia/nuxt/node_modules/pinia/dist/pinia.mjs',
     }

@@ -19,6 +19,7 @@ html, body, #app {
   margin: 0; /* Bỏ margin mặc định */
   background: #F2F0D8 !important;
   color: #400D01 !important;
+    font-family: 'Baloo 2', sans-serif !important;
 }
 
 </style>
