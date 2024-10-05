@@ -9,7 +9,8 @@ export default {
     },
 
     css: [
-        './assets/css/bootstrap.min.css'
+        './assets/css/bootstrap.min.css',
+        './assets/cat.css',
     ],
 
     js: [
@@ -33,8 +34,7 @@ export default {
     modules: [
         '@nuxtjs/i18n',
         '@pinia/nuxt',
-        '@nuxt/image',
-        '@nuxtjs/google-fonts'
+        '@nuxt/image'
     ],
 
     buildModules: [
@@ -55,16 +55,7 @@ export default {
             fallbackLocale: 'en'
         },
         strategy: 'no_prefix'
-    }
-    ,
-    googleFonts: {
-        display: 'swap',
-        families: {
-            'Pacifico': true,
-            'Baloo+2': true
-        }
-    }
-    ,
+    },
     alias: {
         pinia: '/node_modules/@pinia/nuxt/node_modules/pinia/dist/pinia.mjs',
     }

@@ -38,9 +38,15 @@
           <div class="collapse navbar-collapse" id="navbar">
             <ul class="navbar-nav">
               <li class="nav-item" v-for="service in services" :key="service.id">
-                <NuxtLink class="nav-link" :to="`/services/${service.id}`" aria-current="page">
-                  <div style="font-size: medium;">{{ service.tendichvu || serviceNotAvailable }}</div>
-                </NuxtLink>
+                <div v-if="services.length==0">
+                  {{serviceNotAvailable}}
+                </div>
+                <div v-else>
+                  <NuxtLink class="nav-link" :to="`/services/${service.id}`" aria-current="page">
+                    <div style="font-size: medium;">{{ service.tendichvu }}</div>
+                  </NuxtLink>
+                </div>
+
               </li>
             </ul>
           </div>
@@ -81,11 +87,19 @@
           </div>
           <div class="col">
             <h3>{{ servicesTitle }}</h3>
-            <ul>
-              <li class="nav-item" v-for="service in services" :key="service.id">
-                <NuxtLink class="nav-link" :to="`/services/${service.id}`" aria-current="page">{{ service.tendichvu || serviceNotAvailable }}</NuxtLink>
-              </li>
-            </ul>
+
+              <div v-if="services.length==0">
+                {{serviceNotAvailable}}
+              </div>
+              <div v-else>
+                <ul>
+                <li class="nav-item" v-for="service in services" :key="service.id">
+                  <NuxtLink class="nav-link" :to="`/services/${service.id}`" aria-current="page">{{ service.tendichvu || serviceNotAvailable }}</NuxtLink>
+                </li>
+                </ul>
+              </div>
+
+
           </div>
           <div class="col">
             <div class="col col-md-auto">
@@ -111,7 +125,7 @@
 import { useServiceStore } from '~/stores/DichVuStores';
 import { computed, ref } from 'vue';
 import DichVu from '~/models/DichVu';
-import logoImage from '~/assets/image/LogoPetHaven.png'; // Import logo
+import logoImage from '~/assets/image/LogoPetHaven.png';// Import logo
 
 export default {
   async asyncData({ store }) {
@@ -194,7 +208,7 @@ export default {
 .text-logo {
   color: #400D01;
   font-family: Pacifico, sans-serif;
-  font-size: 40px;
+  font-size: 25px;
   font-style: normal;
   font-weight: 400;
   line-height: normal;
