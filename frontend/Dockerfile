@@ -23,7 +23,7 @@ RUN npm run build
 FROM nginx:alpine
 
 # Sao chép tệp xây dựng từ bước trước vào Nginx
-COPY --from=build /app/dist /usr/share/nginx/html
+COPY --from=build /app/.output/public /usr/share/nginx/html
 
 # Mở port 80 để phục vụ ứng dụng
 EXPOSE 80
