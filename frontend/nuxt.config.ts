@@ -1,5 +1,5 @@
+import { resolve } from "path";
 export default {
-    // Global page headers
     head: {
         title: 'My Nuxt App',
         meta: [
@@ -57,6 +57,7 @@ export default {
         strategy: 'no_prefix'
     },
     alias: {
+        "@": resolve(__dirname, 'assets'),
         pinia: '/node_modules/@pinia/nuxt/node_modules/pinia/dist/pinia.mjs',
     }
 };

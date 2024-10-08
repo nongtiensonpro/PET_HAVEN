@@ -1,4 +1,5 @@
 <template>
+  <NuxtLayout>
   <div class="container">
     <div class="row d-flex align-items-center">
       <!-- Logo và slogan -->
@@ -119,6 +120,7 @@
       </div>
     </footer>
   </div>
+  </NuxtLayout>
 </template>
 
 <script lang="ts">
@@ -161,8 +163,8 @@ export default {
       currentLanguage.value = currentLanguage.value === 'vi' ? 'en' : 'vi';
       locale.value = currentLanguage.value;
 
-      // Cập nhật lại thông điệp để phản ánh sự thay đổi ngôn ngữ
-      console.log(`Ngôn ngữ đã được thay đổi sang: ${currentLanguage.value}`);
+      // // Cập nhật lại thông điệp để phản ánh sự thay đổi ngôn ngữ
+      // console.log(`Ngôn ngữ đã được thay đổi sang: ${currentLanguage.value}`);
     };
 
     return {
