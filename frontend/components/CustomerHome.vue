@@ -19,8 +19,11 @@
             <button class="noboder" type="submit">{{ searchButton }}</button>
           </form>
         </nav>
-        <button type="button" class="custom-button">
+        <button type="button" class="custom-button" @click="login1">
           {{ login }}
+        </button>
+        <button type="button" class="custom-button" @click="logout1">
+          logout
         </button>
         <button type="button" class="custom-button" @click="changeLanguage">
           {{ currentLanguage === 'vi' ? switchToEnglish : switchToVietnamese }}
@@ -192,6 +195,24 @@ export default {
       login
     };
   },
+  methods: {
+    login1() {
+      window.location.href = 'http://localhost:8080/oauth2/authorization/keycloak';
+    },
+    // logout1() {
+    //   window.location.href = 'http://localhost:8080/Dang-xuat'; // Gọi API đăng xuất từ backend
+    // }
+    logout1() {
+      const logoutUrl = `http://localhost:9082/realms/spring/protocol/openid-connect/logout`;
+      const clientId = 'PetHaven'; // Client ID của bạn
+      const redirectUri = encodeURIComponent('http://localhost:3000/'); // Mã hóa URL
+
+      // Định dạng logout URL
+      const fullLogoutUrl = `${logoutUrl}?client_id=${clientId}&post_logout_redirect_uri=${redirectUri}`;
+      window.location.href = fullLogoutUrl;
+    }
+
+  }
 };
 </script>
 
