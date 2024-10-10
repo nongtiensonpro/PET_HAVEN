@@ -2,7 +2,7 @@
 
 ## Reporting Security Issues
 
-If you discover a security vulnerability in this project, please report it to us via [email@example.com](mailto:email@example.com) or create an issue in the issue tracker.
+If you discover a security vulnerability in this project, please report it to us via [nongtiensonpro@gmail.com](mailto:nongtiensonpro@gmail.com) or create an issue in the issue tracker.
 
 ## No Guarantee of Response
 
