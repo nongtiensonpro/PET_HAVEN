@@ -21,7 +21,7 @@
 
         </div>
       </div>
-      <div v-else class="text-danger p-4">{{ errorMessage }}</div>
+      <div v-else class="text-danger">{{ errorMessage }}</div>
     </div>
   </div>
 </template>

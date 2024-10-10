@@ -1,5 +1,4 @@
 <template>
-  <NuxtLayout>
   <div class="container">
     <div class="row d-flex align-items-center">
       <!-- Logo và slogan -->
@@ -19,11 +18,8 @@
             <button class="noboder" type="submit">{{ searchButton }}</button>
           </form>
         </nav>
-        <button type="button" class="custom-button" @click="login1">
+        <button type="button" class="custom-button">
           {{ login }}
-        </button>
-        <button type="button" class="custom-button" @click="logout1">
-          logout
         </button>
         <button type="button" class="custom-button" @click="changeLanguage">
           {{ currentLanguage === 'vi' ? switchToEnglish : switchToVietnamese }}
@@ -42,15 +38,9 @@
           <div class="collapse navbar-collapse" id="navbar">
             <ul class="navbar-nav">
               <li class="nav-item" v-for="service in services" :key="service.id">
-                <div v-if="services.length==0">
-                  {{serviceNotAvailable}}
-                </div>
-                <div v-else>
-                  <NuxtLink class="nav-link" :to="`/services/${service.id}`" aria-current="page">
-                    <div style="font-size: medium;">{{ service.tendichvu }}</div>
-                  </NuxtLink>
-                </div>
-
+                <NuxtLink class="nav-link" :to="`/services/${service.id}`" aria-current="page">
+                  <div style="font-size: medium;">{{ service.tendichvu || serviceNotAvailable }}</div>
+                </NuxtLink>
               </li>
             </ul>
           </div>
@@ -91,19 +81,11 @@
           </div>
           <div class="col">
             <h3>{{ servicesTitle }}</h3>
-
-              <div v-if="services.length==0">
-                {{serviceNotAvailable}}
-              </div>
-              <div v-else>
-                <ul>
-                <li class="nav-item" v-for="service in services" :key="service.id">
-                  <NuxtLink class="nav-link" :to="`/services/${service.id}`" aria-current="page">{{ service.tendichvu || serviceNotAvailable }}</NuxtLink>
-                </li>
-                </ul>
-              </div>
-
-
+            <ul>
+              <li class="nav-item" v-for="service in services" :key="service.id">
+                <NuxtLink class="nav-link" :to="`/services/${service.id}`" aria-current="page">{{ service.tendichvu || serviceNotAvailable }}</NuxtLink>
+              </li>
+            </ul>
           </div>
           <div class="col">
             <div class="col col-md-auto">
@@ -123,15 +105,13 @@
       </div>
     </footer>
   </div>
-  </NuxtLayout>
 </template>
 
 <script lang="ts">
 import { useServiceStore } from '~/stores/DichVuStores';
 import { computed, ref } from 'vue';
 import DichVu from '~/models/DichVu';
-import logoImage from '~/assets/image/LogoPetHaven.png';// Import logo
-
+import logoImage from '~/assets/image/LogoPetHaven.png'; // Import logo
 
 export default {
   async asyncData({ store }) {
@@ -167,8 +147,8 @@ export default {
       currentLanguage.value = currentLanguage.value === 'vi' ? 'en' : 'vi';
       locale.value = currentLanguage.value;
 
-      // // Cập nhật lại thông điệp để phản ánh sự thay đổi ngôn ngữ
-      // console.log(`Ngôn ngữ đã được thay đổi sang: ${currentLanguage.value}`);
+      // Cập nhật lại thông điệp để phản ánh sự thay đổi ngôn ngữ
+      console.log(`Ngôn ngữ đã được thay đổi sang: ${currentLanguage.value}`);
     };
 
     return {
@@ -196,24 +176,6 @@ export default {
       login
     };
   },
-  methods: {
-    login1() {
-      window.location.href = 'http://localhost:8080/oauth2/authorization/keycloak';
-    },
-    // logout1() {
-    //   window.location.href = 'http://localhost:8080/Dang-xuat'; // Gọi API đăng xuất từ backend
-    // }
-    logout1() {
-      const logoutUrl = `http://localhost:9082/realms/spring/protocol/openid-connect/logout`;
-      const clientId = 'PetHaven'; // Client ID của bạn
-      const redirectUri = encodeURIComponent('http://localhost:3000/'); // Mã hóa URL
-
-      // Định dạng logout URL
-      const fullLogoutUrl = `${logoutUrl}?client_id=${clientId}&post_logout_redirect_uri=${redirectUri}`;
-      window.location.href = fullLogoutUrl;
-    }
-
-  }
 };
 </script>
 
@@ -231,8 +193,8 @@ export default {
 }
 .text-logo {
   color: #400D01;
-  font-family: Pacifico, sans-serif;
-  font-size: 25px;
+  font-family: Pacifico;
+  font-size: 40px;
   font-style: normal;
   font-weight: 400;
   line-height: normal;

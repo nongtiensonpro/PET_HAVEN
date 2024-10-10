@@ -1,28 +1,30 @@
-import { resolve } from "path";
 export default {
+    // Global page headers
     head: {
         title: 'My Nuxt App',
         meta: [
-            {charset: 'utf-8'},
-            {name: 'viewport', content: 'width=device-width, initial-scale=1'},
+            { charset: 'utf-8' },
+            { name: 'viewport', content: 'width=device-width, initial-scale=1' },
         ],
     },
 
     css: [
-        './assets/css/bootstrap.min.css',
-        './assets/cat.css',
+        './assets/css/bootstrap.min.css'
     ],
 
     js: [
-        './assets/js/bootstrap.bundle.min.js'
+        './assets/js/bootstrap.min.js'
     ],
 
-    dev: process.env.NODE_ENV !== 'production',
+    buildModules: [
+        '@nuxt/typescript-build',
+    ],
+
     devtools: {
-        enabled: process.env.NODE_ENV === 'development',
+        enabled: true,
         timeline: {
-            enabled: true
-        }
+            enabled: true,
+        },
     },
 
     server: {
@@ -34,30 +36,21 @@ export default {
     modules: [
         '@nuxtjs/i18n',
         '@pinia/nuxt',
-        '@nuxt/image'
+        '@nuxt/image',
     ],
 
-    buildModules: [
-        '@nuxt/typescript-build'
-    ],
     i18n: {
         locales: [
             { code: 'en', name: 'English', file: 'en.ts' },
             { code: 'vi', name: 'Tiếng Việt', file: 'vi.ts' }
         ],
-        defaultLocale: 'en',
+        defaultLocale: 'vi',
         lazy: true,
         langDir: 'i18n/',
-        vueI18nLoader: true,
-        detectBrowserLanguage: {
-            useCookie: true,
-            cookieKey: 'i18n_redirected',
-            fallbackLocale: 'en'
-        },
-        strategy: 'no_prefix'
+        debug: true,
     },
+
     alias: {
-        "@": resolve(__dirname, 'assets'),
         pinia: '/node_modules/@pinia/nuxt/node_modules/pinia/dist/pinia.mjs',
     }
 };
