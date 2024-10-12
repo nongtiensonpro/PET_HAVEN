@@ -35,26 +35,33 @@ CREATE TABLE ThuCung
     CanNang    FLOAT,
     Tuoi       INT,
     GiongCho   VARCHAR(100),
-    IDTaiKhoan INT REFERENCES TaiKhoan (ID),
+    IDTaiKhoan VARCHAR(255) not null ,
     Image      TEXT
 );
 
 CREATE TABLE LichHen
 (
     ID          SERIAL PRIMARY KEY,
-    idKhachHang INT REFERENCES TaiKhoan (ID),
+    idKhachHang VARCHAR(255) NOT NULL ,
     idThuCung   INT REFERENCES ThuCung (ID),
     idDichVu    INT REFERENCES DichVu (ID),
     Date        TIMESTAMP NOT NULL,
-    TrangThai   BOOLEAN   NOT NULL
+    TrangThai   INT   NOT NULL,
+    EmailNguoiDat VARCHAR(255) NOT NULL default '123@gmail.com'
 );
+-- quy ước:
+-- 0 : thành công
+-- 1 : thất bại
+-- 2 : đã hủy
+-- 3 : chờ thanh toán
+-- 4 : chờ xác nhận
 
 CREATE TABLE NhacLichHen
 (
     ID          SERIAL PRIMARY KEY,
     TenThongBao VARCHAR(100) NOT NULL,
     MoTa        TEXT         NOT NULL,
-    idTaiKhoan  INT REFERENCES TaiKhoan (ID),
+    idTaiKhoan  VARCHAR(255) NOT NULL ,
     ISRead      BOOLEAN,
     TrangThai   BOOLEAN
 );
@@ -62,7 +69,7 @@ CREATE TABLE NhacLichHen
 CREATE TABLE DanhGia
 (
     ID         SERIAL PRIMARY KEY,
-    idTaiKhoan INT REFERENCES TaiKhoan (ID),
+    idTaiKhoan VARCHAR(255) not null ,
     SoSao      INT,
     MoTa       TEXT,
     Date       TIMESTAMP,
@@ -118,9 +125,9 @@ VALUES ('Dog 1', 10.5, 2, 'Golden', 1, NULL),
 
 -- Thêm dữ liệu vào bảng LichHen
 INSERT INTO LichHen (idKhachHang, idThuCung, idDichVu, Date, TrangThai)
-VALUES (1, 1, 1, '2024-10-02 10:00:00', TRUE),
-       (2, 2, 2, '2024-10-03 14:00:00', FALSE),
-       (3, 3, 3, '2024-10-04 09:00:00', TRUE);
+VALUES (1, 1, 1, '2024-10-02 10:00:00', 1),
+       (2, 2, 2, '2024-10-03 14:00:00', 2),
+       (3, 3, 3, '2024-10-04 09:00:00', 3);
 
 -- Thêm dữ liệu vào bảng NhacLichHen
 INSERT INTO NhacLichHen (TenThongBao, MoTa, idTaiKhoan, ISRead, TrangThai)
