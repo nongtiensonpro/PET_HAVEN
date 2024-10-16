@@ -61,7 +61,8 @@ export default defineNuxtConfig({
         providers: {
             keycloak: {
                 clientId: process.env.VUE_APP_KEYCLOAK_CLIENT_ID,
-                clientSecret: process.env.VUE_APP_KEYCLOAK_CLIENT_SECRET
+                clientSecret: process.env.VUE_APP_KEYCLOAK_CLIENT_SECRET,
+                issuer : process.env.KEYCLOAK_ISSUER
             }
         }
     },

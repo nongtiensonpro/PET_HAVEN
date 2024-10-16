@@ -3,9 +3,7 @@
     <div class="container">
       <div class="row d-flex align-items-center">
         <!-- Logo và slogan -->
-        <div class="container" v-if="userInfo.name==null">
-          Chào mừng chủ nhân {{ userInfo.name }}! đã đăng nhập thành công ~
-        </div>
+
         <div class="col col-md-4 d-flex align-items-center">
           <img :src="logoImage" class="img-fluid rounded-top me-2" alt="">
           <div>
@@ -43,8 +41,12 @@
 
       <!-- Navbar -->
       <div class="container">
+
         <nav class="navbar navbar-expand-lg bg-body-tertiary">
           <div class="container-fluid">
+            <div v-if="isLoggedIn">
+              <NuxtLink class="nav-link active" aria-current="page" to="/admin/homeadmin">Home Admin</NuxtLink>
+            </div>
             <NuxtLink class="nav-link active" aria-current="page" to="/">{{ home }}</NuxtLink>
             <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav"
                     aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
@@ -150,6 +152,7 @@ import {computed, ref} from 'vue';
 import DichVu from '~/models/DichVu';
 import logoImage from '~/assets/image/LogoPetHaven.png'; // Import logo
 import {useI18n} from 'vue-i18n';
+import {useUserStore} from '~/stores/user';
 
 export default {
   async asyncData({store}) {
@@ -172,16 +175,11 @@ export default {
     const {t, locale} = useI18n();
     const serviceStore = useServiceStore();
     const services = computed((): DichVu[] => serviceStore.services);
-    const isLoggedIn = ref(false);
-    // Lưu trữ thông tin người dùng
-    const userInfo = ref({
-      sub: '',
-      name: '',
-      preferred_username: '',
-      given_name: '',
-      family_name: '',
-      email: ''
-    });
+
+    const userStore = useUserStore();
+
+    const userInfo = computed(() => userStore.userInfo);
+    const isLoggedIn = computed(() => userStore.isLoggedIn);
 
     const currentLanguage = ref(locale.value);
 
@@ -243,9 +241,9 @@ export default {
     logout1() {
       const logoutUrl = `http://localhost:9082/realms/spring/protocol/openid-connect/logout`;
       const clientId = 'PetHaven'; // Client ID của bạn
-      const redirectUri = encodeURIComponent('http://localhost:3000/'); // Mã hóa URL
-
+      const redirectUri = encodeURIComponent('http://localhost:3000/');
       window.location.href = `${logoutUrl}?client_id=${clientId}&post_logout_redirect_uri=${redirectUri}`;
+      logout()
     },
     async exchangeAuthorizationCodeForToken(code: string) {
       const url = 'http://localhost:9082/realms/spring/protocol/openid-connect/token';
@@ -277,11 +275,13 @@ export default {
           console.error('Error fetching token:', data.error_description);
         } else {
           localStorage.setItem('access_token', data.access_token);
-          localStorage.setItem('refresh_token', data.refresh_token); // Lưu refresh token
+          localStorage.setItem('refresh_token', data.refresh_token);
           console.log('Access token:', data.access_token);
           this.$router.push('/'); // Chuyển hướng về trang chủ
           this.fetchUserInfo(data.access_token);
-          this.isLoggedIn = true;// Lấy thông tin tài khoản sau khi lấy token
+          console.log("Lấy thông tin tài khoản sau khi lấy token", data.access_token);
+
+          this.isLoggedIn = true;
         }
       } catch (error) {
         console.error('Error fetching token:', error);
@@ -330,7 +330,7 @@ export default {
     },
     async fetchUserInfo(accessToken: string) {
       const url = 'http://localhost:9082/realms/spring/protocol/openid-connect/userinfo';
-
+      const userStore = useUserStore();
       try {
         const response = await fetch(url, {
           method: 'GET',
@@ -359,23 +359,25 @@ export default {
         const userInfoData = await response.json();
         console.log('User Info:', userInfoData);
 
-        // Gán giá trị cho userInfo
-        this.userInfo.value = {
+        // Cập nhật thông tin người dùng vào store
+        userStore.setUserInfo({
           sub: userInfoData.sub || '',
           name: userInfoData.name || '',
           preferred_username: userInfoData.preferred_username || '',
           given_name: userInfoData.given_name || '',
           family_name: userInfoData.family_name || '',
           email: userInfoData.email || ''
-        };
+        });
 
-        // Cập nhật trạng thái đăng nhập
-        this.isLoggedIn = true; // Cập nhật trạng thái đăng nhập
       } catch (error) {
         console.error('Error fetching user info:', error);
       }
     }
-
+    ,
+    logout() {
+      const userStore = useUserStore();
+      userStore.clearUserInfo();
+    }
   }
 };
 </script>
