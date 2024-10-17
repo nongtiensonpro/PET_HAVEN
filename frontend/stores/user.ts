@@ -7,7 +7,7 @@ interface UserInfo {
   given_name: string
   family_name: string
   email: string
-  roles: string[] // Thêm trường roles
+  roles: string[]
 }
 
 export const useUserStore = defineStore('user', {

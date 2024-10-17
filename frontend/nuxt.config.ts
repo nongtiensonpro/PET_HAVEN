@@ -1,9 +1,10 @@
 import { resolve } from 'path';
-import auth from '@sidebase/nuxt-auth'
+
 require('dotenv').config();
+
 export default defineNuxtConfig({
     head: {
-        title: 'My Nuxt App',
+        title: 'Yellow Cat Company',
         meta: [
             { charset: 'utf-8' },
             { name: 'viewport', content: 'width=device-width, initial-scale=1' },
@@ -29,9 +30,7 @@ export default defineNuxtConfig({
     compatibilityDate: '2024-10-03',
     modules: [
         '@nuxtjs/i18n',
-        '@pinia/nuxt',
-        '@nuxt/image',
-        '@sidebase/nuxt-auth'
+        '@pinia/nuxt'
     ],
     buildModules: [
         '@nuxt/typescript-build'
@@ -39,7 +38,7 @@ export default defineNuxtConfig({
     i18n: {
         locales: [
             { code: 'en', name: 'English', file: 'en.ts' },
-            { code: 'vi', name: 'Tiếng Việt', file: 'vi.ts' }
+            { code: 'vi', name: 'Vietnamese', file: 'vi.ts' }
         ],
         defaultLocale: 'en',
         lazy: true,
@@ -55,21 +54,5 @@ export default defineNuxtConfig({
     alias: {
         "@": resolve(__dirname, 'assets'),
         pinia: '/node_modules/@pinia/nuxt/node_modules/pinia/dist/pinia.mjs',
-    },
-    auth: {
-        origin: process.env.AUTH_ORIGIN,
-        providers: {
-            keycloak: {
-                clientId: process.env.VUE_APP_KEYCLOAK_CLIENT_ID,
-                clientSecret: process.env.VUE_APP_KEYCLOAK_CLIENT_SECRET,
-                issuer : process.env.KEYCLOAK_ISSUER
-            }
-        }
-    },
-    router: {
-        middleware: 'auth'
-    },
-    auth: {
-        baseURL: `http://localhost:${process.env.PORT || 3000}`
     }
 });

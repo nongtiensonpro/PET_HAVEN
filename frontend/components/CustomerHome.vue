@@ -21,7 +21,6 @@
             </form>
           </nav>
 
-          <!-- Button to trigger modal -->
           <div v-if="!isLoggedIn">
             <button type="button" class="custom-button" @click="login1">
               {{ login }}
@@ -155,17 +154,14 @@ import {useI18n} from 'vue-i18n';
 import {useUserStore} from '~/stores/user';
 
 export default {
-  async asyncData({store}) {
-    await store.dispatch('serviceStore/fetchServices'); // Gọi action để lấy dữ liệu từ API
-  },
   mounted() {
-    const code = this.$route.query.code; // Lấy authorization code từ URL
+    const code = this.$route.query.code;
 
     if (code) {
       console.log('Authorization code:', code);
       this.exchangeAuthorizationCodeForToken(code);
     } else {
-      const accessToken = localStorage.getItem('access_token');
+      const accessToken = sessionStorage.getItem('access_token');
       if (accessToken) {
         this.fetchUserInfo(accessToken);
       }
@@ -231,7 +227,7 @@ export default {
       currentLanguage,
       login,
       userInfo,
-      isLoggedIn: false
+      isLoggedIn
     };
   },
   methods: {
@@ -267,15 +263,15 @@ export default {
 
         if (!response.ok) {
           const errorData = await response.json();
-          throw new Error(`Error fetching token: ${errorData.error_description}`);
+          console.error('Error exchanging authorization code for token:', errorData.error_description);
         }
 
         const data = await response.json();
         if (data.error) {
           console.error('Error fetching token:', data.error_description);
         } else {
-          localStorage.setItem('access_token', data.access_token);
-          localStorage.setItem('refresh_token', data.refresh_token);
+          sessionStorage.setItem('access_token', data.access_token);
+          sessionStorage.setItem('refresh_token', data.refresh_token);
           console.log('Access token:', data.access_token);
           this.$router.push('/'); // Chuyển hướng về trang chủ
           this.fetchUserInfo(data.access_token);
@@ -288,7 +284,7 @@ export default {
       }
     },
     async refreshAccessToken() {
-      const refreshToken = localStorage.getItem('refresh_token');
+      const refreshToken = sessionStorage.getItem('refresh_token');
       if (!refreshToken) {
         console.error('No refresh token available');
         this.isLoggedIn = false;
@@ -315,12 +311,12 @@ export default {
 
         if (!response.ok) {
           const errorData = await response.json();
-          throw new Error(`Error refreshing token: ${errorData.error_description}`);
+          console.error(`Error refreshing token: ${errorData.error_description}`);
         }
 
         const data = await response.json();
-        localStorage.setItem('access_token', data.access_token);
-        localStorage.setItem('refresh_token', data.refresh_token); // Lưu refresh token mới
+        sessionStorage.setItem('access_token', data.access_token);
+        sessionStorage.setItem('refresh_token', data.refresh_token);
         console.log('New access token:', data.access_token);
         return data.access_token;
       } catch (error) {
@@ -344,7 +340,7 @@ export default {
           console.log('Access token expired, refreshing token...');
           const newAccessToken = await this.refreshAccessToken();
           if (newAccessToken) {
-            return this.fetchUserInfo(newAccessToken); // Sử dụng this.fetchUserInfo
+            return this.fetchUserInfo(newAccessToken);
           } else {
             console.error('Unable to refresh access token');
             return;
@@ -353,20 +349,21 @@ export default {
 
         if (!response.ok) {
           const errorData = await response.json();
-          throw new Error(`Error fetching user info: ${errorData.error_description}`);
+          console.error(`Error fetching user info: ${errorData.error_description}`);
         }
 
         const userInfoData = await response.json();
         console.log('User Info:', userInfoData);
 
-        // Cập nhật thông tin người dùng vào store
+        const roles = userInfoData.roles || [];
         userStore.setUserInfo({
           sub: userInfoData.sub || '',
           name: userInfoData.name || '',
           preferred_username: userInfoData.preferred_username || '',
           given_name: userInfoData.given_name || '',
           family_name: userInfoData.family_name || '',
-          email: userInfoData.email || ''
+          email: userInfoData.email || '',
+          role: roles
         });
 
       } catch (error) {
@@ -377,17 +374,17 @@ export default {
     logout() {
       const userStore = useUserStore();
       userStore.clearUserInfo();
+      sessionStorage.clear();
     }
   }
 };
 </script>
 
-
 <style scoped>
 .navbar {
   background: #F8F8F1 !important;
   border-radius: 25px;
-  border: 0.6px solid #400D01;
+  border: 1px solid #400D01;
 }
 
 .noboder {
@@ -408,7 +405,7 @@ export default {
 
 .custom-button {
   background-color: transparent;
-  border: 0.6px solid #400D01;
+  border: 1px solid #400D01;
   color: #400D01;
   padding: 15px 32px;
   text-align: center;
