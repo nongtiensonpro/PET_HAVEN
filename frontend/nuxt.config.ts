@@ -1,5 +1,4 @@
 import { resolve } from 'path';
-
 require('dotenv').config();
 
 export default defineNuxtConfig({
@@ -14,8 +13,8 @@ export default defineNuxtConfig({
         './assets/css/bootstrap.min.css',
         './assets/cat.css',
     ],
-    plugins: [
-        { src: './assets/js/bootstrap.bundle.min.js', mode: 'client' }
+    js: [
+        '~/assets/js/bootstrap.bundle.min.js'
     ],
     dev: process.env.NODE_ENV !== 'production',
     devtools: {
@@ -55,4 +54,4 @@ export default defineNuxtConfig({
         "@": resolve(__dirname, 'assets'),
         pinia: '/node_modules/@pinia/nuxt/node_modules/pinia/dist/pinia.mjs',
     }
-});
+} );

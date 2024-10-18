@@ -27,11 +27,10 @@
             </button>
           </div>
           <div v-else>
-            <button type="button" class="custom-button" @click="logout1">
-              Logout
+            <button type="button" class="custom-button" @click="logout">
+              {{ logout }}
             </button>
           </div>
-
           <button type="button" class="custom-button" @click="changeLanguage">
             {{ currentLanguage === 'vi' ? switchToEnglish : switchToVietnamese }}
           </button>
@@ -253,7 +252,6 @@ export default {
         redirect_uri: 'http://localhost:3000'
       });
 
-
       try {
         const response = await fetch(url, {
           method: 'POST',
@@ -327,7 +325,8 @@ export default {
       }
     },
     async fetchUserInfo(accessToken: string) {
-      const url = 'http://localhost:9082/realms/spring/protocol/openid-connect/userinfo';
+      //const url = 'http://localhost:9082/realms/spring/protocol/openid-connect/userinfo';
+      const url = 'http://localhost:8080/api/user';
       const userStore = useUserStore();
       try {
         const response = await fetch(url, {
@@ -337,17 +336,6 @@ export default {
             'Content-Type': 'application/json'
           }
         });
-        try {
-          const response = await axios.get('http://localhost:8080/api/user', {
-            headers: {
-              'Authorization': `Bearer ${accessToken}` // Gửi token trong header Authorization
-            }
-          });
-          console.log('User data:', response.data);
-        } catch (error) {
-          console.error('Error fetching user data:', error);
-        }
-
 
         if (response.status === 401) {
           console.log('Access token expired, refreshing token...');
@@ -370,13 +358,8 @@ export default {
 
         const roles = userInfoData.roles || [];
         userStore.setUserInfo({
-          sub: userInfoData.sub || '',
-          name: userInfoData.name || '',
-          preferred_username: userInfoData.preferred_username || '',
-          given_name: userInfoData.given_name || '',
-          family_name: userInfoData.family_name || '',
-          email: userInfoData.email || '',
-          role: roles
+          name: userInfoData.username || '',
+          role: roles || ''
         });
 
       } catch (error) {
