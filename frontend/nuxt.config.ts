@@ -14,8 +14,8 @@ export default defineNuxtConfig({
         './assets/css/bootstrap.min.css',
         './assets/cat.css',
     ],
-    js: [
-        './assets/js/bootstrap.bundle.min.js'
+    plugins: [
+        { src: './assets/js/bootstrap.bundle.min.js', mode: 'client' }
     ],
     dev: process.env.NODE_ENV !== 'production',
     devtools: {
@@ -40,14 +40,14 @@ export default defineNuxtConfig({
             { code: 'en', name: 'English', file: 'en.ts' },
             { code: 'vi', name: 'Vietnamese', file: 'vi.ts' }
         ],
-        defaultLocale: 'en',
+        defaultLocale: 'vi',
         lazy: true,
         langDir: 'i18n/',
         vueI18nLoader: true,
         detectBrowserLanguage: {
             useCookie: true,
             cookieKey: 'i18n_redirected',
-            fallbackLocale: 'en'
+            fallbackLocale: 'vi'
         },
         strategy: 'no_prefix'
     },

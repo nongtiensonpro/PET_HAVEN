@@ -16,8 +16,8 @@
         <div class="col col-md-8 d-flex align-items-center justify-content-end">
           <nav class="navbar bg-body-tertiary flex-grow-1 me-2">
             <form class="d-flex w-100" role="search">
-              <input class="noboder w-100" type="search" :placeholder="searchPlaceholder">
-              <button class="noboder" type="submit">{{ searchButton }}</button>
+              <input class="no-b w-100" type="search" :placeholder="searchPlaceholder">
+              <button class="no-b" type="submit">{{ searchButton }}</button>
             </form>
           </nav>
 
@@ -400,7 +400,7 @@ export default {
   border: 1px solid #400D01;
 }
 
-.noboder {
+.no-b {
   border: none;
   outline: none;
   cursor: pointer;
