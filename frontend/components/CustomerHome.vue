@@ -27,8 +27,8 @@
             </button>
           </div>
           <div v-else>
-            <button type="button" class="custom-button" @click="logout">
-              {{ logout }}
+            <button type="button" class="custom-button" @click="logout1">
+              Đăng xuất
             </button>
           </div>
           <button type="button" class="custom-button" @click="changeLanguage">
@@ -239,7 +239,7 @@ export default {
       const clientId = 'PetHaven'; // Client ID của bạn
       const redirectUri = encodeURIComponent('http://localhost:3000/');
       window.location.href = `${logoutUrl}?client_id=${clientId}&post_logout_redirect_uri=${redirectUri}`;
-
+      this.logout()
     },
     async exchangeAuthorizationCodeForToken(code: string) {
       const url = 'http://localhost:9082/realms/spring/protocol/openid-connect/token';
