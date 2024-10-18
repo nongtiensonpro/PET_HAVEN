@@ -13,9 +13,6 @@ export default defineNuxtConfig({
         './assets/css/bootstrap.min.css',
         './assets/cat.css',
     ],
-    js: [
-        '~/assets/js/bootstrap.bundle.min.js'
-    ],
     dev: process.env.NODE_ENV !== 'production',
     devtools: {
         enabled: process.env.NODE_ENV === 'development',
@@ -53,5 +50,8 @@ export default defineNuxtConfig({
     alias: {
         "@": resolve(__dirname, 'assets'),
         pinia: '/node_modules/@pinia/nuxt/node_modules/pinia/dist/pinia.mjs',
-    }
+    },
+    plugins: [
+        { src: '~/assets/plugins/bootstrap.client.js', mode: 'client' }
+    ]
 } );
