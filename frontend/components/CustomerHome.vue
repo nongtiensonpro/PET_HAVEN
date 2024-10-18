@@ -152,6 +152,7 @@ import DichVu from '~/models/DichVu';
 import logoImage from '~/assets/image/LogoPetHaven.png'; // Import logo
 import {useI18n} from 'vue-i18n';
 import {useUserStore} from '~/stores/user';
+import axios from 'axios';
 
 export default {
   mounted() {
@@ -239,7 +240,7 @@ export default {
       const clientId = 'PetHaven'; // Client ID của bạn
       const redirectUri = encodeURIComponent('http://localhost:3000/');
       window.location.href = `${logoutUrl}?client_id=${clientId}&post_logout_redirect_uri=${redirectUri}`;
-      logout()
+
     },
     async exchangeAuthorizationCodeForToken(code: string) {
       const url = 'http://localhost:9082/realms/spring/protocol/openid-connect/token';
@@ -251,6 +252,7 @@ export default {
         client_secret: 'GuFIaAADNfBUpuahqxLvMPWzqt6g8fRL',
         redirect_uri: 'http://localhost:3000'
       });
+
 
       try {
         const response = await fetch(url, {
@@ -335,6 +337,17 @@ export default {
             'Content-Type': 'application/json'
           }
         });
+        try {
+          const response = await axios.get('http://localhost:8080/api/user', {
+            headers: {
+              'Authorization': `Bearer ${accessToken}` // Gửi token trong header Authorization
+            }
+          });
+          console.log('User data:', response.data);
+        } catch (error) {
+          console.error('Error fetching user data:', error);
+        }
+
 
         if (response.status === 401) {
           console.log('Access token expired, refreshing token...');

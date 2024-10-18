@@ -43,6 +43,7 @@ public class SecurityConfig{
 
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
+        http.cors();
         http
                 .authorizeHttpRequests(authz -> authz
                         .requestMatchers("/api/dich-vu/all", "/login", "/oauth2/**","/","/Dang-xuat").permitAll() // Cho phép truy cập không cần xác thực
@@ -112,13 +113,15 @@ public class SecurityConfig{
         CorsConfiguration configuration = new CorsConfiguration();
         configuration.setAllowedOrigins(List.of("http://localhost:3000")); // Địa chỉ front-end
         configuration.setAllowedMethods(List.of("GET", "POST", "PUT", "DELETE", "OPTIONS")); // Các phương thức
-        configuration.setAllowedHeaders(List.of("*")); // Các header được phép
+        configuration.setAllowedHeaders(List.of("Content-Type", "Authorization","*")); // Thêm header cần thiết
         configuration.setAllowCredentials(true); // Cho phép gửi cookie nếu cần
 
         UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
         source.registerCorsConfiguration("/api/**", configuration); // Cấu hình CORS cho tất cả API
         return source;
     }
+
+
 
 
 
