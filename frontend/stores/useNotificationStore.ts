@@ -12,7 +12,11 @@ export const useNotificationStore = defineStore('notification', {
             this.notifications.splice(index, 1);
         },
         removeAllNotifications() {
-            this.notifications = [];
+            if (this.notifications.length > 0) {
+               for (let i = this.notifications.length - 1; i >= 0; i--) {
+                   this.removeNotification(i);
+               }
+            }
         }
     },
 });
