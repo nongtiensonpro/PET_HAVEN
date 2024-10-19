@@ -47,33 +47,41 @@
                     Khách hàng/ Nhân Viên
                   </button>
                 </div>
-                <!-- Button trigger modal -->
-                <button type="button" class="custom-button" data-bs-toggle="modal" data-bs-target="#staticBackdrop">
-                  Cài đặt
-                </button>
+                <div class="row">
+                  <div class="col-12 p-4">
+                    <!-- Button trigger modal -->
+                    <button type="button" class="custom-button" data-bs-toggle="modal" data-bs-target="#staticBackdrop">
+                      Cài đặt tài khoản
+                    </button>
 
-                <!-- Modal -->
-                <div class="modal fade" id="staticBackdrop" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
-                  <div class="modal-dialog">
-                    <div class="modal-content">
-                      <div class="modal-header">
-                        <h1 class="modal-title fs-5" id="staticBackdropLabel">Modal title</h1>
-                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                      </div>
-                      <div class="modal-body">
-                        ...
-                      </div>
-                      <div class="modal-footer">
-                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-                        <button type="button" class="btn btn-primary">Understood</button>
+                    <!-- Modal -->
+                    <div class="modal fade" id="staticBackdrop" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
+                      <div class="modal-dialog">
+                        <div class="modal-content">
+                          <div class="modal-header">
+                            <h1 class="modal-title fs-5" id="staticBackdropLabel">Modal title</h1>
+                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                          </div>
+                          <div class="modal-body">
+                            ...
+                          </div>
+                          <div class="modal-footer">
+                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                            <button type="button" class="btn btn-primary">Understood</button>
+                          </div>
+                        </div>
                       </div>
                     </div>
                   </div>
+                  <div class="col-12 p-4">
+                    <button type="button" class="custom-button" @click="logout1">
+                      Đăng xuất
+                    </button>
+                  </div>
                 </div>
+
                 <br>
-                <button type="button" class="custom-button" @click="logout1">
-                  Đăng xuất
-                </button>
+
               </div>
             </div>
           </div>
@@ -84,7 +92,9 @@
             <!-- Nút dropdown kết hợp với badge thông báo -->
             <button class="custom-button dropdown-toggle position-relative" style="min-width: 100px" type="button" data-bs-toggle="dropdown"
                     aria-expanded="false">
-              Noti
+              <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-bell-fill" viewBox="0 0 16 16">
+                <path d="M8 16a2 2 0 0 0 2-2H6a2 2 0 0 0 2 2m.995-14.901a1 1 0 1 0-1.99 0A5 5 0 0 0 3 6c0 1.098-.5 6-2 7h14c-1.5-1-2-5.902-2-7 0-2.42-1.72-4.44-4.005-4.901"/>
+              </svg>
 
               <!-- Badge hiển thị số lượng thông báo -->
               <span class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger">
@@ -148,7 +158,7 @@
         <div v-else>
           <nav class="navbar navbar-expand-lg bg-body-tertiary">
             <div class="container-fluid">
-              <a class="navbar-brand" href="#">Admin</a>
+              <nuxt-link class="nav-link" :to="`/admin/adminhome`">Admin</nuxt-link>
               <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav"
                       aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
                 <span class="navbar-toggler-icon"></span>
@@ -156,7 +166,16 @@
               <div class="collapse navbar-collapse" id="navbarNav">
                 <ul class="navbar-nav">
                   <li class="nav-item">
-                    <nuxt-link class="nav-link" :to="`/admin/service`">Quản lý dịch vụ</nuxt-link>
+                    <div class="dropdown">
+                      <a class="nav-link" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                        Dịch vụ
+                      </a>
+
+                      <ul class="dropdown-menu">
+                        <li><nuxt-link class="dropdown-item" :to="`/admin/service/servicelist`">Tổng quan dịch vụ</nuxt-link></li>
+                        <li><nuxt-link class="dropdown-item" :to="`/admin/service/addservice`">Thêm dịch vụ</nuxt-link></li>
+                      </ul>
+                    </div>
                   </li>
                 </ul>
               </div>
@@ -164,7 +183,9 @@
           </nav>
         </div>
       </div>
-      <NuxtPage/>
+      <div class="container h-100 w-100">
+        <NuxtPage/>
+      </div>
       <footer>
         <div v-if="viewRole==0">
           <div class="container">
@@ -314,6 +335,7 @@ export default {
     const footerCopyright = computed(() => t('footerCopyright'));
     const serviceNotAvailable = computed(() => t('serviceNotAvailable'));
     const login = computed(() => t('login'));
+
 
     const changeLanguage = () => {
       currentLanguage.value = currentLanguage.value === 'vi' ? 'en' : 'vi';
