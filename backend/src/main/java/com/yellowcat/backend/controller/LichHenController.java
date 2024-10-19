@@ -42,7 +42,7 @@ public class LichHenController {
         return lichHenService.findByIdUser(pageable,idUser);
     }
 
-    @PreAuthorize("hasRole('admin')")
+    @PreAuthorize("hasAnyRole('admin', 'manager')")
     @GetMapping("/findByUserEmail")
     public Page<Lichhen> findByUserEmail(@RequestParam(defaultValue = "0") int page,@RequestParam("email") String Email) {
         Pageable pageable = PageRequest.of(page, 10);
@@ -79,14 +79,30 @@ public class LichHenController {
         return new ResponseEntity<Lichhen>(updateLich, HttpStatus.CREATED).getBody();
     }
 
-    @PutMapping("/updateTrangThai/{id}/{idTT}")
-    public Lichhen updateMore(@RequestBody Lichhen lichhen,@RequestParam int id,@RequestParam int idTT){
 
+    @PutMapping("/updateTrangThai/{id}")
+    public ResponseEntity<Lichhen> updateMore(@PathVariable int id, @RequestBody Map<String, Object> requestBody) {
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        String idUser = authentication.getName(); // Lấy thông tin người dùng hiện tại
+        int idTT = (Integer) requestBody.get("trangThai");
+
+        // Tìm lịch hẹn theo id
         Lichhen datLaiLich = lichHenService.findById(id);
+        if (datLaiLich == null) {
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND); // Trả về 404 nếu không tìm thấy lịch hẹn
+        }
 
+        // Kiểm tra nếu người dùng hiện tại không phải là chủ nhân của lịch hẹn
+        if (!datLaiLich.getIdkhachhang().equals(idUser)) {
+            return new ResponseEntity<>(HttpStatus.FORBIDDEN); // Trả về 403 nếu không có quyền
+        }
+
+        // Cập nhật trạng thái
         datLaiLich.setTrangthai(idTT);
-
         Lichhen updateLich = lichHenService.addOrUpdate(datLaiLich);
-        return new ResponseEntity<Lichhen>(updateLich, HttpStatus.CREATED).getBody();
+
+        return new ResponseEntity<>(updateLich, HttpStatus.OK); // Trả về 200 OK thay vì 201 CREATED nếu chỉ là cập nhật
     }
+
+
 }
