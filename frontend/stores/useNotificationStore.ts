@@ -5,7 +5,7 @@ export const useNotificationStore = defineStore('notification', {
         notifications: [] as Array<{ message: string; type: string }>,
     }),
     actions: {
-        addNotification(message: string, type: string = 'success') {
+        addNotification(message: string, type: string ) {
             this.notifications.push({ message, type });
         },
         removeNotification(index: number) {

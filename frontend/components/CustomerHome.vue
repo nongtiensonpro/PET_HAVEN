@@ -22,14 +22,14 @@
           </nav>
 
           <div v-if="!isLoggedIn">
-            <button type="button" class="custom-button" @click="login1">
+            <button type="button" class="custom-button" style="min-width: 60px " @click="login1">
               {{ login }}
             </button>
           </div>
           <div v-else>
-            <button class="custom-button" type="button" data-bs-toggle="offcanvas"
+            <button class="custom-button" style="min-width: 150px" type="button" data-bs-toggle="offcanvas"
                     data-bs-target="#offcanvasWithBothOptions" aria-controls="offcanvasWithBothOptions">
-              {{ userInfo.name }}
+              Cài đặt
             </button>
             <div class="offcanvas offcanvas-start" data-bs-scroll="true" tabindex="-1" id="offcanvasWithBothOptions"
                  aria-labelledby="offcanvasWithBothOptionsLabel">
@@ -47,20 +47,44 @@
                     Khách hàng/ Nhân Viên
                   </button>
                 </div>
+                <!-- Button trigger modal -->
+                <button type="button" class="custom-button" data-bs-toggle="modal" data-bs-target="#staticBackdrop">
+                  Cài đặt
+                </button>
+
+                <!-- Modal -->
+                <div class="modal fade" id="staticBackdrop" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
+                  <div class="modal-dialog">
+                    <div class="modal-content">
+                      <div class="modal-header">
+                        <h1 class="modal-title fs-5" id="staticBackdropLabel">Modal title</h1>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                      </div>
+                      <div class="modal-body">
+                        ...
+                      </div>
+                      <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                        <button type="button" class="btn btn-primary">Understood</button>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+                <br>
                 <button type="button" class="custom-button" @click="logout1">
                   Đăng xuất
                 </button>
               </div>
             </div>
           </div>
-          <button type="button" class="custom-button" @click="changeLanguage">
+          <button type="button" style="max-width: 30px; text-align: center" class="custom-button" @click="changeLanguage">
             {{ currentLanguage === 'vi' ? switchToEnglish : switchToVietnamese }}
           </button>
           <div class="dropdown">
             <!-- Nút dropdown kết hợp với badge thông báo -->
-            <button class="custom-button dropdown-toggle position-relative" type="button" data-bs-toggle="dropdown"
+            <button class="custom-button dropdown-toggle position-relative" style="min-width: 100px" type="button" data-bs-toggle="dropdown"
                     aria-expanded="false">
-              Notifications
+              Noti
 
               <!-- Badge hiển thị số lượng thông báo -->
               <span class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger">
@@ -80,8 +104,9 @@
                 </button>
               </li>
               <li v-for="notification in notifications" :key="notification.id">
-                <a class="dropdown-item" href="#">
-                  {{ notification.message }}
+                <a v-if="notification.type='system'">Hệ thống</a>
+                <a class="dropdown-item" href="#" >
+                   {{ notification.message }}
                   <button @click="handleRemoveNotification(notification.id-1)" class="btn btn-link p-0 m-0 text-danger">
                     X
                   </button>
@@ -253,8 +278,8 @@ export default {
       notificationStore.removeAllNotifications();
     };
 
-    const handleAddNotification = () => {
-      addNotification('Thông báo mới!', 'success');
+    const handleAddNotification = (message: String,type: String) => {
+      addNotification(message, type);
     };
 
     const handleRemoveNotification = (index: number) => {
@@ -298,10 +323,10 @@ export default {
     const changeRole = () => {
       if (viewRole.value === 0) {
         viewRole.value = 1;
-        addNotification('Đã chuyển sang vai trò Nhân viên', 'success');
+        addNotification('Đã chuyển sang giao diện Nhân viên', 'system');
       } else {
         viewRole.value = 0;
-        addNotification('Đã chuyển sang vai trò Khách hàng', 'success');
+        addNotification('Đã chuyển sang giao diện Khách hàng', 'system');
       }
     }
     return {
@@ -331,7 +356,6 @@ export default {
       isLoggedIn,
       viewRole,
       notifications,
-      handleAddNotification,
       handleRemoveNotification,
       changeRole,
       removeAllNotifications
@@ -339,7 +363,7 @@ export default {
   },
   methods: {
     login1() {
-      window.location.href = 'http://localhost:8080/oauth2/authorization/keycloak';
+      window.location.href = 'http://localhost:8080/oauth2/authorization/keycloak'
     },
     logout1() {
       const logoutUrl = `http://localhost:9082/realms/spring/protocol/openid-connect/logout`;
@@ -381,7 +405,7 @@ export default {
           sessionStorage.setItem('refresh_token', data.refresh_token);
           console.log('Access token:', data.access_token);
           this.$router.push('/'); // Chuyển hướng về trang chủ
-          this.fetchUserInfo(data.access_token);
+          await this.fetchUserInfo(data.access_token);
           console.log("Lấy thông tin tài khoản sau khi lấy token", data.access_token);
 
           this.isLoggedIn = true;
@@ -519,5 +543,6 @@ export default {
   margin: 4px 2px;
   cursor: pointer;
   border-radius: 12px;
+  width: 80%;
 }
 </style>
