@@ -42,11 +42,11 @@
                 <button type="button" class="btn-close" data-bs-dismiss="offcanvas" aria-label="Close"></button>
               </div>
               <div class="offcanvas-body">
-                 <div v-if="Array.isArray(userInfo.role) && userInfo.role.includes('admin')">
-                    <button type="button" class="custom-button" @click="changeRole">
-                      Khách hàng/ Nhân Viên
-                    </button>
-                  </div>
+                <div v-if="Array.isArray(userInfo.role) && userInfo.role.includes('admin')">
+                  <button type="button" class="custom-button" @click="changeRole" >
+                    Khách hàng/ Nhân Viên
+                  </button>
+                </div>
                 <button type="button" class="custom-button" @click="logout1">
                   Đăng xuất
                 </button>
@@ -56,6 +56,40 @@
           <button type="button" class="custom-button" @click="changeLanguage">
             {{ currentLanguage === 'vi' ? switchToEnglish : switchToVietnamese }}
           </button>
+          <div class="dropdown">
+            <!-- Nút dropdown kết hợp với badge thông báo -->
+            <button class="custom-button dropdown-toggle position-relative" type="button" data-bs-toggle="dropdown"
+                    aria-expanded="false">
+              Notifications
+
+              <!-- Badge hiển thị số lượng thông báo -->
+              <span class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger">
+                  <span class="badge-pill">{{ notifications.length }}</span>
+                </span>
+            <span class="visually-hidden">unread messages</span>
+            </button>
+            <!-- Danh sách dropdown -->
+
+            <ul class="dropdown-menu p-4 m-4" >
+              <li v-if="notifications.length==0">
+                Không có thông báo nào !
+              </li>
+              <li v-else>
+                <button @click="removeAllNotifications" class="btn btn-link p-0 m-0 text-danger">
+                  Xóa tất cả thông báo
+                </button>
+              </li>
+              <li v-for="notification in notifications" :key="notification.id">
+                <a class="dropdown-item" href="#">
+                  {{ notification.message }}
+                  <button @click="handleRemoveNotification(notification.id-1)" class="btn btn-link p-0 m-0 text-danger">
+                    X
+                  </button>
+                </a>
+                <hr>
+              </li>
+            </ul>
+          </div>
         </div>
       </div>
 
@@ -90,7 +124,8 @@
           <nav class="navbar navbar-expand-lg bg-body-tertiary">
             <div class="container-fluid">
               <a class="navbar-brand" href="#">Admin</a>
-              <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+              <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav"
+                      aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
                 <span class="navbar-toggler-icon"></span>
               </button>
               <div class="collapse navbar-collapse" id="navbarNav">
@@ -103,77 +138,79 @@
             </div>
           </nav>
         </div>
-        </div>
+      </div>
       <NuxtPage/>
       <footer>
         <div v-if="viewRole==0">
-        <div class="container">
-          <div class="row">
-            <div class="col">
-              <div class="row">
-                <div class="col">
-                  <img :src="logoImage" class="img-fluid rounded-top me-2" alt="">
-                </div>
-                <div class="col">
-                  <div class="row">
-                    <div class="col">
-                      <h3>{{ logo }}</h3>
-                      <p>{{ slogan }}</p>
-                    </div>
-                    <div class="col">
-                      <a href="https://facebook.com/nongtiensonpro" role="button"><img src="../assets/image/logo-fb.png"
-                                                                                       width="32" height="32"
-                                                                                       class="me-3" alt="Facebook"></a>
-                      <a href="https://facebook.com/nongtiensonpro" role="button"><img
-                          src="../assets/image/logo-youtobe.png" width="32" height="32" class="me-3" alt="YouTube"></a>
+          <div class="container">
+            <div class="row">
+              <div class="col">
+                <div class="row">
+                  <div class="col">
+                    <img :src="logoImage" class="img-fluid rounded-top me-2" alt="">
+                  </div>
+                  <div class="col">
+                    <div class="row">
+                      <div class="col">
+                        <h3>{{ logo }}</h3>
+                        <p>{{ slogan }}</p>
+                      </div>
+                      <div class="col">
+                        <a href="https://facebook.com/nongtiensonpro" role="button"><img
+                            src="../assets/image/logo-fb.png"
+                            width="32" height="32"
+                            class="me-3" alt="Facebook"></a>
+                        <a href="https://facebook.com/nongtiensonpro" role="button"><img
+                            src="../assets/image/logo-youtobe.png" width="32" height="32" class="me-3"
+                            alt="YouTube"></a>
+                      </div>
                     </div>
                   </div>
+                  <div>
+                    <h3>{{ aboutUs }}</h3>
+                    <p>
+                      {{ introductionText }}
+                      <a href="#" role="button">{{ moreInfo }}</a>
+                    </p>
+                  </div>
                 </div>
-                <div>
-                  <h3>{{ aboutUs }}</h3>
-                  <p>
-                    {{ introductionText }}
-                    <a href="#" role="button">{{ moreInfo }}</a>
-                  </p>
+              </div>
+              <div class="col">
+                <h3>{{ servicesTitle }}</h3>
+
+                <div v-if="services.length==0">
+                  {{ serviceNotAvailable }}
+                </div>
+                <div v-else>
+                  <ul>
+                    <li class="nav-item" v-for="service in services" :key="service.id">
+                      <NuxtLink class="nav-link" :to="`/services/${service.id}`" aria-current="page">
+                        {{ service.tendichvu || serviceNotAvailable }}
+                      </NuxtLink>
+                    </li>
+                  </ul>
+                </div>
+
+
+              </div>
+              <div class="col">
+                <div class="col col-md-auto">
+                  <h3>{{ contact }}</h3>
+                  <p>{{ phone }}</p>
+                  <p>{{ email }}</p>
+                  <p>{{ facebook }}</p>
                 </div>
               </div>
-            </div>
-            <div class="col">
-              <h3>{{ servicesTitle }}</h3>
-
-              <div v-if="services.length==0">
-                {{ serviceNotAvailable }}
-              </div>
-              <div v-else>
-                <ul>
-                  <li class="nav-item" v-for="service in services" :key="service.id">
-                    <NuxtLink class="nav-link" :to="`/services/${service.id}`" aria-current="page">
-                      {{ service.tendichvu || serviceNotAvailable }}
-                    </NuxtLink>
-                  </li>
-                </ul>
-              </div>
-
-
-            </div>
-            <div class="col">
-              <div class="col col-md-auto">
-                <h3>{{ contact }}</h3>
-                <p>{{ phone }}</p>
-                <p>{{ email }}</p>
-                <p>{{ facebook }}</p>
+              <div class="col">
+                <iframe
+                    src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3413.541940628307!2d105.74466886584491!3d21.038129618650437!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x313455e940879933%3A0xcf10b34e9f1a03df!2zVHLGsOG7nW5nIENhbyDEkeG6s25nIEZQVCBQb2x5dGVjaG5pYw!5e1!3m2!1svi!2s!4v1681224799580!5m2!1svi!2s"
+                    width="100%" height="100%" style="border:0;" allowfullscreen="" loading="lazy"></iframe>
               </div>
             </div>
-            <div class="col">
-              <iframe
-                  src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3413.541940628307!2d105.74466886584491!3d21.038129618650437!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x313455e940879933%3A0xcf10b34e9f1a03df!2zVHLGsOG7nW5nIENhbyDEkeG6s25nIEZQVCBQb2x5dGVjaG5pYw!5e1!3m2!1svi!2s!4v1681224799580!5m2!1svi!2s"
-                  width="100%" height="100%" style="border:0;" allowfullscreen="" loading="lazy"></iframe>
+            <div>
+              <p class="text-center">{{ footerCopyright }}</p>
             </div>
           </div>
-          <div>
-            <p class="text-center">{{ footerCopyright }}</p>
-          </div>
-        </div>
         </div>
         <div v-else>
           Đây là footer dành cho nhân viên và quản lý
@@ -190,6 +227,7 @@ import DichVu from '~/models/DichVu';
 import logoImage from '~/assets/image/LogoPetHaven.png'; // Import logo
 import {useI18n} from 'vue-i18n';
 import {useUserStore} from '~/stores/user';
+import {useNotificationStore} from '~/stores/useNotificationStore';
 
 export default {
   mounted() {
@@ -206,6 +244,22 @@ export default {
     }
   },
   setup() {
+    const notificationStore = useNotificationStore();
+    const { addNotification, removeNotification  } = notificationStore;
+
+    const notifications = notificationStore.notifications;
+
+    const removeAllNotifications = () => {
+      notificationStore.removeAllNotifications();
+    };
+
+    const handleAddNotification = () => {
+      addNotification('Thông báo mới!', 'success');
+    };
+
+    const handleRemoveNotification = (index: number) => {
+      removeNotification(index);
+    };
     const {t, locale} = useI18n();
     const serviceStore = useServiceStore();
     const services = computed((): DichVu[] => serviceStore.services);
@@ -241,6 +295,15 @@ export default {
       locale.value = currentLanguage.value;
     };
     const viewRole = ref(0);
+    const changeRole = () => {
+      if (viewRole.value === 0) {
+        viewRole.value = 1;
+        addNotification('Đã chuyển sang vai trò Nhân viên', 'success');
+      } else {
+        viewRole.value = 0;
+        addNotification('Đã chuyển sang vai trò Khách hàng', 'success');
+      }
+    }
     return {
       services,
       logo,
@@ -266,7 +329,12 @@ export default {
       login,
       userInfo,
       isLoggedIn,
-      viewRole
+      viewRole,
+      notifications,
+      handleAddNotification,
+      handleRemoveNotification,
+      changeRole,
+      removeAllNotifications
     };
   },
   methods: {
@@ -411,15 +479,7 @@ export default {
       userStore.clearUserInfo();
       sessionStorage.clear();
     },
-    changeRole(){
-      if(this.viewRole === 0){
 
-        this.viewRole = 1;
-      }else {
-        
-        this.viewRole = 0;
-      }
-    }
   }
 };
 </script>
