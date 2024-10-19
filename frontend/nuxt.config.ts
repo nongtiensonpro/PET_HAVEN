@@ -52,6 +52,6 @@ export default defineNuxtConfig({
         pinia: '/node_modules/@pinia/nuxt/node_modules/pinia/dist/pinia.mjs',
     },
     plugins: [
-        { src: '~/assets/plugins/bootstrap.client.js', mode: 'client' }
+        { src: '~/plugins/bootstrap.js', mode: 'client' }
     ]
 } );

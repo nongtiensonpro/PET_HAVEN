@@ -27,9 +27,31 @@
             </button>
           </div>
           <div v-else>
-            <button type="button" class="custom-button" @click="logout1">
-              Đăng xuất
+            <button class="custom-button" type="button" data-bs-toggle="offcanvas"
+                    data-bs-target="#offcanvasWithBothOptions" aria-controls="offcanvasWithBothOptions">
+              {{ userInfo.name }}
             </button>
+            <div class="offcanvas offcanvas-start" data-bs-scroll="true" tabindex="-1" id="offcanvasWithBothOptions"
+                 aria-labelledby="offcanvasWithBothOptionsLabel">
+              <div class="offcanvas-header">
+                <h5 class="offcanvas-title" id="offcanvasWithBothOptionsLabel">
+                  Chào mừng {{
+                    Array.isArray(userInfo.role) && userInfo.role.includes('admin') ? 'Admin' : 'Khách hàng'
+                  }} {{ userInfo.name }}
+                </h5>
+                <button type="button" class="btn-close" data-bs-dismiss="offcanvas" aria-label="Close"></button>
+              </div>
+              <div class="offcanvas-body">
+                 <div v-if="Array.isArray(userInfo.role) && userInfo.role.includes('admin')">
+                    <button type="button" class="custom-button" @click="changeRole">
+                      Khách hàng/ Nhân Viên
+                    </button>
+                  </div>
+                <button type="button" class="custom-button" @click="logout1">
+                  Đăng xuất
+                </button>
+              </div>
+            </div>
           </div>
           <button type="button" class="custom-button" @click="changeLanguage">
             {{ currentLanguage === 'vi' ? switchToEnglish : switchToVietnamese }}
@@ -39,39 +61,52 @@
 
       <!-- Navbar -->
       <div class="container">
-
-        <nav class="navbar navbar-expand-lg bg-body-tertiary">
-          <div class="container-fluid">
-            <div v-if="isLoggedIn">
-              <NuxtLink class="nav-link active" aria-current="page" to="/admin/homeadmin">Home Admin</NuxtLink>
+        <div v-if="viewRole==0">
+          <nav class="navbar navbar-expand-lg bg-body-tertiary">
+            <div class="container-fluid">
+              <NuxtLink class="nav-link active" aria-current="page" to="/">{{ home }}</NuxtLink>
+              <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav"
+                      aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+              </button>
+              <div class="collapse navbar-collapse" id="navbar">
+                <ul class="navbar-nav">
+                  <li class="nav-item" v-for="service in services" :key="service.id">
+                    <div v-if="services.length==0">
+                      {{ serviceNotAvailable }}
+                    </div>
+                    <div v-else>
+                      <NuxtLink class="nav-link" :to="`/services/${service.id}`" aria-current="page">
+                        <div style="font-size: medium;">{{ service.tendichvu }}</div>
+                      </NuxtLink>
+                    </div>
+                  </li>
+                </ul>
+              </div>
             </div>
-            <NuxtLink class="nav-link active" aria-current="page" to="/">{{ home }}</NuxtLink>
-            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav"
-                    aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
-              <span class="navbar-toggler-icon"></span>
-            </button>
-            <div class="collapse navbar-collapse" id="navbar">
-              <ul class="navbar-nav">
-                <li class="nav-item" v-for="service in services" :key="service.id">
-                  <div v-if="services.length==0">
-                    {{ serviceNotAvailable }}
-                  </div>
-                  <div v-else>
-                    <NuxtLink class="nav-link" :to="`/services/${service.id}`" aria-current="page">
-                      <div style="font-size: medium;">{{ service.tendichvu }}</div>
-                    </NuxtLink>
-                  </div>
-
-                </li>
-              </ul>
+          </nav>
+        </div>
+        <div v-else>
+          <nav class="navbar navbar-expand-lg bg-body-tertiary">
+            <div class="container-fluid">
+              <a class="navbar-brand" href="#">Admin</a>
+              <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+              </button>
+              <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav">
+                  <li class="nav-item">
+                    <nuxt-link class="nav-link" :to="`/admin/service`">Quản lý dịch vụ</nuxt-link>
+                  </li>
+                </ul>
+              </div>
             </div>
-          </div>
-        </nav>
-      </div>
-
+          </nav>
+        </div>
+        </div>
       <NuxtPage/>
-
       <footer>
+        <div v-if="viewRole==0">
         <div class="container">
           <div class="row">
             <div class="col">
@@ -139,6 +174,10 @@
             <p class="text-center">{{ footerCopyright }}</p>
           </div>
         </div>
+        </div>
+        <div v-else>
+          Đây là footer dành cho nhân viên và quản lý
+        </div>
       </footer>
     </div>
   </NuxtLayout>
@@ -151,7 +190,6 @@ import DichVu from '~/models/DichVu';
 import logoImage from '~/assets/image/LogoPetHaven.png'; // Import logo
 import {useI18n} from 'vue-i18n';
 import {useUserStore} from '~/stores/user';
-import axios from 'axios';
 
 export default {
   mounted() {
@@ -202,7 +240,7 @@ export default {
       currentLanguage.value = currentLanguage.value === 'vi' ? 'en' : 'vi';
       locale.value = currentLanguage.value;
     };
-
+    const viewRole = ref(0);
     return {
       services,
       logo,
@@ -227,7 +265,8 @@ export default {
       currentLanguage,
       login,
       userInfo,
-      isLoggedIn
+      isLoggedIn,
+      viewRole
     };
   },
   methods: {
@@ -371,6 +410,15 @@ export default {
       const userStore = useUserStore();
       userStore.clearUserInfo();
       sessionStorage.clear();
+    },
+    changeRole(){
+      if(this.viewRole === 0){
+
+        this.viewRole = 1;
+      }else {
+        
+        this.viewRole = 0;
+      }
     }
   }
 };
