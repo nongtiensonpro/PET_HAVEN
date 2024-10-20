@@ -8,6 +8,7 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -28,12 +29,14 @@ public class DichVuController {
         return dichVuService.getAllDichVu(pageable);
     }
 
+    @PreAuthorize("hasAnyRole('admin', 'manager')")
     @PostMapping("/add")
     public Dichvu addone(@RequestBody Dichvu dichvu){
         Dichvu createdDichVu = dichVuService.addOrUpdateDichVu(dichvu);
         return new ResponseEntity<>(createdDichVu, HttpStatus.CREATED).getBody();
     }
 
+    @PreAuthorize("hasAnyRole('admin', 'manager')")
     @PutMapping("/update/{id}")
     public ResponseEntity<Dichvu> updateone(@RequestBody Dichvu dichvu, @PathVariable int id) {
         Optional<Dichvu> dichvu1 = dichVuService.findById(id);
@@ -53,6 +56,7 @@ public class DichVuController {
         return ResponseEntity.ok(dichvu2);
     }
 
+    @PreAuthorize("hasAnyRole('admin', 'manager')")
     @DeleteMapping("/delete/{id}")
     public ResponseEntity<String> delete(@PathVariable int id) {
         dichVuService.deleteDichVu(id);
@@ -64,5 +68,18 @@ public class DichVuController {
     public ResponseEntity<List<Dichvu>> findDichVu(@RequestParam String namedv) {
         List<Dichvu> dichvus = dichVuService.FindByNameDV(namedv);
         return ResponseEntity.ok(dichvus);
+    }
+
+    @GetMapping("/update-trang-thai/{id}")
+    public ResponseEntity<Dichvu> updateTrangThai(@PathVariable Integer id) {
+        Optional<Dichvu> dichvu1 = dichVuService.findById(id);
+        Dichvu dichvu = dichvu1.get();
+        if (dichvu.getTrangthai()){
+            dichvu.setTrangthai(false);
+        }else {
+            dichvu.setTrangthai(true);
+        }
+        dichVuService.addOrUpdateDichVu(dichvu);
+        return ResponseEntity.ok(dichvu);
     }
 }

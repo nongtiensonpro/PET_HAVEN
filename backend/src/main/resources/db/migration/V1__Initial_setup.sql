@@ -25,7 +25,8 @@ CREATE TABLE DichVu
     TenDichVu VARCHAR(100) NOT NULL,
     MoTa      TEXT         NOT NULL,
     Anh       TEXT,
-    GiaTien   INT          NOT NULL
+    GiaTien   INT          NOT NULL,
+    TrangThai   BOOLEAN NOT NULL
 );
 
 CREATE TABLE ThuCung
@@ -123,10 +124,10 @@ VALUES ('Nguyen Van A', 25, 'Nam', 1, '0901234567'),
        ('Le Van C', 22, 'Nam', 3, '0901122334');
 
 -- Thêm dữ liệu vào bảng DichVu
-INSERT INTO DichVu (TenDichVu, MoTa, Anh, GiaTien)
-VALUES ('Dịch vụ 1', 'Mô tả dịch vụ 1', NULL, 100000),
-       ('Dịch vụ 2', 'Mô tả dịch vụ 2', NULL, 150000),
-       ('Dịch vụ 3', 'Mô tả dịch vụ 3', NULL, 200000);
+INSERT INTO DichVu (TenDichVu, MoTa, Anh, GiaTien,trangthai)
+VALUES ('Dịch vụ 1', 'Mô tả dịch vụ 1', NULL, 100000,true),
+       ('Dịch vụ 2', 'Mô tả dịch vụ 2', NULL, 150000,true),
+       ('Dịch vụ 3', 'Mô tả dịch vụ 3', NULL, 200000,true);
 
 -- Thêm dữ liệu vào bảng ThuCung
 INSERT INTO ThuCung (TenCho, CanNang, Tuoi, GiongCho, IDTaiKhoan, Image)
