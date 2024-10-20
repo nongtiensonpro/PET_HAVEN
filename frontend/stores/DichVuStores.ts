@@ -126,6 +126,35 @@ export const useServiceStore = defineStore('serviceStore', {
             }
         },
 
+
+        // Cập nhật Trạng thái dịch vụ
+        async updateTTDV(serviceId: number) {
+            const updateTTDichVuUrl = API_ENDPOINTS.API_ENDPOINTS.dichVu.updateTTDichVu+serviceId;
+            const token = sessionStorage.getItem('access_token');
+
+            try {
+                const response = await fetch(updateTTDichVuUrl, {
+                    method: 'PUT',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Authorization': `Bearer ${token}` // Gửi token trong header
+                    },
+
+                });
+
+                if (!response.ok) {
+                    throw new Error(`Error: ${response.statusText}`);
+                }
+
+                const data = await response.json();
+                return data;
+            } catch (error) {
+                console.error('Lỗi khi cập nhật dịch vụ:', error);
+                throw error;
+            }
+        }
+        ,
+
         // Hàm làm sạch payload
         cleanPayload(payload: any) {
             return JSON.parse(JSON.stringify(payload, (key, value) => {

@@ -2,6 +2,7 @@ package com.yellowcat.backend.model;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import jakarta.persistence.*;
+import jakarta.validation.constraints.NotNull;
 
 @Entity
 @Table(name = "dichvu")
@@ -28,6 +29,18 @@ public class Dichvu {
     @JsonProperty
     @Column(name = "giatien", nullable = false)
     private Integer giatien;
+
+    @NotNull
+    @Column(name = "trangthai", nullable = false)
+    private Boolean trangthai = false;
+
+    public Boolean getTrangthai() {
+        return trangthai;
+    }
+
+    public void setTrangthai(Boolean trangthai) {
+        this.trangthai = trangthai;
+    }
 
     public Integer getId() {
         return id;

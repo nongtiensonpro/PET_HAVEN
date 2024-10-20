@@ -71,6 +71,19 @@ const deleteService = async (serviceId) => {
     alert('Có lỗi xảy ra khi xóa dịch vụ.');
   }
 };
+
+const updateTTService = async (serviceId) => {
+  try {
+    await serviceStore.updateTTDV(serviceId);
+    notificationStore.addNotification("Dịch vụ đã được cập nhật thành công!", user.userInfo.name);
+    alert('Dịch vụ đã được lưu thành công!');
+    serviceStore.fetchServices();
+  } catch (error) {
+    notificationStore.addNotification("Dịch vụ đã được cập nhật thất bại!", user.userInfo.name);
+    console.error('Lỗi khi lưu dịch vụ:', error);
+    alert('Có lỗi xảy ra khi lưu dịch vụ.');
+  }
+};
 </script>
 
 <template>
@@ -151,6 +164,7 @@ const deleteService = async (serviceId) => {
         <th scope="col">STT</th>
         <th scope="col">Tên dịch vụ</th>
         <th scope="col">Giá tiền</th>
+        <th scope="col">Trạng thái</th>
         <th>Hành động</th>
       </tr>
       </thead>
@@ -159,6 +173,7 @@ const deleteService = async (serviceId) => {
         <th scope="row">{{ index + 1 }}</th>
         <td>{{ service.tendichvu }}</td>
         <td>{{ service.giatien.toLocaleString() }} VND</td>
+        <td>{{ service.trangthai == true ? 'Hoạt động' : 'Không hoạt động' }}</td>
         <td>
           <!-- Button trigger modal -->
           <div class="row">
@@ -210,7 +225,7 @@ const deleteService = async (serviceId) => {
                           </button>
                         </div>
                         <div class="col">
-                          <button type="button" class="custom-button">Ẩn dịch vụ</button>
+                          <button type="button" class="custom-button" @click="updateTTService(service.id)">Ẩn dịch vụ</button>
                         </div>
                       </div>
                     </div>
