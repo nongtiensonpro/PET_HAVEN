@@ -39,8 +39,7 @@ jobs:
 
       - name: Create databases
         run: |
-          docker exec -it postgres psql -U ${{ secrets.DB_USERNAME }} -c "CREATE DATABASE backend_server;"
-          docker exec -it postgres psql -U ${{ secrets.DB_USERNAME }} -c "CREATE DATABASE keycloak;"
+          docker exec -i postgres psql -U ${{ secrets.DB_USERNAME }} -c "CREATE DATABASE backend_server; CREATE DATABASE keycloak;"
 
       - name: Build Java backend
         run: |
