@@ -8,7 +8,7 @@ import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
 import java.util.List;
-import java.util.Optional;
+
 
 @Service
 public class LichHenService {
@@ -37,7 +37,7 @@ public class LichHenService {
 
     // Kiểm tra ca đã có trong ngày chưa
     public boolean isCaTrungTrongNgay(LocalDate ngay, int idCaLichHen) {
-        return lichhenRepository.existsByDateAndIdcalichhen(ngay, idCaLichHen);
+        return lichhenRepository.existsByDateAndIdcalichhen_Id(ngay, idCaLichHen);
     }
 
     public Lichhen addOrUpdate(Lichhen lichhen){

@@ -82,7 +82,7 @@ public class LichHenController {
             return new ResponseEntity<>(HttpStatus.FORBIDDEN); // Trả về 403 nếu không có quyền
         }
 
-        if (lichHenService.isCaTrungTrongNgay(datLaiLich.getDate().toLocalDate(), datLaiLich.getIdcalichhen().getId())) {
+        if (lichHenService.isCaTrungTrongNgay(datLaiLich.getDate(), datLaiLich.getIdcalichhen().getId())) {
             return new ResponseEntity<>(HttpStatus.BAD_REQUEST); // Trả về lỗi nếu trùng ca
         }
 

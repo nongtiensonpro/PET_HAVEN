@@ -7,7 +7,6 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 
 import java.time.LocalDate;
-import java.time.LocalDateTime;
 import java.util.List;
 
 public interface CalichhenRepository extends JpaRepository<Calichhen, Integer> {
@@ -17,17 +16,17 @@ public interface CalichhenRepository extends JpaRepository<Calichhen, Integer> {
 
     @Modifying
     @Query("UPDATE Calichhen c SET c.trangthai = TRUE WHERE c.id IN " +
-            "(SELECT lh.idcalichhen FROM Lichhen lh WHERE lh.date = :ngay AND lh.trangthai = 0)")
+            "(SELECT lh.idcalichhen.id FROM Lichhen lh WHERE lh.date = :ngay AND lh.trangthai = 0)")
     void updateTrangThaiCaDatThanhCong(@Param("ngay") LocalDate ngay);
 
     @Modifying
     @Query("UPDATE Calichhen c SET c.trangthai = true WHERE c.id IN " +
-            "(SELECT lh.idcalichhen FROM Lichhen lh WHERE lh.date = :ngay)")
+            "(SELECT lh.idcalichhen.id FROM Lichhen lh WHERE lh.date = :ngay)")
     void updateNgayNghi(@Param("ngay") LocalDate ngay);
 
     @Modifying
     @Query("UPDATE Calichhen c SET c.trangthai = :trangThai WHERE c.id = :idCaLichHen AND EXISTS " +
-            "(SELECT lh FROM Lichhen lh WHERE lh.idcalichhen = :idCaLichHen AND lh.date = :ngay)")
+            "(SELECT lh FROM Lichhen lh WHERE lh.idcalichhen.id = :idCaLichHen AND lh.date = :ngay)")
     void updateTrangThaiCaTrongNgay(@Param("idCaLichHen") int idCaLichHen,
                                     @Param("ngay") LocalDate ngay,
                                     @Param("trangThai") boolean trangThai);
@@ -38,8 +37,8 @@ public interface CalichhenRepository extends JpaRepository<Calichhen, Integer> {
     List<Object[]> findAllCaAndStatusByDate(@Param("ngay") LocalDate ngay);
 
 //    Đổi trang thai ca khi dat lich thanh cong
-    @Modifying
-    @Query("UPDATE Calichhen c SET c.trangthai = TRUE WHERE c.id = :caId AND EXISTS (SELECT lh FROM Lichhen lh WHERE lh.idCaLichHen.id = c.id AND lh.date = :ngay AND lh.trangthai = 0)")
-    void updateTrangThaiCaDatThanhCong(@Param("caId") int caId, @Param("ngay") LocalDate ngay);
+//    @Modifying
+//    @Query("UPDATE Calichhen c SET c.trangthai = TRUE WHERE c.id = :caId AND EXISTS (SELECT lh FROM Lichhen lh WHERE lh.idcalichhen.id = c.id AND lh.date = :ngay AND lh.trangthai = 0)")
+//    void updateTrangThaiCaDatThanhCongSauThanhToan(@Param("caId") int caId, @Param("ngay") LocalDate ngay);
 
 }

@@ -60,7 +60,7 @@ public class DatLichController {
         lichhen.setTrangthai(4);
 
         // Kiểm tra lịch hẹn có trùng ca trong ngày không
-        if (lichHenService.isCaTrungTrongNgay(lichhen.getDate().toLocalDate(), lichhen.getIdcalichhen().getId())) {
+        if (lichHenService.isCaTrungTrongNgay(lichhen.getDate(), lichhen.getIdcalichhen().getId())) {
             return new ResponseEntity<>(HttpStatus.BAD_REQUEST); // Trả về lỗi nếu trùng ca
         }
 
