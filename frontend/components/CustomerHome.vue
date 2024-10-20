@@ -22,14 +22,14 @@
           </nav>
 
           <div v-if="!isLoggedIn">
-            <button type="button" class="custom-button" @click="login1">
+            <button type="button" class="custom-button" style="min-width: 60px " @click="login1">
               {{ login }}
             </button>
           </div>
           <div v-else>
-            <button class="custom-button" type="button" data-bs-toggle="offcanvas"
+            <button class="custom-button" style="min-width: 150px" type="button" data-bs-toggle="offcanvas"
                     data-bs-target="#offcanvasWithBothOptions" aria-controls="offcanvasWithBothOptions">
-              {{ userInfo.name }}
+              Cài đặt
             </button>
             <div class="offcanvas offcanvas-start" data-bs-scroll="true" tabindex="-1" id="offcanvasWithBothOptions"
                  aria-labelledby="offcanvasWithBothOptionsLabel">
@@ -47,20 +47,54 @@
                     Khách hàng/ Nhân Viên
                   </button>
                 </div>
-                <button type="button" class="custom-button" @click="logout1">
-                  Đăng xuất
-                </button>
+                <div class="row">
+                  <div class="col-12 p-4">
+                    <!-- Button trigger modal -->
+                    <button type="button" class="custom-button" data-bs-toggle="modal" data-bs-target="#staticBackdrop">
+                      Cài đặt tài khoản
+                    </button>
+
+                    <!-- Modal -->
+                    <div class="modal fade" id="staticBackdrop" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
+                      <div class="modal-dialog">
+                        <div class="modal-content">
+                          <div class="modal-header">
+                            <h1 class="modal-title fs-5" id="staticBackdropLabel">Modal title</h1>
+                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                          </div>
+                          <div class="modal-body">
+                            ...
+                          </div>
+                          <div class="modal-footer">
+                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                            <button type="button" class="btn btn-primary">Understood</button>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                  <div class="col-12 p-4">
+                    <button type="button" class="custom-button" @click="logout1">
+                      Đăng xuất
+                    </button>
+                  </div>
+                </div>
+
+                <br>
+
               </div>
             </div>
           </div>
-          <button type="button" class="custom-button" @click="changeLanguage">
+          <button type="button" style="max-width: 30px; text-align: center" class="custom-button" @click="changeLanguage">
             {{ currentLanguage === 'vi' ? switchToEnglish : switchToVietnamese }}
           </button>
           <div class="dropdown">
             <!-- Nút dropdown kết hợp với badge thông báo -->
-            <button class="custom-button dropdown-toggle position-relative" type="button" data-bs-toggle="dropdown"
+            <button class="custom-button dropdown-toggle position-relative" style="min-width: 100px" type="button" data-bs-toggle="dropdown"
                     aria-expanded="false">
-              Notifications
+              <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-bell-fill" viewBox="0 0 16 16">
+                <path d="M8 16a2 2 0 0 0 2-2H6a2 2 0 0 0 2 2m.995-14.901a1 1 0 1 0-1.99 0A5 5 0 0 0 3 6c0 1.098-.5 6-2 7h14c-1.5-1-2-5.902-2-7 0-2.42-1.72-4.44-4.005-4.901"/>
+              </svg>
 
               <!-- Badge hiển thị số lượng thông báo -->
               <span class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger">
@@ -80,8 +114,9 @@
                 </button>
               </li>
               <li v-for="notification in notifications" :key="notification.id">
-                <a class="dropdown-item" href="#">
-                  {{ notification.message }}
+                <a v-if="notification.type='system'">Hệ thống</a>
+                <a class="dropdown-item" href="#" >
+                   {{ notification.message }}
                   <button @click="handleRemoveNotification(notification.id-1)" class="btn btn-link p-0 m-0 text-danger">
                     X
                   </button>
@@ -123,7 +158,7 @@
         <div v-else>
           <nav class="navbar navbar-expand-lg bg-body-tertiary">
             <div class="container-fluid">
-              <a class="navbar-brand" href="#">Admin</a>
+              <nuxt-link class="nav-link" :to="`/admin/adminhome`">Admin</nuxt-link>
               <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav"
                       aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
                 <span class="navbar-toggler-icon"></span>
@@ -131,7 +166,16 @@
               <div class="collapse navbar-collapse" id="navbarNav">
                 <ul class="navbar-nav">
                   <li class="nav-item">
-                    <nuxt-link class="nav-link" :to="`/admin/service`">Quản lý dịch vụ</nuxt-link>
+                    <div class="dropdown">
+                      <a class="nav-link" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                        Dịch vụ
+                      </a>
+
+                      <ul class="dropdown-menu">
+                        <li><nuxt-link class="dropdown-item" :to="`/admin/service/servicelist`">Tổng quan dịch vụ</nuxt-link></li>
+                        <li><nuxt-link class="dropdown-item" :to="`/admin/service/addservice`">Thêm dịch vụ</nuxt-link></li>
+                      </ul>
+                    </div>
                   </li>
                 </ul>
               </div>
@@ -139,7 +183,9 @@
           </nav>
         </div>
       </div>
-      <NuxtPage/>
+      <div class="container h-100 w-100">
+        <NuxtPage/>
+      </div>
       <footer>
         <div v-if="viewRole==0">
           <div class="container">
@@ -253,8 +299,8 @@ export default {
       notificationStore.removeAllNotifications();
     };
 
-    const handleAddNotification = () => {
-      addNotification('Thông báo mới!', 'success');
+    const handleAddNotification = (message: String,type: String) => {
+      addNotification(message, type);
     };
 
     const handleRemoveNotification = (index: number) => {
@@ -290,6 +336,7 @@ export default {
     const serviceNotAvailable = computed(() => t('serviceNotAvailable'));
     const login = computed(() => t('login'));
 
+
     const changeLanguage = () => {
       currentLanguage.value = currentLanguage.value === 'vi' ? 'en' : 'vi';
       locale.value = currentLanguage.value;
@@ -298,10 +345,10 @@ export default {
     const changeRole = () => {
       if (viewRole.value === 0) {
         viewRole.value = 1;
-        addNotification('Đã chuyển sang vai trò Nhân viên', 'success');
+        addNotification('Đã chuyển sang giao diện Nhân viên', 'system');
       } else {
         viewRole.value = 0;
-        addNotification('Đã chuyển sang vai trò Khách hàng', 'success');
+        addNotification('Đã chuyển sang giao diện Khách hàng', 'system');
       }
     }
     return {
@@ -331,7 +378,6 @@ export default {
       isLoggedIn,
       viewRole,
       notifications,
-      handleAddNotification,
       handleRemoveNotification,
       changeRole,
       removeAllNotifications
@@ -339,7 +385,7 @@ export default {
   },
   methods: {
     login1() {
-      window.location.href = 'http://localhost:8080/oauth2/authorization/keycloak';
+      window.location.href = 'http://localhost:8080/oauth2/authorization/keycloak'
     },
     logout1() {
       const logoutUrl = `http://localhost:9082/realms/spring/protocol/openid-connect/logout`;
@@ -381,7 +427,7 @@ export default {
           sessionStorage.setItem('refresh_token', data.refresh_token);
           console.log('Access token:', data.access_token);
           this.$router.push('/'); // Chuyển hướng về trang chủ
-          this.fetchUserInfo(data.access_token);
+          await this.fetchUserInfo(data.access_token);
           console.log("Lấy thông tin tài khoản sau khi lấy token", data.access_token);
 
           this.isLoggedIn = true;
@@ -519,5 +565,6 @@ export default {
   margin: 4px 2px;
   cursor: pointer;
   border-radius: 12px;
+  width: 80%;
 }
 </style>
