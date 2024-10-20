@@ -70,7 +70,8 @@ public class DichVuController {
         return ResponseEntity.ok(dichvus);
     }
 
-    @GetMapping("/update-trang-thai/{id}")
+    @PreAuthorize("hasAnyRole('admin', 'manager')")
+    @PutMapping("/update-trang-thai/{id}")
     public ResponseEntity<Dichvu> updateTrangThai(@PathVariable Integer id) {
         Optional<Dichvu> dichvu1 = dichVuService.findById(id);
         Dichvu dichvu = dichvu1.get();
