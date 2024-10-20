@@ -6,6 +6,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDate;
 import java.util.List;
 import java.util.Optional;
 
@@ -32,6 +33,11 @@ public class LichHenService {
 
     public Page<Lichhen> findByEmailNguoiDat(Pageable pageable, String userName){
         return lichhenRepository.findByEmailNguoiDat(userName, pageable);
+    }
+
+    // Kiểm tra ca đã có trong ngày chưa
+    public boolean isCaTrungTrongNgay(LocalDate ngay, int idCaLichHen) {
+        return lichhenRepository.existsByDateAndIdcalichhen(ngay, idCaLichHen);
     }
 
     public Lichhen addOrUpdate(Lichhen lichhen){
