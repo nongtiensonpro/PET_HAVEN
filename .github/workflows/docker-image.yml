@@ -4,6 +4,7 @@ on:
   push:
     branches:
       - main
+
 jobs:
   build:
     runs-on: ubuntu-latest
@@ -21,15 +22,25 @@ jobs:
       - name: Grant execute permission for gradlew
         run: chmod +x backend/gradlew
 
-      - name: Create Databases
-        env:
-          POSTGRES_USER: ${{ secrets.DB_USERNAME }}
-          POSTGRES_PASSWORD: ${{ secrets.DB_PASSWORD }}
+      - name: Start PostgreSQL Service
         run: |
-          sudo apt-get update
-          sudo apt-get install postgresql-client -y
-          psql -h localhost -U $POSTGRES_USER -c "CREATE DATABASE backend_server;"
-          psql -h localhost -U $POSTGRES_USER -c "CREATE DATABASE keycloak;"
+          docker run --name postgres \
+            -e POSTGRES_USER=${{ secrets.DB_USERNAME }} \
+            -e POSTGRES_PASSWORD=${{ secrets.DB_PASSWORD }} \
+            -e POSTGRES_DB=backend_server \
+            -p 5432:5432 -d postgres:latest
+
+      - name: Wait for PostgreSQL to be ready
+        run: |
+          until pg_isready -h localhost -p 5432; do
+            echo "Waiting for PostgreSQL to be ready..."
+            sleep 2
+          done
+
+      - name: Create databases
+        run: |
+          docker exec -it postgres psql -U ${{ secrets.DB_USERNAME }} -c "CREATE DATABASE backend_server;"
+          docker exec -it postgres psql -U ${{ secrets.DB_USERNAME }} -c "CREATE DATABASE keycloak;"
 
       - name: Build Java backend
         run: |
