@@ -25,11 +25,13 @@ export const useServiceStore = defineStore('serviceStore', {
 
         // Thêm dịch vụ mới
         async addDichVu(service: DichVu) {
+            const token = sessionStorage.getItem('access_token');
             try {
                 const response = await fetch(API_ENDPOINTS.dichVu.addDichVu, {
                     method: 'POST',
                     headers: {
-                        'Content-Type': 'application/json'
+                        'Content-Type': 'application/json',
+                        'Authorization': `Bearer ${token}`
                     },
                     body: JSON.stringify(this.cleanPayload(service))
                 });
@@ -46,53 +48,72 @@ export const useServiceStore = defineStore('serviceStore', {
         },
 
         // Cập nhật dịch vụ
-        async updateDichVu(service: DichVu) {
+        async updateDichVu(service) {
+            const updateDichVuUrl = API_ENDPOINTS.API_ENDPOINTS.dichVu.updateDichVu+service.id;
+            const token = sessionStorage.getItem('access_token');
+
             try {
-                const response = await fetch(`${API_ENDPOINTS.dichVu.updateDichVu}/${service.id}`, {
-                    method: 'PUT', // Hoặc 'PATCH' tùy thuộc vào yêu cầu API của bạn
+                const response = await fetch(updateDichVuUrl, {
+                    method: 'PUT',
                     headers: {
-                        'Content-Type': 'application/json'
+                        'Content-Type': 'application/json',
+                        'Authorization': `Bearer ${token}` // Gửi token trong header
                     },
-                    body: JSON.stringify(this.cleanPayload(service))
+                    body: JSON.stringify(service),
                 });
 
                 if (!response.ok) {
-                    throw new Error(`Failed to update service. Status: ${response.status}`);
+                    throw new Error(`Error: ${response.statusText}`);
                 }
 
-                const updatedService = await response.json();
-                // Cập nhật service trong danh sách
-                const index = this.services.findIndex(s => s.id === service.id);
-                if (index !== -1) {
-                    this.services[index] = updatedService;
-                }
+                const data = await response.json();
+                return data;
             } catch (error) {
-                console.error('Error updating service:', error);
+                console.error('Lỗi khi cập nhật dịch vụ:', error);
+                throw error;
             }
-        },
+        }
+        ,
 
         // Xóa dịch vụ
         async deleteDichVu(serviceId: number) {
+            const updateDichVuUrl = API_ENDPOINTS.API_ENDPOINTS.dichVu.deleteDichVu + serviceId;
+            const token = sessionStorage.getItem('access_token');
             try {
-                const response = await fetch(`${API_ENDPOINTS.dichVu.deleteDichVu}/${serviceId}`, {
+                const response = await fetch(updateDichVuUrl, {
                     method: 'DELETE',
+                    headers: { // Chú ý là phần headers phải nằm trong đối tượng này
+                        'Content-Type': 'application/json',
+                        'Authorization': `Bearer ${token}`
+                    }
                 });
 
                 if (!response.ok) {
                     throw new Error(`Failed to delete service. Status: ${response.status}`);
+                    return false;
                 }
 
-                // Xóa service khỏi danh sách
                 this.services = this.services.filter(service => service.id !== serviceId);
+                return { success: true };
             } catch (error) {
                 console.error('Error deleting service:', error);
+                return { success: false, message: response.status };
             }
         },
 
-        // Tìm kiếm dịch vụ theo tên
         async getDichVuByName(name: string) {
+            const updateDichVuUrl = API_ENDPOINTS.API_ENDPOINTS.dichVu.getDichVuByName+ name;
+            const token = sessionStorage.getItem('access_token');
             try {
-                const response = await fetch(`${API_ENDPOINTS.dichVu.getDichVuByName}?name=${encodeURIComponent(name)}`);
+                const response = await fetch(updateDichVuUrl,
+                    {
+                        method: 'GET',
+                        headers: {
+                            'Content-Type': 'application/json',
+                            'Authorization': `Bearer ${token}`
+                        }
+                }
+                );
 
                 if (!response.ok) {
                     throw new Error(`Failed to find service by name. Status: ${response.status}`);

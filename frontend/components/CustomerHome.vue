@@ -51,29 +51,9 @@
                     </div>
                   </div>
                   <div class="col-12 p-4">
-                    <!-- Button trigger modal -->
-                    <button type="button" class="custom-button" data-bs-toggle="modal" data-bs-target="#exampleModal">
-                      Cài đặt thông tin
+                    <button type="button" class="custom-button" >
+                      Thông tin tài khoản
                     </button>
-
-                    <!-- Modal -->
-                    <div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
-                      <div class="modal-dialog">
-                        <div class="modal-content">
-                          <div class="modal-header">
-                            <h1 class="modal-title fs-5" id="exampleModalLabel">Modal title</h1>
-                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                          </div>
-                          <div class="modal-body">
-                            ...
-                          </div>
-                          <div class="modal-footer">
-                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-                            <button type="button" class="btn btn-primary">Save changes</button>
-                          </div>
-                        </div>
-                      </div>
-                    </div>
                   </div>
                   <div class="col-12 p-4">
                     <button type="button" class="custom-button" @click="logout1">
@@ -116,7 +96,7 @@
                 </button>
               </li>
               <li v-for="notification in notifications" :key="notification.id">
-                <a v-if="notification.type='system'">Hệ thống</a>
+                <a >{{notification.type}}</a>
                 <a class="dropdown-item" href="#" >
                    {{ notification.message }}
                   <button @click="handleRemoveNotification(notification.id-1)" class="btn btn-link p-0 m-0 text-danger">
@@ -175,7 +155,6 @@
 
                       <ul class="dropdown-menu">
                         <li><nuxt-link class="dropdown-item" :to="`/admin/service/servicelist`">Tổng quan dịch vụ</nuxt-link></li>
-                        <li><nuxt-link class="dropdown-item" :to="`/admin/service/addservice`">Thêm dịch vụ</nuxt-link></li>
                       </ul>
                     </div>
                   </li>

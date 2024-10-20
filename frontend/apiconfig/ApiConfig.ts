@@ -4,9 +4,9 @@ const API_ENDPOINTS = {
     dichVu: {
         getAll:`${API_BASE_URL}/dich-vu/all`,
         addDichVu:`${API_BASE_URL}/dich-vu/add`,
-        updateDichVu:`${API_BASE_URL}/dich-vu/update`,
-        deleteDichVu:`${API_BASE_URL}/dich-vu/delete`,
-        getDichVuByName:`${API_BASE_URL}/dich-vu/find`
+        updateDichVu:  `${API_BASE_URL}/dich-vu/update/`,
+        deleteDichVu:`${API_BASE_URL}/dich-vu/delete/`,
+        getDichVuByName:`${API_BASE_URL}/dich-vu/find/`
     }
 };
 

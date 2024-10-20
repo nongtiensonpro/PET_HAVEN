@@ -24,10 +24,7 @@ export default defineNuxtConfig({
         port: 3000,
     },
     compatibilityDate: '2024-10-03',
-    modules: [
-        '@nuxtjs/i18n',
-        '@pinia/nuxt'
-    ],
+    modules: ['@nuxtjs/i18n', '@pinia/nuxt', '@vee-validate/nuxt'],
     buildModules: [
         '@nuxt/typescript-build'
     ],
@@ -52,6 +49,7 @@ export default defineNuxtConfig({
         pinia: '/node_modules/@pinia/nuxt/node_modules/pinia/dist/pinia.mjs',
     },
     plugins: [
-        { src: '~/plugins/bootstrap.js', mode: 'client' }
+        { src: '~/plugins/bootstrap.js', mode: 'client' },
+        { src: '~/plugins/vee-validate.js' }
     ]
 } );

@@ -12,14 +12,19 @@
   "dependencies": {
     "@nuxt/http": "^0.6.4",
     "@nuxtjs/i18n": "^8.5.5",
+    "@vee-validate/rules": "^4.14.3",
+    "@vee-validate/yup": "^4.14.3",
     "consola": "^3.2.3",
     "defu": "^6.1.4",
     "nuxt": "^3.13.2",
+    "vee-validate": "^4.14.3",
     "vue": "^3.2.0",
-    "vue-router": "^4.0.0"
+    "vue-router": "^4.0.0",
+    "yup": "^1.4.0"
   },
   "devDependencies": {
     "@pinia/nuxt": "^0.5.5",
+    "@vee-validate/nuxt": "^4.14.3",
     "@vue/compiler-sfc": "^3.5.11"
   }
 }
