@@ -4,10 +4,7 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
-import lombok.Getter;
-import lombok.Setter;
 
-import java.time.Instant;
 import java.time.LocalDateTime;
 
 
@@ -50,6 +47,18 @@ public class Lichhen {
     @JsonProperty
     @Column(name = "trangthai", nullable = false)
     private Integer trangthai ;
+
+    @ManyToOne(fetch = FetchType.EAGER)
+    @JoinColumn(name = "idcalichhen")
+    private Calichhen idcalichhen;
+
+    public Calichhen getIdcalichhen() {
+        return idcalichhen;
+    }
+
+    public void setIdcalichhen(Calichhen idcalichhen) {
+        this.idcalichhen = idcalichhen;
+    }
 
     public Integer getId() {
         return id;

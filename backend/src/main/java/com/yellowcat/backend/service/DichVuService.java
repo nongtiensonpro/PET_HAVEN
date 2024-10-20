@@ -24,6 +24,10 @@ public class DichVuService {
         return dichvuRepository.findAll(pageable);
     }
 
+    public List<Dichvu> getAll(){
+        return dichvuRepository.findAll();
+    }
+
     public Dichvu addOrUpdateDichVu(Dichvu dichvu) {
         return dichvuRepository.save(dichvu);
     }

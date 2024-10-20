@@ -39,6 +39,14 @@ CREATE TABLE ThuCung
     Image      TEXT
 );
 
+CREATE TABLE CaLichHen
+(
+    ID          SERIAL PRIMARY KEY,
+    TenCa varchar(20),
+    ThoiGianCa TIME NOT NULL,
+    TrangThai   BOOLEAN
+);
+
 CREATE TABLE LichHen
 (
     ID          SERIAL PRIMARY KEY,
@@ -47,14 +55,17 @@ CREATE TABLE LichHen
     idDichVu    INT REFERENCES DichVu (ID),
     Date        TIMESTAMP NOT NULL,
     TrangThai   INT   NOT NULL,
-    EmailNguoiDat VARCHAR(255) NOT NULL default '123@gmail.com'
+    EmailNguoiDat VARCHAR(255) NOT NULL default '123@gmail.com',
+    idCaLichHen INT REFERENCES CaLichHen(ID)
 );
--- quy ước:
+-- quy ước trang thai:
 -- 0 : thành công
 -- 1 : thất bại
 -- 2 : đã hủy
 -- 3 : chờ thanh toán
 -- 4 : chờ xác nhận
+
+
 
 CREATE TABLE NhacLichHen
 (
@@ -123,11 +134,22 @@ VALUES ('Dog 1', 10.5, 2, 'Golden', 1, NULL),
        ('Dog 2', 8.3, 3, 'Bulldog', 2, NULL),
        ('Dog 3', 12.7, 4, 'Labrador', 3, NULL);
 
+INSERT INTO CaLichHen (TenCa, ThoiGianCa, TrangThai)
+VALUES
+    ('Ca 1', '07:00:00', FALSE),
+    ('Ca 2', '08:00:00', FALSE),
+    ('Ca 3', '09:00:00', FALSE),
+    ('Ca 4', '10:00:00', FALSE),
+    ('Ca 5', '11:00:00', FALSE),
+    ('Ca 6', '12:00:00', FALSE),
+    ('Ca 7', '13:00:00', FALSE),
+    ('Ca 8', '14:00:00', FALSE);
+
 -- Thêm dữ liệu vào bảng LichHen
-INSERT INTO LichHen (idKhachHang, idThuCung, idDichVu, Date, TrangThai)
-VALUES (1, 1, 1, '2024-10-02 10:00:00', 1),
-       (2, 2, 2, '2024-10-03 14:00:00', 2),
-       (3, 3, 3, '2024-10-04 09:00:00', 3);
+INSERT INTO LichHen (idKhachHang, idThuCung, idDichVu, Date, TrangThai , idCaLichHen)
+VALUES (1, 1, 1, '2024-10-02 10:00:00', 1 , 1),
+       (2, 2, 2, '2024-10-03 14:00:00', 2, 2),
+       (3, 3, 3, '2024-10-04 09:00:00', 3 , 3);
 
 -- Thêm dữ liệu vào bảng NhacLichHen
 INSERT INTO NhacLichHen (TenThongBao, MoTa, idTaiKhoan, ISRead, TrangThai)
@@ -152,3 +174,4 @@ INSERT INTO HoaDon (idLichHen, Date, SoTien, NgayThanhToan, PhuongThucThanhToan,
 VALUES (1, '2024-10-02 10:00:00', 90000, '2024-10-02 11:00:00', 'Tiền mặt', TRUE, 1),
        (2, '2024-10-03 14:00:00', 120000, '2024-10-03 15:00:00', 'Thẻ tín dụng', FALSE, 2),
        (3, '2024-10-04 09:00:00', 170000, '2024-10-04 10:00:00', 'Chuyển khoản', TRUE, 3);
+

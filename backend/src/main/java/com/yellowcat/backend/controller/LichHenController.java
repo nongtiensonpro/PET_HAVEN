@@ -50,22 +50,7 @@ public class LichHenController {
         return lichHenService.findByEmailNguoiDat(pageable, Email);
     }
 
-    @PostMapping("/add")
-    public Lichhen addOne(@RequestBody Lichhen lichhen){
 
-        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-        Jwt jwt = (Jwt) authentication.getPrincipal();
-
-        String idUser = authentication.getName(); // Đây là idUser
-        String email = jwt.getClaimAsString("email");
-
-        lichhen.setIdkhachhang(idUser);
-        lichhen.setEmailNguoiDat(email);
-        lichhen.setTrangthai(4);
-
-         Lichhen createLich = lichHenService.addOrUpdate(lichhen);
-        return new ResponseEntity<Lichhen>(createLich, HttpStatus.CREATED).getBody();
-    }
 
     @PutMapping("/update/{id}")
     public Lichhen updateOne(@RequestBody Lichhen lichhen,@RequestParam int id){
@@ -97,12 +82,18 @@ public class LichHenController {
             return new ResponseEntity<>(HttpStatus.FORBIDDEN); // Trả về 403 nếu không có quyền
         }
 
+        if (lichHenService.isCaTrungTrongNgay(datLaiLich.getDate().toLocalDate(), datLaiLich.getIdcalichhen().getId())) {
+            return new ResponseEntity<>(HttpStatus.BAD_REQUEST); // Trả về lỗi nếu trùng ca
+        }
+
         // Cập nhật trạng thái
         datLaiLich.setTrangthai(idTT);
         Lichhen updateLich = lichHenService.addOrUpdate(datLaiLich);
 
-        return new ResponseEntity<>(updateLich, HttpStatus.OK); // Trả về 200 OK thay vì 201 CREATED nếu chỉ là cập nhật
+        return new ResponseEntity<>(updateLich, HttpStatus.OK); // Trả về 200 OK
     }
+
+
 
 
 }
