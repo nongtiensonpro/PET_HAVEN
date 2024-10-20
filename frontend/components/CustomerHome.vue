@@ -11,7 +11,6 @@
             <p class="m-0 text-logo">{{ slogan }}</p>
           </div>
         </div>
-
         <!-- Thanh tìm kiếm và nút -->
         <div class="col col-md-8 d-flex align-items-center justify-content-end">
           <nav class="navbar bg-body-tertiary flex-grow-1 me-2">
@@ -20,7 +19,6 @@
               <button class="no-b" type="submit">{{ searchButton }}</button>
             </form>
           </nav>
-
           <div v-if="!isLoggedIn">
             <button type="button" class="custom-button" style="min-width: 60px " @click="login1">
               {{ login }}
@@ -42,24 +40,28 @@
                 <button type="button" class="btn-close" data-bs-dismiss="offcanvas" aria-label="Close"></button>
               </div>
               <div class="offcanvas-body">
-                <div v-if="Array.isArray(userInfo.role) && userInfo.role.includes('admin')">
-                  <button type="button" class="custom-button" @click="changeRole" >
-                    Khách hàng/ Nhân Viên
-                  </button>
-                </div>
+
+
                 <div class="row">
+                  <div class="col-12">
+                    <div v-if="Array.isArray(userInfo.role) && userInfo.role.includes('admin')">
+                      <button type="button" class="custom-button" @click="changeRole" >
+                        Khách hàng/ Nhân Viên
+                      </button>
+                    </div>
+                  </div>
                   <div class="col-12 p-4">
                     <!-- Button trigger modal -->
-                    <button type="button" class="custom-button" data-bs-toggle="modal" data-bs-target="#staticBackdrop">
-                      Cài đặt tài khoản
+                    <button type="button" class="custom-button" data-bs-toggle="modal" data-bs-target="#exampleModal">
+                      Cài đặt thông tin
                     </button>
 
                     <!-- Modal -->
-                    <div class="modal fade" id="staticBackdrop" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
+                    <div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
                       <div class="modal-dialog">
                         <div class="modal-content">
                           <div class="modal-header">
-                            <h1 class="modal-title fs-5" id="staticBackdropLabel">Modal title</h1>
+                            <h1 class="modal-title fs-5" id="exampleModalLabel">Modal title</h1>
                             <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                           </div>
                           <div class="modal-body">
@@ -67,7 +69,7 @@
                           </div>
                           <div class="modal-footer">
                             <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-                            <button type="button" class="btn btn-primary">Understood</button>
+                            <button type="button" class="btn btn-primary">Save changes</button>
                           </div>
                         </div>
                       </div>
@@ -85,7 +87,7 @@
               </div>
             </div>
           </div>
-          <button type="button" style="max-width: 30px; text-align: center" class="custom-button" @click="changeLanguage">
+          <button type="button" style="max-width: 30px; text-align: center" class="custom-button m-2" @click="changeLanguage">
             {{ currentLanguage === 'vi' ? switchToEnglish : switchToVietnamese }}
           </button>
           <div class="dropdown">
@@ -531,40 +533,5 @@ export default {
 </script>
 
 <style scoped>
-.navbar {
-  background: #F8F8F1 !important;
-  border-radius: 25px;
-  border: 1px solid #400D01;
-}
 
-.no-b {
-  border: none;
-  outline: none;
-  cursor: pointer;
-  background: none;
-}
-
-.text-logo {
-  color: #400D01;
-  font-family: Pacifico, sans-serif;
-  font-size: 25px;
-  font-style: normal;
-  font-weight: 400;
-  line-height: normal;
-}
-
-.custom-button {
-  background-color: transparent;
-  border: 1px solid #400D01;
-  color: #400D01;
-  padding: 15px 32px;
-  text-align: center;
-  text-decoration: none;
-  display: inline-block;
-  font-size: 16px;
-  margin: 4px 2px;
-  cursor: pointer;
-  border-radius: 12px;
-  width: 80%;
-}
 </style>

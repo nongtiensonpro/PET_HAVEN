@@ -20,9 +20,8 @@ useHead({
 
 <style scoped>
 html, body{
-  height: 100%;
-  margin: 0;
-  padding: 0;
+  min-height: 100% !important;
+  min-width: 100% !important;
   background: #F2F0D8 !important;
   color: #400D01 !important;
   font-family: 'Baloo 2', sans-serif !important;
