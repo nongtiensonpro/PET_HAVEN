@@ -3,22 +3,22 @@
     <div v-if="services.length === 0">Dịch vụ không khả dụng, vui lòng thử lại sau!</div>
     <div v-else>
       <h2>Dịch vụ của chúng tôi</h2>
-      <div class="row">
-        <div v-for="service in paginatedServices" :key="service.id" class="card col m-4">
-          <h4 class="card-title">{{ service.tendichvu }}</h4>
-          <img class="card-img-top" style="max-height: 250px; max-width: 250px" src="https://www.thesprucepets.com/thmb/0vKXtwRwIQxOAxQ0I27Fr6f72Pk=/2121x0/filters:no_upscale():strip_icc()/GingerTabbyShorthair-e3b45511a76a4b25a6fb421e60f04025.jpg" alt="">
-          <div class="card-body">
-            <div class="row">
-              <div class="col">
-                <p class="card-text">{{ service.giatien }} Đ</p>
-              </div>
-              <div class="col">
-                <nuxt-link class="nav-link" :to="`/services/${service.id}`">Xem thêm</nuxt-link>
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
+     <div class="container">
+       <div class="row">
+         <div v-for="service in paginatedServices" :key="service.id" class="card col m-4">
+           <h4 class="card-title">{{ service.tendichvu }}</h4>
+           <img class="card-img-top" style="max-height: 250px; max-width: 250px" src="https://www.thesprucepets.com/thmb/0vKXtwRwIQxOAxQ0I27Fr6f72Pk=/2121x0/filters:no_upscale():strip_icc()/GingerTabbyShorthair-e3b45511a76a4b25a6fb421e60f04025.jpg" alt="">
+           <div class="card-body">
+             <div class="row">
+               <div class="col">
+                 <p class="card-text">{{ service.giatien.toLocaleString() }} Đ</p>
+                 <nuxt-link class="nav-link" :to="`/services/${service.id}`">Xem thêm</nuxt-link>
+               </div>
+             </div>
+           </div>
+         </div>
+       </div>
+     </div>
 
       <div class="pagination">
         <button @click="prevPage" :disabled="currentPage === 1">Trang trước</button>
@@ -44,7 +44,9 @@ export default {
       serviceStore.fetchServices();
     });
 
-    const services = computed((): DichVu[] => serviceStore.services);
+    const services = computed((): DichVu[] => {
+      return serviceStore.services.filter((service: DichVu) => service.trangthai);
+    });
     const totalPages = computed(() => Math.ceil(services.value.length / itemsPerPage));
 
     // Tính toán các dịch vụ được hiển thị trên trang hiện tại

@@ -1,4 +1,4 @@
-import { defineStore } from 'pinia';
+import {defineStore} from 'pinia';
 import DichVu from '../models/DichVu';
 import Pageable from '../models/Pageable';
 import API_ENDPOINTS from '../apiconfig/ApiConfig';
@@ -27,7 +27,7 @@ export const useServiceStore = defineStore('serviceStore', {
         async addDichVu(service: DichVu) {
             const token = sessionStorage.getItem('access_token');
             try {
-                const response = await fetch(API_ENDPOINTS.dichVu.addDichVu, {
+                const response = await fetch(API_ENDPOINTS.API_ENDPOINTS.dichVu.addDichVu, {
                     method: 'POST',
                     headers: {
                         'Content-Type': 'application/json',
@@ -41,15 +41,20 @@ export const useServiceStore = defineStore('serviceStore', {
                 }
 
                 const newService = await response.json();
-                this.services.push(newService); // Thêm dịch vụ mới vào danh sách
+                this.services.push(newService);
+
+                return {success: true, data: newService};
             } catch (error) {
                 console.error('Error adding service:', error);
+                
+                return {success: false, message: error.message};
             }
-        },
+        }
+        ,
 
         // Cập nhật dịch vụ
         async updateDichVu(service) {
-            const updateDichVuUrl = API_ENDPOINTS.API_ENDPOINTS.dichVu.updateDichVu+service.id;
+            const updateDichVuUrl = API_ENDPOINTS.API_ENDPOINTS.dichVu.updateDichVu + service.id;
             const token = sessionStorage.getItem('access_token');
 
             try {
@@ -94,42 +99,44 @@ export const useServiceStore = defineStore('serviceStore', {
                 }
 
                 this.services = this.services.filter(service => service.id !== serviceId);
-                return { success: true };
+                return {success: true};
             } catch (error) {
                 console.error('Error deleting service:', error);
-                return { success: false, message: response.status };
+                return {success: false, message: response.status};
             }
         },
 
         async getDichVuByName(name: string) {
-            const updateDichVuUrl = API_ENDPOINTS.API_ENDPOINTS.dichVu.getDichVuByName+ name;
+            const updateDichVuUrl = `${API_ENDPOINTS.API_ENDPOINTS.dichVu.getDichVuByName}?namedv=${encodeURIComponent(name)}`;
             const token = sessionStorage.getItem('access_token');
             try {
-                const response = await fetch(updateDichVuUrl,
-                    {
-                        method: 'GET',
-                        headers: {
-                            'Content-Type': 'application/json',
-                            'Authorization': `Bearer ${token}`
-                        }
-                }
-                );
+                const response = await fetch(updateDichVuUrl, {
+                    method: 'GET',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Authorization': `Bearer ${token}`
+                    }
+                });
 
                 if (!response.ok) {
                     throw new Error(`Failed to find service by name. Status: ${response.status}`);
                 }
 
                 const data = await response.json();
-                this.services = data.content; // Cập nhật danh sách dịch vụ với kết quả tìm kiếm
+                console.log('URL:', updateDichVuUrl);
+                console.log('Dịch vụ tìm thấy:', data);
+                this.services = data;
+                return data;
             } catch (error) {
-                console.error('Error finding service by name:', error);
+                return {success: false, message: error.message};
             }
-        },
+        }
+        ,
 
 
         // Cập nhật Trạng thái dịch vụ
         async updateTTDV(serviceId: number) {
-            const updateTTDichVuUrl = API_ENDPOINTS.API_ENDPOINTS.dichVu.updateTTDichVu+serviceId;
+            const updateTTDichVuUrl = API_ENDPOINTS.API_ENDPOINTS.dichVu.updateTTDichVu + serviceId;
             const token = sessionStorage.getItem('access_token');
 
             try {
@@ -147,7 +154,7 @@ export const useServiceStore = defineStore('serviceStore', {
                 }
 
                 const data = await response.json();
-                return data;
+                return {success: true};
             } catch (error) {
                 console.error('Lỗi khi cập nhật dịch vụ:', error);
                 throw error;

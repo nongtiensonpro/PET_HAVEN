@@ -1,7 +1,11 @@
-export default defineNuxtRouteMiddleware((to, from) => {
-    const { isLoggedIn } = useAuth()
+// middleware/auth.ts
+import { useUserStore } from '~/stores/user'
 
-    if (!isLoggedIn) {
-        return navigateTo('/')
+export default defineNuxtRouteMiddleware(() => {
+    const userStore = useUserStore();
+
+
+    if (!userStore.isLoggedIn) {
+        return navigateTo('/');
     }
-})
+});

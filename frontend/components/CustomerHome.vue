@@ -1,10 +1,10 @@
 <template>
   <NuxtLayout>
-    <div class="container">
+    <div class="container p-4">
       <div class="row d-flex align-items-center">
         <!-- Logo và slogan -->
 
-        <div class="col col-md-4 d-flex align-items-center">
+        <div class="col col-md-4 d-flex align-items-center p-1">
           <img :src="logoImage" class="img-fluid rounded-top me-2" alt="">
           <div>
             <p class="m-0 text-logo">{{ logo }}</p>
@@ -45,14 +45,14 @@
                 <div class="row">
                   <div class="col-12">
                     <div v-if="Array.isArray(userInfo.role) && userInfo.role.includes('admin')">
-                      <button type="button" class="custom-button" @click="changeRole" >
+                      <button type="button" class="custom-button" @click="changeRole">
                         Khách hàng/ Nhân Viên
                       </button>
                     </div>
                   </div>
                   <div class="col-12 p-4">
-                    <button type="button" class="custom-button" >
-                      Thông tin tài khoản
+                    <button type="button" class="custom-button">
+                      <nuxt-link class="nav-link" :to="`/user/infouser`">Thông tin tài khoản</nuxt-link>
                     </button>
                   </div>
                   <div class="col-12 p-4">
@@ -67,26 +67,30 @@
               </div>
             </div>
           </div>
-          <button type="button" style="max-width: 30px; text-align: center" class="custom-button m-2" @click="changeLanguage">
+          <button type="button" style="max-width: 30px; text-align: center" class="custom-button m-2"
+                  @click="changeLanguage">
             {{ currentLanguage === 'vi' ? switchToEnglish : switchToVietnamese }}
           </button>
           <div class="dropdown">
             <!-- Nút dropdown kết hợp với badge thông báo -->
-            <button class="custom-button dropdown-toggle position-relative" style="min-width: 100px" type="button" data-bs-toggle="dropdown"
+            <button class="custom-button dropdown-toggle position-relative" style="min-width: 100px" type="button"
+                    data-bs-toggle="dropdown"
                     aria-expanded="false">
-              <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-bell-fill" viewBox="0 0 16 16">
-                <path d="M8 16a2 2 0 0 0 2-2H6a2 2 0 0 0 2 2m.995-14.901a1 1 0 1 0-1.99 0A5 5 0 0 0 3 6c0 1.098-.5 6-2 7h14c-1.5-1-2-5.902-2-7 0-2.42-1.72-4.44-4.005-4.901"/>
+              <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-bell-fill"
+                   viewBox="0 0 16 16">
+                <path
+                    d="M8 16a2 2 0 0 0 2-2H6a2 2 0 0 0 2 2m.995-14.901a1 1 0 1 0-1.99 0A5 5 0 0 0 3 6c0 1.098-.5 6-2 7h14c-1.5-1-2-5.902-2-7 0-2.42-1.72-4.44-4.005-4.901"/>
               </svg>
 
               <!-- Badge hiển thị số lượng thông báo -->
               <span class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger">
                   <span class="badge-pill">{{ notifications.length }}</span>
                 </span>
-            <span class="visually-hidden">unread messages</span>
+              <span class="visually-hidden">unread messages</span>
             </button>
             <!-- Danh sách dropdown -->
 
-            <ul class="dropdown-menu p-4 m-4" >
+            <ul class="dropdown-menu p-4 m-4">
               <li v-if="notifications.length==0">
                 Không có thông báo nào !
               </li>
@@ -96,9 +100,9 @@
                 </button>
               </li>
               <li v-for="notification in notifications" :key="notification.id">
-                <a >{{notification.type}}</a>
-                <a class="dropdown-item" href="#" >
-                   {{ notification.message }}
+                <a>{{ notification.type }}</a>
+                <a class="dropdown-item" href="#">
+                  {{ notification.message }}
                   <button @click="handleRemoveNotification(notification.id-1)" class="btn btn-link p-0 m-0 text-danger">
                     X
                   </button>
@@ -154,7 +158,10 @@
                       </a>
 
                       <ul class="dropdown-menu">
-                        <li><nuxt-link class="dropdown-item" :to="`/admin/service/servicelist`">Tổng quan dịch vụ</nuxt-link></li>
+                        <li>
+                          <nuxt-link class="dropdown-item" :to="`/admin/service/servicelist`">Tổng quan dịch vụ
+                          </nuxt-link>
+                        </li>
                       </ul>
                     </div>
                   </li>
@@ -255,7 +262,9 @@ import logoImage from '~/assets/image/LogoPetHaven.png'; // Import logo
 import {useI18n} from 'vue-i18n';
 import {useUserStore} from '~/stores/user';
 import {useNotificationStore} from '~/stores/useNotificationStore';
+import { useToast } from 'vue-toastification';
 
+const toast = useToast();
 export default {
   mounted() {
     const code = this.$route.query.code;
@@ -272,7 +281,7 @@ export default {
   },
   setup() {
     const notificationStore = useNotificationStore();
-    const { addNotification, removeNotification  } = notificationStore;
+    const {addNotification, removeNotification} = notificationStore;
 
     const notifications = notificationStore.notifications;
 
@@ -280,7 +289,7 @@ export default {
       notificationStore.removeAllNotifications();
     };
 
-    const handleAddNotification = (message: String,type: String) => {
+    const handleAddNotification = (message: String, type: String) => {
       addNotification(message, type);
     };
 
@@ -289,7 +298,9 @@ export default {
     };
     const {t, locale} = useI18n();
     const serviceStore = useServiceStore();
-    const services = computed((): DichVu[] => serviceStore.services);
+    const services = computed((): DichVu[] => {
+      return serviceStore.services.filter((service: DichVu) => service.trangthai);
+    });
 
     const userStore = useUserStore();
 
@@ -322,16 +333,36 @@ export default {
       currentLanguage.value = currentLanguage.value === 'vi' ? 'en' : 'vi';
       locale.value = currentLanguage.value;
     };
-    const viewRole = ref(0);
-    const changeRole = () => {
-      if (viewRole.value === 0) {
-        viewRole.value = 1;
-        addNotification('Đã chuyển sang giao diện Nhân viên', 'system');
+
+
+      const viewRole = ref(0);
+
+    if (process.client) {
+      const storedViewRole = sessionStorage.getItem('viewRole');
+      if (storedViewRole !== null) {
+        viewRole.value = parseInt(storedViewRole, 10);
       } else {
-        viewRole.value = 0;
-        addNotification('Đã chuyển sang giao diện Khách hàng', 'system');
+        sessionStorage.setItem('viewRole', '0');
       }
     }
+
+    const changeRole = () => {
+      if (process.client) {
+        if (viewRole.value === 0) {
+          viewRole.value = 1;
+          sessionStorage.setItem('viewRole', '1');
+          addNotification('Đã chuyển sang giao diện Nhân viên', 'system');
+          toast.success('Đã chuyển sang giao diện Nhân viên');
+        } else {
+          viewRole.value = 0;
+          sessionStorage.setItem('viewRole', '0');
+          addNotification('Đã chuyển sang giao diện Khách hàng', 'system');
+          toast.success('Đã chuyển sang giao diện Khách hàng')
+        }
+      }
+    };
+
+
     return {
       services,
       logo,
@@ -496,6 +527,9 @@ export default {
           role: roles || ''
         });
 
+        if (userInfoData.username) {
+          toast.success('Đăng nhập thành công!');
+        }
       } catch (error) {
         console.error('Error fetching user info:', error);
       }
