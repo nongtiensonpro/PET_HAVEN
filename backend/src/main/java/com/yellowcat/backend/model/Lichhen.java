@@ -5,6 +5,7 @@ import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 
 
@@ -41,7 +42,7 @@ public class Lichhen {
     @NotNull
     @JsonProperty
     @Column(name = "date", nullable = false)
-    private LocalDateTime date;
+    private LocalDate date;
 
     @NotNull
     @JsonProperty
@@ -100,11 +101,11 @@ public class Lichhen {
         this.emailNguoiDat = emailNguoiDat;
     }
 
-    public @NotNull LocalDateTime getDate() {
+    public LocalDate getDate() {
         return date;
     }
 
-    public void setDate(@NotNull LocalDateTime date) {
+    public void setDate(LocalDate date) {
         this.date = date;
     }
 

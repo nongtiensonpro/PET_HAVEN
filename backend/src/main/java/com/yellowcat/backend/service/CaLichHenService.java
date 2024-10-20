@@ -2,7 +2,6 @@ package com.yellowcat.backend.service;
 
 import com.yellowcat.backend.model.Calichhen;
 import com.yellowcat.backend.repository.CalichhenRepository;
-import com.yellowcat.backend.repository.LichhenRepository;
 import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -16,8 +15,6 @@ public class CaLichHenService {
     @Autowired
     private CalichhenRepository caLichHenRepository;
 
-    @Autowired
-    private LichhenRepository lichHenRepository;
 
     @Transactional
     public void resetTrangThaiCa(LocalDate ngay) {
