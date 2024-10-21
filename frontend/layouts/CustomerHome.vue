@@ -161,6 +161,8 @@
                         <li>
                           <nuxt-link class="dropdown-item" :to="`/admin/service/servicelist`">Tổng quan dịch vụ
                           </nuxt-link>
+                          <nuxt-link class="dropdown-item" :to="`/admin/service/bookingservice`">Quản lý đặt lịch
+                          </nuxt-link>
                         </li>
                       </ul>
                     </div>
@@ -258,7 +260,7 @@
 import {useServiceStore} from '~/stores/DichVuStores';
 import {computed, ref} from 'vue';
 import DichVu from '~/models/DichVu';
-import logoImage from '~/assets/image/LogoPetHaven.png'; // Import logo
+import logoImage from '@/image/LogoPetHaven.png'; // Import logo
 import {useI18n} from 'vue-i18n';
 import {useUserStore} from '~/stores/user';
 import {useNotificationStore} from '~/stores/useNotificationStore';
@@ -353,11 +355,13 @@ export default {
           sessionStorage.setItem('viewRole', '1');
           addNotification('Đã chuyển sang giao diện Nhân viên', 'system');
           toast.success('Đã chuyển sang giao diện Nhân viên');
+          return navigateTo('/admin/adminhome');
         } else {
           viewRole.value = 0;
           sessionStorage.setItem('viewRole', '0');
           addNotification('Đã chuyển sang giao diện Khách hàng', 'system');
           toast.success('Đã chuyển sang giao diện Khách hàng')
+          return navigateTo('/');
         }
       }
     };
@@ -476,6 +480,7 @@ export default {
 
         if (!response.ok) {
           const errorData = await response.json();
+          toast.error("Phiên đăng nhập đã hết hạn vui lòng đăng nhập lại");
           console.error(`Error refreshing token: ${errorData.error_description}`);
         }
 

@@ -125,7 +125,8 @@ export const useServiceStore = defineStore('serviceStore', {
                 const data = await response.json();
                 console.log('URL:', updateDichVuUrl);
                 console.log('Dịch vụ tìm thấy:', data);
-                this.services = data;
+                this.services = data.content;
+                this.pageable = data.page;
                 return data;
             } catch (error) {
                 return {success: false, message: error.message};

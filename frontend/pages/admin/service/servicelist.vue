@@ -4,6 +4,8 @@ import {useServiceStore} from '~/stores/DichVuStores';
 import {useNotificationStore} from '~/stores/useNotificationStore';
 import {useUserStore} from '~/stores/user'
 import { useToast } from 'vue-toastification';
+
+
 definePageMeta({
   middleware: 'auth',
 });
@@ -21,10 +23,12 @@ const service = ref({
 onMounted(() => {
   serviceStore.fetchServices();
 });
+
 const cleanService = () => {
   service.value.tendichvu = '';
   service.value.giatien = '';
   service.value.mota = '';
+  useToast.success("Các ô input đã được làm sạch.");
 };
 
 const name = '';
@@ -33,6 +37,10 @@ const name = '';
 const fintServiceByName = async (name) => {
   if(name==null || name.trim() === '') {
     toast.error('Tên dịch vụ không được để trống.');
+    toast.success('Đang làm mới bảng dịch vụ!');
+    setTimeout(() => {
+      serviceStore.fetchServices();
+    }, 2000);
     return;
   }else {
     const result = await serviceStore.getDichVuByName(name);
@@ -45,16 +53,18 @@ const fintServiceByName = async (name) => {
       } else {
         notificationStore.addNotification(`Dịch vụ ${name} không tồn tại`, user.userInfo.name);
         toast.error(`Dịch vụ ${name} không tồn tại.`);
-
         toast.success('Đang làm mới bảng dịch vụ!');
         setTimeout(() => {
           serviceStore.fetchServices();
         }, 2000);
-
       }
     }
     catch(error) {
       toast.error(`Đang có lỗi tìm kiếm vui lòng thử lại.`);
+      toast.success('Đang làm mới bảng dịch vụ!');
+      setTimeout(() => {
+        serviceStore.fetchServices();
+      }, 2000);
     }
   }
 }
