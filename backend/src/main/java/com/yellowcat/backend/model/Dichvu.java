@@ -15,18 +15,22 @@ public class Dichvu {
     private Integer id;
 
     @JsonProperty
+    @NotNull
     @Column(name = "tendichvu", nullable = false, length = 100)
     private String tendichvu;
 
     @JsonProperty
+    @NotNull
     @Column(name = "mota", nullable = false, length = Integer.MAX_VALUE)
     private String mota;
 
     @JsonProperty
+    @NotNull
     @Column(name = "anh", length = Integer.MAX_VALUE)
     private String anh;
 
     @JsonProperty
+    @NotNull
     @Column(name = "giatien", nullable = false)
     private Float giatien;
 

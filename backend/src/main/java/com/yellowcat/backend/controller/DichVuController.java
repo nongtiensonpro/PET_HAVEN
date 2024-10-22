@@ -21,6 +21,7 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.nio.file.StandardCopyOption;
 import java.util.Arrays;
+import java.util.Map;
 import java.util.Optional;
 
 @RestController
@@ -49,7 +50,7 @@ public class DichVuController {
 
     @PreAuthorize("hasAnyRole('admin', 'manager')")
     @PostMapping("/add")
-    public ResponseEntity<String> createDichVu(
+    public ResponseEntity<?> createDichVu(
             @RequestParam("tenDichVu") String tenDichVu,
             @RequestParam("moTa") String moTa,
             @RequestParam("giaTien") Float giaTien,
@@ -68,13 +69,17 @@ public class DichVuController {
                 String fileName = StringUtils.cleanPath(file.getOriginalFilename());
 
                 if (!isValidFileName(fileName)) {
-                    return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Tên file không hợp lệ.");
+                    return ResponseEntity
+                            .status(HttpStatus.BAD_REQUEST)
+                            .body(Map.of("status", "error", "message", "Tên file không hợp lệ."));
                 }
 
                 // Kiểm tra kiểu file
                 String contentType = file.getContentType();
                 if (!Arrays.asList("image/png", "image/jpeg", "image/gif").contains(contentType)) {
-                    return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Kiểu file không hợp lệ: " + contentType);
+                    return ResponseEntity
+                            .status(HttpStatus.BAD_REQUEST)
+                            .body(Map.of("status", "error", "message", "Kiểu file không hợp lệ: " + contentType));
                 }
 
                 // Lưu file vào thư mục static
@@ -96,27 +101,38 @@ public class DichVuController {
             // Lưu DichVu vào database
             dichVuService.addOrUpdateDichVu(dichvu);
 
-            return ResponseEntity.ok("Dịch vụ tạo thành công!");
+            // Trả về JSON với mã HTTP 200
+            return ResponseEntity
+                    .status(HttpStatus.OK)
+                    .body(Map.of("status", "success", "message", "Dịch vụ tạo thành công!", "data", dichvu));
         } catch (Exception e) {
             e.printStackTrace();
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Không thể tạo dịch vụ.");
+            // Trả về JSON với mã HTTP 500 khi có lỗi
+            return ResponseEntity
+                    .status(HttpStatus.INTERNAL_SERVER_ERROR)
+                    .body(Map.of("status", "error", "message", "Không thể tạo dịch vụ.", "error", e.getMessage()));
         }
     }
 
 
 
+
     @PreAuthorize("hasAnyRole('admin', 'manager')")
     @PutMapping("/update/{id}")
-    public ResponseEntity<String> updateone( @RequestParam("tenDichVu") String tenDichVu,
-                                             @RequestParam("moTa") String moTa,
-                                             @RequestParam("giaTien") Float giaTien,
-                                            @RequestParam(value = "file", required = false) MultipartFile file,
-                                            @PathVariable int id) {
+    public ResponseEntity<?> updateone(
+            @RequestParam("tenDichVu") String tenDichVu,
+            @RequestParam("moTa") String moTa,
+            @RequestParam("giaTien") Float giaTien,
+            @RequestParam(value = "file", required = false) MultipartFile file,
+            @PathVariable int id) {
+
         Optional<Dichvu> dichvu1 = dichVuService.findById(id);
 
         // Kiểm tra xem dichvu1 có tồn tại không
         if (!dichvu1.isPresent()) {
-            return ResponseEntity.notFound().build();
+            return ResponseEntity
+                    .status(HttpStatus.NOT_FOUND)
+                    .body(Map.of("status", "error", "message", "Dịch vụ không tồn tại."));
         }
 
         Dichvu dichvu2 = dichvu1.get();
@@ -130,13 +146,17 @@ public class DichVuController {
                 // Làm sạch tên file và kiểm tra
                 String fileName = StringUtils.cleanPath(file.getOriginalFilename());
                 if (!isValidFileName(fileName)) {
-                    return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Tên file không hợp lệ.");
+                    return ResponseEntity
+                            .status(HttpStatus.BAD_REQUEST)
+                            .body(Map.of("status", "error", "message", "Tên file không hợp lệ."));
                 }
 
                 // Kiểm tra và giới hạn loại file
                 String contentType = file.getContentType();
                 if (!Arrays.asList("image/png", "image/jpeg", "image/gif").contains(contentType)) {
-                    return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Kiểu file không được hỗ trợ.");
+                    return ResponseEntity
+                            .status(HttpStatus.BAD_REQUEST)
+                            .body(Map.of("status", "error", "message", "Kiểu file không hợp lệ: " + contentType));
                 }
 
                 // Lưu file vào thư mục static
@@ -149,13 +169,20 @@ public class DichVuController {
 
             } catch (Exception e) {
                 e.printStackTrace();
-                return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Không thể cập nhật ảnh.");
+                return ResponseEntity
+                        .status(HttpStatus.INTERNAL_SERVER_ERROR)
+                        .body(Map.of("status", "error", "message", "Không thể cập nhật ảnh."));
             }
         }
 
+        // Cập nhật dịch vụ vào database
         dichVuService.addOrUpdateDichVu(dichvu2);
-        return ResponseEntity.ok("Dịch vụ cập nhật thành công!");
+        return ResponseEntity
+                .status(HttpStatus.OK)
+                .body(Map.of("status", "success", "message", "Dịch vụ cập nhật thành công", "data", dichvu2));
     }
+
+
 
 
 
