@@ -2,6 +2,8 @@ package com.yellowcat.backend.repository;
 
 
 import com.yellowcat.backend.model.Dichvu;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 import java.util.List;
@@ -9,5 +11,5 @@ import java.util.List;
 
 public interface DichvuRepository extends JpaRepository<Dichvu, Long> {
 
-    List<Dichvu> findByTendichvuContainingIgnoreCase(String tendichvu);
+    Page<Dichvu> findByTendichvuContainingIgnoreCase(String tendichvu, Pageable pageable);
 }
