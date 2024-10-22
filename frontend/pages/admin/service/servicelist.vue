@@ -22,9 +22,16 @@ const service = ref({
   tendichvu: '',
   giatien: '',
   mota: '',
-  trangthai: false
+  trangthai: false,
+  anh: null as File | null,
 });
 
+const handleFileChange = (event: Event) => {
+  const target = event.target as HTMLInputElement;
+  if (target.files && target.files.length > 0) {
+    service.value.anh = target.files[0]; // Lưu file vào biến
+  }
+};
 
 const schema = yup.object({
   tendichvu: yup.string().required('Vui lòng nhập tên dịch vụ'),
@@ -62,8 +69,18 @@ const cleanService = () => {
 };
 
 const createService = async (formValues) => {
+  const formData = new FormData();
+  formData.append('tenDichVu', formValues.tendichvu);
+  formData.append('moTa', formValues.mota);
+  formData.append('giaTien', formValues.giatien);
+  formData.append('trangThai', String(formValues.trangthai));
+
+  if (formValues.anh) {
+    formData.append('file', formValues.anh);
+  }
+
   try {
-    const result = await serviceStore.addDichVu(formValues);
+    const result = await serviceStore.addDichVu(formData);
 
     if (result.success) {
       notificationStore.addNotification('Dịch vụ đã được tạo thành công', user.userInfo.name);
@@ -202,7 +219,7 @@ const updateTTService = async (serviceId) => {
                   <form v-on:submit.prevent="submitForm">
                   <div class="row">
                       <div class="col-6">
-                        <img src="~/assets/image/catservice.jpg" class="card-img-top p-1" alt="...">
+                        <input type="file" id="fileInput" accept="image/png, image/jpeg, image/gif" @change="handleFileChange" />
                       </div>
                       <div class="col-6">
                         <!-- Input cho tên dịch vụ -->

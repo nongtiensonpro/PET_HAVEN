@@ -31,30 +31,44 @@ export const useServiceStore = defineStore('serviceStore', {
         // Thêm dịch vụ mới
         async addDichVu(service: DichVu) {
             const token = sessionStorage.getItem('access_token');
+        
+            const formData = new FormData();
+        
+            formData.append('tenDichVu', service.tendichvu);
+            formData.append('moTa', service.mota);
+            formData.append('giaTien', service.giatien);
+            formData.append('trangThai', service.trangthai);
+        
+            const fileInput = document.querySelector('#fileInput') as HTMLInputElement;
+            if (fileInput.files.length > 0) {
+                formData.append('file', fileInput.files[0]);
+            } else {
+                return { success: false, message: 'Không có file hình ảnh nào được chọn.' };
+            }
+        
             try {
                 const response = await fetch(API_ENDPOINTS.API_ENDPOINTS.dichVu.addDichVu, {
                     method: 'POST',
                     headers: {
-                        'Content-Type': 'application/json',
                         'Authorization': `Bearer ${token}`
                     },
-                    body: JSON.stringify(this.cleanPayload(service))
+                    body: formData
                 });
-
+        
                 if (!response.ok) {
-                    throw new Error(`Failed to add service. Status: ${response.status}`);
+                    return { success: false, message: response.status };
                 }
-
+        
                 const newService = await response.json();
                 this.services.push(newService);
-
-                return {success: true, data: newService};
+        
+                return { success: true, data: newService };
             } catch (error) {
                 console.error('Error adding service:', error);
-                
-                return {success: false, message: error.message};
+                return { success: false, message: error.message };
             }
         }
+
         ,
 
         // Cập nhật dịch vụ
