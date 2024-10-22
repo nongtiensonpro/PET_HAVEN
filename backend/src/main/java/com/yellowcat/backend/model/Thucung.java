@@ -23,15 +23,18 @@ public class Thucung {
     private String tencho;
 
     @Column(name = "cannang")
+    @NotNull
     @JsonProperty
     private Double cannang;
 
     @Column(name = "tuoi")
+    @NotNull
     @JsonProperty
     private Integer tuoi;
 
     @Size(max = 100)
     @JsonProperty
+    @NotNull
     @Column(name = "giongcho", length = 100)
     private String giongcho;
 
@@ -42,6 +45,7 @@ public class Thucung {
     private String idtaikhoan;
 
     @JsonProperty
+    @NotNull
     @Column(name = "image", length = Integer.MAX_VALUE)
     private String image;
 

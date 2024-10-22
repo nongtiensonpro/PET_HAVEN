@@ -2,6 +2,7 @@ package com.yellowcat.backend.model;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import jakarta.persistence.*;
+import jakarta.validation.constraints.NotNull;
 
 import java.time.Instant;
 
@@ -15,22 +16,27 @@ public class Giamgia {
     @Column(name = "id", nullable = false)
     private Integer id;
 
+    @NotNull
     @JsonProperty
     @Column(name = "phantramgiam")
     private Integer phantramgiam;
 
+    @NotNull
     @JsonProperty
     @Column(name = "ngaybatdau")
     private Instant ngaybatdau;
 
+    @NotNull
     @JsonProperty
     @Column(name = "ngayketthuc")
     private Instant ngayketthuc;
 
+    @NotNull
     @JsonProperty
     @Column(name = "mota", length = Integer.MAX_VALUE)
     private String mota;
 
+    @NotNull
     @JsonProperty
     @Column(name = "trangthai")
     private Boolean trangthai;

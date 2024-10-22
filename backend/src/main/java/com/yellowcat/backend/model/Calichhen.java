@@ -19,6 +19,7 @@ public class Calichhen {
     @Column(name = "id", nullable = false)
     private Integer id;
 
+    @NotNull
     @Size(max = 20)
     @Column(name = "tenca", length = 20)
     private String tenca;
@@ -27,6 +28,7 @@ public class Calichhen {
     @Column(name = "thoigianca", nullable = false)
     private LocalTime thoigianca;
 
+    @NotNull
     @Column(name = "trangthai")
     private Boolean trangthai;
 

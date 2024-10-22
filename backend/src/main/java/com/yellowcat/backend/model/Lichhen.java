@@ -26,16 +26,19 @@ public class Lichhen {
     private String idkhachhang;
 
     @ManyToOne(fetch = FetchType.EAGER)
+    @NotNull
     @JoinColumn(name = "idthucung")
     private Thucung thucung;
 
     @JsonProperty
+    @NotNull
     @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "iddichvu")
     private Dichvu dichvu;
 
 
     @JsonProperty
+    @NotNull
     @Column(name = "emailnguoidat", nullable = false)  // ánh xạ chính xác tên cột
     private String emailNguoiDat;
 
@@ -50,6 +53,7 @@ public class Lichhen {
     private Integer trangthai ;
 
     @ManyToOne(fetch = FetchType.EAGER)
+    @NotNull
     @JoinColumn(name = "idcalichhen")
     private Calichhen idcalichhen;
 
