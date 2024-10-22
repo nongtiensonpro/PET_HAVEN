@@ -39,7 +39,7 @@ public class DichVuService {
         dichvuRepository.deleteById((long) id);
     }
 
-    public List<Dichvu> FindByNameDV(String tenDV){
-        return dichvuRepository.findByTendichvuContainingIgnoreCase(tenDV);
+    public Page<Dichvu> FindByNameDV(String tenDV,Pageable pageable){
+        return dichvuRepository.findByTendichvuContainingIgnoreCase(tenDV,pageable);
     }
 }

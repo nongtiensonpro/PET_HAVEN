@@ -65,8 +65,9 @@ public class DichVuController {
     }
 
     @GetMapping("/find")
-    public ResponseEntity<List<Dichvu>> findDichVu(@RequestParam String namedv) {
-        List<Dichvu> dichvus = dichVuService.FindByNameDV(namedv);
+    public ResponseEntity<Page<Dichvu>> findDichVu(@RequestParam String namedv,@RequestParam(defaultValue = "0") Integer page) {
+        Pageable pageable = PageRequest.of(page,10);
+        Page<Dichvu> dichvus = dichVuService.FindByNameDV(namedv,pageable);
         return ResponseEntity.ok(dichvus);
     }
 
