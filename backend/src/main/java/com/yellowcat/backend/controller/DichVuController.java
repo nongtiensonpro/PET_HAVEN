@@ -10,6 +10,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -19,6 +20,7 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.nio.file.StandardCopyOption;
+import java.util.Arrays;
 import java.util.Optional;
 
 @RestController
@@ -39,24 +41,36 @@ public class DichVuController {
         return dichVuService.getAllDichVu(pageable);
     }
 
+    //Hàm kiểm tra tên file
+    public boolean isValidFileName(String fileName) {
+        // Kiểm tra tên file không chứa các ký tự như "..", "/", "\", và chỉ chứa ký tự hợp lệ
+        return fileName != null && !fileName.contains("..") && fileName.matches("[a-zA-Z0-9._-]+");
+    }
+
     @PreAuthorize("hasAnyRole('admin', 'manager')")
-
-
     @PostMapping("/add")
     public ResponseEntity<String> createDichVu(
             @RequestParam("tenDichVu") String tenDichVu,
             @RequestParam("moTa") String moTa,
             @RequestParam("giaTien") Integer giaTien,
             @RequestParam("trangThai") Boolean trangThai,
-            @RequestParam("file") MultipartFile file
-    ) {
+            @RequestParam("file") MultipartFile file) {
 
         try {
-            // Tạo đường dẫn file
-            String fileName = file.getOriginalFilename();
-            Path copyLocation = Paths.get(uploadDir + File.separator + fileName);
+            // Xác thực tên file và loại bỏ các ký tự nguy hiểm
+            String fileName = StringUtils.cleanPath(file.getOriginalFilename());
+            if (!isValidFileName(fileName)) {
+                return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Tên file không hợp lệ.");
+            }
+
+            // Kiểm tra kiểu file
+            String contentType = file.getContentType();
+            if (!Arrays.asList("image/png", "image/jpeg", "image/gif").contains(contentType)) {
+                throw new SecurityException("Kiểu file không hợp lệ: " + contentType);
+            }
 
             // Lưu file vào thư mục static
+            Path copyLocation = Paths.get(uploadDir + File.separator + fileName);
             Files.copy(file.getInputStream(), copyLocation, StandardCopyOption.REPLACE_EXISTING);
 
             // Tạo URL ảnh
@@ -79,6 +93,7 @@ public class DichVuController {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Không thể tạo dịch vụ.");
         }
     }
+
 
 
     @PreAuthorize("hasAnyRole('admin', 'manager')")
@@ -104,17 +119,27 @@ public class DichVuController {
         // Kiểm tra nếu người dùng có upload ảnh mới
         if (file != null && !file.isEmpty()) {
             try {
-                // Tạo đường dẫn file
-                String fileName = file.getOriginalFilename();
-                Path copyLocation = Paths.get(uploadDir + File.separator + fileName);
+                // Làm sạch tên file và kiểm tra
+                String fileName = StringUtils.cleanPath(file.getOriginalFilename());
+                if (!isValidFileName(fileName)) {
+                    return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Tên file không hợp lệ.");
+                }
+
+                // Kiểm tra và giới hạn loại file
+                String contentType = file.getContentType();
+                if (!Arrays.asList("image/png", "image/jpeg", "image/gif").contains(contentType)) {
+                    return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Kiểu file không được hỗ trợ.");
+                }
 
                 // Lưu file vào thư mục static
+                Path copyLocation = Paths.get(uploadDir + File.separator + fileName);
                 Files.copy(file.getInputStream(), copyLocation, StandardCopyOption.REPLACE_EXISTING);
 
                 // Tạo URL ảnh mới
                 String imageUrl = "http://localhost:8080/images/AvatarDichVu/" + fileName;
-                dichvu2.setAnh(imageUrl); // Cập nhật đường dẫn ảnh mới
-            } catch (IOException e) {
+                dichvu2.setAnh(imageUrl);
+
+            } catch (Exception e) {
                 e.printStackTrace();
                 return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Không thể cập nhật ảnh.");
             }
@@ -123,6 +148,8 @@ public class DichVuController {
         dichVuService.addOrUpdateDichVu(dichvu2);
         return ResponseEntity.ok("Dịch vụ cập nhật thành công!");
     }
+
+
 
     @PreAuthorize("hasAnyRole('admin', 'manager')")
     @DeleteMapping("/delete/{id}")
