@@ -1,18 +1,22 @@
 <script setup lang="ts">
-import { onMounted} from 'vue';
-import {useServiceStore} from '~/stores/DichVuStores';
-import {useNotificationStore} from '~/stores/useNotificationStore';
-import {useUserStore} from '~/stores/user'
+import { onMounted, ref } from 'vue';
+import { useServiceStore } from '~/stores/DichVuStores';
+import { useNotificationStore } from '~/stores/useNotificationStore';
+import { useUserStore } from '~/stores/user';
 import { useToast } from 'vue-toastification';
-
+import InputField from '~/components/InputField.vue';
+import * as yup from 'yup';
+import { useForm } from 'vee-validate';
 
 definePageMeta({
   middleware: 'auth',
 });
+
 const toast = useToast();
 const serviceStore = useServiceStore();
 const notificationStore = useNotificationStore();
 const user = useUserStore();
+
 
 const service = ref({
   tendichvu: '',
@@ -21,9 +25,33 @@ const service = ref({
   trangthai: false
 });
 
+
+const schema = yup.object({
+  tendichvu: yup.string().required('Vui lòng nhập tên dịch vụ'),
+  giatien: yup.number().typeError('Giá tiền phải là một số').required('Vui lòng nhập giá tiền').positive('Giá tiền phải lớn hơn 0'),
+  mota: yup.string().required('Vui lòng nhập mô tả'),
+});
+
+
+const { handleSubmit, resetForm } = useForm({
+  validationSchema: schema,
+  initialValues: {
+    tendichvu: '',
+    giatien: '',
+    mota: '',
+    trangthai: false
+  }
+});
+
+const submitForm = handleSubmit(async (formValues) => {
+  await createService(formValues);
+});
+
+
 onMounted(() => {
   serviceStore.fetchServices();
 });
+
 
 const cleanService = () => {
   service.value.tendichvu = '';
@@ -33,48 +61,16 @@ const cleanService = () => {
   toast.success("Các ô input đã được làm sạch.");
 };
 
-const name = '';
-
-
-const findServiceByName = async (name: string) => {
-
-  if (!name || name.trim() === '') {
-    toast.error('Tên dịch vụ không được để trống.');
-    setTimeout(() => {
-      serviceStore.fetchServices();
-    }, 2000);
-    return;
-  }
+const createService = async (formValues) => {
   try {
-    const result = await serviceStore.getDichVuByName(name);
-    if(result.status) {
-
-    }else{
-      toast.error(result.message);
-    }
-  } catch (error) {
-    toast.error('Đã xảy ra lỗi khi tìm kiếm. Vui lòng thử lại sau.');
-    setTimeout(() => {
-      serviceStore.fetchServices();
-    }, 2000);
-  }
-};
-
-const createService = async () => {
-  try {
-    const newService = {
-      tendichvu: service.value.tendichvu,
-      giatien: service.value.giatien,
-      mota: service.value.mota
-    }; // Tạo đối tượng mới từ service.value
-
-    const result = await serviceStore.addDichVu(newService);
+    const result = await serviceStore.addDichVu(formValues);
 
     if (result.success) {
       notificationStore.addNotification('Dịch vụ đã được tạo thành công', user.userInfo.name);
       toast.success('Dịch vụ đã được tạo thành công!');
-      serviceStore.fetchServices();
-      cleanService(); // Gọi hàm cleanService để reset lại form
+      await serviceStore.fetchServices();
+      cleanService();
+      resetForm();
     } else {
       notificationStore.addNotification(`Có lỗi xảy ra khi tạo dịch vụ: ${result.message}`, user.userInfo.name);
       toast.error(`Có lỗi xảy ra khi tạo dịch vụ: ${result.message}`);
@@ -86,14 +82,40 @@ const createService = async () => {
   }
 };
 
+const name = ref('');
 
 
+const findServiceByName = async (name: string) => {
+  if (!name || name.trim() === '') {
+    toast.error('Tên dịch vụ không được để trống.');
+    setTimeout(() => {
+      serviceStore.fetchServices();
+    }, 2000);
+    return;
+  }
+  try {
+    const result = await serviceStore.getDichVuByName(name);
+    if (!result.status) {
+      toast.error(result.message);
+    }
+  } catch (error) {
+    toast.error('Đã xảy ra lỗi khi tìm kiếm. Vui lòng thử lại sau.');
+    setTimeout(() => {
+      serviceStore.fetchServices();
+    }, 2000);
+  }
+};
 const saveService = async (service) => {
   try {
-    await serviceStore.updateDichVu(service);
-    notificationStore.addNotification("Dịch vụ đã được cập nhật thành công!", user.userInfo.name);
-    toast.success('Dịch vụ đã được lưu thành công!');
-    serviceStore.fetchServices();
+    const result = await serviceStore.updateDichVu(service);
+    if (result.success) {
+      notificationStore.addNotification("Dịch vụ đã được cập nhật thành công!");
+      toast.success('Dịch vụ đã được lưu thành công!');
+      await serviceStore.fetchServices();
+    } else {
+      notificationStore.addNotification(`Có lỗi xảy ra khi cập nhật dịch vụ: ${result.message}`);
+      toast.error(result.message);
+    }
   } catch (error) {
     notificationStore.addNotification("Dịch vụ đã được cập nhật thất bại!", user.userInfo.name);
     console.error('Lỗi khi lưu dịch vụ:', error);
@@ -138,82 +160,91 @@ const updateTTService = async (serviceId) => {
       <div class="row">
         <div class="col-10">
           <div class="form-group">
-           <div class="row">
-             <div class="col-8">
-               <label for="">Tìm kiếm</label>
-               <input type="text" class="form-control" name="" id="" aria-describedby="helpId" placeholder="" v-model="name">
-             </div>
-             <div class="col-2">
-               <button type="button" class="custom-button" @click="findServiceByName(name)">
-                 Tìm kiếm
-               </button>
-             </div>
-             <div class="col-2">
-               <button type="button" class="custom-button" @click="serviceStore.fetchServices()">
-                 <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-arrow-clockwise" viewBox="0 0 16 16">
-                   <path fill-rule="evenodd" d="M8 3a5 5 0 1 0 4.546 2.914.5.5 0 0 1 .908-.417A6 6 0 1 1 8 2z"/>
-                   <path d="M8 4.466V.534a.25.25 0 0 1 .41-.192l2.36 1.966c.12.1.12.284 0 .384L8.41 4.658A.25.25 0 0 1 8 4.466"/>
-                 </svg>
-               </button>
-             </div>
-           </div>
+            <div class="row">
+              <div class="col-8">
+                <label for="">Tìm kiếm</label>
+                <input type="text" class="form-control" name="" id="" aria-describedby="helpId" placeholder=""
+                       v-model="name">
+              </div>
+              <div class="col-2">
+                <button type="button" class="custom-button" @click="findServiceByName(name)">
+                  Tìm kiếm
+                </button>
+              </div>
+              <div class="col-2">
+                <button type="button" class="custom-button" @click="serviceStore.fetchServices()">
+                  <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor"
+                       class="bi bi-arrow-clockwise" viewBox="0 0 16 16">
+                    <path fill-rule="evenodd" d="M8 3a5 5 0 1 0 4.546 2.914.5.5 0 0 1 .908-.417A6 6 0 1 1 8 2z"/>
+                    <path
+                        d="M8 4.466V.534a.25.25 0 0 1 .41-.192l2.36 1.966c.12.1.12.284 0 .384L8.41 4.658A.25.25 0 0 1 8 4.466"/>
+                  </svg>
+                </button>
+              </div>
+            </div>
           </div>
         </div>
         <div class="col-2">
           <!-- Button trigger modal -->
-          <button type="button" class="custom-button" data-bs-toggle="modal" :data-bs-target="'#modal' + service.id">
+          <button type="button" class="custom-button" data-bs-toggle="modal" data-bs-target="#modal">
             Thêm dịch vụ
           </button>
           <!-- Modal -->
-          <div class="modal fade" :id="'modal' + service.id" tabindex="-1" :aria-labelledby="'modalLabel' + service.id"
-               aria-hidden="true">
+          <div class="modal fade" id="modal" tabindex="-1" aria-labelledby="modalLabel" aria-hidden="true">
             <div class="modal-dialog">
               <div class="modal-content">
                 <div class="modal-header">
-                  <h1 class="modal-title fs-5" :id="'modalLabel' + service.id">Thêm dịch vụ:
+                  <h1 class="modal-title fs-5" id="modalLabel">Thêm dịch vụ:
                     {{ service.tendichvu }}</h1>
                   <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
                 <div class="modal-body">
+                  <form v-on:submit.prevent="submitForm">
                   <div class="row">
-                    <div class="col-6">
-                      <img src="~/assets/image/catservice.jpg" class="card-img-top p-1" alt="...">
-                    </div>
-                    <div class="col-6">
-                      <label for="tendichvu" class="form-label">Tên dịch vụ</label>
-                      <input type="text" class="form-control" id="tendichvu" v-model="service.tendichvu" placeholder="Tên dịch vụ">
-                      <label for="giatien" class="form-label">Giá tiền</label>
-                      <input type="text" class="form-control" id="giatien" v-model="service.giatien" placeholder="Giá tiền">
-                      <div class="form-check form-check-inline">
-                        <label class="form-check-label">
-                          <input class="form-check-input" type="radio" name="trangthai" v-model="service.trangthai" :value="true"> Hoạt động<br>
-                          <input class="form-check-input" type="radio" name="trangthai" v-model="service.trangthai" :value="false"> Không hoạt động
-                        </label>
+                      <div class="col-6">
+                        <img src="~/assets/image/catservice.jpg" class="card-img-top p-1" alt="...">
+                      </div>
+                      <div class="col-6">
+                        <!-- Input cho tên dịch vụ -->
+                        <InputField type="text" name="tendichvu" class="form-control" label="Tên dịch vụ" v-model="service.tendichvu" :rules="yup.string().required('Vui lòng nhập tên dịch vụ')" />
+
+                        <!-- Input cho giá tiền -->
+                        <InputField type="number" name="giatien" class="form-control" label="Giá tiền" v-model="service.giatien" :rules="yup.number().required('Vui lòng nhập giá tiền')" />
+
+
+                        <!-- Input cho trạng thái -->
+                        <div class="form-check form-control form-check-inline">
+                          <label class="form-check-label">
+                            <input class="form-check-input" type="radio" name="trangthai" v-model="service.trangthai" :value="true"> Hoạt động
+                            <br>
+                            <input class="form-check-input" type="radio" name="trangthai" v-model="service.trangthai" :value="false"> Không hoạt động
+                          </label>
+                        </div>
+                      </div>
+                      <div class="col-12">
+                        <InputField type="string" name="mota" class="form-control" label="Mô tả" v-model="service.mota" :rules="yup.string().required('Vui lòng nhập mô tả')" />
                       </div>
                     </div>
-                    <div class="col-12">
-                      <label for="mota" class="form-label">Mô tả :</label>
-                      <textarea class="form-control" id="mota" v-model="service.mota" rows="5" placeholder="Mô tả"></textarea>
+
+                    <!-- Buttons -->
+                    <div class="p-4">
+                      <div class="row">
+                        <div class="col">
+                          <button type="button" class="custom-button" data-bs-dismiss="modal">Đóng</button>
+                        </div>
+                        <div class="col">
+                          <button type="submit" class="custom-button">Thêm dịch vụ</button>
+                        </div>
+                        <div class="col">
+                          <button type="button" class="custom-button" @click="resetForm">Clean</button>
+                        </div>
+                      </div>
                     </div>
-                  </div>
-                </div>
-                <div class="p-4">
-                  <div class="row">
-                    <div class="col">
-                      <button type="button" class="custom-button" data-bs-dismiss="modal">Đóng</button>
-                    </div>
-                    <div class="col">
-                      <button type="button" class="custom-button" @click="createService(service)">Thêm dịch vụ</button>
-                    </div>
-                    <div class="col">
-                      <button type="button" class="custom-button" @click="cleanService">Clean</button>
-                    </div>
-                  </div>
+                  </form>
                 </div>
               </div>
             </div>
           </div>
-
         </div>
 
       </div>
@@ -238,7 +269,8 @@ const updateTTService = async (serviceId) => {
           <!-- Button trigger modal -->
           <div class="row">
             <div class="col">
-              <button type="button" class="nav-link" @click="deleteService(service.id)" data-bs-dismiss="modal">Xóa</button>
+              <button type="button" class="nav-link" @click="deleteService(service.id)" data-bs-dismiss="modal">Xóa
+              </button>
             </div>
             <div class="col">
               <button type="button" class="nav-link" @click="updateTTService(service.id)" data-bs-dismiss="modal">
@@ -256,7 +288,8 @@ const updateTTService = async (serviceId) => {
               </button>
 
               <!-- Modal -->
-              <div class="modal fade" :id="'modal' + service.id" tabindex="-1" :aria-labelledby="'modalLabel' + service.id"
+              <div class="modal fade" :id="'modal' + service.id" tabindex="-1"
+                   :aria-labelledby="'modalLabel' + service.id"
                    aria-hidden="true">
                 <div class="modal-dialog">
                   <div class="modal-content">
@@ -277,11 +310,13 @@ const updateTTService = async (serviceId) => {
                           <label for="giatien" class="form-label">Giá tiền</label>
                           <input type="text" class="form-control" id="giatien" v-model="service.giatien"
                                  placeholder="Giá tiền">
-                          <label  class="form-label">Trạng thái : {{service.trangthai==true?'Hoạt động':'Không hoạt động'}}</label>
+                          <label class="form-label">Trạng thái :
+                            {{ service.trangthai == true ? 'Hoạt động' : 'Không hoạt động' }}</label>
                         </div>
                         <div class="col-12">
                           <label for="mota" class="form-label">Mô tả</label>
-                          <textarea class="form-control" id="mota" v-model="service.mota" rows="5" placeholder="Mô tả"></textarea>
+                          <textarea class="form-control" id="mota" v-model="service.mota" rows="5"
+                                    placeholder="Mô tả"></textarea>
                         </div>
                       </div>
                     </div>
@@ -291,7 +326,8 @@ const updateTTService = async (serviceId) => {
                           <button type="button" class="custom-button" data-bs-dismiss="modal">Đóng</button>
                         </div>
                         <div class="col">
-                          <button type="button" class="custom-button" @click="saveService(service)" data-bs-dismiss="modal">
+                          <button type="button" class="custom-button" @click="saveService(service)"
+                                  data-bs-dismiss="modal">
                             Lưu thay đổi
                           </button>
                         </div>

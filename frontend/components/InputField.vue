@@ -2,7 +2,7 @@
   <div>
     <label :for="name">{{ label }}</label>
     <input :id="name" v-bind="$attrs" v-model="fieldValue" @blur="onBlur" />
-    <span v-if="errors.length">{{ errors[0] }}</span>
+    <span v-if="errors && errors.length">{{ errors }}</span>
   </div>
 </template>
 

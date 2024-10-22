@@ -1,6 +1,6 @@
 import { resolve } from 'path';
-require('dotenv').config();
-
+import dotenv from 'dotenv';
+dotenv.config();
 export default defineNuxtConfig({
     head: {
         title: 'Yellow Cat Company',

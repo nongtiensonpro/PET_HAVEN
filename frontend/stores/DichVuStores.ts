@@ -73,16 +73,15 @@ export const useServiceStore = defineStore('serviceStore', {
                 });
 
                 if (!response.ok) {
-                    throw new Error(`Error: ${response.statusText}`);
+                    throw new Error(`Đã có lỗi xay ra : ${response.status}`);
                 }
 
                 const data = await response.json();
                 this.services = data.content;
                 this.pageable = data.page;
-                return {success: true, data: service};
+                return {success: true, message: `Lưu thành công`};
             } catch (error) {
-                console.error('Lỗi khi tìm dịch vụ:', error);
-                throw error;
+                return {success: false,message: `Đã có lỗi xay ra :`+ error.message};
             }
         }
         ,
