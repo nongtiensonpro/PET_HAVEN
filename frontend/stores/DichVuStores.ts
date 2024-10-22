@@ -31,14 +31,14 @@ export const useServiceStore = defineStore('serviceStore', {
         // Thêm dịch vụ mới
         async addDichVu(service: DichVu) {
             const token = sessionStorage.getItem('access_token');
-        
+            console.log(" Tên dịch vụ : "+service.tendichvu +" Mô tả : "+service.mota+" Giá tiền : "+service.giatien+" Trạng thái :"+service.trangthai);
             const formData = new FormData();
         
             formData.append('tenDichVu', service.tendichvu);
             formData.append('moTa', service.mota);
             formData.append('giaTien', service.giatien);
             formData.append('trangThai', service.trangthai);
-        
+
             const fileInput = document.querySelector('#fileInput') as HTMLInputElement;
             if (fileInput.files.length > 0) {
                 formData.append('file', fileInput.files[0]);

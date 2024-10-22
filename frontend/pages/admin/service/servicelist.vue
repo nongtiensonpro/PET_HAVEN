@@ -69,18 +69,8 @@ const cleanService = () => {
 };
 
 const createService = async (formValues) => {
-  const formData = new FormData();
-  formData.append('tenDichVu', formValues.tendichvu);
-  formData.append('moTa', formValues.mota);
-  formData.append('giaTien', formValues.giatien);
-  formData.append('trangThai', String(formValues.trangthai));
-
-  if (formValues.anh) {
-    formData.append('file', formValues.anh);
-  }
-
   try {
-    const result = await serviceStore.addDichVu(formData);
+    const result = await serviceStore.addDichVu(formValues);
 
     if (result.success) {
       notificationStore.addNotification('Dịch vụ đã được tạo thành công', user.userInfo.name);
