@@ -17,7 +17,8 @@ const user = useUserStore();
 const service = ref({
   tendichvu: '',
   giatien: '',
-  mota: ''
+  mota: '',
+  trangthai: false
 });
 
 onMounted(() => {
@@ -28,6 +29,7 @@ const cleanService = () => {
   service.value.tendichvu = '';
   service.value.giatien = '';
   service.value.mota = '';
+  service.value.trangthai = false;
   toast.success("Các ô input đã được làm sạch.");
 };
 
@@ -35,7 +37,7 @@ const name = '';
 
 
 const findServiceByName = async (name: string) => {
-  // Kiểm tra tên dịch vụ rỗng
+
   if (!name || name.trim() === '') {
     toast.error('Tên dịch vụ không được để trống.');
     setTimeout(() => {
@@ -43,24 +45,14 @@ const findServiceByName = async (name: string) => {
     }, 2000);
     return;
   }
-
   try {
     const result = await serviceStore.getDichVuByName(name);
+    if(result.status) {
 
-    // In ra để kiểm tra giá trị trả về từ serviceStore.getDichVuByName
-    console.log('Kết quả trả về từ getDichVuByName:', result);
-
-    if (result.status && result.services.length > 0) {
-      toast.success(`Dịch vụ "${name}" đã được tìm thấy.`);
-    } else {
-      notificationStore.addNotification(`Dịch vụ "${name}" không tồn tại`, user.userInfo.name);
-      toast.error(`Dịch vụ "${name}" không tồn tại. Làm mới danh sách dịch vụ...`);
-      setTimeout(() => {
-        serviceStore.fetchServices();
-      }, 2000);
+    }else{
+      toast.error(result.message);
     }
   } catch (error) {
-    console.error('Lỗi khi tìm kiếm dịch vụ:', error);
     toast.error('Đã xảy ra lỗi khi tìm kiếm. Vui lòng thử lại sau.');
     setTimeout(() => {
       serviceStore.fetchServices();
@@ -147,13 +139,21 @@ const updateTTService = async (serviceId) => {
         <div class="col-10">
           <div class="form-group">
            <div class="row">
-             <div class="col-10">
+             <div class="col-8">
                <label for="">Tìm kiếm</label>
                <input type="text" class="form-control" name="" id="" aria-describedby="helpId" placeholder="" v-model="name">
              </div>
              <div class="col-2">
                <button type="button" class="custom-button" @click="findServiceByName(name)">
                  Tìm kiếm
+               </button>
+             </div>
+             <div class="col-2">
+               <button type="button" class="custom-button" @click="serviceStore.fetchServices()">
+                 <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-arrow-clockwise" viewBox="0 0 16 16">
+                   <path fill-rule="evenodd" d="M8 3a5 5 0 1 0 4.546 2.914.5.5 0 0 1 .908-.417A6 6 0 1 1 8 2z"/>
+                   <path d="M8 4.466V.534a.25.25 0 0 1 .41-.192l2.36 1.966c.12.1.12.284 0 .384L8.41 4.658A.25.25 0 0 1 8 4.466"/>
+                 </svg>
                </button>
              </div>
            </div>
@@ -180,13 +180,19 @@ const updateTTService = async (serviceId) => {
                       <img src="~/assets/image/catservice.jpg" class="card-img-top p-1" alt="...">
                     </div>
                     <div class="col-6">
-                          <label for="tendichvu" class="form-label">Tên dịch vụ</label>
-                          <input type="text" class="form-control" id="tendichvu" v-model="service.tendichvu" placeholder="Tên dịch vụ">
-                          <label for="giatien" class="form-label">Giá tiền</label>
-                          <input type="text" class="form-control" id="giatien" v-model="service.giatien" placeholder="Giá tiền">
-                          <label for="mota" class="form-label">Mô tả</label>
+                      <label for="tendichvu" class="form-label">Tên dịch vụ</label>
+                      <input type="text" class="form-control" id="tendichvu" v-model="service.tendichvu" placeholder="Tên dịch vụ">
+                      <label for="giatien" class="form-label">Giá tiền</label>
+                      <input type="text" class="form-control" id="giatien" v-model="service.giatien" placeholder="Giá tiền">
+                      <div class="form-check form-check-inline">
+                        <label class="form-check-label">
+                          <input class="form-check-input" type="radio" name="trangthai" v-model="service.trangthai" :value="true"> Hoạt động<br>
+                          <input class="form-check-input" type="radio" name="trangthai" v-model="service.trangthai" :value="false"> Không hoạt động
+                        </label>
+                      </div>
                     </div>
                     <div class="col-12">
+                      <label for="mota" class="form-label">Mô tả :</label>
                       <textarea class="form-control" id="mota" v-model="service.mota" rows="5" placeholder="Mô tả"></textarea>
                     </div>
                   </div>

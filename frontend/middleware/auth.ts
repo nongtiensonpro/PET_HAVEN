@@ -18,6 +18,8 @@ export default defineNuxtRouteMiddleware(() => {
 
         if (!userStore.userInfo) {
             toast.error('Đã hết hạn đăng nhập. Vui lòng đăng nhập lại!');
+            sessionStorage.setItem('viewRole',0)
+            sessionStorage.removeItem('access_token');
             return navigateTo('/');
         }
 

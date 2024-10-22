@@ -117,9 +117,8 @@ export const useServiceStore = defineStore('serviceStore', {
             const token = sessionStorage.getItem('access_token');
 
             if (!token) {
-                return { status: false, message: 'Token không tồn tại. Vui lòng đăng nhập.' };
+                return { status: false, message: 'Vui lòng đăng nhập lại để sử dụng dịch vụ' };
             }
-
             try {
                 const response = await fetch(updateDichVuUrl, {
                     method: 'GET',
@@ -129,22 +128,21 @@ export const useServiceStore = defineStore('serviceStore', {
                     }
                 });
 
-                if (!response.ok) {
-                    throw new Error(`Failed to find service by name. Status: ${response.status}`);
-                }
-
-                const data = await response.json();
-                console.log('Dịch vụ tìm thấy:', data);
-
-                // Kiểm tra nếu mảng trả về trống
-                if (data.length === 0) {
-                    return { status: false, services: data };
+                if (response.status === 200) {
+                    const data = await response.json();
+                    this.services = data.content;
+                    this.pageable = data.page;
+                    console.log("Dữ liệu trả về: ", data.content);
+                    return { status: true, message: 'Tìm kiếm hoạt động ổn' };
+                } else if (response.status === 404) {
+                    return { status: false, message: 'Không tìm thấy gì' };
+                } else if (response.status === 500) {
+                    return { status: false, message: 'Lỗi máy chủ vui lòng thử lại' };
                 } else {
-                    updateServiceList(data);
-                    return { status: true, services: data };
+                    return { status: false, message: `Lỗi không xác định mã ${response.status}` };
                 }
             } catch (error) {
-                return { status: false, message: error.message };
+                return { status: false, message: 'Đã có lỗi máy chủ xảy ra vui lòng thử lại' };
             }
         }
         ,
