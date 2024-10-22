@@ -28,46 +28,45 @@ const cleanService = () => {
   service.value.tendichvu = '';
   service.value.giatien = '';
   service.value.mota = '';
-  useToast.success("Các ô input đã được làm sạch.");
+  toast.success("Các ô input đã được làm sạch.");
 };
 
 const name = '';
 
 
-const fintServiceByName = async (name) => {
-  if(name==null || name.trim() === '') {
+const findServiceByName = async (name: string) => {
+  // Kiểm tra tên dịch vụ rỗng
+  if (!name || name.trim() === '') {
     toast.error('Tên dịch vụ không được để trống.');
-    toast.success('Đang làm mới bảng dịch vụ!');
     setTimeout(() => {
       serviceStore.fetchServices();
     }, 2000);
     return;
-  }else {
+  }
+
+  try {
     const result = await serviceStore.getDichVuByName(name);
 
-    try {
-      if (result.success) {
-        service.value.tendichvu = result.data[0].tendichvu;
-        service.value.giatien = result.data[0].giatien;
-        service.value.mota = result.data[0].mota;
-      } else {
-        notificationStore.addNotification(`Dịch vụ ${name} không tồn tại`, user.userInfo.name);
-        toast.error(`Dịch vụ ${name} không tồn tại.`);
-        toast.success('Đang làm mới bảng dịch vụ!');
-        setTimeout(() => {
-          serviceStore.fetchServices();
-        }, 2000);
-      }
-    }
-    catch(error) {
-      toast.error(`Đang có lỗi tìm kiếm vui lòng thử lại.`);
-      toast.success('Đang làm mới bảng dịch vụ!');
+    // In ra để kiểm tra giá trị trả về từ serviceStore.getDichVuByName
+    console.log('Kết quả trả về từ getDichVuByName:', result);
+
+    if (result.status && result.services.length > 0) {
+      toast.success(`Dịch vụ "${name}" đã được tìm thấy.`);
+    } else {
+      notificationStore.addNotification(`Dịch vụ "${name}" không tồn tại`, user.userInfo.name);
+      toast.error(`Dịch vụ "${name}" không tồn tại. Làm mới danh sách dịch vụ...`);
       setTimeout(() => {
         serviceStore.fetchServices();
       }, 2000);
     }
+  } catch (error) {
+    console.error('Lỗi khi tìm kiếm dịch vụ:', error);
+    toast.error('Đã xảy ra lỗi khi tìm kiếm. Vui lòng thử lại sau.');
+    setTimeout(() => {
+      serviceStore.fetchServices();
+    }, 2000);
   }
-}
+};
 
 const createService = async () => {
   try {
@@ -153,7 +152,7 @@ const updateTTService = async (serviceId) => {
                <input type="text" class="form-control" name="" id="" aria-describedby="helpId" placeholder="" v-model="name">
              </div>
              <div class="col-2">
-               <button type="button" class="custom-button" @click="fintServiceByName(name)">
+               <button type="button" class="custom-button" @click="findServiceByName(name)">
                  Tìm kiếm
                </button>
              </div>
@@ -234,6 +233,16 @@ const updateTTService = async (serviceId) => {
           <div class="row">
             <div class="col">
               <button type="button" class="nav-link" @click="deleteService(service.id)" data-bs-dismiss="modal">Xóa</button>
+            </div>
+            <div class="col">
+              <button type="button" class="nav-link" @click="updateTTService(service.id)" data-bs-dismiss="modal">
+                <div v-if="service.trangthai">
+                  Ẩn dịch vụ
+                </div>
+                <div v-else>
+                  Hiện dịch vụ
+                </div>
+              </button>
             </div>
             <div class="col">
               <button type="button" class="nav-link" data-bs-toggle="modal" :data-bs-target="'#modal' + service.id">

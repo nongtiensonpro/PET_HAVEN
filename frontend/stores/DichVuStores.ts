@@ -8,6 +8,11 @@ export const useServiceStore = defineStore('serviceStore', {
         services: [] as DichVu[],
         pageable: {} as Pageable,
     }),
+    // serviceStore.js
+    updateServiceList(services) {
+        this.services = services;
+    }
+    ,
     actions: {
         async fetchServices() {
             try {
@@ -62,7 +67,7 @@ export const useServiceStore = defineStore('serviceStore', {
                     method: 'PUT',
                     headers: {
                         'Content-Type': 'application/json',
-                        'Authorization': `Bearer ${token}` // Gửi token trong header
+                        'Authorization': `Bearer ${token}`
                     },
                     body: JSON.stringify(service),
                 });
@@ -72,9 +77,11 @@ export const useServiceStore = defineStore('serviceStore', {
                 }
 
                 const data = await response.json();
-                return data;
+                this.services = data.content;
+                this.pageable = data.page;
+                return {success: true, data: service};
             } catch (error) {
-                console.error('Lỗi khi cập nhật dịch vụ:', error);
+                console.error('Lỗi khi tìm dịch vụ:', error);
                 throw error;
             }
         }
@@ -105,10 +112,14 @@ export const useServiceStore = defineStore('serviceStore', {
                 return {success: false, message: response.status};
             }
         },
-
         async getDichVuByName(name: string) {
             const updateDichVuUrl = `${API_ENDPOINTS.API_ENDPOINTS.dichVu.getDichVuByName}?namedv=${encodeURIComponent(name)}`;
             const token = sessionStorage.getItem('access_token');
+
+            if (!token) {
+                return { status: false, message: 'Token không tồn tại. Vui lòng đăng nhập.' };
+            }
+
             try {
                 const response = await fetch(updateDichVuUrl, {
                     method: 'GET',
@@ -123,13 +134,17 @@ export const useServiceStore = defineStore('serviceStore', {
                 }
 
                 const data = await response.json();
-                console.log('URL:', updateDichVuUrl);
                 console.log('Dịch vụ tìm thấy:', data);
-                this.services = data.content;
-                this.pageable = data.page;
-                return data;
+
+                // Kiểm tra nếu mảng trả về trống
+                if (data.length === 0) {
+                    return { status: false, services: data };
+                } else {
+                    updateServiceList(data);
+                    return { status: true, services: data };
+                }
             } catch (error) {
-                return {success: false, message: error.message};
+                return { status: false, message: error.message };
             }
         }
         ,
