@@ -28,7 +28,7 @@ public class Dichvu {
 
     @JsonProperty
     @Column(name = "giatien", nullable = false)
-    private Integer giatien;
+    private Float giatien;
 
     @NotNull
     @Column(name = "trangthai", nullable = false)
@@ -74,11 +74,11 @@ public class Dichvu {
         this.anh = anh;
     }
 
-    public Integer getGiatien() {
+    public Float getGiatien() {
         return giatien;
     }
 
-    public void setGiatien(Integer giatien) {
+    public void setGiatien(Float giatien) {
         this.giatien = giatien;
     }
 }

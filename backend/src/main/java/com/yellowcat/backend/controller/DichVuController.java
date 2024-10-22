@@ -52,8 +52,7 @@ public class DichVuController {
     public ResponseEntity<String> createDichVu(
             @RequestParam("tenDichVu") String tenDichVu,
             @RequestParam("moTa") String moTa,
-            @RequestParam("giaTien") Integer giaTien,
-            @RequestParam("trangThai") Boolean trangThai,
+            @RequestParam("giaTien") Float giaTien,
             @RequestParam("file") MultipartFile file) {
 
         try {
@@ -81,7 +80,7 @@ public class DichVuController {
             dichvu.setTendichvu(tenDichVu);
             dichvu.setMota(moTa);
             dichvu.setGiatien(giaTien);
-            dichvu.setTrangthai(trangThai);
+            dichvu.setTrangthai(true);
             dichvu.setAnh(imageUrl);
 
             // Lưu DichVu vào database
@@ -100,7 +99,7 @@ public class DichVuController {
     @PutMapping("/update/{id}")
     public ResponseEntity<String> updateone( @RequestParam("tenDichVu") String tenDichVu,
                                              @RequestParam("moTa") String moTa,
-                                             @RequestParam("giaTien") Integer giaTien,
+                                             @RequestParam("giaTien") Float giaTien,
                                              @RequestParam("trangThai") Boolean trangThai,
                                             @RequestParam(value = "file", required = false) MultipartFile file,
                                             @PathVariable int id) {
@@ -114,7 +113,7 @@ public class DichVuController {
         Dichvu dichvu2 = dichvu1.get();
         dichvu2.setTendichvu(tenDichVu);
         dichvu2.setMota(moTa);
-        dichvu2.setGiatien(giaTien);
+        dichvu2.setGiatien(Float.valueOf(giaTien));
 
         // Kiểm tra nếu người dùng có upload ảnh mới
         if (file != null && !file.isEmpty()) {
