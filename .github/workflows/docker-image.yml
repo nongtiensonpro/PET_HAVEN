@@ -22,11 +22,30 @@ jobs:
       - name: Grant execute permission for gradlew
         run: chmod +x backend/gradlew
 
+      - name: Start PostgreSQL Service
+        run: |
+          docker run --name postgres \
+            -e POSTGRES_USER=${{ secrets.DB_USERNAME }} \
+            -e POSTGRES_PASSWORD=${{ secrets.DB_PASSWORD }} \
+            -e POSTGRES_DB=backend_server \
+            -p 5432:5432 -d postgres:latest
+
+      - name: Wait for PostgreSQL to be ready
+        run: |
+          until pg_isready -h localhost -p 5432; do
+            echo "Waiting for PostgreSQL to be ready..."
+            sleep 2
+          done
+
+      - name: Create databases
+        run: |
+          docker exec -i postgres psql -U ${{ secrets.DB_USERNAME }} -c "CREATE DATABASE backend_server; CREATE DATABASE keycloak;"
+
       - name: Build Java backend
         run: |
           cd backend
           ./gradlew clean build  # Dọn dẹp và build lại JAR file
-          
+
       - name: Build Frontend
         run: |
           cd frontend

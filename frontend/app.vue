@@ -5,7 +5,7 @@
 </template>
 
 <script setup lang="ts">
-import CustomerHome from "~/components/CustomerHome.vue";
+import CustomerHome from "~/layouts/CustomerHome.vue";
 
 useHead({
   title: 'Pet Haven',
