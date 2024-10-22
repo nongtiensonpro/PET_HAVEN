@@ -6,7 +6,7 @@ const API_ENDPOINTS = {
         addDichVu:`${API_BASE_URL}/dich-vu/add`,
         updateDichVu:  `${API_BASE_URL}/dich-vu/update/`,
         deleteDichVu:`${API_BASE_URL}/dich-vu/delete/`,
-        getDichVuByName:`${API_BASE_URL}/dich-vu/find/`,
+        getDichVuByName:`${API_BASE_URL}/dich-vu/find`,
         updateTTDichVu:`${API_BASE_URL}/dich-vu/update-trang-thai/`,
     }
 };

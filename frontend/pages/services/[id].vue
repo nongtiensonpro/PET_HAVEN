@@ -13,7 +13,7 @@
             <div class="col">
               <h3 class="card-text">Mô tả: </h3>
               <p>{{ service.mota }}</p>
-              <p class="text-center">Giá tiền: <strong>{{ service.giatien }} Đ</strong></p>
+              <p class="text-center">Giá tiền: <strong>{{ service.giatien.toLocaleString() }} Đ</strong></p>
               <nuxt-link class="nav-link" :to="'/'">Quay về</nuxt-link>
             </div>
           </div>

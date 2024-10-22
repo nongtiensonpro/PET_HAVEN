@@ -50,6 +50,10 @@ export default defineNuxtConfig({
     },
     plugins: [
         { src: '~/plugins/bootstrap.js', mode: 'client' },
-        { src: '~/plugins/vee-validate.js' }
-    ]
+        { src: '~/plugins/vee-validate.js' },
+        { src: '~/plugins/vue-toastification.ts', mode: 'client' },
+    ],
+    router: {
+        middleware: ['auth']
+    }
 } );
