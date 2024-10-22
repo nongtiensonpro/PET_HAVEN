@@ -53,34 +53,44 @@ public class DichVuController {
             @RequestParam("tenDichVu") String tenDichVu,
             @RequestParam("moTa") String moTa,
             @RequestParam("giaTien") Float giaTien,
-            @RequestParam("file") MultipartFile file) {
+            @RequestParam("trangThai") Boolean trangThai,
+            @RequestParam(value = "file", required = false) MultipartFile file) {
 
         try {
-            // Xác thực tên file và loại bỏ các ký tự nguy hiểm
-            String fileName = StringUtils.cleanPath(file.getOriginalFilename());
-            if (!isValidFileName(fileName)) {
-                return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Tên file không hợp lệ.");
+            String imageUrl;
+
+            // Kiểm tra nếu người dùng không upload ảnh
+            if (file == null || file.isEmpty()) {
+                // Đường dẫn ảnh mặc định
+                imageUrl = "http://localhost:8080/images/AvatarDichVu/default-avatar.jpg";
+            } else {
+                // Xác thực tên file và loại bỏ các ký tự nguy hiểm
+                String fileName = StringUtils.cleanPath(file.getOriginalFilename());
+
+                if (!isValidFileName(fileName)) {
+                    return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Tên file không hợp lệ.");
+                }
+
+                // Kiểm tra kiểu file
+                String contentType = file.getContentType();
+                if (!Arrays.asList("image/png", "image/jpeg", "image/gif").contains(contentType)) {
+                    return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Kiểu file không hợp lệ: " + contentType);
+                }
+
+                // Lưu file vào thư mục static
+                Path copyLocation = Paths.get(uploadDir + File.separator + fileName);
+                Files.copy(file.getInputStream(), copyLocation, StandardCopyOption.REPLACE_EXISTING);
+
+                // Tạo URL ảnh
+                imageUrl = "http://localhost:8080/images/AvatarDichVu/" + fileName;
             }
-
-            // Kiểm tra kiểu file
-            String contentType = file.getContentType();
-            if (!Arrays.asList("image/png", "image/jpeg", "image/gif").contains(contentType)) {
-                throw new SecurityException("Kiểu file không hợp lệ: " + contentType);
-            }
-
-            // Lưu file vào thư mục static
-            Path copyLocation = Paths.get(uploadDir + File.separator + fileName);
-            Files.copy(file.getInputStream(), copyLocation, StandardCopyOption.REPLACE_EXISTING);
-
-            // Tạo URL ảnh
-            String imageUrl = "http://localhost:8080/images/AvatarDichVu/" + fileName;
 
             // Tạo đối tượng Dichvu
             Dichvu dichvu = new Dichvu();
             dichvu.setTendichvu(tenDichVu);
             dichvu.setMota(moTa);
             dichvu.setGiatien(giaTien);
-            dichvu.setTrangthai(true);
+            dichvu.setTrangthai(trangThai);
             dichvu.setAnh(imageUrl);
 
             // Lưu DichVu vào database
@@ -100,7 +110,6 @@ public class DichVuController {
     public ResponseEntity<String> updateone( @RequestParam("tenDichVu") String tenDichVu,
                                              @RequestParam("moTa") String moTa,
                                              @RequestParam("giaTien") Float giaTien,
-                                             @RequestParam("trangThai") Boolean trangThai,
                                             @RequestParam(value = "file", required = false) MultipartFile file,
                                             @PathVariable int id) {
         Optional<Dichvu> dichvu1 = dichVuService.findById(id);
@@ -113,7 +122,7 @@ public class DichVuController {
         Dichvu dichvu2 = dichvu1.get();
         dichvu2.setTendichvu(tenDichVu);
         dichvu2.setMota(moTa);
-        dichvu2.setGiatien(Float.valueOf(giaTien));
+        dichvu2.setGiatien(giaTien);
 
         // Kiểm tra nếu người dùng có upload ảnh mới
         if (file != null && !file.isEmpty()) {
