@@ -1,7 +1,7 @@
 <template>
   <div>
     <label :for="name">{{ label }}</label>
-    <input :id="name" v-bind="$attrs" v-model="fieldValue" @blur="onBlur" />
+    <input :id="name" v-bind="$attrs" v-model="internalValue" @blur="onBlur" />
     <span v-if="errors && errors.length">{{ errors }}</span>
   </div>
 </template>
@@ -15,15 +15,28 @@ export default {
   props: {
     name: String,
     label: String,
-    rules: String
+    rules: String,
+    modelValue: String // Thêm modelValue để đồng bộ với v-model từ bên ngoài
   },
-  setup(props) {
-    const { value: fieldValue, errorMessage: errors, handleBlur: onBlur } = useField(
+  setup(props, { emit }) {
+    const {value: fieldValue, errorMessage: errors, handleBlur: onBlur} = useField(
         props.name,
         yup.string().required('Trường này không được để trống')
     );
+
+    // Đồng bộ fieldValue với v-model
+    const internalValue = computed({
+      get() {
+        return props.modelValue;
+      },
+      set(value) {
+        emit('update:modelValue', value);
+        fieldValue.value = value; // Cập nhật vào useField
+      }
+    });
+
     return {
-      fieldValue,
+      internalValue, // Trả về giá trị để đồng bộ với v-model
       errors,
       onBlur
     };
