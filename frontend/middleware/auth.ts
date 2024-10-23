@@ -29,7 +29,7 @@ export default defineNuxtRouteMiddleware(async (to) => {
                 console.error('Đăng nhập lại thất bại !:', error);
                 sessionStorage.setItem('viewRole', '0');
                 sessionStorage.removeItem('access_token');
-                return navigateTo('/login');
+                return navigateTo('/');
             }
         }
     }

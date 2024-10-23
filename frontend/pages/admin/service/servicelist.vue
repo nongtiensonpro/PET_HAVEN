@@ -26,11 +26,14 @@ const service = ref({
   anh: null as File | null,
 });
 const anh = ref(null);
+
+const selectedFile = ref<File | null>(null);
+
 const handleFileChange = (event: Event) => {
   const target = event.target as HTMLInputElement;
   if (target.files && target.files.length > 0) {
-    service.value.anh = target.files[0];
-    anh.value = URL.createObjectURL(service.value.anh);
+    selectedFile.value = target.files[0];
+    anh.value = URL.createObjectURL(selectedFile.value);
   }
 };
 
@@ -97,23 +100,30 @@ const createService = async (formValues) => {
 
 const saveService = async (formValues) => {
   try {
-    const result = await serviceStore.updateDichVu(formValues);
+    const formData = new FormData();
+
+    for (const key in formValues) {
+      formData.append(key, formValues[key]);
+    }
+    if (selectedFile.value) {
+      formData.append('anh', selectedFile.value);
+    }
+
+    const result = await serviceStore.updateDichVu(formData);
     if (result.success) {
       notificationStore.addNotification("Dịch vụ đã được cập nhật thành công!");
       toast.success('Dịch vụ đã được lưu thành công!');
-      formValues.anh = anh.value;
-      anh.value = null;
       await serviceStore.fetchServices();
-    } else {
+      selectedFile.value = null;
       anh.value = null;
+    } else {
       notificationStore.addNotification(`Có lỗi xảy ra khi cập nhật dịch vụ: ${result.message}`);
       toast.error(result.message);
     }
   } catch (error) {
-    anh.value = null;
     notificationStore.addNotification("Dịch vụ đã được cập nhật thất bại!", user.userInfo.name);
     console.error('Lỗi khi lưu dịch vụ:', error);
-    toast.error('Có lỗi xảy ra khi lưu dịch vụ :'+error);
+    toast.error('Có lỗi xảy ra khi lưu dịch vụ :' + error);
   }
 };
 
