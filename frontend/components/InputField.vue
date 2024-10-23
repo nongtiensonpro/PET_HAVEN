@@ -24,19 +24,18 @@ export default {
         yup.string().required('Trường này không được để trống')
     );
 
-    // Đồng bộ fieldValue với v-model
     const internalValue = computed({
       get() {
         return props.modelValue;
       },
       set(value) {
         emit('update:modelValue', value);
-        fieldValue.value = value; // Cập nhật vào useField
+        fieldValue.value = value;
       }
     });
 
     return {
-      internalValue, // Trả về giá trị để đồng bộ với v-model
+      internalValue,
       errors,
       onBlur
     };

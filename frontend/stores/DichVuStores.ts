@@ -7,11 +7,7 @@ export const useServiceStore = defineStore('serviceStore', {
     state: () => ({
         services: [] as DichVu[],
         pageable: {} as Pageable,
-    }),
-    // serviceStore.js
-    updateServiceList(services) {
-        this.services = services;
-    }
+    })
     ,
     actions: {
         async fetchServices() {
@@ -66,7 +62,6 @@ export const useServiceStore = defineStore('serviceStore', {
         ,
         async updateDichVu(service: DichVu) {
             const updateDichVuUrl = API_ENDPOINTS.API_ENDPOINTS.dichVu.updateDichVu + service.id;
-            console.log("Đường dẫn cập nhật dịch vụ: " + updateDichVuUrl);
             const token = sessionStorage.getItem('access_token');
             const formDataUpdate = new FormData();
 
@@ -76,15 +71,8 @@ export const useServiceStore = defineStore('serviceStore', {
             formDataUpdate.append('trangThai', service.trangthai);
 
             const fileInputUpdate = document.querySelector('#fileInput') as HTMLInputElement;
+            formDataUpdate.append('file', fileInputUpdate.files[0]);
 
-            // Kiểm tra tệp có được chọn hay không
-            if (fileInputUpdate.files.length > 0) {
-                formDataUpdate.append('file', fileInputUpdate.files[0]);
-                console.log("Tệp ảnh được chọn: " + fileInputUpdate.files[0].name);
-            } else {
-                console.error('Không có tệp nào được chọn để cập nhật.');
-                return { success: false, message: 'Không có tệp nào được chọn để cập nhật.' };
-            }
 
             try {
                 const response = await fetch(updateDichVuUrl, {

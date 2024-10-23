@@ -5,8 +5,8 @@ import { useNotificationStore } from '~/stores/useNotificationStore';
 import { useUserStore } from '~/stores/user';
 import { useToast } from 'vue-toastification';
 import InputField from '~/components/InputField.vue';
-import * as yup from 'yup';
 import { useForm } from 'vee-validate';
+import * as yup from 'yup';
 
 definePageMeta({
   middleware: 'auth',
@@ -29,6 +29,7 @@ const anh = ref(null);
 
 const selectedFile = ref<File | null>(null);
 
+
 const handleFileChange = (event: Event) => {
   const target = event.target as HTMLInputElement;
   if (target.files && target.files.length > 0) {
@@ -38,10 +39,12 @@ const handleFileChange = (event: Event) => {
 };
 
 
-const schema = yup.object({
+const schema = yup.object().shape({
   tendichvu: yup.string().required('Vui lòng nhập tên dịch vụ'),
   giatien: yup.number().typeError('Giá tiền phải là một số').required('Vui lòng nhập giá tiền').positive('Giá tiền phải lớn hơn 0'),
   mota: yup.string().required('Vui lòng nhập mô tả'),
+  giatien: yup.number().required('Vui lòng nhập giá tiền').positive('Giá tiền phải là số dương'),
+  mota: yup.string().required('Vui lòng nhập mô tả')
 });
 
 
@@ -51,8 +54,7 @@ const { handleSubmit, resetForm } = useForm({
     tendichvu: '',
     giatien: '',
     mota: '',
-    trangthai: false,
-    anh: ''
+    trangthai: false
   }
 });
 
@@ -61,13 +63,11 @@ const submitForm = handleSubmit(async (formValues) => {
 });
 
 const submitFormUpdate = handleSubmit(async (formValues) => {
-  console.log("Form values for update:", formValues);
   await saveService(formValues);
 });
 onMounted(() => {
   serviceStore.fetchServices();
 });
-
 
 const cleanService = () => {
   service.value.tendichvu = '';
@@ -100,16 +100,8 @@ const createService = async (formValues) => {
 
 const saveService = async (formValues) => {
   try {
-    const formData = new FormData();
-
-    for (const key in formValues) {
-      formData.append(key, formValues[key]);
-    }
-    if (selectedFile.value) {
-      formData.append('anh', selectedFile.value);
-    }
-
-    const result = await serviceStore.updateDichVu(formData);
+    formValues.anh = anh.value;
+    const result = await serviceStore.updateDichVu(formValues);
     if (result.success) {
       notificationStore.addNotification("Dịch vụ đã được cập nhật thành công!");
       toast.success('Dịch vụ đã được lưu thành công!');
@@ -172,7 +164,7 @@ const updateTTService = async (serviceId) => {
     await serviceStore.updateTTDV(serviceId);
     notificationStore.addNotification("Dịch vụ đã được cập nhật thành công!", user.userInfo.name);
     toast.success('Dịch vụ đã được cập nhật thành công!');
-    serviceStore.fetchServices();
+    await serviceStore.fetchServices();
   } catch (error) {
     notificationStore.addNotification("Dịch vụ đã được cập nhật thất bại!", user.userInfo.name);
     toast.error('Dịch vụ đã được cập nhật thất bại!');

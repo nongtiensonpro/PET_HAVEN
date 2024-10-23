@@ -116,7 +116,7 @@
 
       <!-- Navbar -->
       <div class="container">
-        <div v-if="viewRole==0">
+        <div v-if="viewRole===0">
           <nav class="navbar navbar-expand-lg bg-body-tertiary">
             <div class="container-fluid">
               <NuxtLink class="nav-link active" aria-current="page" to="/">{{ home }}</NuxtLink>
@@ -337,7 +337,7 @@ export default {
     };
 
 
-      const viewRole = ref(0);
+    const viewRole = ref(0);
 
     if (process.client) {
       const storedViewRole = sessionStorage.getItem('viewRole');

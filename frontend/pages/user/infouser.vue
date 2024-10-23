@@ -5,6 +5,19 @@ import {computed} from "vue";
 const userStore = useUserStore();
 
 const userInfo = computed(() => userStore.userInfo);
+definePageMeta({
+  middleware: 'auth',
+});
+
+function login1() {
+  if (process.client) {
+    window.location.href = 'http://localhost:8080/oauth2/authorization/keycloak';
+  }
+}
+
+if (userInfo.value === null) {
+  login1();
+}
 </script>
 
 <template>
