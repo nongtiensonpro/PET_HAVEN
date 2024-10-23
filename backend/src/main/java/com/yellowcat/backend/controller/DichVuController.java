@@ -1,7 +1,9 @@
 package com.yellowcat.backend.controller;
 
 
+import com.cloudinary.Cloudinary;
 import com.yellowcat.backend.model.Dichvu;
+import com.yellowcat.backend.service.CloudinaryService;
 import com.yellowcat.backend.service.DichVuService;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.Page;
@@ -14,25 +16,21 @@ import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
+
 import java.io.File;
-import java.io.IOException;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.nio.file.Paths;
-import java.nio.file.StandardCopyOption;
-import java.util.Arrays;
 import java.util.Map;
 import java.util.Optional;
 
 @RestController
 @RequestMapping("/api/dich-vu")
 public class DichVuController {
-    @Value("${file.upload-dir}")
-    private String uploadDir;
+
+    private final CloudinaryService cloudinaryService;
 
     private final DichVuService dichVuService;
 
-    public DichVuController(DichVuService dichVuService) {
+    public DichVuController(CloudinaryService cloudinaryService, DichVuService dichVuService) {
+        this.cloudinaryService = cloudinaryService;
         this.dichVuService = dichVuService;
     }
 
@@ -62,7 +60,6 @@ public class DichVuController {
 
             // Kiểm tra nếu người dùng không upload ảnh
             if (file == null || file.isEmpty()) {
-                // Đường dẫn ảnh mặc định
                 imageUrl = "http://localhost:8080/images/AvatarDichVu/default-avatar.jpg";
             } else {
                 // Xác thực tên file và loại bỏ các ký tự nguy hiểm
@@ -74,20 +71,16 @@ public class DichVuController {
                             .body(Map.of("status", "error", "message", "Tên file không hợp lệ."));
                 }
 
-                // Kiểm tra kiểu file
-                String contentType = file.getContentType();
-                if (!Arrays.asList("image/png", "image/jpeg", "image/gif").contains(contentType)) {
-                    return ResponseEntity
-                            .status(HttpStatus.BAD_REQUEST)
-                            .body(Map.of("status", "error", "message", "Kiểu file không hợp lệ: " + contentType));
-                }
+                // Tạo tệp tạm thời
+                File tempFile = File.createTempFile("upload_", fileName);
+                file.transferTo(tempFile);  // Chuyển MultipartFile thành File
 
-                // Lưu file vào thư mục static
-                Path copyLocation = Paths.get(uploadDir + File.separator + fileName);
-                Files.copy(file.getInputStream(), copyLocation, StandardCopyOption.REPLACE_EXISTING);
+                // Upload file lên Cloudinary
+                Map uploadResult = cloudinaryService.uploadFile(tempFile);
+                imageUrl = uploadResult.get("url").toString();
 
-                // Tạo URL ảnh
-                imageUrl = "http://localhost:8080/images/AvatarDichVu/" + fileName;
+                // Xóa file tạm sau khi upload
+                tempFile.delete();
             }
 
             // Tạo đối tượng Dichvu
@@ -101,13 +94,11 @@ public class DichVuController {
             // Lưu DichVu vào database
             dichVuService.addOrUpdateDichVu(dichvu);
 
-            // Trả về JSON với mã HTTP 200
             return ResponseEntity
                     .status(HttpStatus.OK)
                     .body(Map.of("status", "success", "message", "Dịch vụ tạo thành công!", "data", dichvu));
         } catch (Exception e) {
             e.printStackTrace();
-            // Trả về JSON với mã HTTP 500 khi có lỗi
             return ResponseEntity
                     .status(HttpStatus.INTERNAL_SERVER_ERROR)
                     .body(Map.of("status", "error", "message", "Không thể tạo dịch vụ.", "error", e.getMessage()));
@@ -128,7 +119,6 @@ public class DichVuController {
 
         Optional<Dichvu> dichvu1 = dichVuService.findById(id);
 
-        // Kiểm tra xem dichvu1 có tồn tại không
         if (!dichvu1.isPresent()) {
             return ResponseEntity
                     .status(HttpStatus.NOT_FOUND)
@@ -140,10 +130,8 @@ public class DichVuController {
         dichvu2.setMota(moTa);
         dichvu2.setGiatien(giaTien);
 
-        // Kiểm tra nếu người dùng có upload ảnh mới
         if (file != null && !file.isEmpty()) {
             try {
-                // Làm sạch tên file và kiểm tra
                 String fileName = StringUtils.cleanPath(file.getOriginalFilename());
                 if (!isValidFileName(fileName)) {
                     return ResponseEntity
@@ -151,21 +139,17 @@ public class DichVuController {
                             .body(Map.of("status", "error", "message", "Tên file không hợp lệ."));
                 }
 
-                // Kiểm tra và giới hạn loại file
-                String contentType = file.getContentType();
-                if (!Arrays.asList("image/png", "image/jpeg", "image/gif").contains(contentType)) {
-                    return ResponseEntity
-                            .status(HttpStatus.BAD_REQUEST)
-                            .body(Map.of("status", "error", "message", "Kiểu file không hợp lệ: " + contentType));
-                }
+                // Tạo file tạm thời
+                File tempFile = File.createTempFile("upload_", fileName);
+                file.transferTo(tempFile); // Chuyển MultipartFile thành File
 
-                // Lưu file vào thư mục static
-                Path copyLocation = Paths.get(uploadDir + File.separator + fileName);
-                Files.copy(file.getInputStream(), copyLocation, StandardCopyOption.REPLACE_EXISTING);
-
-                // Tạo URL ảnh mới
-                String imageUrl = "http://localhost:8080/images/AvatarDichVu/" + fileName;
+                // Upload file lên Cloudinary
+                Map uploadResult = cloudinaryService.uploadFile(tempFile);
+                String imageUrl = uploadResult.get("url").toString();
                 dichvu2.setAnh(imageUrl);
+
+                // Xóa file tạm sau khi upload
+                tempFile.delete();
 
             } catch (Exception e) {
                 e.printStackTrace();
@@ -181,6 +165,7 @@ public class DichVuController {
                 .status(HttpStatus.OK)
                 .body(Map.of("status", "success", "message", "Dịch vụ cập nhật thành công", "data", dichvu2));
     }
+
 
 
 
