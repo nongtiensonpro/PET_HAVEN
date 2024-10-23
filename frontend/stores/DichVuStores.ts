@@ -40,11 +40,7 @@ export const useServiceStore = defineStore('serviceStore', {
             formData.append('trangThai', service.trangthai);
 
             const fileInput = document.querySelector('#fileInput') as HTMLInputElement;
-            if (fileInput.files.length > 0) {
-                formData.append('file', fileInput.files[0]);
-            } else {
-                return { success: false, message: 'Không có file hình ảnh nào được chọn.' };
-            }
+            formData.append('file', fileInput.files[0]);
         
             try {
                 const response = await fetch(API_ENDPOINTS.API_ENDPOINTS.dichVu.addDichVu, {
@@ -72,32 +68,40 @@ export const useServiceStore = defineStore('serviceStore', {
         ,
 
         // Cập nhật dịch vụ
-        async updateDichVu(service) {
+        async updateDichVu(service: DichVu) {
             const updateDichVuUrl = API_ENDPOINTS.API_ENDPOINTS.dichVu.updateDichVu + service.id;
             const token = sessionStorage.getItem('access_token');
+            const formData = new FormData();
+
+            formData.append('tenDichVu', service.tendichvu);
+            formData.append('moTa', service.mota);
+            formData.append('giaTien', service.giatien);
+
+            const fileInput = document.querySelector('#fileInput') as HTMLInputElement;
+            formData.append('file', fileInput.files[0]);
 
             try {
                 const response = await fetch(updateDichVuUrl, {
                     method: 'PUT',
                     headers: {
-                        'Content-Type': 'application/json',
-                        'Authorization': `Bearer ${token}`
+                        'Authorization': `Bearer ${token}`,
                     },
-                    body: JSON.stringify(service),
+                    body: formData,
                 });
 
                 if (!response.ok) {
-                    throw new Error(`Đã có lỗi xay ra : ${response.status}`);
+                    throw new Error(`Đã có lỗi xảy ra: ${response.status}`);
                 }
 
                 const data = await response.json();
                 this.services = data.content;
                 this.pageable = data.page;
-                return {success: true, message: `Lưu thành công`};
+                return { success: true, message: 'Lưu thành công' };
             } catch (error) {
-                return {success: false,message: `Đã có lỗi xay ra :`+ error.message};
+                return { success: false, message: `Đã có lỗi xảy ra: ` + error.message };
             }
         }
+
         ,
 
         // Xóa dịch vụ

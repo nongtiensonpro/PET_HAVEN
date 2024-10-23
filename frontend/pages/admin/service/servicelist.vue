@@ -25,11 +25,12 @@ const service = ref({
   trangthai: false,
   anh: null as File | null,
 });
-
+const urlAnh = ref(null);
 const handleFileChange = (event: Event) => {
   const target = event.target as HTMLInputElement;
   if (target.files && target.files.length > 0) {
-    service.value.anh = target.files[0]; // Lưu file vào biến
+    service.value.anh = target.files[0];
+    urlAnh.value = URL.createObjectURL(service.value.anh);
   }
 };
 
@@ -46,7 +47,8 @@ const { handleSubmit, resetForm } = useForm({
     tendichvu: '',
     giatien: '',
     mota: '',
-    trangthai: false
+    trangthai: false,
+    urlAnh: ''
   }
 });
 
@@ -54,7 +56,11 @@ const submitForm = handleSubmit(async (formValues) => {
   await createService(formValues);
 });
 
-
+const submitFormUpdate = handleSubmit(async (formValues) => {
+  formValues.anh = service.value.anh;
+  console.log("Form values for update:", formValues);
+  await saveService(formValues);
+});
 onMounted(() => {
   serviceStore.fetchServices();
 });
@@ -65,6 +71,8 @@ const cleanService = () => {
   service.value.giatien = '';
   service.value.mota = '';
   service.value.trangthai = false;
+  urlAnh.value = null;
+  urlAnh.clear();
   toast.success("Các ô input đã được làm sạch.");
 };
 
@@ -112,9 +120,10 @@ const findServiceByName = async (name: string) => {
     }, 2000);
   }
 };
-const saveService = async (service) => {
+const saveService = async (formValues) => {
   try {
-    const result = await serviceStore.updateDichVu(service);
+    formValues.anh = urlAnh;
+    const result = await serviceStore.updateDichVu(formValues);
     if (result.success) {
       notificationStore.addNotification("Dịch vụ đã được cập nhật thành công!");
       toast.success('Dịch vụ đã được lưu thành công!');
@@ -126,7 +135,7 @@ const saveService = async (service) => {
   } catch (error) {
     notificationStore.addNotification("Dịch vụ đã được cập nhật thất bại!", user.userInfo.name);
     console.error('Lỗi khi lưu dịch vụ:', error);
-    toast.error('Có lỗi xảy ra khi lưu dịch vụ.');
+    toast.error('Có lỗi xảy ra khi lưu dịch vụ :'+error);
   }
 };
 
@@ -209,17 +218,17 @@ const updateTTService = async (serviceId) => {
                   <form v-on:submit.prevent="submitForm">
                   <div class="row">
                       <div class="col-6">
+                        <div v-if="urlAnh==null">
+                          <img :src="service.anh" class="card-img-top p-1" alt="...">
+                        </div>
+                        <div v-else>
+                          <img :src="urlAnh" class="card-img-top p-1" alt="...">
+                        </div>
                         <input type="file" id="fileInput" accept="image/png, image/jpeg, image/gif" @change="handleFileChange" />
                       </div>
                       <div class="col-6">
-                        <!-- Input cho tên dịch vụ -->
                         <InputField type="text" name="tendichvu" class="form-control" label="Tên dịch vụ" v-model="service.tendichvu" :rules="yup.string().required('Vui lòng nhập tên dịch vụ')" />
-
-                        <!-- Input cho giá tiền -->
                         <InputField type="number" name="giatien" class="form-control" label="Giá tiền" v-model="service.giatien" :rules="yup.number().required('Vui lòng nhập giá tiền')" />
-
-
-                        <!-- Input cho trạng thái -->
                         <div class="form-check form-control form-check-inline">
                           <label class="form-check-label">
                             <input class="form-check-input" type="radio" name="trangthai" v-model="service.trangthai" :value="true"> Hoạt động
@@ -306,27 +315,32 @@ const updateTTService = async (serviceId) => {
                       <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                     </div>
                     <div class="modal-body">
+                      <form v-on:submit.prevent="submitFormUpdate">
                       <div class="row">
                         <div class="col-6">
-                          <img src="~/assets/image/catservice.jpg" class="card-img-top p-1" alt="...">
+<!--                          <img src="~/assets/image/catservice.jpg" class="card-img-top p-1" alt="...">-->
+                          <div v-if="urlAnh==null">
+                            <img :src="service.anh" class="card-img-top p-1" alt="...">
+                          </div>
+                         <div v-else>
+                           <img :src="urlAnh" class="card-img-top p-1" alt="...">
+                         </div>
+                          <input type="file" id="fileInput" accept="image/png, image/jpeg, image/gif" @change="handleFileChange" />
                         </div>
                         <div class="col-6">
-                          <label for="tendichvu" class="form-label">Tên dịch vụ</label>
-                          <input type="text" class="form-control" id="tendichvu" v-model="service.tendichvu"
-                                 placeholder="Tên dịch vụ">
-                          <label for="giatien" class="form-label">Giá tiền</label>
-                          <input type="text" class="form-control" id="giatien" v-model="service.giatien"
-                                 placeholder="Giá tiền">
+                          <InputField type="text" name="tendichvu" class="form-control" label="Tên dịch vụ" v-model="service.tendichvu" :rules="yup.string().required('Vui lòng nhập tên dịch vụ')" />
+                          <!-- Input cho giá tiền -->
+                          <InputField type="number" name="giatien" class="form-control" label="Giá tiền" v-model="service.giatien" :rules="yup.number().required('Vui lòng nhập giá tiền')" />
                           <label class="form-label">Trạng thái :
                             {{ service.trangthai == true ? 'Hoạt động' : 'Không hoạt động' }}</label>
                         </div>
                         <div class="col-12">
-                          <label for="mota" class="form-label">Mô tả</label>
-                          <textarea class="form-control" id="mota" v-model="service.mota" rows="5"
-                                    placeholder="Mô tả"></textarea>
+                          <InputField type="string" name="mota" id="mota" class="form-control" label="Mô tả" v-model="service.mota" :rules="yup.string().required('Vui lòng nhập mô tả')" />
                         </div>
                       </div>
+                      </form>
                     </div>
+
                     <div class="p-4">
                       <div class="row">
                         <div class="col">

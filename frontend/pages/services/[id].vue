@@ -8,7 +8,7 @@
         <div class="card-body">
           <div class="row">
             <div class="col">
-              <img class="card-img-top" style="max-height: 550px; max-width: 550px" src="https://www.thesprucepets.com/thmb/0vKXtwRwIQxOAxQ0I27Fr6f72Pk=/2121x0/filters:no_upscale():strip_icc()/GingerTabbyShorthair-e3b45511a76a4b25a6fb421e60f04025.jpg" alt="">
+              <img :src="service.anh" class="card-img-top p-1" alt="...">
             </div>
             <div class="col">
               <h3 class="card-text">Mô tả: </h3>

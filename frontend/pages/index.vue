@@ -7,7 +7,7 @@
        <div class="row">
          <div v-for="service in paginatedServices" :key="service.id" class="card col m-4">
            <h4 class="card-title">{{ service.tendichvu }}</h4>
-           <img class="card-img-top" style="max-height: 250px; max-width: 250px" src="https://www.thesprucepets.com/thmb/0vKXtwRwIQxOAxQ0I27Fr6f72Pk=/2121x0/filters:no_upscale():strip_icc()/GingerTabbyShorthair-e3b45511a76a4b25a6fb421e60f04025.jpg" alt="">
+           <img :src="service.anh" class="card-img-top p-1" alt="...">
            <div class="card-body">
              <div class="row">
                <div class="col">
