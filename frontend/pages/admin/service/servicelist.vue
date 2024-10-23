@@ -1,11 +1,11 @@
 <script setup lang="ts">
-import { onMounted, ref } from 'vue';
-import { useServiceStore } from '~/stores/DichVuStores';
-import { useNotificationStore } from '~/stores/useNotificationStore';
-import { useUserStore } from '~/stores/user';
-import { useToast } from 'vue-toastification';
+import {onMounted, ref} from 'vue';
+import {useServiceStore} from '~/stores/DichVuStores';
+import {useNotificationStore} from '~/stores/useNotificationStore';
+import {useUserStore} from '~/stores/user';
+import {useToast} from 'vue-toastification';
 import InputField from '~/components/InputField.vue';
-import { useForm } from 'vee-validate';
+import {useForm} from 'vee-validate';
 import * as yup from 'yup';
 
 definePageMeta({
@@ -17,7 +17,6 @@ const serviceStore = useServiceStore();
 const notificationStore = useNotificationStore();
 const user = useUserStore();
 
-
 const service = ref({
   tendichvu: '',
   giatien: '',
@@ -25,30 +24,29 @@ const service = ref({
   trangthai: false,
   anh: null as File | null,
 });
-const anh = ref(null);
 
+const anh1 = ref(null);
+const anh2 = ref(null);
 const selectedFile = ref<File | null>(null);
-
 
 const handleFileChange = (event: Event) => {
   const target = event.target as HTMLInputElement;
   if (target.files && target.files.length > 0) {
     selectedFile.value = target.files[0];
-    anh.value = URL.createObjectURL(selectedFile.value);
+    anh1.value = URL.createObjectURL(selectedFile.value);
   }
 };
 
-
 const schema = yup.object().shape({
   tendichvu: yup.string().required('Vui lòng nhập tên dịch vụ'),
-  giatien: yup.number().typeError('Giá tiền phải là một số').required('Vui lòng nhập giá tiền').positive('Giá tiền phải lớn hơn 0'),
-  mota: yup.string().required('Vui lòng nhập mô tả'),
-  giatien: yup.number().required('Vui lòng nhập giá tiền').positive('Giá tiền phải là số dương'),
+  giatien: yup.number()
+      .typeError('Giá tiền phải là một số')
+      .required('Vui lòng nhập giá tiền')
+      .positive('Giá tiền phải lớn hơn 0'),
   mota: yup.string().required('Vui lòng nhập mô tả')
 });
 
-
-const { handleSubmit, resetForm } = useForm({
+const {handleSubmit, resetForm} = useForm({
   validationSchema: schema,
   initialValues: {
     tendichvu: '',
@@ -57,7 +55,6 @@ const { handleSubmit, resetForm } = useForm({
     trangthai: false
   }
 });
-
 const submitForm = handleSubmit(async (formValues) => {
   await createService(formValues);
 });
@@ -74,7 +71,8 @@ const cleanService = () => {
   service.value.giatien = '';
   service.value.mota = '';
   service.value.trangthai = false;
-  anh.value = '';
+  anh1.value = '';
+  anh2.value = '';
   resetForm()
   toast.success("Các ô input đã được làm sạch.");
 };
@@ -93,8 +91,8 @@ const createService = async (formValues) => {
       toast.error(`Có lỗi xảy ra khi tạo dịch vụ: ${result.message}`);
     }
   } catch (error) {
-    notificationStore.addNotification('Có lỗi xảy ra khi tạo dịch vụ' +result.message, user.userInfo.name);
-    toast.error('Có lỗi xảy ra khi tạo dịch vụ.' ,result.message);
+    notificationStore.addNotification('Có lỗi xảy ra khi tạo dịch vụ' + result.message, user.userInfo.name);
+    toast.error('Có lỗi xảy ra khi tạo dịch vụ.', result.message);
   }
 };
 
@@ -218,29 +216,36 @@ const updateTTService = async (serviceId) => {
                 </div>
                 <div class="modal-body">
                   <form v-on:submit.prevent="submitForm">
-                  <div class="row">
+                    <div class="row">
                       <div class="col-6">
-                        <div v-if="anh==null">
-                          <img :src="service.anh" class="card-img-top p-1" alt="...">
+                        <div v-if="anh1==null">
+                          <img :src="service.anh" class="card-img-top p-1" alt="Không có ảnh rùi">
                         </div>
                         <div v-else>
-                          <img :src="anh" class="card-img-top p-1" alt="...">
+                          <img :src="anh1" class="card-img-top p-1" alt="Không có ảnh rùi">
                         </div>
-                        <input type="file" id="fileInput" accept="image/png, image/jpeg, image/gif" @change="handleFileChange" />
+                        <input type="file" id="fileInput1" accept="image/png, image/jpeg, image/gif"
+                               @change="handleFileChange"/>
                       </div>
                       <div class="col-6">
-                        <InputField type="text" name="tendichvu" class="form-control" label="Tên dịch vụ" v-model="service.tendichvu" :rules="yup.string().required('Vui lòng nhập tên dịch vụ')" />
-                        <InputField type="number" name="giatien" class="form-control" label="Giá tiền" v-model="service.giatien" :rules="yup.number().required('Vui lòng nhập giá tiền')" />
+                        <InputField type="text" name="tendichvu" class="form-control" label="Tên dịch vụ"
+                                    v-model="service.tendichvu"
+                                    :rules="yup.string().required('Vui lòng nhập tên dịch vụ')"/>
+                        <InputField type="number" name="giatien" class="form-control" label="Giá tiền"
+                                    v-model="service.giatien" :rules="yup.number().required('Vui lòng nhập giá tiền')"/>
                         <div class="form-check form-control form-check-inline">
                           <label class="form-check-label">
-                            <input class="form-check-input" type="radio" name="trangthai" v-model="service.trangthai" :value="true"> Hoạt động
+                            <input class="form-check-input" type="radio" name="trangthai" v-model="service.trangthai"
+                                   :value="true"> Hoạt động
                             <br>
-                            <input class="form-check-input" type="radio" name="trangthai" v-model="service.trangthai" :value="false"> Không hoạt động
+                            <input class="form-check-input" type="radio" name="trangthai" v-model="service.trangthai"
+                                   :value="false"> Không hoạt động
                           </label>
                         </div>
                       </div>
                       <div class="col-12">
-                        <InputField type="string" name="mota" class="form-control" label="Mô tả" v-model="service.mota" :rules="yup.string().required('Vui lòng nhập mô tả')" />
+                        <InputField type="string" name="mota" class="form-control" label="Mô tả" v-model="service.mota"
+                                    :rules="yup.string().required('Vui lòng nhập mô tả')"/>
                       </div>
                     </div>
 
@@ -318,28 +323,28 @@ const updateTTService = async (serviceId) => {
                     </div>
                     <div class="modal-body">
                       <form v-on:submit.prevent="submitFormUpdate">
-                      <div class="row">
-                        <div class="col-6">
-<!--                          <img src="~/assets/image/catservice.jpg" class="card-img-top p-1" alt="...">-->
-                          <div v-if="anh==null">
-                            <img :src="service.anh" class="card-img-top p-1" alt="...">
+                        <div class="row">
+                          <div class="col-6">
+                            <div v-if="anh1==null">
+                              <img :src="service.anh" class="card-img-top p-1" alt="...">
+                            </div>
+                            <div v-else>
+                              <img :src="anh1" class="card-img-top p-1" alt="...">
+                            </div>
+                            <input type="file" id="fileInput" accept="image/png, image/jpeg, image/gif"
+                                   @change="handleFileChange"/>
                           </div>
-                         <div v-else>
-                           <img :src="anh" class="card-img-top p-1" alt="...">
-                         </div>
-                          <input type="file" id="fileInput" accept="image/png, image/jpeg, image/gif" @change="handleFileChange" />
+                          <div class="col-6">
+                            <input type="text" name="tendichvu" class="form-control" v-model="service.tendichvu"/>
+                            <!-- Input cho giá tiền -->
+                            <input type="number" name="giatien" class="form-control" v-model="service.giatien"/>
+                            <label class="form-label">Trạng thái :
+                              {{ service.trangthai == true ? 'Hoạt động' : 'Không hoạt động' }}</label>
+                          </div>
+                          <div class="col-12">
+                            <input type="text" name="mota" id="mota" class="form-control" v-model="service.mota"/>
+                          </div>
                         </div>
-                        <div class="col-6">
-                          <InputField type="text" name="tendichvu" class="form-control" label="Tên dịch vụ" v-model="service.tendichvu" :rules="yup.string().required('Vui lòng nhập tên dịch vụ')" />
-                          <!-- Input cho giá tiền -->
-                          <InputField type="number" name="giatien" class="form-control" label="Giá tiền" v-model="service.giatien" :rules="yup.number().required('Vui lòng nhập giá tiền')" />
-                          <label class="form-label">Trạng thái :
-                            {{ service.trangthai == true ? 'Hoạt động' : 'Không hoạt động' }}</label>
-                        </div>
-                        <div class="col-12">
-                          <InputField type="string" name="mota" id="mota" class="form-control" label="Mô tả" v-model="service.mota" :rules="yup.string().required('Vui lòng nhập mô tả')" />
-                        </div>
-                      </div>
                       </form>
                     </div>
 

@@ -10,7 +10,7 @@ export default defineNuxtRouteMiddleware(async (to) => {
 
         if (!accessToken || !viewRole) {
             toast.error('Vui lòng đăng nhập để tiếp tục.');
-            return navigateTo('/login');
+            return navigateTo('/');
         }
 
         if (!userStore.userInfo) {
@@ -54,7 +54,7 @@ export default defineNuxtRouteMiddleware(async (to) => {
             } catch (error) {
                 console.error('Lỗi khi làm mới token:', error);
                 toast.error('Đăng nhập lại thất bại!');
-                return navigateTo('/login');
+                return navigateTo('/');
             }
         }
     }
