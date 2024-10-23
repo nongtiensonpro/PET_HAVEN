@@ -31,7 +31,7 @@ export const useServiceStore = defineStore('serviceStore', {
         // Thêm dịch vụ mới
         async addDichVu(service: DichVu) {
             const token = sessionStorage.getItem('access_token');
-            console.log(" Tên dịch vụ : "+service.tendichvu +" Mô tả : "+service.mota+" Giá tiền : "+service.giatien+" Trạng thái :"+service.trangthai);
+
             const formData = new FormData();
         
             formData.append('tenDichVu', service.tendichvu);
@@ -41,7 +41,6 @@ export const useServiceStore = defineStore('serviceStore', {
 
             const fileInput = document.querySelector('#fileInput') as HTMLInputElement;
             formData.append('file', fileInput.files[0]);
-        
             try {
                 const response = await fetch(API_ENDPOINTS.API_ENDPOINTS.dichVu.addDichVu, {
                     method: 'POST',
@@ -64,21 +63,28 @@ export const useServiceStore = defineStore('serviceStore', {
                 return { success: false, message: error.message };
             }
         }
-
         ,
-
-        // Cập nhật dịch vụ
         async updateDichVu(service: DichVu) {
             const updateDichVuUrl = API_ENDPOINTS.API_ENDPOINTS.dichVu.updateDichVu + service.id;
+            console.log("Đường dẫn cập nhật dịch vụ: " + updateDichVuUrl);
             const token = sessionStorage.getItem('access_token');
-            const formData = new FormData();
+            const formDataUpdate = new FormData();
 
-            formData.append('tenDichVu', service.tendichvu);
-            formData.append('moTa', service.mota);
-            formData.append('giaTien', service.giatien);
+            formDataUpdate.append('tenDichVu', service.tendichvu);
+            formDataUpdate.append('moTa', service.mota);
+            formDataUpdate.append('giaTien', service.giatien);
+            formDataUpdate.append('trangThai', service.trangthai);
 
-            const fileInput = document.querySelector('#fileInput') as HTMLInputElement;
-            formData.append('file', fileInput.files[0]);
+            const fileInputUpdate = document.querySelector('#fileInput') as HTMLInputElement;
+
+            // Kiểm tra tệp có được chọn hay không
+            if (fileInputUpdate.files.length > 0) {
+                formDataUpdate.append('file', fileInputUpdate.files[0]);
+                console.log("Tệp ảnh được chọn: " + fileInputUpdate.files[0].name);
+            } else {
+                console.error('Không có tệp nào được chọn để cập nhật.');
+                return { success: false, message: 'Không có tệp nào được chọn để cập nhật.' };
+            }
 
             try {
                 const response = await fetch(updateDichVuUrl, {
@@ -86,7 +92,7 @@ export const useServiceStore = defineStore('serviceStore', {
                     headers: {
                         'Authorization': `Bearer ${token}`,
                     },
-                    body: formData,
+                    body: formDataUpdate,
                 });
 
                 if (!response.ok) {
@@ -94,17 +100,16 @@ export const useServiceStore = defineStore('serviceStore', {
                 }
 
                 const data = await response.json();
+                console.log("Dữ liệu nhận được từ server:", data); // In ra dữ liệu nhận được
                 this.services = data.content;
                 this.pageable = data.page;
                 return { success: true, message: 'Lưu thành công' };
             } catch (error) {
+                console.error('Chi tiết lỗi:', error); // In ra chi tiết lỗi
                 return { success: false, message: `Đã có lỗi xảy ra: ` + error.message };
             }
         }
-
         ,
-
-        // Xóa dịch vụ
         async deleteDichVu(serviceId: number) {
             const updateDichVuUrl = API_ENDPOINTS.API_ENDPOINTS.dichVu.deleteDichVu + serviceId;
             const token = sessionStorage.getItem('access_token');

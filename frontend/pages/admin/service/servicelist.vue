@@ -25,14 +25,15 @@ const service = ref({
   trangthai: false,
   anh: null as File | null,
 });
-const urlAnh = ref(null);
+const anh = ref(null);
 const handleFileChange = (event: Event) => {
   const target = event.target as HTMLInputElement;
   if (target.files && target.files.length > 0) {
     service.value.anh = target.files[0];
-    urlAnh.value = URL.createObjectURL(service.value.anh);
+    anh.value = URL.createObjectURL(service.value.anh);
   }
 };
+
 
 const schema = yup.object({
   tendichvu: yup.string().required('Vui lòng nhập tên dịch vụ'),
@@ -48,7 +49,7 @@ const { handleSubmit, resetForm } = useForm({
     giatien: '',
     mota: '',
     trangthai: false,
-    urlAnh: ''
+    anh: ''
   }
 });
 
@@ -57,7 +58,6 @@ const submitForm = handleSubmit(async (formValues) => {
 });
 
 const submitFormUpdate = handleSubmit(async (formValues) => {
-  formValues.anh = service.value.anh;
   console.log("Form values for update:", formValues);
   await saveService(formValues);
 });
@@ -71,15 +71,14 @@ const cleanService = () => {
   service.value.giatien = '';
   service.value.mota = '';
   service.value.trangthai = false;
-  urlAnh.value = null;
-  urlAnh.clear();
+  anh.value = '';
+  resetForm()
   toast.success("Các ô input đã được làm sạch.");
 };
 
 const createService = async (formValues) => {
   try {
     const result = await serviceStore.addDichVu(formValues);
-
     if (result.success) {
       notificationStore.addNotification('Dịch vụ đã được tạo thành công', user.userInfo.name);
       toast.success('Dịch vụ đã được tạo thành công!');
@@ -91,14 +90,34 @@ const createService = async (formValues) => {
       toast.error(`Có lỗi xảy ra khi tạo dịch vụ: ${result.message}`);
     }
   } catch (error) {
-    notificationStore.addNotification('Có lỗi xảy ra khi tạo dịch vụ', user.userInfo.name);
-    console.error('Lỗi khi tạo dịch vụ:', error);
-    toast.error('Có lỗi xảy ra khi tạo dịch vụ.');
+    notificationStore.addNotification('Có lỗi xảy ra khi tạo dịch vụ' +result.message, user.userInfo.name);
+    toast.error('Có lỗi xảy ra khi tạo dịch vụ.' ,result.message);
+  }
+};
+
+const saveService = async (formValues) => {
+  try {
+    const result = await serviceStore.updateDichVu(formValues);
+    if (result.success) {
+      notificationStore.addNotification("Dịch vụ đã được cập nhật thành công!");
+      toast.success('Dịch vụ đã được lưu thành công!');
+      formValues.anh = anh.value;
+      anh.value = null;
+      await serviceStore.fetchServices();
+    } else {
+      anh.value = null;
+      notificationStore.addNotification(`Có lỗi xảy ra khi cập nhật dịch vụ: ${result.message}`);
+      toast.error(result.message);
+    }
+  } catch (error) {
+    anh.value = null;
+    notificationStore.addNotification("Dịch vụ đã được cập nhật thất bại!", user.userInfo.name);
+    console.error('Lỗi khi lưu dịch vụ:', error);
+    toast.error('Có lỗi xảy ra khi lưu dịch vụ :'+error);
   }
 };
 
 const name = ref('');
-
 
 const findServiceByName = async (name: string) => {
   if (!name || name.trim() === '') {
@@ -120,25 +139,6 @@ const findServiceByName = async (name: string) => {
     }, 2000);
   }
 };
-const saveService = async (formValues) => {
-  try {
-    formValues.anh = urlAnh;
-    const result = await serviceStore.updateDichVu(formValues);
-    if (result.success) {
-      notificationStore.addNotification("Dịch vụ đã được cập nhật thành công!");
-      toast.success('Dịch vụ đã được lưu thành công!');
-      await serviceStore.fetchServices();
-    } else {
-      notificationStore.addNotification(`Có lỗi xảy ra khi cập nhật dịch vụ: ${result.message}`);
-      toast.error(result.message);
-    }
-  } catch (error) {
-    notificationStore.addNotification("Dịch vụ đã được cập nhật thất bại!", user.userInfo.name);
-    console.error('Lỗi khi lưu dịch vụ:', error);
-    toast.error('Có lỗi xảy ra khi lưu dịch vụ :'+error);
-  }
-};
-
 const deleteService = async (serviceId) => {
   try {
     const result = await serviceStore.deleteDichVu(serviceId);
@@ -218,11 +218,11 @@ const updateTTService = async (serviceId) => {
                   <form v-on:submit.prevent="submitForm">
                   <div class="row">
                       <div class="col-6">
-                        <div v-if="urlAnh==null">
+                        <div v-if="anh==null">
                           <img :src="service.anh" class="card-img-top p-1" alt="...">
                         </div>
                         <div v-else>
-                          <img :src="urlAnh" class="card-img-top p-1" alt="...">
+                          <img :src="anh" class="card-img-top p-1" alt="...">
                         </div>
                         <input type="file" id="fileInput" accept="image/png, image/jpeg, image/gif" @change="handleFileChange" />
                       </div>
@@ -252,7 +252,7 @@ const updateTTService = async (serviceId) => {
                           <button type="submit" class="custom-button">Thêm dịch vụ</button>
                         </div>
                         <div class="col">
-                          <button type="button" class="custom-button" @click="resetForm">Clean</button>
+                          <button type="button" class="custom-button" @click="cleanService">Clean</button>
                         </div>
                       </div>
                     </div>
@@ -319,11 +319,11 @@ const updateTTService = async (serviceId) => {
                       <div class="row">
                         <div class="col-6">
 <!--                          <img src="~/assets/image/catservice.jpg" class="card-img-top p-1" alt="...">-->
-                          <div v-if="urlAnh==null">
+                          <div v-if="anh==null">
                             <img :src="service.anh" class="card-img-top p-1" alt="...">
                           </div>
                          <div v-else>
-                           <img :src="urlAnh" class="card-img-top p-1" alt="...">
+                           <img :src="anh" class="card-img-top p-1" alt="...">
                          </div>
                           <input type="file" id="fileInput" accept="image/png, image/jpeg, image/gif" @change="handleFileChange" />
                         </div>
