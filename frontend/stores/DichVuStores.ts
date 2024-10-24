@@ -32,9 +32,9 @@ export const useServiceStore = defineStore('serviceStore', {
             formData.append('trangThai', service.trangthai);
 
             const fileInput = document.querySelector('#fileInput') as HTMLInputElement;
-if (fileInput && fileInput.files && fileInput.files.length > 0) {
-    formData.append('file', fileInput.files[0]);
-}
+                if (fileInput && fileInput.files && fileInput.files.length > 0) {
+                    formData.append('file', fileInput.files[0]);
+                }
             try {
                 const response = await fetch(API_ENDPOINTS.API_ENDPOINTS.dichVu.addDichVu, {
                     method: 'POST',
