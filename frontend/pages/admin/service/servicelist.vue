@@ -37,6 +37,11 @@ const handleFileChange = (event: Event) => {
   }
 };
 
+
+const tendichvuRules = 'required|min:1';
+const giatienRules = 'required|numeric|min:0';
+const motaRules = 'required';
+
 const schema = yup.object().shape({
   tendichvu: yup.string().required('Vui lòng nhập tên dịch vụ'),
   giatien: yup.number()
@@ -225,11 +230,22 @@ const updateTTService = async (serviceId) => {
                                @change="handleFileChange"/>
                       </div>
                       <div class="col-6">
-                        <InputField type="text" name="tendichvu" class="form-control" label="Tên dịch vụ"
-                                    v-model="service.tendichvu"
-                                    :rules="yup.string().required('Vui lòng nhập tên dịch vụ')"/>
-                        <InputField type="number" name="giatien" class="form-control" label="Giá tiền"
-                                    v-model="service.giatien" :rules="yup.number().required('Vui lòng nhập giá tiền')"/>
+                        <InputField
+                            type="text"
+                            name="tendichvu"
+                            class="form-control"
+                            label="Tên dịch vụ"
+                            v-model="service.tendichvu"
+                            :rules="tendichvuRules"
+                        />
+                        <InputField
+                            type="number"
+                            name="giatien"
+                            class="form-control"
+                            label="Giá tiền"
+                            v-model="service.giatien"
+                            :rules="giatienRules"
+                        />
                         <div class="form-check form-control form-check-inline">
                           <label class="form-check-label">
                             <input class="form-check-input" type="radio" name="trangthai" v-model="service.trangthai"
@@ -241,8 +257,14 @@ const updateTTService = async (serviceId) => {
                         </div>
                       </div>
                       <div class="col-12">
-                        <InputField type="string" name="mota" class="form-control" label="Mô tả" v-model="service.mota"
-                                    :rules="yup.string().required('Vui lòng nhập mô tả')"/>
+                        <InputField
+                            type="text"
+                            name="mota"
+                            class="form-control"
+                            label="Mô tả"
+                            v-model="service.mota"
+                            :rules="motaRules"
+                        />
                       </div>
                     </div>
 
@@ -316,37 +338,39 @@ const updateTTService = async (serviceId) => {
                       <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                     </div>
                     <div class="modal-body">
-                        <div class="row">
-                          <div class="col-6">
-                            <div v-if="anh1==null">
-                              <img :src="service.anh" class="card-img-top p-1" alt="...">
-                            </div>
-                            <div v-else>
-                              <img :src="anh1" class="card-img-top p-1" alt="...">
-                            </div>
-                            <input type="file" id="fileUpdate" accept="image/png, image/jpeg, image/gif"
-                                   @change="handleFileChange"/>
+                      <div class="row">
+                        <div class="col-6">
+                          <div v-if="anh==null">
+                            <img :src="service.anh" class="card-img-top p-1" alt="...">
                           </div>
-                          <div class="col-6">
-                            <div class="form-group">
-                              <label for="">Tên dịch vụ</label>
-                              <input type="text"
-                                     class="form-control" name="" id="" aria-describedby="helpId" placeholder="" v-model="service.tendichvu">
-                            </div>
-                            <div class="form-group">
-                              <label for="">Giá tiền</label>
-                              <input type="text"
-                                     class="form-control" name="" id="" aria-describedby="helpId" placeholder="" v-model="service.giatien">
-                            </div>
-                            <div class="form-group">
-                              <label for="">Trạng thái</label>
-                              {{ service.trangthai == true ? 'Hoạt động' : 'Không hoạt động' }}
-                            </div>
+                          <div v-else>
+                            <img :src="anh" class="card-img-top p-1" alt="...">
                           </div>
-                          <div class="col-12">
-                            <input type="text" name="mota" id="mota" class="form-control" v-model="service.mota"/>
+                          <input type="file" id="fileUpdate" accept="image/png, image/jpeg, image/gif"
+                                 @change="handleFileChange"/>
+                        </div>
+                        <div class="col-6">
+                          <div class="form-group">
+                            <label for="">Tên dịch vụ</label>
+                            <input type="text"
+                                   class="form-control" name="" id="" aria-describedby="helpId" placeholder=""
+                                   v-model="service.tendichvu">
+                          </div>
+                          <div class="form-group">
+                            <label for="">Giá tiền</label>
+                            <input type="text"
+                                   class="form-control" name="" id="" aria-describedby="helpId" placeholder=""
+                                   v-model="service.giatien">
+                          </div>
+                          <div class="form-group">
+                            <label for="">Trạng thái</label>
+                            {{ service.trangthai == true ? 'Hoạt động' : 'Không hoạt động' }}
                           </div>
                         </div>
+                        <div class="col-12">
+                          <input type="text" name="mota" id="mota" class="form-control" v-model="service.mota"/>
+                        </div>
+                      </div>
                     </div>
                     <div class="p-4">
                       <div class="row">

@@ -1,7 +1,8 @@
 <template>
   <div>
     <label :for="name">{{ label }}</label>
-    <input :id="name" v-bind="$attrs" v-model="internalValue" @blur="onBlur" />
+    <!-- Sử dụng internalValue thay vì v-model -->
+    <input :id="name" v-bind="$attrs" :value="internalValue" @input="onInput" @blur="onBlur" />
     <span v-if="errors && errors.length">{{ errors }}</span>
   </div>
 </template>
@@ -9,6 +10,7 @@
 <script>
 import { useField } from 'vee-validate';
 import * as yup from 'yup';
+import { computed } from 'vue'; // Đảm bảo import computed
 
 export default {
   name: 'InputField',
@@ -30,14 +32,19 @@ export default {
       },
       set(value) {
         emit('update:modelValue', value);
-        fieldValue.value = value;
+        fieldValue.value = value; // Cập nhật giá trị của useField
       }
     });
+
+    const onInput = (event) => {
+      internalValue.value = event.target.value;
+    };
 
     return {
       internalValue,
       errors,
-      onBlur
+      onBlur,
+      onInput
     };
   }
 };

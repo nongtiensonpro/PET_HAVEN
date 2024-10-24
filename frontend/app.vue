@@ -1,7 +1,7 @@
 <template>
-  <NuxtLayout>
+  <ClientOnly>
     <CustomerHome/>
-  </NuxtLayout>
+  </ClientOnly>
 </template>
 
 <script setup lang="ts">
