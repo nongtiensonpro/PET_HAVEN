@@ -23,20 +23,18 @@ export const useServiceStore = defineStore('serviceStore', {
                 console.error('Error fetching services:', error);
             }
         },
-
-        // Thêm dịch vụ mới
         async addDichVu(service: DichVu) {
             const token = sessionStorage.getItem('access_token');
-
             const formData = new FormData();
-        
             formData.append('tenDichVu', service.tendichvu);
             formData.append('moTa', service.mota);
             formData.append('giaTien', service.giatien);
             formData.append('trangThai', service.trangthai);
 
             const fileInput = document.querySelector('#fileInput') as HTMLInputElement;
-            formData.append('file', fileInput.files[0]);
+if (fileInput && fileInput.files && fileInput.files.length > 0) {
+    formData.append('file', fileInput.files[0]);
+}
             try {
                 const response = await fetch(API_ENDPOINTS.API_ENDPOINTS.dichVu.addDichVu, {
                     method: 'POST',
@@ -70,8 +68,10 @@ export const useServiceStore = defineStore('serviceStore', {
             formDataUpdate.append('giaTien', service.giatien);
             formDataUpdate.append('trangThai', service.trangthai);
 
-            const fileInputUpdate = document.querySelector('#fileInput') as HTMLInputElement;
-            formDataUpdate.append('file', fileInputUpdate.files[0]);
+            const fileInput = document.querySelector('#fileInput') as HTMLInputElement;
+            if (fileInput && fileInput.files && fileInput.files.length > 0) {
+                formDataUpdate.append('file', fileInput.files[0]);
+            }
 
 
             try {
@@ -93,7 +93,6 @@ export const useServiceStore = defineStore('serviceStore', {
                 this.pageable = data.page;
                 return { success: true, message: 'Lưu thành công' };
             } catch (error) {
-                console.error('Chi tiết lỗi:', error); // In ra chi tiết lỗi
                 return { success: false, message: `Đã có lỗi xảy ra: ` + error.message };
             }
         }

@@ -25,15 +25,15 @@ const service = ref({
   anh: null as File | null,
 });
 
-const anh1 = ref(null);
-const anh2 = ref(null);
+const anh = ref(null);
+
 const selectedFile = ref<File | null>(null);
 
 const handleFileChange = (event: Event) => {
   const target = event.target as HTMLInputElement;
   if (target.files && target.files.length > 0) {
     selectedFile.value = target.files[0];
-    anh1.value = URL.createObjectURL(selectedFile.value);
+    anh.value = URL.createObjectURL(selectedFile.value);
   }
 };
 
@@ -52,16 +52,14 @@ const {handleSubmit, resetForm} = useForm({
     tendichvu: '',
     giatien: '',
     mota: '',
-    trangthai: false
+    trangthai: false,
+    anh: null,
   }
 });
 const submitForm = handleSubmit(async (formValues) => {
   await createService(formValues);
 });
 
-const submitFormUpdate = handleSubmit(async (formValues) => {
-  await saveService(formValues);
-});
 onMounted(() => {
   serviceStore.fetchServices();
 });
@@ -71,8 +69,7 @@ const cleanService = () => {
   service.value.giatien = '';
   service.value.mota = '';
   service.value.trangthai = false;
-  anh1.value = '';
-  anh2.value = '';
+  anh.value = '';
   resetForm()
   toast.success("Các ô input đã được làm sạch.");
 };
@@ -91,15 +88,15 @@ const createService = async (formValues) => {
       toast.error(`Có lỗi xảy ra khi tạo dịch vụ: ${result.message}`);
     }
   } catch (error) {
-    notificationStore.addNotification('Có lỗi xảy ra khi tạo dịch vụ' + result.message, user.userInfo.name);
-    toast.error('Có lỗi xảy ra khi tạo dịch vụ.', result.message);
+    notificationStore.addNotification('Có lỗi xảy ra khi tạo dịch vụ', user.userInfo.name);
+    toast.error('Có lỗi xảy ra khi tạo dịch vụ.');
   }
 };
 
-const saveService = async (formValues) => {
+const saveService = async (service) => {
   try {
-    formValues.anh = anh.value;
-    const result = await serviceStore.updateDichVu(formValues);
+
+    const result = await serviceStore.updateDichVu(service);
     if (result.success) {
       notificationStore.addNotification("Dịch vụ đã được cập nhật thành công!");
       toast.success('Dịch vụ đã được lưu thành công!');
@@ -218,13 +215,13 @@ const updateTTService = async (serviceId) => {
                   <form v-on:submit.prevent="submitForm">
                     <div class="row">
                       <div class="col-6">
-                        <div v-if="anh1==null">
+                        <div v-if="anh===null">
                           <img :src="service.anh" class="card-img-top p-1" alt="Không có ảnh rùi">
                         </div>
                         <div v-else>
-                          <img :src="anh1" class="card-img-top p-1" alt="Không có ảnh rùi">
+                          <img :src="anh" class="card-img-top p-1" alt="Không có ảnh rùi">
                         </div>
-                        <input type="file" id="fileInput1" accept="image/png, image/jpeg, image/gif"
+                        <input type="file" id="fileInput" accept="image/png, image/jpeg, image/gif"
                                @change="handleFileChange"/>
                       </div>
                       <div class="col-6">
@@ -289,7 +286,6 @@ const updateTTService = async (serviceId) => {
         <td>{{ service.giatien.toLocaleString() }} VND</td>
         <td>{{ service.trangthai == true ? 'Hoạt động' : 'Không hoạt động' }}</td>
         <td>
-          <!-- Button trigger modal -->
           <div class="row">
             <div class="col">
               <button type="button" class="nav-link" @click="deleteService(service.id)" data-bs-dismiss="modal">Xóa
@@ -297,20 +293,18 @@ const updateTTService = async (serviceId) => {
             </div>
             <div class="col">
               <button type="button" class="nav-link" @click="updateTTService(service.id)" data-bs-dismiss="modal">
-                <div v-if="service.trangthai">
+                <span v-if="service.trangthai">
                   Ẩn dịch vụ
-                </div>
-                <div v-else>
+                </span>
+                <span v-else>
                   Hiện dịch vụ
-                </div>
+                </span>
               </button>
             </div>
             <div class="col">
               <button type="button" class="nav-link" data-bs-toggle="modal" :data-bs-target="'#modal' + service.id">
                 Chi tiết
               </button>
-
-              <!-- Modal -->
               <div class="modal fade" :id="'modal' + service.id" tabindex="-1"
                    :aria-labelledby="'modalLabel' + service.id"
                    aria-hidden="true">
@@ -322,7 +316,6 @@ const updateTTService = async (serviceId) => {
                       <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                     </div>
                     <div class="modal-body">
-                      <form v-on:submit.prevent="submitFormUpdate">
                         <div class="row">
                           <div class="col-6">
                             <div v-if="anh1==null">
@@ -331,23 +324,30 @@ const updateTTService = async (serviceId) => {
                             <div v-else>
                               <img :src="anh1" class="card-img-top p-1" alt="...">
                             </div>
-                            <input type="file" id="fileInput" accept="image/png, image/jpeg, image/gif"
+                            <input type="file" id="fileUpdate" accept="image/png, image/jpeg, image/gif"
                                    @change="handleFileChange"/>
                           </div>
                           <div class="col-6">
-                            <input type="text" name="tendichvu" class="form-control" v-model="service.tendichvu"/>
-                            <!-- Input cho giá tiền -->
-                            <input type="number" name="giatien" class="form-control" v-model="service.giatien"/>
-                            <label class="form-label">Trạng thái :
-                              {{ service.trangthai == true ? 'Hoạt động' : 'Không hoạt động' }}</label>
+                            <div class="form-group">
+                              <label for="">Tên dịch vụ</label>
+                              <input type="text"
+                                     class="form-control" name="" id="" aria-describedby="helpId" placeholder="" v-model="service.tendichvu">
+                            </div>
+                            <div class="form-group">
+                              <label for="">Giá tiền</label>
+                              <input type="text"
+                                     class="form-control" name="" id="" aria-describedby="helpId" placeholder="" v-model="service.giatien">
+                            </div>
+                            <div class="form-group">
+                              <label for="">Trạng thái</label>
+                              {{ service.trangthai == true ? 'Hoạt động' : 'Không hoạt động' }}
+                            </div>
                           </div>
                           <div class="col-12">
                             <input type="text" name="mota" id="mota" class="form-control" v-model="service.mota"/>
                           </div>
                         </div>
-                      </form>
                     </div>
-
                     <div class="p-4">
                       <div class="row">
                         <div class="col">
@@ -361,12 +361,12 @@ const updateTTService = async (serviceId) => {
                         </div>
                         <div class="col">
                           <button type="button" class="custom-button" @click="updateTTService(service.id)">
-                            <p v-if="service.trangthai">
+                            <span v-if="service.trangthai">
                               Ẩn dịch vụ
-                            </p>
-                            <p v-else>
+                            </span>
+                            <span v-else>
                               Hiện dịch vụ
-                            </p>
+                            </span>
                           </button>
                         </div>
                       </div>
@@ -376,7 +376,6 @@ const updateTTService = async (serviceId) => {
               </div>
             </div>
           </div>
-
         </td>
       </tr>
       </tbody>
@@ -385,12 +384,5 @@ const updateTTService = async (serviceId) => {
 </template>
 
 <style scoped>
-.container {
-  margin-top: 20px;
-}
 
-.table {
-  width: 100%;
-  margin: 0 auto;
-}
 </style>
