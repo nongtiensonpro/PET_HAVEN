@@ -47,17 +47,11 @@ export const useServiceStore = defineStore('serviceStore', {
                 if (!response.ok) {
                     return { success: false, message: response.status };
                 }
-        
-                const newService = await response.json();
-                this.services.push(newService);
-        
-                return { success: true, data: newService };
+                return { success: true, message: 'Thêm dịch vụ thành công' };
             } catch (error) {
-                console.error('Error adding service:', error);
-                return { success: false, message: error.message };
+                return { success: false, message: 'Lỗi thêm dịch vụ' };
             }
-        }
-        ,
+        },
         async updateDichVu(service: DichVu) {
             const updateDichVuUrl = API_ENDPOINTS.API_ENDPOINTS.dichVu.updateDichVu + service.id;
             const token = sessionStorage.getItem('access_token');
@@ -68,12 +62,10 @@ export const useServiceStore = defineStore('serviceStore', {
             formDataUpdate.append('giaTien', service.giatien);
             formDataUpdate.append('trangThai', service.trangthai);
 
-            const fileInput = document.querySelector('#fileInput') as HTMLInputElement;
+            const fileInput = document.querySelector('#fileUpdate') as HTMLInputElement;
             if (fileInput && fileInput.files && fileInput.files.length > 0) {
                 formDataUpdate.append('file', fileInput.files[0]);
             }
-
-
             try {
                 const response = await fetch(updateDichVuUrl, {
                     method: 'PUT',
@@ -189,7 +181,7 @@ export const useServiceStore = defineStore('serviceStore', {
         cleanPayload(payload: any) {
             return JSON.parse(JSON.stringify(payload, (key, value) => {
                 if (typeof value === 'function') {
-                    return undefined; // Bỏ qua hàm
+                    return undefined;
                 }
                 return value;
             }));
