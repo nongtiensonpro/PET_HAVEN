@@ -15,7 +15,7 @@ CREATE TABLE ThongTinCaNhan
     HoTen      VARCHAR(100) NOT NULL,
     Tuoi       INT,
     GioiTinh   VARCHAR(10),
-    idTaiKhoan INT REFERENCES TaiKhoan (ID),
+    idTaiKhoan varchar(255) not null ,
     SDT        VARCHAR(20)
 );
 
@@ -54,7 +54,7 @@ CREATE TABLE LichHen
     idKhachHang VARCHAR(255) NOT NULL ,
     idThuCung   INT REFERENCES ThuCung (ID),
     idDichVu    INT REFERENCES DichVu (ID),
-    Date        TIMESTAMP NOT NULL,
+    Date        DATE NOT NULL,
     TrangThai   INT   NOT NULL,
     EmailNguoiDat VARCHAR(255) NOT NULL default '123@gmail.com',
     idCaLichHen INT REFERENCES CaLichHen(ID)
@@ -65,7 +65,7 @@ CREATE TABLE LichHen
 -- 2 : đã hủy
 -- 3 : chờ thanh toán
 -- 4 : chờ xác nhận
-
+-- 5 : Rỗng
 
 
 CREATE TABLE NhacLichHen
@@ -148,9 +148,9 @@ VALUES
 
 -- Thêm dữ liệu vào bảng LichHen
 INSERT INTO LichHen (idKhachHang, idThuCung, idDichVu, Date, TrangThai , idCaLichHen)
-VALUES (1, 1, 1, '2024-10-02 10:00:00', 1 , 1),
-       (2, 2, 2, '2024-10-03 14:00:00', 2, 2),
-       (3, 3, 3, '2024-10-04 09:00:00', 3 , 3);
+VALUES (1, 1, 1, '2024-10-02 ', 1 , 1),
+       (2, 2, 2, '2024-10-03 ', 2, 2),
+       (3, 3, 3, '2024-10-04 ', 3 , 3);
 
 -- Thêm dữ liệu vào bảng NhacLichHen
 INSERT INTO NhacLichHen (TenThongBao, MoTa, idTaiKhoan, ISRead, TrangThai)
