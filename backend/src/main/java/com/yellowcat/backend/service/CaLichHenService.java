@@ -37,10 +37,12 @@ public class CaLichHenService {
         caLichHenRepository.updateTrangThaiCaTrongNgay(idCaLichHen, ngay, trangThai);
     }
 
-    public List<?> getAllByDate(LocalDate date){
+    public List<Calichhen> getAllByDate(LocalDate date){
         return caLichHenRepository.findAllCaAndStatusByDate(date);
     }
 
-
+    public List<Calichhen> findAll(){
+        return caLichHenRepository.findAll();
+    }
 
 }

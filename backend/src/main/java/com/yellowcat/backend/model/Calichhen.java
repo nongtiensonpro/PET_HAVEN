@@ -1,5 +1,6 @@
 package com.yellowcat.backend.model;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.Id;
@@ -19,15 +20,18 @@ public class Calichhen {
     @Column(name = "id", nullable = false)
     private Integer id;
 
+    @JsonProperty
     @NotNull
     @Size(max = 20)
     @Column(name = "tenca", length = 20)
     private String tenca;
 
+    @JsonProperty
     @NotNull
     @Column(name = "thoigianca", nullable = false)
     private LocalTime thoigianca;
 
+    @JsonProperty
     @NotNull
     @Column(name = "trangthai")
     private Boolean trangthai;
