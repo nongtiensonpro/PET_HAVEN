@@ -7,6 +7,7 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
 import java.time.LocalDate;
+import java.util.List;
 
 @Repository
 public interface LichhenRepository extends JpaRepository<Lichhen, Integer> {
@@ -15,5 +16,8 @@ public interface LichhenRepository extends JpaRepository<Lichhen, Integer> {
     Page<Lichhen> findByEmailNguoiDat(String idKhachHang, Pageable pageable);
 
     boolean existsByDateAndIdcalichhen_Id(LocalDate date, int idCaLichHen);
+
+    List<Lichhen> findByEmailNguoiDatAndDateBefore(String emailNguoiDat, LocalDate date);
+
 
 }

@@ -3,11 +3,13 @@ package com.yellowcat.backend.service;
 import com.yellowcat.backend.model.Calichhen;
 import com.yellowcat.backend.model.Lichhen;
 import com.yellowcat.backend.repository.LichhenRepository;
+import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.event.ContextRefreshedEvent;
 import org.springframework.context.event.EventListener;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
@@ -56,8 +58,21 @@ public class LichHenService {
     }
 
     // Hàm tự động chạy khi ứng dụng khởi động
-    @EventListener(ContextRefreshedEvent.class)
+    @Scheduled(cron = "0 0 0 * * ?") // Chạy vào 0:00 mỗi ngày
+    @Transactional
+    public void taoLichHenRongMoiNgay() {
+        taoLichHenRong();
+        System.out.println("Đã tạo lịch hẹn rỗng mới cho 7 ngày tới vào lúc 0:00.");
+    }
+
+    @EventListener(ContextRefreshedEvent.class) // Chạy khi ứng dụng khởi động
+    @Transactional
     public void taoLichHenRongKhiKhoiDong() {
+        taoLichHenRong();
+        System.out.println("Đã tạo lịch hẹn rỗng mới cho 7 ngày tới khi khởi động.");
+    }
+
+    private void taoLichHenRong() {
         // Lấy tất cả các ca từ bảng calichhen
         List<Calichhen> danhSachCa = caLichHenService.findAll();
 
@@ -68,23 +83,45 @@ public class LichHenService {
             for (Calichhen ca : danhSachCa) {
                 // Kiểm tra xem lịch hẹn rỗng đã tồn tại chưa, tránh thêm trùng
                 if (!lichhenRepository.existsByDateAndIdcalichhen_Id(startDate, ca.getId())) {
-
-//                    Calichhen calichhen = new Calichhen();
-//                    calichhen.setId(ca.getId());
-
                     Lichhen lichHenRong = new Lichhen();
                     lichHenRong.setDate(startDate); // Chỉ thiết lập ngày
                     lichHenRong.setTrangthai(5); // Gán trạng thái là "Rỗng"
                     lichHenRong.setIdcalichhen(ca); // Gắn ID ca lịch hẹn để liên kết
-                    if (lichHenRong.getEmailNguoiDat() == null) {
-                        lichHenRong.setEmailNguoiDat("default-email@example.com"); // Giá trị mặc định
-                    }
+                    lichHenRong.setEmailNguoiDat("default-email@example.com"); // Giá trị mặc định
                     lichHenRong.setIdkhachhang("demo");
                     // Lưu vào bảng lichhen
                     lichhenRepository.save(lichHenRong);
                 }
             }
             startDate = startDate.plusDays(1); // Chuyển sang ngày tiếp theo
+        }
+    }
+
+    @Scheduled(cron = "0 59 23 * * ?") // Chạy vào 23:59 mỗi ngày
+    @Transactional
+    public void xoaLichHenRongCuoiNgay() {
+        xoaLichHenRong();
+        System.out.println("Đã xóa lịch hẹn rỗng vào cuối ngày.");
+    }
+
+    @EventListener(ContextRefreshedEvent.class) // Chạy khi ứng dụng khởi động
+    @Transactional
+    public void xoaLichHenRongKhiKhoiDong() {
+        xoaLichHenRong();
+        System.out.println("Đã xóa lịch hẹn rỗng khi khởi động.");
+    }
+
+    private void xoaLichHenRong() {
+        LocalDate today = LocalDate.now();
+        // Tìm tất cả các bản ghi có email là "default-email@example.com" và ngày nhỏ hơn ngày hôm nay
+        List<Lichhen> danhSachLichHenRong = lichhenRepository.findByEmailNguoiDatAndDateBefore("default-email@example.com", today);
+
+        // Xóa tất cả các bản ghi tìm được
+        if (!danhSachLichHenRong.isEmpty()) {
+            lichhenRepository.deleteAll(danhSachLichHenRong);
+            System.out.println("Đã xóa " + danhSachLichHenRong.size() + " lịch hẹn rỗng.");
+        } else {
+            System.out.println("Không có lịch hẹn rỗng nào để xóa.");
         }
     }
 }
