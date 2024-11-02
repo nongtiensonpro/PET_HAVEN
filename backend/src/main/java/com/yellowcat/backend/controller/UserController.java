@@ -41,7 +41,6 @@ public class UserController {
         response.put("idUser", idUser);
         response.put("username", username);
 
-
         return response;
     }
 }

@@ -2,12 +2,14 @@ import { resolve } from 'path';
 import dotenv from 'dotenv';
 dotenv.config();
 export default defineNuxtConfig({
-    head: {
-        title: 'Yellow Cat Company',
-        meta: [
-            { charset: 'utf-8' },
-            { name: 'viewport', content: 'width=device-width, initial-scale=1' },
-        ],
+    app: {
+        head: {
+            title: 'Yellow Cat Company',
+            meta: [
+                { charset: 'utf-8' },
+                { name: 'viewport', content: 'width=device-width, initial-scale=1' },
+            ],
+        },
     },
     css: [
         './assets/css/bootstrap.min.css',
@@ -36,7 +38,6 @@ export default defineNuxtConfig({
         defaultLocale: 'vi',
         lazy: true,
         langDir: 'i18n/',
-        vueI18nLoader: true,
         detectBrowserLanguage: {
             useCookie: true,
             cookieKey: 'i18n_redirected',
@@ -53,8 +54,5 @@ export default defineNuxtConfig({
         { src: '~/plugins/vee-validate.js' },
         { src: '~/plugins/vue-toastification.ts', mode: 'client' },
     ],
-    router: {
-        middleware: ['auth']
-    },
     ssr: false
 } );

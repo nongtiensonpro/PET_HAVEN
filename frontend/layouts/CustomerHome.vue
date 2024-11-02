@@ -136,6 +136,13 @@
                       </NuxtLink>
                     </div>
                   </li>
+                  <li class="nav-item">
+                    <div v-if="services.length>0">
+                      <Nuxt-link class="nav-link" :to="`/customer/calendar/newuser`" aria-current="page">
+                        <div style="font-size: medium;">Đặt lịch</div>
+                      </Nuxt-link>
+                    </div>
+                  </li>
                 </ul>
               </div>
             </div>
@@ -260,7 +267,7 @@
 import {useServiceStore} from '~/stores/DichVuStores';
 import {computed, ref} from 'vue';
 import DichVu from '~/models/DichVu';
-import logoImage from '@/image/LogoPetHaven.png'; // Import logo
+import logoImage from '@/image/LogoPetHaven.png';
 import {useI18n} from 'vue-i18n';
 import {useUserStore} from '~/stores/user';
 import {useNotificationStore} from '~/stores/useNotificationStore';

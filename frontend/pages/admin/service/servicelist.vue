@@ -267,8 +267,6 @@ const updateTTService = async (serviceId) => {
                         />
                       </div>
                     </div>
-
-                    <!-- Buttons -->
                     <div class="p-4">
                       <div class="row">
                         <div class="col">
@@ -398,6 +396,8 @@ const updateTTService = async (serviceId) => {
                   </div>
                 </div>
               </div>
+
+<!--              MEOMEO-->
             </div>
           </div>
         </td>
