@@ -32,9 +32,9 @@ public interface CalichhenRepository extends JpaRepository<Calichhen, Integer> {
                                     @Param("trangThai") boolean trangThai);
 
     // Truy vấn để lấy tất cả các trạng thái của các ca trong một ngày
-    @Query("SELECT c, lh.trangthai FROM Calichhen c LEFT JOIN Lichhen lh ON c.id = lh.idcalichhen.id " +
-            "WHERE lh.date = :ngay")
-    List<Object[]> findAllCaAndStatusByDate(@Param("ngay") LocalDate ngay);
+    @Query("SELECT c FROM Calichhen c JOIN Lichhen l ON c.id = l.idcalichhen.id " +
+            "WHERE l.date = :ngay")
+    List<Calichhen> findAllCaAndStatusByDate(@Param("ngay") LocalDate ngay);
 
 //    Đổi trang thai ca khi dat lich thanh cong
 //    @Modifying

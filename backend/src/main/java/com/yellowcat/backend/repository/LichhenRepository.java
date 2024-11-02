@@ -15,4 +15,5 @@ public interface LichhenRepository extends JpaRepository<Lichhen, Integer> {
     Page<Lichhen> findByEmailNguoiDat(String idKhachHang, Pageable pageable);
 
     boolean existsByDateAndIdcalichhen_Id(LocalDate date, int idCaLichHen);
+
 }

@@ -15,6 +15,9 @@ import org.springframework.security.oauth2.jwt.Jwt;
 import org.springframework.web.bind.annotation.*;
 
 import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.ZoneId;
+import java.time.chrono.ChronoLocalDate;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -40,7 +43,7 @@ public class DatLichController {
         response.put("dichVu", danhSachDichVu);
 
         // Lấy các ca có thể đặt
-        List<?> CaLichHen = caLichHenService.getAllByDate(ngay);
+        List<Calichhen> CaLichHen = caLichHenService.getAllByDate(ngay);
         response.put("CaLichHen", CaLichHen);
 
         return ResponseEntity.ok(response);
@@ -58,6 +61,12 @@ public class DatLichController {
         lichhen.setIdkhachhang(idUser);
         lichhen.setEmailNguoiDat(email);
         lichhen.setTrangthai(4);
+
+//        check xem có đặt lịch trong quá khứ không
+        LocalDateTime now = LocalDateTime.now(ZoneId.systemDefault());
+        if (lichhen.getDate().isBefore(ChronoLocalDate.from(now))) {
+            return new ResponseEntity<>(HttpStatus.BAD_REQUEST); // Trả về lỗi nếu ngày hẹn nằm trong quá khứ
+        }
 
         // Kiểm tra lịch hẹn có trùng ca trong ngày không
         if (lichHenService.isCaTrungTrongNgay(lichhen.getDate(), lichhen.getIdcalichhen().getId())) {
