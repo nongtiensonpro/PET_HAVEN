@@ -56,6 +56,17 @@ public class Lichhen {
     @JoinColumn(name = "idcalichhen")
     private Calichhen idcalichhen;
 
+    @Column(name = "trangthaica")
+    private Boolean trangthaica;
+
+    public Boolean getTrangthaica() {
+        return trangthaica;
+    }
+
+    public void setTrangthaica(Boolean trangthaica) {
+        this.trangthaica = trangthaica;
+    }
+
     public Calichhen getIdcalichhen() {
         return idcalichhen;
     }

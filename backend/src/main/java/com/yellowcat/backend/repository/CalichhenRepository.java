@@ -34,7 +34,7 @@ public interface CalichhenRepository extends JpaRepository<Calichhen, Integer> {
 
     // Truy vấn để lấy tất cả các trạng thái của các ca trong một ngày
     @Query("SELECT c FROM Calichhen c JOIN Lichhen l ON c.id = l.idcalichhen.id " +
-            "WHERE l.date = :ngay AND c.trangthai = false")
+            "WHERE l.date = :ngay AND l.trangthaica = false")
     List<Calichhen> findAllCaAndStatusByDateaAndTrangthaiFalse(@Param("ngay") LocalDate ngay);
 
 

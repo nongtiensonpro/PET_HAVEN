@@ -93,6 +93,7 @@ public class LichHenService {
                     lichHenRong.setIdcalichhen(ca); // Gắn ID ca lịch hẹn để liên kết
                     lichHenRong.setEmailNguoiDat("default-email@example.com"); // Giá trị mặc định
                     lichHenRong.setIdkhachhang("demo");
+                    lichHenRong.setTrangthaica(false);
                     // Lưu vào bảng lichhen
                     lichhenRepository.save(lichHenRong);
                 }
