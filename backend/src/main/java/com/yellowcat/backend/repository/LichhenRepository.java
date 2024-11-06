@@ -8,6 +8,7 @@ import org.springframework.stereotype.Repository;
 
 import java.time.LocalDate;
 import java.util.List;
+import java.util.Optional;
 
 @Repository
 public interface LichhenRepository extends JpaRepository<Lichhen, Integer> {
@@ -19,5 +20,5 @@ public interface LichhenRepository extends JpaRepository<Lichhen, Integer> {
 
     List<Lichhen> findByEmailNguoiDatAndDateBefore(String emailNguoiDat, LocalDate date);
 
-
+    Optional<Lichhen> findByDateAndIdcalichhen_Id(LocalDate date, int idCaLichHen);
 }
