@@ -8,6 +8,7 @@ import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
 import java.util.List;
+import java.util.Optional;
 
 
 @Service
@@ -32,6 +33,10 @@ public class CaLichHenService {
     public void addOrUpdate(Calichhen calichhen){
         caLichHenRepository.save(calichhen);
     }
+
+    public Optional<Calichhen> findById (Integer id){
+        return caLichHenRepository.findById(id)
+    ;}
 
     public void DoiTrangthaiCaTrongNgay(int idCaLichHen, LocalDate ngay, boolean trangThai){
         caLichHenRepository.updateTrangThaiCaTrongNgay(idCaLichHen, ngay, trangThai);
