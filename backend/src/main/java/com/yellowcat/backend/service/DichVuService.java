@@ -42,4 +42,5 @@ public class DichVuService {
     public Page<Dichvu> FindByNameDV(String tenDV,Pageable pageable){
         return dichvuRepository.findByTendichvuContainingIgnoreCase(tenDV,pageable);
     }
+    public List<Dichvu> getListTrangThaiTrue(){return dichvuRepository.findByTrangthaiTrue();}
 }

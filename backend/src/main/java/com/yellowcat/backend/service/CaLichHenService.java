@@ -43,7 +43,7 @@ public class CaLichHenService {
     }
 
     public List<Calichhen> getAllByDate(LocalDate date){
-        return caLichHenRepository.findAllCaAndStatusByDate(date);
+        return caLichHenRepository.findAllCaAndStatusByDateaAndTrangthaiFalse(date);
     }
 
     public List<Calichhen> findAll(){
