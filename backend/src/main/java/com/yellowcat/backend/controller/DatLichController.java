@@ -72,27 +72,29 @@ public class DatLichController {
         Optional<Calichhen> calichhen = caLichHenService.findById(datLichDTO.getIdcalichhen());
         Optional<Lichhen> lichhenOptional = lichHenService.getLichHenByDateandCa(datLichDTO.getDate(),datLichDTO.getIdcalichhen());
 
-        thuCungService.saveOrUpdate(datLichDTO.getIdThuCung());
+        Thucung thucung = datLichDTO.getIdThuCung();
+        thucung.setIdtaikhoan(idUser);
+        thuCungService.saveOrUpdate(thucung);
 
         if (!lichhenOptional.isPresent()) {
             return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
         }
+
         Lichhen lichhen = lichhenOptional.get();
         lichhen.setIdkhachhang(idUser);
         lichhen.setEmailNguoiDat(email);
         lichhen.setTrangthai(4);
-        lichhen.setThucung(datLichDTO.getIdThuCung());
+        lichhen.setThucung(thucung);
         lichhen.setDate(datLichDTO.getDate());
         // Kiểm tra lịch hẹn có trùng ca trong ngày không
         if (calichhen.isPresent()) {
             Calichhen calichhen1 = calichhen.get();
-            if (calichhen1.getTrangthai()==false){
+            if (!calichhen1.getTrangthai()) {
                 calichhen1.setTrangthai(true);
                 lichhen.setIdcalichhen(calichhen1);
-            }else {
-                return new ResponseEntity<>(HttpStatus.BAD_REQUEST); // Trả về lỗi
+            } else {
+                throw new IllegalStateException("Ca lịch hẹn đã được đặt, không thể đổi trạng thái.");
             }
-
         }
 //        check xem có đặt lịch trong quá khứ không
         LocalDateTime now = LocalDateTime.now(ZoneId.systemDefault());
@@ -114,7 +116,7 @@ public class DatLichController {
     @Async
     public void scheduleTrangThaiChange(Integer lichhenId) {
         try {
-            Thread.sleep(60 * 1000); // Đợi 20 phút
+            Thread.sleep(20 * 60 * 1000); // Đợi 20 phút
         } catch (InterruptedException e) {
             Thread.currentThread().interrupt();
         }
