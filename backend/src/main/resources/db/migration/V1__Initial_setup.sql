@@ -57,7 +57,8 @@ CREATE TABLE LichHen
     Date        DATE NOT NULL,
     TrangThai   INT   NOT NULL,
     EmailNguoiDat VARCHAR(255) NOT NULL default '123@gmail.com',
-    idCaLichHen INT REFERENCES CaLichHen(ID)
+    idCaLichHen INT REFERENCES CaLichHen(ID),
+    TrangThaiCa BOOLEAN
 );
 -- quy ước trang thai:
 -- 0 : thành công
@@ -137,20 +138,20 @@ VALUES ('Dog 1', 10.5, 2, 'Golden', 1, NULL),
 
 INSERT INTO CaLichHen (TenCa, ThoiGianCa, TrangThai)
 VALUES
-    ('Ca 1', '07:00:00', FALSE),
-    ('Ca 2', '08:00:00', FALSE),
-    ('Ca 3', '09:00:00', FALSE),
-    ('Ca 4', '10:00:00', FALSE),
-    ('Ca 5', '11:00:00', FALSE),
-    ('Ca 6', '12:00:00', FALSE),
-    ('Ca 7', '13:00:00', FALSE),
-    ('Ca 8', '14:00:00', FALSE);
+    ('Ca 1', '07:00:00', TRUE),
+    ('Ca 2', '08:00:00', TRUE),
+    ('Ca 3', '09:00:00', TRUE),
+    ('Ca 4', '10:00:00', TRUE),
+    ('Ca 5', '11:00:00', TRUE),
+    ('Ca 6', '12:00:00', TRUE),
+    ('Ca 7', '13:00:00', TRUE),
+    ('Ca 8', '14:00:00', TRUE);
 
 -- Thêm dữ liệu vào bảng LichHen
-INSERT INTO LichHen (idKhachHang, idThuCung, idDichVu, Date, TrangThai , idCaLichHen)
-VALUES (1, 1, 1, '2024-10-02 ', 1 , 1),
-       (2, 2, 2, '2024-10-03 ', 2, 2),
-       (3, 3, 3, '2024-10-04 ', 3 , 3);
+INSERT INTO LichHen (idKhachHang, idThuCung, idDichVu, Date, TrangThai , idCaLichHen,TrangThaiCa)
+VALUES (1, 1, 1, '2024-10-02 ', 1 , 1,TRUE),
+       (2, 2, 2, '2024-10-03 ', 2, 2,TRUE),
+       (3, 3, 3, '2024-10-04 ', 3 , 3,TRUE);
 
 -- Thêm dữ liệu vào bảng NhacLichHen
 INSERT INTO NhacLichHen (TenThongBao, MoTa, idTaiKhoan, ISRead, TrangThai)

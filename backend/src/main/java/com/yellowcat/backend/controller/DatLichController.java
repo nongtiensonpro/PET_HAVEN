@@ -69,7 +69,6 @@ public class DatLichController {
 
         String idUser = authentication.getName(); // Đây là idUser
         String email = jwt.getClaimAsString("email");
-        Optional<Calichhen> calichhen = caLichHenService.findById(datLichDTO.getIdcalichhen());
         Optional<Lichhen> lichhenOptional = lichHenService.getLichHenByDateandCa(datLichDTO.getDate(),datLichDTO.getIdcalichhen());
 
         Thucung thucung = datLichDTO.getIdThuCung();
@@ -86,23 +85,17 @@ public class DatLichController {
         lichhen.setTrangthai(4);
         lichhen.setThucung(thucung);
         lichhen.setDate(datLichDTO.getDate());
-        // Kiểm tra lịch hẹn có trùng ca trong ngày không
-        if (calichhen.isPresent()) {
-            Calichhen calichhen1 = calichhen.get();
-            if (!calichhen1.getTrangthai()) {
-                calichhen1.setTrangthai(true);
-                lichhen.setIdcalichhen(calichhen1);
-            } else {
-                throw new IllegalStateException("Ca lịch hẹn đã được đặt, không thể đổi trạng thái.");
-            }
+        if(!lichhen.getTrangthaica()){
+            lichhen.setTrangthaica(true);
+        }else {
+            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
         }
+
 //        check xem có đặt lịch trong quá khứ không
         LocalDateTime now = LocalDateTime.now(ZoneId.systemDefault());
         if (lichhen.getDate().isBefore(ChronoLocalDate.from(now))) {
             return new ResponseEntity<>(HttpStatus.BAD_REQUEST); // Trả về lỗi nếu ngày hẹn nằm trong quá khứ
         }
-
-
 
         Lichhen createLich = lichHenService.addOrUpdate(lichhen);
 
