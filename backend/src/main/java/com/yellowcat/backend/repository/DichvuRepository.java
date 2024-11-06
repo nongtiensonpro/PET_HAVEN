@@ -12,4 +12,6 @@ import java.util.List;
 public interface DichvuRepository extends JpaRepository<Dichvu, Long> {
 
     Page<Dichvu> findByTendichvuContainingIgnoreCase(String tendichvu, Pageable pageable);
+
+    List<Dichvu> findByTrangthaiTrue();
 }

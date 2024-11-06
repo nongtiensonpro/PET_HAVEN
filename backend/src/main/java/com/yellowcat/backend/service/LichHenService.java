@@ -14,6 +14,7 @@ import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
 import java.util.List;
+import java.util.Optional;
 
 
 @Service
@@ -35,6 +36,9 @@ public class LichHenService {
         return lichhenRepository.findAll(pageable);
     }
 
+    public Optional<Lichhen> getLichHenByDateandCa(LocalDate date,Integer id){
+        return lichhenRepository.findByDateAndIdcalichhen_Id(date,id);
+    }
 
     public Page<Lichhen> findByIdUser(Pageable pageable, String idUser){
         return lichhenRepository.findByIdkhachhang(idUser, pageable);
@@ -89,6 +93,7 @@ public class LichHenService {
                     lichHenRong.setIdcalichhen(ca); // Gắn ID ca lịch hẹn để liên kết
                     lichHenRong.setEmailNguoiDat("default-email@example.com"); // Giá trị mặc định
                     lichHenRong.setIdkhachhang("demo");
+                    lichHenRong.setTrangthaica(false);
                     // Lưu vào bảng lichhen
                     lichhenRepository.save(lichHenRong);
                 }
@@ -124,4 +129,7 @@ public class LichHenService {
             System.out.println("Không có lịch hẹn rỗng nào để xóa.");
         }
     }
+
+
+
 }

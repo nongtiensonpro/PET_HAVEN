@@ -8,6 +8,7 @@ import org.springframework.data.repository.query.Param;
 
 import java.time.LocalDate;
 import java.util.List;
+import java.util.Optional;
 
 public interface CalichhenRepository extends JpaRepository<Calichhen, Integer> {
     @Modifying
@@ -33,8 +34,9 @@ public interface CalichhenRepository extends JpaRepository<Calichhen, Integer> {
 
     // Truy vấn để lấy tất cả các trạng thái của các ca trong một ngày
     @Query("SELECT c FROM Calichhen c JOIN Lichhen l ON c.id = l.idcalichhen.id " +
-            "WHERE l.date = :ngay")
-    List<Calichhen> findAllCaAndStatusByDate(@Param("ngay") LocalDate ngay);
+            "WHERE l.date = :ngay AND l.trangthaica = false")
+    List<Calichhen> findAllCaAndStatusByDateaAndTrangthaiFalse(@Param("ngay") LocalDate ngay);
+
 
 //    Đổi trang thai ca khi dat lich thanh cong
 //    @Modifying
