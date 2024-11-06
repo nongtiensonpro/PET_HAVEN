@@ -3,8 +3,10 @@ import Calendar from '~/components/Calendar.vue'
 import {useServiceStore} from '~/stores/DichVuStores';
 import {computed} from "vue";
 import DichVu from "~/models/DichVu";
-
+const accessToken = sessionStorage.getItem('access_token');
+const viewRole = sessionStorage.getItem('viewRole');
 const serviceStore = useServiceStore();
+
 
 const services = computed((): DichVu[] => {
   return serviceStore.services.filter((service: DichVu) => service.trangthai);
@@ -13,7 +15,17 @@ const services = computed((): DichVu[] => {
 </script>
 
 <template>
-  <div class="container p-4">
+  <div v-if="!accessToken || !viewRole">
+    <div class="container">
+      <div class="card m-4">
+        <div class="card-body">
+          Vui lòng đăng nhập để sử dụng chức năng này !
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div v-else class="container p-4">
     <div class="row">
       <h2>Nhà Haven \ Đặt lịch</h2>
       <div class="col-12">
@@ -22,26 +34,7 @@ const services = computed((): DichVu[] => {
             <div class="card">
               <img class="card-img-top" src="~/assets/image/cat3.jpg" alt="">
               <div class="card-body">
-                <div class="row">
-                  <div class="col-6">
-                    <label for="">Chủ cần :</label>
-                    <select class="form-control" name="" id="">
-                      <option v-for="service in services" :key="service.id" v-if="services.length > 0">
-                        {{ service.tendichvu }}
-                      </option>
-                    </select>
-                  </div>
-                  <div class="col-6">
-                    <div class="form-group">
-                      <label for="">Khi nào :</label>
-                      <select class="form-control" name="" id="">
-                        <option>Meo 1</option>
-                        <option>Meo 2</option>
-                        <option>Meo 3</option>
-                      </select>
-                    </div>
-                  </div>
-                </div>
+
               </div>
             </div>
           </div>
@@ -52,6 +45,8 @@ const services = computed((): DichVu[] => {
       </div>
     </div>
   </div>
+
+
 </template>
 
 <style scoped>

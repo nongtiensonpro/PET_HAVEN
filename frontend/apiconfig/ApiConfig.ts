@@ -8,6 +8,9 @@ const API_ENDPOINTS = {
         deleteDichVu:`${API_BASE_URL}/dich-vu/delete/`,
         getDichVuByName:`${API_BASE_URL}/dich-vu/find`,
         updateTTDichVu:`${API_BASE_URL}/dich-vu/update-trang-thai/`,
+    },
+    datlich: {
+        getLichByDay: `${API_BASE_URL}/dat-lich/dat-lich-info`,
     }
 };
 

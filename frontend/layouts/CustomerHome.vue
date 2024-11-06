@@ -180,9 +180,13 @@
           </nav>
         </div>
       </div>
-      <div class="container h-100 w-100">
+
+      <!--    Hiển thị thân trang web-->
+      <div class="container h-100 w-100 m-4 p-1">
         <NuxtPage/>
       </div>
+
+
       <footer>
         <div v-if="viewRole==0">
           <div class="container">
