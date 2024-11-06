@@ -50,7 +50,7 @@ public class DatLichController {
         Map<String, Object> response = new HashMap<>();
 
         // Lấy danh sách dịch vụ
-        List<Dichvu> danhSachDichVu = dichVuService.getAll();
+        List<Dichvu> danhSachDichVu = dichVuService.getListTrangThaiTrue();
         response.put("dichVu", danhSachDichVu);
 
         // Lấy các ca có thể đặt
