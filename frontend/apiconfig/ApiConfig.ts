@@ -8,6 +8,13 @@ const API_ENDPOINTS = {
         deleteDichVu:`${API_BASE_URL}/dich-vu/delete/`,
         getDichVuByName:`${API_BASE_URL}/dich-vu/find`,
         updateTTDichVu:`${API_BASE_URL}/dich-vu/update-trang-thai/`,
+    },
+    lichSuDatLich: {
+        getAll:`${API_BASE_URL}/lich-hen/all`,
+        // updateDichVu:  `${API_BASE_URL}/lich-hen/update/`,
+        getDichVuById:`${API_BASE_URL}/lich-hen/findByIdUser`,
+        getDichVuByEmail:`${API_BASE_URL}/lich-hen/findByIdUser`,
+        updateTTLichHen:`${API_BASE_URL}/lich-hen/updateTrangThai/`,
     }
 };
 

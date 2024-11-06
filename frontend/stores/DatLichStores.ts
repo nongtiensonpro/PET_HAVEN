@@ -45,8 +45,8 @@ export const useDatLichStore = defineStore('datLichStore', {
         });
         const data = await response.json();
         console.log('Updated data:', data);
-        this.DichVu = data.dichVu || [];
-        this.CaLichHen = data.CaLichHen || [];
+        this.DichVu = data.dichVu;
+        this.CaLichHen = data.CaLichHen;
       } catch (error) {
         console.error('Error updating Dat Lich info:', error);
       }
