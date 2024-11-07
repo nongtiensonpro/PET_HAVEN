@@ -20,6 +20,7 @@ import org.springframework.web.bind.annotation.*;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.time.LocalTime;
 import java.time.ZoneId;
 import java.time.chrono.ChronoLocalDate;
 import java.util.HashMap;
@@ -38,9 +39,6 @@ public class DatLichController {
 
     @Autowired
     private DichVuService dichVuService;
-
-    @Autowired
-    private EmailService emailService;
 
     @Autowired
     private ThuCungService thuCungService;
@@ -78,6 +76,17 @@ public class DatLichController {
         if (!lichhenOptional.isPresent()) {
             return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
         }
+//        Check xem có lịch đã được đặt chưa
+        if (lichhenOptional.get().getTrangthai()!=5){
+            System.out.println("Lịch đã được đặt trước rồi , vui lòng chọn thời gian khác");
+            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+        }
+//        Check không cho đặt ca trong quá khứ
+        if (!caLichHenService.isCaAvailable(datLichDTO.getIdcalichhen(),datLichDTO.getDate())){
+            System.out.println("Không được đặt ca trong quá khứ");
+            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+        }
+
 
         Lichhen lichhen = lichhenOptional.get();
         lichhen.setIdkhachhang(idUser);
@@ -91,15 +100,9 @@ public class DatLichController {
             return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
         }
 
-//        check xem có đặt lịch trong quá khứ không
-        LocalDateTime now = LocalDateTime.now(ZoneId.systemDefault());
-        if (lichhen.getDate().isBefore(ChronoLocalDate.from(now))) {
-            return new ResponseEntity<>(HttpStatus.BAD_REQUEST); // Trả về lỗi nếu ngày hẹn nằm trong quá khứ
-        }
-
         Lichhen createLich = lichHenService.addOrUpdate(lichhen);
 
-        sendEmailWithActions(createLich);
+        lichHenService.sendEmailWithActions(createLich);
         scheduleTrangThaiChange(createLich.getId());
 
         return new ResponseEntity<>(createLich, HttpStatus.CREATED);
@@ -123,32 +126,18 @@ public class DatLichController {
         }
     }
 
-    private void sendEmailWithActions(Lichhen lichhen) {
-        try {
-            String cancelUrl = "http://localhost:3000/thay-doi-lich/" + lichhen.getId();
-            String Url = "http://localhost:3000/chi-tiet-lich/" + lichhen.getId();
-
-            String message = "Chào bạn,\n\n"
-                    + "Cảm ơn bạn đã đặt lịch. Bạn có thể sử dụng các liên kết dưới đây để quản lý lịch hẹn của mình:\n\n"
-                    + "Hủy hoặc thay đổi thời gian lịch: " + cancelUrl + "\n"
-                    + "Chi tiết lịch hẹn: " + Url + "\n\n"
-                    + "Trân trọng,\n"
-                    + "Đội ngũ hỗ trợ";
-
-            emailService.sendEmail(lichhen.getEmailNguoiDat(),"Hủy hoặc đổi thời gian lịch",message);
-            System.out.println("Email đã được gửi thành công.");
-        } catch (Exception e) {
-            System.err.println("Gửi email thất bại: " + e.getMessage());
-        }
-    }
-
 //    Đổi và hủy lịch
 
-    @PostMapping("/huy-lich/{id}")
+    @PutMapping("/huy-lich/{id}")
     public ResponseEntity<?> huyLichHen(@PathVariable Integer id) {
         Lichhen lichhen = lichHenService.findById(id);
         if (lichhen != null && lichhen.getTrangthai() == 4) {
             lichhen.setTrangthai(2); // Đặt trạng thái là "Đã hủy"
+            if (lichhen.getTrangthaica()){
+                lichhen.setTrangthaica(false);
+            }else {
+                return ResponseEntity.ok("Lỗi ca");
+            }
             lichHenService.addOrUpdate(lichhen);
             return ResponseEntity.ok("Lịch hẹn đã được hủy thành công.");
         }
@@ -156,10 +145,11 @@ public class DatLichController {
     }
 
     @PostMapping("/thay-doi-thoi-gian/{id}")
-    public ResponseEntity<?> thayDoiThoiGian(@PathVariable Integer id, @RequestBody LocalDate newDate) {
+    public ResponseEntity<?> thayDoiThoiGian(@PathVariable Integer id, @RequestBody DatLichDTO datLichDTO) {
         Lichhen lichhen = lichHenService.findById(id);
         if (lichhen != null && lichhen.getTrangthai() == 4) {
-            lichhen.setDate(newDate);
+            lichhen.setTrangthai(5);
+            lichhen.setEmailNguoiDat("default-email@example.com");
             lichHenService.addOrUpdate(lichhen);
             return ResponseEntity.ok("Thời gian của lịch hẹn đã được cập nhật.");
         }
