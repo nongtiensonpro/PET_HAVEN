@@ -25,6 +25,9 @@ public class LichHenService {
     @Autowired
     CaLichHenService caLichHenService;
 
+    @Autowired
+    private EmailService emailService;
+
     public LichHenService(LichhenRepository lichhenRepository) {
         this.lichhenRepository = lichhenRepository;
     }
@@ -130,6 +133,23 @@ public class LichHenService {
         }
     }
 
+    public void sendEmailWithActions(Lichhen lichhen) {
+        try {
+            String cancelUrl = "http://localhost:3000/thay-doi-lich/" + lichhen.getId();
+            String Url = "http://localhost:3000/chi-tiet-lich/" + lichhen.getId();
 
+            String message = "Chào bạn,\n\n"
+                    + "Cảm ơn bạn đã đặt lịch. Bạn có thể sử dụng các liên kết dưới đây để quản lý lịch hẹn của mình:\n\n"
+                    + "Hủy hoặc thay đổi thời gian lịch: " + cancelUrl + "\n"
+                    + "Chi tiết lịch hẹn: " + Url + "\n\n"
+                    + "Trân trọng,\n"
+                    + "Đội ngũ hỗ trợ";
+
+            emailService.sendEmail(lichhen.getEmailNguoiDat(),"Hủy hoặc đổi thời gian lịch",message);
+            System.out.println("Email đã được gửi thành công.");
+        } catch (Exception e) {
+            System.err.println("Gửi email thất bại: " + e.getMessage());
+        }
+    }
 
 }
