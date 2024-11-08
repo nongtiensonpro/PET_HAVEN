@@ -1,3 +1,5 @@
+import type DichVuKhachDat from "~/models/DichVuKhachDat";
+
 export const useTempDataStore = defineStore('tempData', {
   state: () => ({
     dichVuKhachDat: null as DichVuKhachDat | null,

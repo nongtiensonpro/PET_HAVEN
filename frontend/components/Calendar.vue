@@ -1,6 +1,5 @@
 <template>
   <div class="calendar-container">
-    <h2 class="calendar-title">Chọn ngày và giờ hẹn</h2>
     <FullCalendar
       :options="calendarOptions"
       class="calendar"
@@ -32,7 +31,7 @@
           </div>
         </div>
         <button @click="confirmBooking" class="btn btn-primary mt-3" :disabled="!isFormValid">
-          Xác nhận đặt lịch
+          Tiếp tục
         </button>
       </div>
     </div>
@@ -51,6 +50,8 @@ import DichVu from "~/models/DichVu"
 import CaHen from "~/models/CaHen"
 import { useDatLichStore } from '~/stores/DatLichStores'
 import { useMauKhachDatDichVu } from '~/stores/MauKhachDatDichVu'
+import CaLichHen from "~/models/CaHen";
+import DichVuKhachDat from "~/models/DichVuKhachDat";
 
 const { saveTempData, getTempData, clearTempData } = useMauKhachDatDichVu()
 
@@ -154,13 +155,24 @@ function handleDateClick(info) {
 
 function confirmBooking() {
   if (isFormValid.value) {
-    // Thực hiện logic đặt lịch ở đây
-    toast.success('Đặt lịch thành công!', { timeout: 3000 })
-    // Reset form
-    selectedService.value = ''
-    selectedTime.value = ''
+    const selectedDichVu = services.value.find(service => service.id === Number(selectedService.value));
+    const selectedCaLichHen = lichhens.value.find(ca => ca.id === Number(selectedTime.value));
+
+    if (!selectedDichVu || !selectedCaLichHen) {
+      toast.error('Không tìm thấy dịch vụ hoặc ca lịch hẹn đã chọn', { timeout: 3000 });
+      return;
+    }
+
+    const dichVuKhachDat = new DichVuKhachDat({
+      dichvu: selectedDichVu,
+      calichhen: selectedCaLichHen,
+      date: selectedDate.value
+    });
+
+    saveTempData(dichVuKhachDat);
+    console.log('Dữ liệu đã lưu:', getTempData());
   } else {
-    toast.error('Vui lòng điền đầy đủ thông tin đặt lịch', { timeout: 3000 })
+    toast.error('Vui lòng điền đầy đủ thông tin đặt lịch', { timeout: 3000 });
   }
 }
 </script>
