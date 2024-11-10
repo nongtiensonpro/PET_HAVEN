@@ -12,11 +12,12 @@ CREATE TABLE TaiKhoan
 CREATE TABLE ThongTinCaNhan
 (
     ID         SERIAL PRIMARY KEY,
-    HoTen      VARCHAR(100) NOT NULL,
+    HoTen      VARCHAR(100),
     Tuoi       INT,
     GioiTinh   VARCHAR(10),
     idTaiKhoan varchar(255) not null ,
-    SDT        VARCHAR(20)
+    SDT        VARCHAR(20),
+    Image      VARCHAR(100)
 );
 
 CREATE TABLE DichVu
@@ -32,10 +33,10 @@ CREATE TABLE DichVu
 CREATE TABLE ThuCung
 (
     ID         SERIAL PRIMARY KEY,
-    TenCho     VARCHAR(100) NOT NULL,
+    Ten        VARCHAR(100) NOT NULL,
     CanNang    FLOAT,
     Tuoi       INT,
-    GiongCho   VARCHAR(100),
+    Giong      VARCHAR(100),
     IDTaiKhoan VARCHAR(255) not null ,
     Image      TEXT
 );
@@ -134,7 +135,7 @@ VALUES ('Dịch vụ 1', 'Mô tả dịch vụ 1', NULL, 100000,true),
        ('Dịch vụ 3', 'Mô tả dịch vụ 3', NULL, 200000,true);
 
 -- Thêm dữ liệu vào bảng ThuCung
-INSERT INTO ThuCung (TenCho, CanNang, Tuoi, GiongCho, IDTaiKhoan, Image)
+INSERT INTO ThuCung (Ten, CanNang, Tuoi, Giong, IDTaiKhoan, Image)
 VALUES ('Dog 1', 10.5, 2, 'Golden', 1, NULL),
        ('Dog 2', 8.3, 3, 'Bulldog', 2, NULL),
        ('Dog 3', 12.7, 4, 'Labrador', 3, NULL);
