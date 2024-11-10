@@ -12,7 +12,6 @@ export default class DichVuKhachDat{
     trangthai: boolean;
     calichhen :CaLichHenKhachDat;
 
-
     constructor(idlichhen: number, idkhachhang: string, thucung: {
         cannang: number;
         giongcho: string;
