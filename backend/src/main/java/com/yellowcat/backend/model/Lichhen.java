@@ -4,7 +4,9 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
+import org.hibernate.annotations.ColumnDefault;
 
+import java.time.Instant;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 
@@ -58,6 +60,40 @@ public class Lichhen {
 
     @Column(name = "trangthaica")
     private Boolean trangthaica;
+
+    @Column(name = "thoigianhuy")
+    private LocalDateTime thoigianhuy;
+
+    @Column(name = "thoigianthaydoi")
+    private LocalDateTime thoigianthaydoi;
+
+    @ColumnDefault("0")
+    @Column(name = "solanthaydoi")
+    private Integer solanthaydoi;
+
+    public Integer getSolanthaydoi() {
+        return solanthaydoi;
+    }
+
+    public void setSolanthaydoi(Integer solanthaydoi) {
+        this.solanthaydoi = solanthaydoi;
+    }
+
+    public LocalDateTime getThoigianthaydoi() {
+        return thoigianthaydoi;
+    }
+
+    public void setThoigianthaydoi(LocalDateTime thoigianthaydoi) {
+        this.thoigianthaydoi = thoigianthaydoi;
+    }
+
+    public LocalDateTime getThoigianhuy() {
+        return thoigianhuy;
+    }
+
+    public void setThoigianhuy(LocalDateTime thoigianhuy) {
+        this.thoigianhuy = thoigianhuy;
+    }
 
     public Boolean getTrangthaica() {
         return trangthaica;
