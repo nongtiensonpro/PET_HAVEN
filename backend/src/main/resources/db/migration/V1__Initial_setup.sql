@@ -58,7 +58,10 @@ CREATE TABLE LichHen
     TrangThai   INT   NOT NULL,
     EmailNguoiDat VARCHAR(255) NOT NULL default '123@gmail.com',
     idCaLichHen INT REFERENCES CaLichHen(ID),
-    TrangThaiCa BOOLEAN
+    TrangThaiCa BOOLEAN,
+    ThoiGianHuy TIMESTAMP,
+    ThoiGianThayDoi TIMESTAMP,
+    SoLanThayDoi INT not null default 0
 );
 -- quy ước trang thai:
 -- 0 : thành công
@@ -77,16 +80,6 @@ CREATE TABLE NhacLichHen
     idTaiKhoan  VARCHAR(255) NOT NULL ,
     ISRead      BOOLEAN,
     TrangThai   BOOLEAN
-);
-
-CREATE TABLE DanhGia
-(
-    ID         SERIAL PRIMARY KEY,
-    idTaiKhoan VARCHAR(255) not null ,
-    SoSao      INT,
-    MoTa       TEXT,
-    Date       TIMESTAMP,
-    TrangThai  BOOLEAN
 );
 
 CREATE TABLE GiamGia
@@ -111,6 +104,16 @@ CREATE TABLE HoaDon
     idGiamGia           INT REFERENCES GiamGia (ID)
 );
 
+CREATE TABLE DanhGia
+(
+    ID         SERIAL PRIMARY KEY,
+    idTaiKhoan VARCHAR(255) not null ,
+    SoSao      INT,
+    MoTa       TEXT,
+    Date       TIMESTAMP,
+    TrangThai  BOOLEAN,
+    idHoaDon INT REFERENCES HoaDon(ID)
+);
 
 -- Thêm dữ liệu vào bảng TaiKhoan
 INSERT INTO TaiKhoan (Username, Pass, TrangThai, Gmail, Image, Role)
@@ -159,12 +162,6 @@ VALUES ('Nhắc lịch 1', 'Thông báo lịch hẹn 1', 1, FALSE, TRUE),
        ('Nhắc lịch 2', 'Thông báo lịch hẹn 2', 2, TRUE, FALSE),
        ('Nhắc lịch 3', 'Thông báo lịch hẹn 3', 3, FALSE, TRUE);
 
--- Thêm dữ liệu vào bảng DanhGia
-INSERT INTO DanhGia (idTaiKhoan, SoSao, MoTa, Date, TrangThai)
-VALUES (1, 5, 'Rất tốt', '2024-10-01 12:00:00', TRUE),
-       (2, 4, 'Tốt', '2024-09-30 11:00:00', TRUE),
-       (3, 3, 'Bình thường', '2024-09-29 10:00:00', FALSE);
-
 -- Thêm dữ liệu vào bảng GiamGia
 INSERT INTO GiamGia (PhanTramGiam, NgayBatDau, NgayKetThuc, MoTa, TrangThai)
 VALUES (10, '2024-10-01 00:00:00', '2024-10-31 23:59:59', 'Giảm giá tháng 10', TRUE),
@@ -177,3 +174,8 @@ VALUES (1, '2024-10-02 10:00:00', 90000, '2024-10-02 11:00:00', 'Tiền mặt', 
        (2, '2024-10-03 14:00:00', 120000, '2024-10-03 15:00:00', 'Thẻ tín dụng', FALSE, 2),
        (3, '2024-10-04 09:00:00', 170000, '2024-10-04 10:00:00', 'Chuyển khoản', TRUE, 3);
 
+-- Thêm dữ liệu vào bảng DanhGia
+INSERT INTO DanhGia (idTaiKhoan, SoSao, MoTa, Date, TrangThai,idHoaDon)
+VALUES (1, 5, 'Rất tốt', '2024-10-01 12:00:00', TRUE,1),
+       (2, 4, 'Tốt', '2024-09-30 11:00:00', TRUE,1),
+       (3, 3, 'Bình thường', '2024-09-29 10:00:00', FALSE,1);

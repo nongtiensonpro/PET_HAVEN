@@ -40,7 +40,7 @@ public class LichHenService {
     }
 
     public Optional<Lichhen> getLichHenByDateandCa(LocalDate date,Integer id){
-        return lichhenRepository.findByDateAndIdcalichhen_Id(date,id);
+        return lichhenRepository.findByDateAndIdcalichhen_IdAndTrangthai(date,id,5);
     }
 
     public Page<Lichhen> findByIdUser(Pageable pageable, String idUser){
@@ -97,6 +97,7 @@ public class LichHenService {
                     lichHenRong.setEmailNguoiDat("default-email@example.com"); // Giá trị mặc định
                     lichHenRong.setIdkhachhang("demo");
                     lichHenRong.setTrangthaica(false);
+                    lichHenRong.setSolanthaydoi(0);
                     // Lưu vào bảng lichhen
                     lichhenRepository.save(lichHenRong);
                 }
