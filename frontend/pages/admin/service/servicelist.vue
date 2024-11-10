@@ -7,6 +7,7 @@ import {useToast} from 'vue-toastification';
 import InputField from '~/components/InputField.vue';
 import {useForm} from 'vee-validate';
 import * as yup from 'yup';
+import type DichVu from "~/models/DichVu";
 
 definePageMeta({
   middleware: 'auth',
@@ -98,7 +99,7 @@ const createService = async (formValues) => {
   }
 };
 
-const saveService = async (service) => {
+const saveService = async (service : DichVu) => {
   try {
 
     const result = await serviceStore.updateDichVu(service);
@@ -141,7 +142,7 @@ const findServiceByName = async (name: string) => {
     }, 2000);
   }
 };
-const deleteService = async (serviceId) => {
+const deleteService = async (serviceId: String) => {
   try {
     const result = await serviceStore.deleteDichVu(serviceId);
 
@@ -159,7 +160,7 @@ const deleteService = async (serviceId) => {
   }
 };
 
-const updateTTService = async (serviceId) => {
+const updateTTService = async (serviceId: String) => {
   try {
     await serviceStore.updateTTDV(serviceId);
     notificationStore.addNotification("Dịch vụ đã được cập nhật thành công!", user.userInfo.name);
