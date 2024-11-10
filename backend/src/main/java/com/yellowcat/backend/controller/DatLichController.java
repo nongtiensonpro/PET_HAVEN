@@ -13,10 +13,6 @@ import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.mail.SimpleMailMessage;
-import org.springframework.mail.javamail.JavaMailSender;
-import org.springframework.scheduling.annotation.Async;
-import org.springframework.scheduling.annotation.EnableAsync;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.oauth2.jwt.Jwt;
@@ -24,9 +20,6 @@ import org.springframework.web.bind.annotation.*;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
-import java.time.LocalTime;
-import java.time.ZoneId;
-import java.time.chrono.ChronoLocalDate;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -50,6 +43,8 @@ public class DatLichController {
     @GetMapping("/dat-lich-info")
     public ResponseEntity<Map<String, Object>> getDatLichInfo(@RequestParam("ngay") LocalDate ngay) {
         Map<String, Object> response = new HashMap<>();
+        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+        String idUser = auth.getName();
 
         // Lấy danh sách dịch vụ
         List<Dichvu> danhSachDichVu = dichVuService.getListTrangThaiTrue();
@@ -58,6 +53,9 @@ public class DatLichController {
         // Lấy các ca có thể đặt
         List<Calichhen> CaLichHen = caLichHenService.getAllByDate(ngay);
         response.put("CaLichHen", CaLichHen);
+
+        List<Thucung> listThuCung = thuCungService.findListThuCungByid(idUser);
+        response.put("ListThuCung", listThuCung);
 
         return ResponseEntity.ok(response);
     }

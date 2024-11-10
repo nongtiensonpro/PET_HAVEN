@@ -1,16 +1,13 @@
 package com.yellowcat.backend.model;
 
-import com.fasterxml.jackson.annotation.JsonProperty;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
-
 
 @Entity
 @Table(name = "thucung")
 public class Thucung {
     @Id
-    @JsonProperty
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "thucung_id_gen")
     @SequenceGenerator(name = "thucung_id_gen", sequenceName = "thucung_id_seq", allocationSize = 1)
     @Column(name = "id", nullable = false)
@@ -18,31 +15,24 @@ public class Thucung {
 
     @Size(max = 100)
     @NotNull
-    @JsonProperty
-    @Column(name = "tencho", nullable = false, length = 100)
-    private String tencho;
+    @Column(name = "ten", nullable = false, length = 100)
+    private String ten;
 
     @Column(name = "cannang")
-    @NotNull
-    @JsonProperty
     private Double cannang;
 
     @Column(name = "tuoi")
-    @JsonProperty
     private Integer tuoi;
 
     @Size(max = 100)
-    @JsonProperty
-    @Column(name = "giongcho", length = 100)
-    private String giongcho;
+    @Column(name = "giong", length = 100)
+    private String giong;
 
     @Size(max = 255)
     @NotNull
-    @JsonProperty
     @Column(name = "idtaikhoan", nullable = false)
     private String idtaikhoan;
 
-    @JsonProperty
     @Column(name = "image", length = Integer.MAX_VALUE)
     private String image;
 
@@ -54,12 +44,12 @@ public class Thucung {
         this.id = id;
     }
 
-    public @Size(max = 100) @NotNull String getTencho() {
-        return tencho;
+    public String getTen() {
+        return ten;
     }
 
-    public void setTencho(@Size(max = 100) @NotNull String tencho) {
-        this.tencho = tencho;
+    public void setTen(String ten) {
+        this.ten = ten;
     }
 
     public Double getCannang() {
@@ -78,19 +68,19 @@ public class Thucung {
         this.tuoi = tuoi;
     }
 
-    public @Size(max = 100) String getGiongcho() {
-        return giongcho;
+    public String getGiong() {
+        return giong;
     }
 
-    public void setGiongcho(@Size(max = 100) String giongcho) {
-        this.giongcho = giongcho;
+    public void setGiong(String giong) {
+        this.giong = giong;
     }
 
-    public @Size(max = 255) @NotNull String getIdtaikhoan() {
+    public String getIdtaikhoan() {
         return idtaikhoan;
     }
 
-    public void setIdtaikhoan(@Size(max = 255) @NotNull String idtaikhoan) {
+    public void setIdtaikhoan(String idtaikhoan) {
         this.idtaikhoan = idtaikhoan;
     }
 

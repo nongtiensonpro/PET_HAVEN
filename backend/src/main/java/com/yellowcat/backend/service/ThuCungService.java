@@ -5,18 +5,16 @@ import com.yellowcat.backend.repository.ThucungRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
+
 @Service
 public class ThuCungService {
     @Autowired
     private ThucungRepository thucungRepository;
 
     public Thucung saveOrUpdate(Thucung thucung) {
-        if (thucung.getId() != null && thucungRepository.existsById(thucung.getId())) {
-            // Nếu đã tồn tại, cập nhật thông tin
-            return thucungRepository.save(thucung);
-        } else {
-            // Nếu không tồn tại, thêm mới
-            return thucungRepository.save(thucung);
-        }
+        return thucungRepository.save(thucung);
     }
+
+    public List<Thucung> findListThuCungByid(String idTK) {return thucungRepository.findByIdtaikhoan(idTK);}
 }
