@@ -9,6 +9,8 @@ import org.springframework.context.event.ContextRefreshedEvent;
 import org.springframework.context.event.EventListener;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.scheduling.annotation.Async;
+import org.springframework.scheduling.annotation.EnableAsync;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 
@@ -62,6 +64,10 @@ public class LichHenService {
 
     public Lichhen findById(Integer id){
         return lichhenRepository.findById(id).orElse(null);
+    }
+
+    public Page<Lichhen> findAllLichWithTrangThai(Pageable pageable,boolean tt,LocalDate date){
+        return lichhenRepository.findByTrangthaicaAndDateAfter(tt,date,pageable);
     }
 
     // Hàm tự động chạy khi ứng dụng khởi động

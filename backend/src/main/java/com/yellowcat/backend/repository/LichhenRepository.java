@@ -21,4 +21,7 @@ public interface LichhenRepository extends JpaRepository<Lichhen, Integer> {
     List<Lichhen> findByEmailNguoiDatAndDateBefore(String emailNguoiDat, LocalDate date);
 
     Optional<Lichhen> findByDateAndIdcalichhen_IdAndTrangthai(LocalDate date, int idCaLichHen, int trangthai);
+
+    Page<Lichhen> findByTrangthaicaAndDateAfter(boolean trangthaica, LocalDate date, Pageable pageable);
+
 }

@@ -1,6 +1,7 @@
 package com.yellowcat.backend.controller;
 
 import com.yellowcat.backend.DTO.DatLichDTO;
+import com.yellowcat.backend.DTO.DoiLichDTO;
 import com.yellowcat.backend.model.Calichhen;
 import com.yellowcat.backend.model.Dichvu;
 import com.yellowcat.backend.model.Lichhen;
@@ -24,6 +25,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
+import java.util.concurrent.atomic.AtomicBoolean;
 
 @RestController
 @RequestMapping("/api/dat-lich")
@@ -79,6 +81,7 @@ public class DatLichController {
         Dichvu dichvu = dichvuOptional.get();
 
         if (!lichhenOptional.isPresent()) {
+            System.out.println("lịch không tồn tại");
             return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
         }
 //        Check xem có lịch đã được đặt chưa
@@ -94,6 +97,7 @@ public class DatLichController {
 
 
         Lichhen lichhen = lichhenOptional.get();
+        System.out.println(lichhen);
         lichhen.setIdkhachhang(idUser);
         lichhen.setEmailNguoiDat(email);
         lichhen.setTrangthai(4);
@@ -109,9 +113,16 @@ public class DatLichController {
         Lichhen createLich = lichHenService.addOrUpdate(lichhen);
 
         lichHenService.sendEmailWithActions(createLich);
+
         scheduleTrangThaiChange(createLich.getId());
 
         return new ResponseEntity<>(createLich, HttpStatus.CREATED);
+    }
+
+    private AtomicBoolean isCancelled = new AtomicBoolean(false);  // Biến flag để kiểm tra
+
+    public void cancelScheduleChange() {
+        isCancelled.set(true);  // Đặt flag hủy thành true
     }
 
     // Sau 20p tự động đổi trạng thái thành chờ thanh toán
@@ -121,7 +132,11 @@ public class DatLichController {
     @Transactional
     public void scheduleTrangThaiChange(Integer lichhenId) {
         try {
-            Thread.sleep(30 * 1000); // Đợi
+            if (isCancelled.get()) {
+                System.out.println("Tiến trình bị hủy.");
+                return;  // Nếu tiến trình bị hủy thì kết thúc
+            }
+            Thread.sleep( 60 * 1000); // Đợi
         } catch (InterruptedException e) {
             Thread.currentThread().interrupt();
             return; // Ngừng xử lý nếu bị gián đoạn
@@ -142,7 +157,7 @@ public class DatLichController {
             lichHenService.addOrUpdate(lichhen);
             System.out.println("Đã cập nhật trạng thái của lịch hẹn ID: " + lichhenId + " thành 3 (Chờ thanh toán)");
         } else {
-            System.out.println("Lịch hẹn đã bị hủy hoặc thay đổi trạng thái, không cập nhật nữa.");
+            System.out.println("Lịch hẹn"+ lichhenId +  " đã bị hủy hoặc thay đổi trạng thái, không cập nhật nữa.");
         }
     }
 
@@ -188,7 +203,7 @@ public class DatLichController {
                 return ResponseEntity.ok("Lỗi ca");
             }
             lichHenService.addOrUpdate(lichhen);
-
+            cancelScheduleChange();
             return ResponseEntity.ok("Lịch hẹn đã được hủy thành công.");
         }
         return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Lịch hẹn không thể hủy vì trạng thái không hợp lệ.");
@@ -196,17 +211,47 @@ public class DatLichController {
 
     @Transactional
     @PutMapping("/thay-doi-thoi-gian/{id}")
-    public ResponseEntity<?> thayDoiThoiGian(@PathVariable Integer id, @RequestBody DatLichDTO datLichDTO) {
+    public ResponseEntity<?> thayDoiThoiGian(@PathVariable Integer id,@Valid @RequestBody DoiLichDTO doiLichDTO) {
         Lichhen lichhen = lichHenService.findById(id);
         Lichhen lichhenNew = new Lichhen();
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        String idUser = authentication.getName();
+
+        if (lichhen == null) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Lịch hẹn không tồn tại.");
+        }
+
+        // Check xem có phải chủ lịch không
+        if (!lichhen.getIdkhachhang().equalsIgnoreCase(idUser)) {
+            return ResponseEntity.status(HttpStatus.FORBIDDEN).body("Bạn không phải là chủ lịch hẹn này.");
+        }
+
         if (lichhen != null && lichhen.getTrangthai() == 4) {
             // Kiểm tra số lần thay đổi
             if (lichhen.getSolanthaydoi() >= 1) {
-                return ResponseEntity.badRequest().body("Lịch chỉ được phép thay đổi một lần.");
+                return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Lịch chỉ được phép thay đổi một lần.");
+            }
+//          Thay đổi thời gian và ca lịch
+            Optional<Lichhen> lichhenDoiOptional = lichHenService.getLichHenByDateandCa(doiLichDTO.getDate(),doiLichDTO.getIdcalichhen());
+            if (!lichhenDoiOptional.isPresent()) {
+                return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Lịch lỗi.");
             }
 
+            Lichhen lichDoi = lichhenDoiOptional.get();
+            lichDoi.setEmailNguoiDat(lichhen.getEmailNguoiDat());
+            lichDoi.setIdkhachhang(lichhen.getIdkhachhang());
+            lichDoi.setTrangthai(3); // Đặt trạng thái là "Chờ thanh toán"
+            lichDoi.setThoigianthaydoi(LocalDateTime.now());
+            lichDoi.setThucung(lichhen.getThucung());
+            lichDoi.setDichvu(lichhen.getDichvu());
+            lichDoi.setTrangthaica(true);
+            lichDoi.setSolanthaydoi(lichhen.getSolanthaydoi());
+            lichHenService.addOrUpdate(lichDoi);
+
+//            Cập nhập số lần thay đổi
             lichhen.setSolanthaydoi(lichhen.getSolanthaydoi()+1);
 
+//            Tạo bản ghi lưu trừ lịch đổi
             lichhenNew.setEmailNguoiDat(lichhen.getEmailNguoiDat());
             lichhenNew.setIdkhachhang(lichhen.getIdkhachhang());
             lichhenNew.setTrangthai(1); // Đặt trạng thái là "Thất bại"
@@ -221,12 +266,12 @@ public class DatLichController {
 
             lichhen.setTrangthai(5);
             lichhen.setEmailNguoiDat("default-email@example.com");
-            lichhen.setDate(datLichDTO.getDate());
             if (lichhen.getTrangthaica()){
                 lichhen.setTrangthaica(false);
             }else {
                 return ResponseEntity.ok("Lỗi ca");
             }
+            cancelScheduleChange();
             lichHenService.addOrUpdate(lichhen);
             return ResponseEntity.ok("Thời gian của lịch hẹn đã được cập nhật.");
         }

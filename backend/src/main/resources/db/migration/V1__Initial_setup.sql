@@ -66,7 +66,7 @@ CREATE TABLE LichHen
 );
 -- quy ước trang thai:
 -- 0 : thành công
--- 1 : thất bại
+-- 1 : thất bạif
 -- 2 : đã hủy
 -- 3 : chờ thanh toán
 -- 4 : chờ xác nhận
@@ -101,9 +101,14 @@ CREATE TABLE HoaDon
     SoTien              INT NOT NULL,
     NgayThanhToan       TIMESTAMP,
     PhuongThucThanhToan VARCHAR(50),
-    TrangThai           BOOLEAN,
+    TrangThai           INT not null ,
     idGiamGia           INT REFERENCES GiamGia (ID)
 );
+-- Quy ước:
+-- 1: Chờ thanh toán
+-- 2: Thành công
+-- 3: Thất bại
+
 
 CREATE TABLE DanhGia
 (
@@ -165,15 +170,15 @@ VALUES ('Nhắc lịch 1', 'Thông báo lịch hẹn 1', 1, FALSE, TRUE),
 
 -- Thêm dữ liệu vào bảng GiamGia
 INSERT INTO GiamGia (PhanTramGiam, NgayBatDau, NgayKetThuc, MoTa, TrangThai)
-VALUES (10, '2024-10-01 00:00:00', '2024-10-31 23:59:59', 'Giảm giá tháng 10', TRUE),
+VALUES (0, null, null, 'Default', TRUE),
        (20, '2024-11-01 00:00:00', '2024-11-30 23:59:59', 'Giảm giá tháng 11', TRUE),
        (15, '2024-12-01 00:00:00', '2024-12-31 23:59:59', 'Giảm giá tháng 12', TRUE);
 
 -- Thêm dữ liệu vào bảng HoaDon
 INSERT INTO HoaDon (idLichHen, Date, SoTien, NgayThanhToan, PhuongThucThanhToan, TrangThai, idGiamGia)
-VALUES (1, '2024-10-02 10:00:00', 90000, '2024-10-02 11:00:00', 'Tiền mặt', TRUE, 1),
-       (2, '2024-10-03 14:00:00', 120000, '2024-10-03 15:00:00', 'Thẻ tín dụng', FALSE, 2),
-       (3, '2024-10-04 09:00:00', 170000, '2024-10-04 10:00:00', 'Chuyển khoản', TRUE, 3);
+VALUES (1, '2024-10-02 10:00:00', 90000, '2024-10-02 11:00:00', 'Offline', 1, 1),
+       (2, '2024-10-03 14:00:00', 120000, '2024-10-03 15:00:00', 'Online', 2, 2),
+       (3, '2024-10-04 09:00:00', 170000, '2024-10-04 10:00:00', 'Online', 3, 3);
 
 -- Thêm dữ liệu vào bảng DanhGia
 INSERT INTO DanhGia (idTaiKhoan, SoSao, MoTa, Date, TrangThai,idHoaDon)
