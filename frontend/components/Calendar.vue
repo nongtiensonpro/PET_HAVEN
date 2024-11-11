@@ -50,7 +50,7 @@ import DichVu from "~/models/DichVu"
 import CaHen from "~/models/CaHen"
 import { useDatLichStore } from '~/stores/DatLichStores'
 import { useMauKhachDatDichVu } from '~/stores/MauKhachDatDichVu'
-import CaLichHen from "~/models/CaHen";
+
 import DichVuKhachDat from "~/models/DichVuKhachDat";
 
 const { saveTempData, getTempData, clearTempData } = useMauKhachDatDichVu()
@@ -136,7 +136,7 @@ const calendarOptions = computed(() => ({
 }))
 
 function handleEventClick(info) {
-  toast.info(`Bạn đã chọn: ${info.event.title}`, { timeout: 2000 })
+  // toast.info(`Bạn đã chọn: ${info.event.title}`, { timeout: 2000 })
 }
 
 const events = ref([
