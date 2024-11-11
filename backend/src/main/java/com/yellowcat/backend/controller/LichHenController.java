@@ -1,7 +1,10 @@
 package com.yellowcat.backend.controller;
 
+import com.yellowcat.backend.DTO.DatLichDTO;
+import com.yellowcat.backend.DTO.DoiLichDTO;
 import com.yellowcat.backend.model.Lichhen;
 import com.yellowcat.backend.service.LichHenService;
+import jakarta.validation.Valid;
 import org.hibernate.annotations.Parameter;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -15,8 +18,11 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.oauth2.jwt.Jwt;
 import org.springframework.web.bind.annotation.*;
 
+import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 
 @RestController
 @RequestMapping("/api/lich-hen")
@@ -50,36 +56,22 @@ public class LichHenController {
         return lichHenService.findByEmailNguoiDat(pageable, Email);
     }
 
-
-
-    @PutMapping("/update/{id}")
-    public Lichhen updateOne(@RequestBody Lichhen lichhen,@RequestParam int id){
-
-        Lichhen datLaiLich = lichHenService.findById(id);
-
-        datLaiLich.setTrangthai(3);
-        datLaiLich.setDate(lichhen.getDate());
-
-        Lichhen updateLich = lichHenService.addOrUpdate(datLaiLich);
-        return new ResponseEntity<Lichhen>(updateLich, HttpStatus.CREATED).getBody();
+    @PreAuthorize("hasAnyRole('admin', 'manager')")
+    @GetMapping("/getListDoiTrangThai")
+    public Page<Lichhen> listDoi(@RequestParam(defaultValue = "0") int page){
+        Pageable pageable = PageRequest.of(page, 10);
+        Page<Lichhen> ListDoi = lichHenService.findAllLichWithTrangThai(pageable,true, LocalDate.now());
+        return ListDoi;
     }
 
+    @PreAuthorize("hasAnyRole('admin', 'manager')")
+    @PutMapping("/updateTrangThai/{id}/{idTT}")
+    public ResponseEntity<Lichhen> updateMore(@PathVariable int id, @PathVariable int idTT) {
 
-    @PutMapping("/updateTrangThai/{id}")
-    public ResponseEntity<Lichhen> updateMore(@PathVariable int id, @RequestBody Map<String, Object> requestBody) {
-        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-        String idUser = authentication.getName(); // Lấy thông tin người dùng hiện tại
-        int idTT = (Integer) requestBody.get("trangThai");
-
-        // Tìm lịch hẹn theo id
+        // Tìm lịch hẹn
         Lichhen datLaiLich = lichHenService.findById(id);
         if (datLaiLich == null) {
             return new ResponseEntity<>(HttpStatus.NOT_FOUND); // Trả về 404 nếu không tìm thấy lịch hẹn
-        }
-
-        // Kiểm tra nếu người dùng hiện tại không phải là chủ nhân của lịch hẹn
-        if (!datLaiLich.getIdkhachhang().equals(idUser)) {
-            return new ResponseEntity<>(HttpStatus.FORBIDDEN); // Trả về 403 nếu không có quyền
         }
 
         if (lichHenService.isCaTrungTrongNgay(datLaiLich.getDate(), datLaiLich.getIdcalichhen().getId())) {
@@ -93,7 +85,62 @@ public class LichHenController {
         return new ResponseEntity<>(updateLich, HttpStatus.OK); // Trả về 200 OK
     }
 
+    @PreAuthorize("hasAnyRole('admin', 'manager')")
+    @PutMapping("/update-time/{id}")
+    public ResponseEntity<?> doiTimeQuyenAdmin(@PathVariable Integer id,@Valid @RequestBody DoiLichDTO doiLichDTO) {
+        Lichhen lichhen = lichHenService.findById(id);
+        Lichhen lichhenNew = new Lichhen();
 
+        if (lichhen == null) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Lịch hẹn không tồn tại.");
+        }
+
+        if (lichhen != null && lichhen.getTrangthai() == 4) {
+//          Thay đổi thời gian và ca lịch
+            Optional<Lichhen> lichhenDoiOptional = lichHenService.getLichHenByDateandCa(doiLichDTO.getDate(),doiLichDTO.getIdcalichhen());
+            if (!lichhenDoiOptional.isPresent()) {
+                return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Lịch lỗi.");
+            }
+
+            Lichhen lichDoi = lichhenDoiOptional.get();
+            lichDoi.setEmailNguoiDat(lichhen.getEmailNguoiDat());
+            lichDoi.setIdkhachhang(lichhen.getIdkhachhang());
+            lichDoi.setTrangthai(3); // Đặt trạng thái là "Chờ thanh toán"
+            lichDoi.setThoigianthaydoi(LocalDateTime.now());
+            lichDoi.setThucung(lichhen.getThucung());
+            lichDoi.setDichvu(lichhen.getDichvu());
+            lichDoi.setTrangthaica(true);
+            lichDoi.setSolanthaydoi(lichhen.getSolanthaydoi());
+            lichHenService.addOrUpdate(lichDoi);
+
+//            Cập nhập số lần thay đổi
+            lichhen.setSolanthaydoi(lichhen.getSolanthaydoi()+1);
+
+//            Tạo bản ghi lưu trừ lịch đổi
+            lichhenNew.setEmailNguoiDat(lichhen.getEmailNguoiDat());
+            lichhenNew.setIdkhachhang(lichhen.getIdkhachhang());
+            lichhenNew.setTrangthai(1); // Đặt trạng thái là "Thất bại"
+            lichhenNew.setIdcalichhen(lichhen.getIdcalichhen());
+            lichhenNew.setThoigianthaydoi(LocalDateTime.now());
+            lichhenNew.setThucung(lichhen.getThucung());
+            lichhenNew.setDichvu(lichhen.getDichvu());
+            lichhenNew.setDate(lichhen.getDate());
+            lichhenNew.setTrangthaica(true);
+            lichhenNew.setSolanthaydoi(lichhen.getSolanthaydoi());
+            lichHenService.addOrUpdate(lichhenNew);
+
+            lichhen.setTrangthai(5);
+            lichhen.setEmailNguoiDat("default-email@example.com");
+            if (lichhen.getTrangthaica()){
+                lichhen.setTrangthaica(false);
+            }else {
+                return ResponseEntity.ok("Lỗi ca");
+            }
+            lichHenService.addOrUpdate(lichhen);
+            return ResponseEntity.ok("Thời gian của lịch hẹn đã được cập nhật.");
+        }
+        return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+    }
 
 
 }
