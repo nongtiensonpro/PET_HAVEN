@@ -37,7 +37,6 @@ const saveData = () => {
       }
     };
     saveTempData(updatedData);
-    successMessage.value = 'Thông tin thú cưng đã được lưu thành công!';
     console.log('Data saved successfully:', getTempData());
     // Clear the form after successful save
     // if (selectedPet.value === 'new') {
@@ -121,9 +120,6 @@ const loadExistingPet = () => {
             <button type="submit" class="btn btn-primary">Lưu thông tin</button>
           </div>
         </form>
-        <div v-if="successMessage" class="alert alert-success mt-3">
-          {{ successMessage }}
-        </div>
       </div>
     </div>
   </div>

@@ -21,18 +21,39 @@
                 <div class="card-body">
                   <div class="row g-3">
                     <div v-if="tempData.idlichhen?.dichvu && tempData.idlichhen?.calichhen">
-                      <div class="col-md-6 mb-3">
-                        <h5 class="text-muted"><i class="fas fa-clipboard-list text-primary me-2"></i>Dịch vụ</h5>
-                        <p class="mb-0"><strong>Tên:</strong> {{ tempData.idlichhen.dichvu.tendichvu }}</p>
-                        <p class="mb-0"><strong>Giá tiền:</strong> {{
-                            formatCurrency(tempData.idlichhen.dichvu.giatien)
-                          }}</p>
-                      </div>
-                      <div class="col-md-6 mb-3">
-                        <h5 class="text-muted"><i class="far fa-clock text-primary me-2"></i>Thời gian</h5>
-                        <p class="mb-0">{{ tempData.idlichhen.calichhen.tenca }} -
-                          {{ tempData.idlichhen.calichhen.thoigianca }}</p>
-                      </div>
+                      <div class="col mb-3">
+                        <div class="row">
+                          <div class="col">
+                            <h5 class="text-muted"><i class="fas fa-clipboard-list text-primary me-2"></i>Dịch vụ</h5>
+                            <p class="mb-0"><strong>Tên:</strong> {{ tempData.idlichhen.dichvu.tendichvu }}</p>
+                            <p class="mb-0"><strong>Giá tiền:</strong> {{
+                                formatCurrency(tempData.idlichhen.dichvu.giatien)
+                              }}</p>
+                            <div class="col">
+                              <p class="mb-0"><strong>Mô tả:</strong> {{
+                                  tempData.idlichhen.dichvu.mota
+                                }}</p>
+                            </div>
+                          </div>
+                          <div class="col">
+                            <img class="card-img-top" src="~/assets/image/cat2.jpg" alt="VN Pay">
+                          </div>
+                          <div class="col-12">
+                            <strong>Thời gian : </strong>
+                            <div class="row">
+                              <div class="col">
+                                Tên ca: {{ tempData.idlichhen.calichhen.tenca }}
+                              </div>
+                              <div class="col">
+                                Giờ : {{ tempData.idlichhen.calichhen.thoigianca }}
+                              </div>
+                              <div class="col">
+                                Ngày : {{ tempData.idlichhen.date.toLocaleDateString() }}
+                              </div>
+                            </div>
+                          </div>
+                        </div>
+                        </div>
                     </div>
                     <div v-if="tempData.thucung" class="col-12">
                       <h5 class="text-muted mb-3"><i class="fas fa-paw text-primary me-2"></i>Thông tin thú cưng</h5>
@@ -96,32 +117,29 @@
           </div>
           <div class="accordion-item" v-if="isBookingComplete">
             <h2 class="accordion-header">
-              <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse"
-                      data-bs-target="#collapseTwo" aria-expanded="false" aria-controls="collapseTwo">
-                <i class="fas fa-paw me-2"></i>Thanh toán
+              <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#flush-collapseThree" aria-expanded="false" aria-controls="flush-collapseThree">
+                Xác nhận và thanh toán
               </button>
             </h2>
-            <div id="collapseTwo" class="accordion-collapse collapse" data-bs-parent="#bookingAccordion">
-              <div class="accordion-body">
-                <div  class="row">
-                  <div class="col-6">
-                    <div class="card">
-                      <img class="card-img-top" src="~/assets/image/vnpay.jpg" alt="VN Pay">
-                      <div class="card-body">
-                        <h4 class="card-title">Thanh toán với VN Pay</h4>
-                        <p class="card-text">Thanh toán an toàn và nhanh chóng qua VN Pay</p>
-                        <button class="btn btn-primary" @click="payWithVNPay">Thanh toán ngay</button>
-                      </div>
+            <div id="flush-collapseThree" class="accordion-collapse collapse" data-bs-parent="#accordionFlushExample">
+              <div  class="row p-4">
+                <div class="col-6">
+                  <div class="card">
+                    <img class="card-img-top" src="~/assets/image/vnpay.jpg" alt="VN Pay">
+                    <div class="card-body">
+                      <h4 class="card-title">Thanh toán với VN Pay</h4>
+                      <p class="card-text">Thanh toán an toàn và nhanh chóng qua VN Pay</p>
+                      <button class="btn btn-primary" @click="payWithVNPay">Thanh toán ngay</button>
                     </div>
                   </div>
-                  <div class="col-6">
-                    <div class="card">
-                      <img class="card-img-top" src="~/assets/image/tratienmat.png" alt="Thanh toán tại quầy">
-                      <div class="card-body">
-                        <h4 class="card-title">Thanh toán tại quầy</h4>
-                        <p class="card-text">Thanh toán trực tiếp khi đến cửa hàng</p>
-                        <button class="btn btn-secondary" @click="payAtCounter">Chọn phương thức này</button>
-                      </div>
+                </div>
+                <div class="col-6">
+                  <div class="card">
+                    <img class="card-img-top" src="~/assets/image/tratienmat.png" alt="Thanh toán tại quầy">
+                    <div class="card-body">
+                      <h4 class="card-title">Thanh toán tại quầy</h4>
+                      <p class="card-text">Thanh toán trực tiếp khi đến cửa hàng</p>
+                      <button class="btn btn-secondary" @click="payAtCounter">Chọn phương thức này</button>
                     </div>
                   </div>
                 </div>
@@ -144,7 +162,8 @@ import {useServiceStore} from '~/stores/DichVuStores';
 import {useMauKhachDatDichVu} from '~/stores/MauKhachDatDichVu'
 import {computed} from "vue";
 import DichVu from "~/models/DichVu";
-
+import { useToast } from 'vue-toastification'
+import { useDatLichStore } from '~/stores/DatLichStores'
 const accessToken = sessionStorage.getItem('access_token');
 const viewRole = sessionStorage.getItem('viewRole');
 const serviceStore = useServiceStore();
@@ -153,6 +172,9 @@ const tempData = computed(() => getTempData())
 const services = computed((): DichVu[] => {
   return serviceStore.services.filter((service: DichVu) => service.trangthai);
 });
+
+
+const datLichStore = useDatLichStore();
 
 const formatCurrency = (value: number) => {
   return new Intl.NumberFormat('vi-VN', {style: 'currency', currency: 'VND'}).format(value);
@@ -165,11 +187,11 @@ const isBookingComplete = computed(() => {
 });
 
 function payWithVNPay() {
-
+  useToast().success('Tính năng đang phát triển ?', {})
 }
 
-function payAtCounter() {
-
+async function payAtCounter() {
+  await datLichStore.xacNhanDatLich();
 }
 
 
