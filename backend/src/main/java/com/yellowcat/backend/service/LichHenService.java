@@ -20,6 +20,7 @@ import java.util.Optional;
 
 
 @Service
+@EnableAsync
 public class LichHenService {
 
     private final LichhenRepository lichhenRepository;
@@ -140,6 +141,7 @@ public class LichHenService {
         }
     }
 
+    @Async
     public void sendEmailWithActions(Lichhen lichhen) {
         try {
             String cancelUrl = "http://localhost:3000/thay-doi-lich/" + lichhen.getId();

@@ -77,11 +77,12 @@ CREATE TABLE LichHen
 );
 -- quy ước trang thai:
 -- 0 : thành công
--- 1 : thất bạif
+-- 1 : thất bại
 -- 2 : đã hủy
 -- 3 : chờ thanh toán
 -- 4 : chờ xác nhận
 -- 5 : Rỗng
+-- 6 : Thanh toán thành công
 
 
 CREATE TABLE NhacLichHen
@@ -99,7 +100,7 @@ CREATE TABLE HoaDon
     ID                  SERIAL PRIMARY KEY,
     idLichHen           INT REFERENCES LichHen (ID),
     Date                TIMESTAMP,
-    SoTien              INT NOT NULL,
+    SoTien              Float NOT NULL,
     NgayThanhToan       TIMESTAMP,
     PhuongThucThanhToan VARCHAR(50),
     TrangThai           INT not null

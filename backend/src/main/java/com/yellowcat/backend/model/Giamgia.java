@@ -5,6 +5,7 @@ import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
 
 import java.time.Instant;
+import java.time.LocalDate;
 
 @Entity
 @Table(name = "giamgia")
@@ -24,12 +25,12 @@ public class Giamgia {
     @NotNull
     @JsonProperty
     @Column(name = "ngaybatdau")
-    private Instant ngaybatdau;
+    private LocalDate ngaybatdau;
 
     @NotNull
     @JsonProperty
     @Column(name = "ngayketthuc")
-    private Instant ngayketthuc;
+    private LocalDate ngayketthuc;
 
     @NotNull
     @JsonProperty
@@ -57,19 +58,19 @@ public class Giamgia {
         this.phantramgiam = phantramgiam;
     }
 
-    public Instant getNgaybatdau() {
+    public LocalDate getNgaybatdau() {
         return ngaybatdau;
     }
 
-    public void setNgaybatdau(Instant ngaybatdau) {
+    public void setNgaybatdau(LocalDate ngaybatdau) {
         this.ngaybatdau = ngaybatdau;
     }
 
-    public Instant getNgayketthuc() {
+    public LocalDate getNgayketthuc() {
         return ngayketthuc;
     }
 
-    public void setNgayketthuc(Instant ngayketthuc) {
+    public void setNgayketthuc(LocalDate ngayketthuc) {
         this.ngayketthuc = ngayketthuc;
     }
 

@@ -30,11 +30,11 @@ public class Hoadon {
     @JsonProperty
     @NotNull
     @Column(name = "sotien", nullable = false)
-    private Integer sotien;
+    private Float sotien;
 
     @JsonProperty
     @Column(name = "ngaythanhtoan")
-    private Instant ngaythanhtoan;
+    private LocalDateTime ngaythanhtoan;
 
     @JsonProperty
     @Size(max = 50)
@@ -70,19 +70,19 @@ public class Hoadon {
         this.date = date;
     }
 
-    public Integer getSotien() {
+    public Float getSotien() {
         return sotien;
     }
 
-    public void setSotien(Integer sotien) {
+    public void setSotien(Float sotien) {
         this.sotien = sotien;
     }
 
-    public Instant getNgaythanhtoan() {
+    public LocalDateTime getNgaythanhtoan() {
         return ngaythanhtoan;
     }
 
-    public void setNgaythanhtoan(Instant ngaythanhtoan) {
+    public void setNgaythanhtoan(LocalDateTime ngaythanhtoan) {
         this.ngaythanhtoan = ngaythanhtoan;
     }
 
