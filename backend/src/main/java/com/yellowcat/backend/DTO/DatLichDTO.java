@@ -9,7 +9,7 @@ public class DatLichDTO {
     @NotNull
     private Thucung idThuCung;
     @NotNull
-    private LocalDate date;
+    private String date;
     @NotNull
     private Integer idcalichhen;
     @NotNull
@@ -28,11 +28,11 @@ public class DatLichDTO {
         this.idThuCung = idThuCung;
     }
 
-    public LocalDate getDate() {
+    public String getDate() {
         return date;
     }
 
-    public void setDate(LocalDate date) {
+    public void setDate(String date) {
         this.date = date;
     }
 

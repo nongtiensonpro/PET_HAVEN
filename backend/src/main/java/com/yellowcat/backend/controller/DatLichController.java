@@ -2,10 +2,7 @@ package com.yellowcat.backend.controller;
 
 import com.yellowcat.backend.DTO.DatLichDTO;
 import com.yellowcat.backend.DTO.DoiLichDTO;
-import com.yellowcat.backend.model.Calichhen;
-import com.yellowcat.backend.model.Dichvu;
-import com.yellowcat.backend.model.Lichhen;
-import com.yellowcat.backend.model.Thucung;
+import com.yellowcat.backend.model.*;
 import com.yellowcat.backend.service.*;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.PersistenceContext;
@@ -71,7 +68,7 @@ public class DatLichController {
 
         String idUser = authentication.getName(); // Đây là idUser
         String email = jwt.getClaimAsString("email");
-        Optional<Lichhen> lichhenOptional = lichHenService.getLichHenByDateandCa(datLichDTO.getDate(),datLichDTO.getIdcalichhen());
+        Optional<Lichhen> lichhenOptional = lichHenService.getLichHenByDateandCa(LocalDate.parse(datLichDTO.getDate()),datLichDTO.getIdcalichhen());
 
         Thucung thucung = datLichDTO.getIdThuCung();
         thucung.setIdtaikhoan(idUser);
@@ -90,7 +87,7 @@ public class DatLichController {
             return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
         }
 //        Check không cho đặt ca trong quá khứ
-        if (!caLichHenService.isCaAvailable(datLichDTO.getIdcalichhen(),datLichDTO.getDate())){
+        if (!caLichHenService.isCaAvailable(datLichDTO.getIdcalichhen(),LocalDate.parse(datLichDTO.getDate()))){
             System.out.println("Không được đặt ca trong quá khứ");
             return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
         }
@@ -102,13 +99,19 @@ public class DatLichController {
         lichhen.setEmailNguoiDat(email);
         lichhen.setTrangthai(4);
         lichhen.setThucung(thucung);
-        lichhen.setDate(datLichDTO.getDate());
+        lichhen.setDate(LocalDate.parse(datLichDTO.getDate()));
         lichhen.setDichvu(dichvu);
         if(!lichhen.getTrangthaica()){
             lichhen.setTrangthaica(true);
         }else {
             return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
         }
+
+        Hoadon hoadon = new Hoadon();
+        hoadon.setDate(LocalDateTime.now());
+        hoadon.setIdlichhen(lichhen);
+        hoadon.setPhuongthucthanhtoan("Offline");
+
 
         Lichhen createLich = lichHenService.addOrUpdate(lichhen);
 
@@ -136,7 +139,7 @@ public class DatLichController {
                 System.out.println("Tiến trình bị hủy.");
                 return;  // Nếu tiến trình bị hủy thì kết thúc
             }
-            Thread.sleep( 60 * 1000); // Đợi
+            Thread.sleep( 30 * 1000); // Đợi
         } catch (InterruptedException e) {
             Thread.currentThread().interrupt();
             return; // Ngừng xử lý nếu bị gián đoạn
