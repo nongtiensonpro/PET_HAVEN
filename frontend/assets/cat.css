@@ -63,6 +63,14 @@
     line-height: normal;
 }
 
+.text{
+    color: #400D01;
+    font-family: 'Baloo 2', sans-serif !important;
+    font-size: 48px;
+    font-style: normal;
+    font-weight: 600;
+    line-height: normal;
+}
 .custom-button {
     background-color: transparent;
     border: 1px solid #400D01;
@@ -107,3 +115,10 @@
     color: #f6f6ea !important;
 }
 
+html, body{
+    min-height: 100% !important;
+    min-width: 100% !important;
+    background: #F2F0D8 !important;
+    color: #400D01 !important;
+    font-family: 'Baloo 2', sans-serif !important;
+}

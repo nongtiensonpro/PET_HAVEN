@@ -53,17 +53,17 @@ export const useDatLichStore = defineStore('datLichStore', {
             }
         },
         async xacNhanDatLich() {
-            const { getTempData } = useMauKhachDatDichVu();
+            const { getTempData,updateDataAfterBooking  } = useMauKhachDatDichVu();
             const token = sessionStorage.getItem('access_token');
             const dichVuVaThuCungKhachHangDat = getTempData();
-        
+
+
             if (!dichVuVaThuCungKhachHangDat || !dichVuVaThuCungKhachHangDat.idlichhen) {
                 console.error('Không có dữ liệu đặt lịch tạm thời hoặc dữ liệu không hợp lệ');
                 return;
             }
         
             try {
-                // Chuyển đổi ngày thành định dạng yyyy-mm-dd
                 const formatDate = (date: string | number | Date) => {
                     if (date instanceof Date) {
                         return date.toISOString().split('T')[0];
@@ -109,6 +109,7 @@ export const useDatLichStore = defineStore('datLichStore', {
                 }
         
                 const result = await response.json();
+                updateDataAfterBooking(result);
                 console.log('Đặt lịch thành công:', result);
             } catch (error: unknown) {
                 if (error instanceof Error) {

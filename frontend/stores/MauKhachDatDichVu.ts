@@ -1,24 +1,67 @@
-import { useTempDataStore } from '~/stores/tempDataStore'
-import type DichVuKhachDat from '~/models/DichVuKhachDat';
+import { defineStore } from 'pinia';
 
-export const useMauKhachDatDichVu = () => {
-  const tempDataStore = useTempDataStore()
+interface BookingData {
+  // Định nghĩa interface cho dữ liệu đặt lịch
+  date: string;
+  dichvu: {
+    id: number;
+    tendichvu: string;
+    mota: string;
+    anh: string | null;
+    giatien: number;
+  };
+  emailNguoiDat: string;
+  id: number;
+  idcalichhen: {
+    id: number;
+    tenca: string;
+    thoigianca: string;
+    trangthai: boolean;
+  };
+  idkhachhang: string;
+  solanthaydoi: number;
+  thoigianhuy: string | null;
+  thoigianthaydoi: string | null;
+  thucung: {
+    id: number;
+    ten: string;
+    cannang: number;
+    tuoi: number;
+    giong: string;
+  };
+  trangthai: number;
+  trangthaica: boolean;
+}
 
-  const saveTempData = (data: DichVuKhachDat) => {
-    tempDataStore.setDichVuKhachDat(data)
+export const useMauKhachDatDichVu = defineStore('mauKhachDatDichVu', () => {
+  const tempData = ref<BookingData | null>(null);
+
+  function setTempData(data: BookingData) {
+    tempData.value = data;
   }
 
-  const getTempData = () => {
-    return tempDataStore.getDichVuKhachDat
+  function getTempData(): BookingData | null {
+    return tempData.value;
   }
 
-  const clearTempData = () => {
-    tempDataStore.clearDichVuKhachDat()
+  function updateDataAfterBooking(data: BookingData) {
+    tempData.value = data;
+  }
+
+  function saveTempData(data: BookingData) {
+    tempData.value = data;
+  }
+
+  function clearTempData() {
+    tempData.value = null;
   }
 
   return {
-    saveTempData,
+    tempData,
+    setTempData,
     getTempData,
+    updateDataAfterBooking,
+    saveTempData,
     clearTempData
-  }
-}
+  };
+});

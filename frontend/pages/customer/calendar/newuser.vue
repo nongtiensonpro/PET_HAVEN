@@ -7,7 +7,7 @@
   </div>
 
   <div v-else class="container py-5">
-    <h2 class="mb-4"><i class="fas fa-home me-2"></i>Nhà Haven \ <span class="text-primary">Đặt lịch</span></h2>
+<!--    <h2 class="mb-4"><i class="fas fa-home me-2"></i>Nhà Haven \ <span class="text-primary">Đặt lịch</span></h2>-->
     <div class="row">
       <div class="col-lg-6 mb-4">
         <div class="card shadow-sm h-100">
@@ -197,7 +197,7 @@ async function payAtCounter() {
     await datLichStore.xacNhanDatLich();
     clearInterval(timer);
     isLoading.value = false;
-    toast.success('Xác nhận đặt lịch thành công');
+    return navigateTo('/customer/pay/payinfo');
   } catch (error) {
     clearInterval(timer);
     isLoading.value = false;

@@ -19,11 +19,5 @@ useHead({
 </script>
 
 <style scoped>
-html, body{
-  min-height: 100% !important;
-  min-width: 100% !important;
-  background: #F2F0D8 !important;
-  color: #400D01 !important;
-  font-family: 'Baloo 2', sans-serif !important;
-}
+
 </style>
