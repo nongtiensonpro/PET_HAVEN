@@ -39,6 +39,9 @@ public class DatLichController {
     @Autowired
     private ThuCungService thuCungService;
 
+    @Autowired
+    private HoaDonService hoaDonService;
+
     @GetMapping("/dat-lich-info")
     public ResponseEntity<Map<String, Object>> getDatLichInfo(@RequestParam("ngay") LocalDate ngay) {
         Map<String, Object> response = new HashMap<>();
@@ -107,11 +110,15 @@ public class DatLichController {
             return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
         }
 
+        float SoTien = hoaDonService.TinhGiaTien(datLichDTO.getIdDichVu());
+
         Hoadon hoadon = new Hoadon();
         hoadon.setDate(LocalDateTime.now());
         hoadon.setIdlichhen(lichhen);
         hoadon.setPhuongthucthanhtoan("Offline");
-
+        hoadon.setTrangthai(1);
+        hoadon.setSotien(SoTien);
+        hoaDonService.addOrUpdate(hoadon);
 
         Lichhen createLich = lichHenService.addOrUpdate(lichhen);
 
