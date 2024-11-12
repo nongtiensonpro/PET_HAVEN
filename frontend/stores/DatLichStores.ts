@@ -20,7 +20,7 @@ export const useDatLichStore = defineStore('datLichStore', {
             const token = sessionStorage.getItem('access_token');
             this.date = date;
             try {
-                const response = await fetch(`http://localhost:8080/api/dat-lich/dat-lich-info?ngay=${date.toISOString().split('T')[0]}`, {
+                const response = await fetch(`http://localhost:8080/api/dat-lich/dat-lich-info?ngay=${date}`, {
                     method: 'GET',
                     headers: {
                         'Authorization': `Bearer ${token}`,
@@ -38,7 +38,7 @@ export const useDatLichStore = defineStore('datLichStore', {
             const token = sessionStorage.getItem('access_token');
             this.date = date;
             try {
-                const response = await fetch(`http://localhost:8080/api/dat-lich/dat-lich-info?ngay=${date.toISOString()}`, {
+                const response = await fetch(`http://localhost:8080/api/dat-lich/dat-lich-info?ngay=${date}`, {
                     method: 'GET',
                     headers: {
                         'Authorization': `Bearer ${token}`,
@@ -96,8 +96,8 @@ export const useDatLichStore = defineStore('datLichStore', {
                     body: JSON.stringify({
                         idThuCung: dichVuVaThuCungKhachHangDat.thucung,
                         date: formattedDate,
-                        idcalichhen: dichVuVaThuCungKhachHangDat.idlichhen.id, // Giả sử có trường 'id'
-                        idDichVu: dichVuVaThuCungKhachHangDat.idlichhen.dichvu // Giả sử có trường 'dichvu'
+                        idcalichhen: dichVuVaThuCungKhachHangDat.idlichhen.calichhen.id,
+                        idDichVu: dichVuVaThuCungKhachHangDat.idlichhen.dichvu.id
                     })
                 });
         
@@ -110,15 +110,12 @@ export const useDatLichStore = defineStore('datLichStore', {
         
                 const result = await response.json();
                 console.log('Đặt lịch thành công:', result);
-                // Xử lý kết quả thành công (ví dụ: hiển thị thông báo, cập nhật UI, ...)
-        
             } catch (error: unknown) {
                 if (error instanceof Error) {
                     console.error('Lỗi khi xác nhận đặt lịch:', error.message);
                 } else {
                     console.error('Lỗi không xác định khi xác nhận đặt lịch');
                 }
-                // Xử lý lỗi (ví dụ: hiển thị thông báo lỗi cho người dùng)
                 throw error;
             }
         }

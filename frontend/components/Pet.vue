@@ -6,22 +6,22 @@ const { saveTempData, getTempData, clearTempData } = useMauKhachDatDichVu();
 
 const selectedPet = ref('new');
 const petForm = reactive({
-  name: '',
-  age: '',
-  breed: '',
-  weight: '',
-  notes: ''
+  ten: '',
+  tuoi: '',
+  giong: '',
+  cannang: '',
+  ghichu: ''
 });
 
 const errors = ref({});
-const successMessage = ref('');
+const successMesstuoi = ref('');
 
 const validateForm = () => {
   errors.value = {};
-  if (!petForm.name) errors.value.name = 'Tên thú cưng là bắt buộc';
-  if (!petForm.age) errors.value.age = 'Tuổi thú cưng là bắt buộc';
-  if (!petForm.breed) errors.value.breed = 'Giống thú cưng là bắt buộc';
-  if (!petForm.weight) errors.value.weight = 'Cân nặng thú cưng là bắt buộc';
+  if (!petForm.ten) errors.value.ten = 'Tên thú cưng là bắt buộc';
+  if (!petForm.tuoi) errors.value.tuoi = 'Tuổi thú cưng là bắt buộc';
+  if (!petForm.giong) errors.value.giong = 'Giống thú cưng là bắt buộc';
+  if (!petForm.cannang) errors.value.cannang = 'Cân nặng thú cưng là bắt buộc';
   return Object.keys(errors.value).length === 0;
 };
 
@@ -81,39 +81,39 @@ const loadExistingPet = () => {
             </div>
             <div class="col-md-6">
               <div class="form-group">
-                <label for="pet-name" class="form-label">Tên thú cưng</label>
-                <input v-model="petForm.name" type="text" id="pet-name" class="form-control" :class="{ 'is-invalid': errors.name }" placeholder="Nhập tên thú cưng">
-                <div v-if="errors.name" class="invalid-feedback">{{ errors.name }}</div>
+                <label for="pet-ten" class="form-label">Tên thú cưng</label>
+                <input v-model="petForm.ten" type="text" id="pet-ten" class="form-control" :class="{ 'is-invalid': errors.ten }" placeholder="Nhập tên thú cưng">
+                <div v-if="errors.ten" class="invalid-feedback">{{ errors.ten }}</div>
               </div>
             </div>
           </div>
           <div class="row mb-3">
             <div class="col-md-4">
               <div class="form-group">
-                <label for="pet-age" class="form-label">Tuổi</label>
-                <input v-model="petForm.age" type="number" id="pet-age" class="form-control" :class="{ 'is-invalid': errors.age }" placeholder="Nhập tuổi">
-                <div v-if="errors.age" class="invalid-feedback">{{ errors.age }}</div>
+                <label for="pet-tuoi" class="form-label">Tuổi</label>
+                <input v-model="petForm.tuoi" type="number" id="pet-tuoi" class="form-control" :class="{ 'is-invalid': errors.tuoi }" placeholder="Nhập tuổi">
+                <div v-if="errors.tuoi" class="invalid-feedback">{{ errors.tuoi }}</div>
               </div>
             </div>
             <div class="col-md-4">
               <div class="form-group">
-                <label for="pet-breed" class="form-label">Giống</label>
-                <input v-model="petForm.breed" type="text" id="pet-breed" class="form-control" :class="{ 'is-invalid': errors.breed }" placeholder="Nhập giống">
-                <div v-if="errors.breed" class="invalid-feedback">{{ errors.breed }}</div>
+                <label for="pet-giong" class="form-label">Giống</label>
+                <input v-model="petForm.giong" type="text" id="pet-giong" class="form-control" :class="{ 'is-invalid': errors.giong }" placeholder="Nhập giống">
+                <div v-if="errors.giong" class="invalid-feedback">{{ errors.giong }}</div>
               </div>
             </div>
             <div class="col-md-4">
               <div class="form-group">
-                <label for="pet-weight" class="form-label">Cân nặng (kg)</label>
-                <input v-model="petForm.weight" type="number" id="pet-weight" class="form-control" :class="{ 'is-invalid': errors.weight }" placeholder="Nhập cân nặng">
-                <div v-if="errors.weight" class="invalid-feedback">{{ errors.weight }}</div>
+                <label for="pet-cannang" class="form-label">Cân nặng (kg)</label>
+                <input v-model="petForm.cannang" type="number" id="pet-cannang" class="form-control" :class="{ 'is-invalid': errors.cannang }" placeholder="Nhập cân nặng">
+                <div v-if="errors.cannang" class="invalid-feedback">{{ errors.cannang }}</div>
               </div>
             </div>
           </div>
           <div class="mb-3">
             <div class="form-group">
               <label for="pet-notes" class="form-label">Ghi chú</label>
-              <textarea v-model="petForm.notes" id="pet-notes" rows="3" class="form-control" placeholder="Nhập ghi chú"></textarea>
+              <textarea v-model="petForm.ghichu" id="pet-notes" rows="3" class="form-control" placeholder="Nhập ghi chú"></textarea>
             </div>
           </div>
           <div class="text-end">

@@ -59,19 +59,19 @@
                       <h5 class="text-muted mb-3"><i class="fas fa-paw text-primary me-2"></i>Thông tin thú cưng</h5>
                       <div class="row">
                         <div class="col-md-6 mb-2">
-                          <p class="mb-0"><strong>Tên:</strong> {{ tempData.thucung.name }}</p>
+                          <p class="mb-0"><strong>Tên:</strong> {{ tempData.thucung.ten }}</p>
                         </div>
                         <div class="col-md-6 mb-2">
-                          <p class="mb-0"><strong>Tuổi:</strong> {{ tempData.thucung.age }}</p>
+                          <p class="mb-0"><strong>Tuổi:</strong> {{ tempData.thucung.tuoi }}</p>
                         </div>
                         <div class="col-md-6 mb-2">
-                          <p class="mb-0"><strong>Giống:</strong> {{ tempData.thucung.breed }}</p>
+                          <p class="mb-0"><strong>Giống:</strong> {{ tempData.thucung.giong }}</p>
                         </div>
                         <div class="col-md-6 mb-2">
-                          <p class="mb-0"><strong>Cân nặng:</strong> {{ tempData.thucung.weight }} kg</p>
+                          <p class="mb-0"><strong>Cân nặng:</strong> {{ tempData.thucung.cannang }} kg</p>
                         </div>
                         <div class="col-12">
-                          <p class="mb-0"><strong>Ghi chú:</strong> {{ tempData.thucung.notes || 'Không có' }}</p>
+                          <p class="mb-0"><strong>Ghi chú:</strong> {{ tempData.thucung.ghichu || 'Không có' }}</p>
                         </div>
                       </div>
                     </div>
@@ -115,40 +115,30 @@
               </div>
             </div>
           </div>
-          <div class="accordion-item" v-if="isBookingComplete">
-            <h2 class="accordion-header">
-              <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#flush-collapseThree" aria-expanded="false" aria-controls="flush-collapseThree">
-                Xác nhận và thanh toán
-              </button>
-            </h2>
-            <div id="flush-collapseThree" class="accordion-collapse collapse" data-bs-parent="#accordionFlushExample">
-              <div  class="row p-4">
-                <div class="col-6">
-                  <div class="card">
-                    <img class="card-img-top" src="~/assets/image/vnpay.jpg" alt="VN Pay">
-                    <div class="card-body">
-                      <h4 class="card-title">Thanh toán với VN Pay</h4>
-                      <p class="card-text">Thanh toán an toàn và nhanh chóng qua VN Pay</p>
-                      <button class="btn btn-primary" @click="payWithVNPay">Thanh toán ngay</button>
-                    </div>
-                  </div>
-                </div>
-                <div class="col-6">
-                  <div class="card">
-                    <img class="card-img-top" src="~/assets/image/tratienmat.png" alt="Thanh toán tại quầy">
-                    <div class="card-body">
-                      <h4 class="card-title">Thanh toán tại quầy</h4>
-                      <p class="card-text">Thanh toán trực tiếp khi đến cửa hàng</p>
-                      <button class="btn btn-secondary" @click="payAtCounter">Chọn phương thức này</button>
-                    </div>
-                  </div>
-                </div>
-              </div>
-            </div>
-          </div>
+
         </div>
       </div>
 
+    </div>
+    <div  v-if="isBookingComplete">
+      <div class="col">
+        <div class="card">
+          <div class="card-body">
+            <h4 class="card-title">Bạn có muốn xác nhận đặt lịch</h4>
+            <button
+                class="btn btn-secondary"
+                @click="payAtCounter"
+                :disabled="isLoading"
+            >
+              <span v-if="!isLoading">Xác nhận</span>
+              <span v-else>
+                  <i class="fas fa-spinner fa-spin me-2"></i>
+                  Đang xử lý... ({{ elapsedTime }}s)
+                </span>
+            </button>
+          </div>
+        </div>
+      </div>
     </div>
   </div>
 
@@ -160,10 +150,11 @@ import Calendar from '~/components/Calendar.vue'
 import Pet from '~/components/Pet.vue'
 import {useServiceStore} from '~/stores/DichVuStores';
 import {useMauKhachDatDichVu} from '~/stores/MauKhachDatDichVu'
-import {computed} from "vue";
 import DichVu from "~/models/DichVu";
 import { useToast } from 'vue-toastification'
 import { useDatLichStore } from '~/stores/DatLichStores'
+import { ref, computed } from 'vue';
+
 const accessToken = sessionStorage.getItem('access_token');
 const viewRole = sessionStorage.getItem('viewRole');
 const serviceStore = useServiceStore();
@@ -190,8 +181,28 @@ function payWithVNPay() {
   useToast().success('Tính năng đang phát triển ?', {})
 }
 
+const isLoading = ref(false);
+const elapsedTime = ref(0);
+const toast = useToast();
+
+
 async function payAtCounter() {
-  await datLichStore.xacNhanDatLich();
+  isLoading.value = true;
+  elapsedTime.value = 0;
+  const timer = setInterval(() => {
+    elapsedTime.value++;
+  }, 1000);
+
+  try {
+    await datLichStore.xacNhanDatLich();
+    clearInterval(timer);
+    isLoading.value = false;
+    toast.success('Xác nhận đặt lịch thành công');
+  } catch (error) {
+    clearInterval(timer);
+    isLoading.value = false;
+    toast.error('Xảy ra lỗi khi xác nhận đặt lịch');
+  }
 }
 
 
