@@ -3,6 +3,8 @@ package com.yellowcat.backend.service;
 import com.yellowcat.backend.model.Calichhen;
 import com.yellowcat.backend.model.Lichhen;
 import com.yellowcat.backend.repository.LichhenRepository;
+import jakarta.persistence.EntityManager;
+import jakarta.persistence.PersistenceContext;
 import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.event.ContextRefreshedEvent;
@@ -17,6 +19,7 @@ import org.springframework.stereotype.Service;
 import java.time.LocalDate;
 import java.util.List;
 import java.util.Optional;
+import java.util.concurrent.atomic.AtomicBoolean;
 
 
 @Service
@@ -161,4 +164,45 @@ public class LichHenService {
         }
     }
 
+    private AtomicBoolean isCancelled = new AtomicBoolean(false);  // Biến flag để kiểm tra
+
+    public void cancelScheduleChange() {
+        isCancelled.set(true);  // Đặt flag hủy thành true
+    }
+
+    // Sau 20p tự động đổi trạng thái thành chờ thanh toán
+    @PersistenceContext
+    private EntityManager entityManager;
+
+    @Async
+    public void scheduleTrangThaiChange(Integer lichhenId) {
+        try {
+            if (isCancelled.get()) {
+                System.out.println("Tiến trình bị hủy.");
+                return;  // Nếu tiến trình bị hủy thì kết thúc
+            }
+            Thread.sleep( 30 * 1000); // Đợi
+        } catch (InterruptedException e) {
+            Thread.currentThread().interrupt();
+            return; // Ngừng xử lý nếu bị gián đoạn
+        }
+
+        // Xóa cache Hibernate để chắc chắn lấy dữ liệu từ DB
+        entityManager.clear();
+
+        // Kiểm tra và cập nhật trạng thái sau khi đợi 30 giây
+        Optional<Lichhen> lichhenOptional = lichhenRepository.findById(lichhenId);
+        Lichhen lichhen = lichhenOptional.get();
+        if (lichhen == null) {
+            return;
+        }
+
+        if (lichhen.getTrangthai() == 4) {
+            lichhen.setTrangthai(3); // Cập nhật sang trạng thái 3 (Chờ thanh toán)
+            lichhenRepository.save(lichhen);
+            System.out.println("Đã cập nhật trạng thái của lịch hẹn ID: " + lichhenId + " thành 3 (Chờ thanh toán)");
+        } else {
+            System.out.println("Lịch hẹn"+ lichhenId +  " đã bị hủy hoặc thay đổi trạng thái, không cập nhật nữa.");
+        }
+    }
 }

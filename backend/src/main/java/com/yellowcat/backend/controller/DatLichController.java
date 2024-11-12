@@ -124,51 +124,9 @@ public class DatLichController {
 
         lichHenService.sendEmailWithActions(createLich);
 
-        scheduleTrangThaiChange(createLich.getId());
+        lichHenService.scheduleTrangThaiChange(createLich.getId());
 
         return new ResponseEntity<>(createLich, HttpStatus.CREATED);
-    }
-
-    private AtomicBoolean isCancelled = new AtomicBoolean(false);  // Biến flag để kiểm tra
-
-    public void cancelScheduleChange() {
-        isCancelled.set(true);  // Đặt flag hủy thành true
-    }
-
-    // Sau 20p tự động đổi trạng thái thành chờ thanh toán
-    @PersistenceContext
-    private EntityManager entityManager;
-
-    @Transactional
-    public void scheduleTrangThaiChange(Integer lichhenId) {
-        try {
-            if (isCancelled.get()) {
-                System.out.println("Tiến trình bị hủy.");
-                return;  // Nếu tiến trình bị hủy thì kết thúc
-            }
-            Thread.sleep( 30 * 1000); // Đợi
-        } catch (InterruptedException e) {
-            Thread.currentThread().interrupt();
-            return; // Ngừng xử lý nếu bị gián đoạn
-        }
-
-        // Xóa cache Hibernate để chắc chắn lấy dữ liệu từ DB
-        entityManager.clear();
-
-        // Kiểm tra và cập nhật trạng thái sau khi đợi 30 giây
-        Lichhen lichhen = lichHenService.findById(lichhenId);
-        if (lichhen == null) {
-            System.out.println("Lịch hẹn không tồn tại hoặc đã bị xóa.");
-            return;
-        }
-
-        if (lichhen.getTrangthai() == 4) {
-            lichhen.setTrangthai(3); // Cập nhật sang trạng thái 3 (Chờ thanh toán)
-            lichHenService.addOrUpdate(lichhen);
-            System.out.println("Đã cập nhật trạng thái của lịch hẹn ID: " + lichhenId + " thành 3 (Chờ thanh toán)");
-        } else {
-            System.out.println("Lịch hẹn"+ lichhenId +  " đã bị hủy hoặc thay đổi trạng thái, không cập nhật nữa.");
-        }
     }
 
     @Transactional
@@ -213,7 +171,7 @@ public class DatLichController {
                 return ResponseEntity.ok("Lỗi ca");
             }
             lichHenService.addOrUpdate(lichhen);
-            cancelScheduleChange();
+            lichHenService.cancelScheduleChange();
             return ResponseEntity.ok("Lịch hẹn đã được hủy thành công.");
         }
         return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Lịch hẹn không thể hủy vì trạng thái không hợp lệ.");
@@ -281,7 +239,7 @@ public class DatLichController {
             }else {
                 return ResponseEntity.ok("Lỗi ca");
             }
-            cancelScheduleChange();
+            lichHenService.cancelScheduleChange();
             lichHenService.addOrUpdate(lichhen);
             return ResponseEntity.ok("Thời gian của lịch hẹn đã được cập nhật.");
         }
