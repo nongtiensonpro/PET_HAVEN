@@ -9,6 +9,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
+@CrossOrigin(origins = "http://localhost:3000")
 @RequestMapping("/api/payPal")
 public class PayPalController {
     @Autowired
@@ -17,8 +18,8 @@ public class PayPalController {
     @PostMapping("/payment/create")
     public ResponseEntity<String> createPayment() {
         try {
-            String cancelUrl = "";
-            String successUrl = "";
+            String cancelUrl = "http://localhost:8080/api/payPal/payment/cancel";
+            String successUrl = "http://localhost:8080/api/payPal/payment/success";
             Payment payment = payPalService.createPayment(
                     10.0,
                     "USD",
