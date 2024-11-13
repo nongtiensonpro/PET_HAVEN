@@ -6,6 +6,7 @@ import com.yellowcat.backend.repository.HoadonRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
 import java.util.Optional;
 
 @Service
@@ -34,4 +35,14 @@ public class HoaDonService {
         float giaTien = giaDichVu - giaDichVu*phanTramGiam/100;
         return giaTien;
     }
+    public List<Hoadon> getAllHoaDonChuaThanhToan(int idTT){
+        return hoadonRepository.findByTrangthai(idTT);
+    }
+
+    public List<Hoadon> getALl(){return hoadonRepository.findAll();}
+
+    public Optional<Hoadon> findById(int id){return hoadonRepository.findById(id);}
+
+    public List<Hoadon> LichSuThanhToanHoaDonTheoTaiKhoan(String email){return hoadonRepository.findByNguoithanhtoan(email);}
+
 }

@@ -46,6 +46,18 @@ public class Hoadon {
     @Column(name = "trangthai", nullable = false)
     private Integer trangthai;
 
+    @Size(max = 255)
+    @Column(name = "nguoithanhtoan")
+    private String nguoithanhtoan;
+
+    public String getNguoithanhtoan() {
+        return nguoithanhtoan;
+    }
+
+    public void setNguoithanhtoan(String nguoithanhtoan) {
+        this.nguoithanhtoan = nguoithanhtoan;
+    }
+
     public Integer getId() {
         return id;
     }
