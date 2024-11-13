@@ -142,5 +142,10 @@ public class LichHenController {
         return new ResponseEntity<>(HttpStatus.NOT_FOUND);
     }
 
+    @GetMapping("/findById/{id}")
+    public ResponseEntity<?> findById(@PathVariable Integer id) {
+        Lichhen lichhen = lichHenService.findById(id);
+        return ResponseEntity.ok(lichhen);
+    }
 
 }

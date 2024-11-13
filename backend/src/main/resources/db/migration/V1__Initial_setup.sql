@@ -103,7 +103,8 @@ CREATE TABLE HoaDon
     SoTien              Float NOT NULL,
     NgayThanhToan       TIMESTAMP,
     PhuongThucThanhToan VARCHAR(50),
-    TrangThai           INT not null
+    TrangThai           INT not null,
+    NguoiThanhToan      VARCHAR(255)
 );
 -- Quy ước:
 -- 1: Chờ thanh toán

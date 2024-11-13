@@ -18,6 +18,27 @@ function login1() {
 if (userInfo.value === null) {
   login1();
 }
+function createPayment() {
+  fetch('http://localhost:8080/payment/create', {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json'
+    }
+  })
+      .then(response => response.json())
+      .then(data => {
+        if (data) {
+          // Redirect người dùng đến URL thanh toán của PayPal
+          window.location.href = data; // `data` chứa URL `approval_url` từ API
+        } else {
+          console.error("Không thể tạo thanh toán");
+        }
+      })
+      .catch(error => {
+        console.error("Lỗi:", error);
+      });
+}
+
 </script>
 
 <template>
@@ -37,6 +58,8 @@ if (userInfo.value === null) {
                 <label for="">Roles :</label>
                Quản trị viên
               </div>
+              <button @click="createPayment"
+              >Thanh toán</button>
             </div>
           </div>
         </div>
