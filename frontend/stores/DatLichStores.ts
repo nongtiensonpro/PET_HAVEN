@@ -1,11 +1,13 @@
 import { defineStore } from 'pinia';
 import DichVu from '../models/DichVu';
 import CaHen from '../models/CaHen';
+import ThuCungKhachHang from "~/models/ThuCungKhachHang";
 import { useMauKhachDatDichVu } from '~/stores/MauKhachDatDichVu';
 
 interface DatLichState {
     DichVu: DichVu[];
     CaLichHen: CaHen[];
+    ListThuCung : ThuCungKhachHang[];
     date: Date;
 }
 
@@ -13,6 +15,7 @@ export const useDatLichStore = defineStore('datLichStore', {
     state: (): DatLichState => ({
         DichVu: [],
         CaLichHen: [],
+        ListThuCung : [],
         date: new Date()
     }),
     actions: {
@@ -27,9 +30,9 @@ export const useDatLichStore = defineStore('datLichStore', {
                     },
                 });
                 const data = await response.json();
-                console.log(data);
                 this.DichVu = data.dichVu;
                 this.CaLichHen = data.CaLichHen;
+                this.ListThuCung = data.ListThuCung;
             } catch (error) {
                 console.error('Error fetching services:', error);
             }
@@ -48,6 +51,7 @@ export const useDatLichStore = defineStore('datLichStore', {
                 console.log('Updated data:', data);
                 this.DichVu = data.dichVu;
                 this.CaLichHen = data.CaLichHen;
+                this.ListThuCung = data.ListThuCung;
             } catch (error) {
                 console.error('Error updating Dat Lich info:', error);
             }

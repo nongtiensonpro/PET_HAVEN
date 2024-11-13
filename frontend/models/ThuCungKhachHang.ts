@@ -1,19 +1,21 @@
+
 export default class ThuCungKhachHang{
     id: number;
-    tenthuocung: string;
+    ten: string;
     cannang: number;
     tuoi: number;
-    giongcho: string;
+    giong: string;
     idtaikhoan: string;
     image: string;
 
-    constructor(id: number, tenthuocung: string, cannang: number, tuoi: number, giongcho: string, idtaikhoan: string, image: string){
+
+    constructor(id: number, ten: string, cannang: number, tuoi: number, giong: string, idtaikhoan: string, image: string) {
         this.id = id;
-        this.tenthuocung = tenthuocung;
+        this.ten = ten;
         this.cannang = cannang;
         this.tuoi = tuoi;
-        this.giongcho = giongcho;
+        this.giong = giong;
         this.idtaikhoan = idtaikhoan;
-        this.image = image;  // Add the image property to the constructor.
+        this.image = image;
     }
 }
