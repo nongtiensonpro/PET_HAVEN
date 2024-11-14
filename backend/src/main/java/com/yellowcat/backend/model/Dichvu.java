@@ -34,10 +34,12 @@ public class Dichvu {
     @Column(name = "giatien", nullable = false)
     private Float giatien;
 
+    @JsonProperty
     @NotNull
     @Column(name = "trangthai", nullable = false)
     private Boolean trangthai = false;
 
+    @JsonProperty
     @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "idgiamgia")
     private Giamgia idgiamgia;
