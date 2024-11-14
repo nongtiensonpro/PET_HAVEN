@@ -5,7 +5,6 @@ import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
 
-import java.time.Instant;
 import java.time.LocalDateTime;
 
 @Entity
@@ -30,7 +29,7 @@ public class Hoadon {
     @JsonProperty
     @NotNull
     @Column(name = "sotien", nullable = false)
-    private Float sotien;
+    private Double sotien;
 
     @JsonProperty
     @Column(name = "ngaythanhtoan")
@@ -46,9 +45,24 @@ public class Hoadon {
     @Column(name = "trangthai", nullable = false)
     private Integer trangthai;
 
+    @JsonProperty
     @Size(max = 255)
     @Column(name = "nguoithanhtoan")
     private String nguoithanhtoan;
+
+    @JsonProperty
+    @Size(max = 255)
+    @NotNull
+    @Column(name = "magiaodich", nullable = false)
+    private String magiaodich;
+
+    public String getMagiaodich() {
+        return magiaodich;
+    }
+
+    public void setMagiaodich(String magiaodich) {
+        this.magiaodich = magiaodich;
+    }
 
     public String getNguoithanhtoan() {
         return nguoithanhtoan;
@@ -82,11 +96,11 @@ public class Hoadon {
         this.date = date;
     }
 
-    public Float getSotien() {
+    public Double getSotien() {
         return sotien;
     }
 
-    public void setSotien(Float sotien) {
+    public void setSotien(Double sotien) {
         this.sotien = sotien;
     }
 

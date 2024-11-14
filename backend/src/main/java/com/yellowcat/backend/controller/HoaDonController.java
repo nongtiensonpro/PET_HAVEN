@@ -41,7 +41,7 @@ public class HoaDonController {
     }
 
     @PreAuthorize("hasAnyRole('manager')")
-    @GetMapping("/allTheoTK")
+    @GetMapping("/Lich-su-thanh-toan-nhan-vien")
     public List<Hoadon> getAllHoaDonTheoTK(){
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         Jwt jwt = (Jwt) authentication.getPrincipal();

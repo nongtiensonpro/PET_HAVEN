@@ -110,7 +110,7 @@ public class DatLichController {
             return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
         }
 
-        float SoTien = hoaDonService.TinhGiaTien(datLichDTO.getIdDichVu());
+        Double SoTien = hoaDonService.TinhGiaTien(datLichDTO.getIdDichVu());
 
         Hoadon hoadon = new Hoadon();
         hoadon.setDate(LocalDateTime.now());
@@ -118,6 +118,7 @@ public class DatLichController {
         hoadon.setPhuongthucthanhtoan("Offline");
         hoadon.setTrangthai(1);
         hoadon.setSotien(SoTien);
+        hoadon.setMagiaodich(hoaDonService.MaGiaoDichRandom());
         hoaDonService.addOrUpdate(hoadon);
 
         Lichhen createLich = lichHenService.addOrUpdate(lichhen);
@@ -200,7 +201,7 @@ public class DatLichController {
                 return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Lịch chỉ được phép thay đổi một lần.");
             }
 //          Thay đổi thời gian và ca lịch
-            Optional<Lichhen> lichhenDoiOptional = lichHenService.getLichHenByDateandCa(doiLichDTO.getDate(),doiLichDTO.getIdcalichhen());
+            Optional<Lichhen> lichhenDoiOptional = lichHenService.getLichHenByDateandCa(LocalDate.parse(doiLichDTO.getDate()),doiLichDTO.getIdcalichhen());
             if (!lichhenDoiOptional.isPresent()) {
                 return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Lịch lỗi.");
             }
