@@ -56,6 +56,18 @@ public class Hoadon {
     @Column(name = "magiaodich", nullable = false)
     private String magiaodich;
 
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "idgiamgia")
+    private Giamgia idgiamgia;
+
+    public Giamgia getIdgiamgia() {
+        return idgiamgia;
+    }
+
+    public void setIdgiamgia(Giamgia idgiamgia) {
+        this.idgiamgia = idgiamgia;
+    }
+
     public String getMagiaodich() {
         return magiaodich;
     }

@@ -26,9 +26,10 @@ public class PayPalController {
     private LichHenService lichHenService;
 
     @PostMapping("/payment/create")
-    public ResponseEntity<String> createPayment(@RequestHeader Integer idLichHen) {
-        Optional<Hoadon> hoadonOptional = hoaDonService.finHoadonByIdLich(idLichHen);
-        Lichhen lichhen = lichHenService.findById(idLichHen);
+    public ResponseEntity<String> createPayment(@RequestHeader String idLichHen) {
+        System.out.println(idLichHen);
+        Optional<Hoadon> hoadonOptional = hoaDonService.finHoadonByIdLich(Integer.parseInt(idLichHen));
+        Lichhen lichhen = lichHenService.findById(Integer.parseInt(idLichHen));
         if (!hoadonOptional.isPresent() || lichhen == null) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Hóa đơn không tồn tại");
         }

@@ -39,19 +39,6 @@ public class Dichvu {
     @Column(name = "trangthai", nullable = false)
     private Boolean trangthai = false;
 
-    @JsonProperty
-    @ManyToOne(fetch = FetchType.EAGER)
-    @JoinColumn(name = "idgiamgia")
-    private Giamgia idgiamgia;
-
-    public Giamgia getIdgiamgia() {
-        return idgiamgia;
-    }
-
-    public void setIdgiamgia(Giamgia idgiamgia) {
-        this.idgiamgia = idgiamgia;
-    }
-
     public Boolean getTrangthai() {
         return trangthai;
     }
