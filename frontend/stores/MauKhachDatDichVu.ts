@@ -1,5 +1,3 @@
-import { defineStore } from 'pinia';
-
 interface BookingData {
   // Định nghĩa interface cho dữ liệu đặt lịch
   date: string;

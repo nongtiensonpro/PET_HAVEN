@@ -1,13 +1,143 @@
-<script setup lang="ts">
-
-</script>
-
 <template>
-  <div class="container">
-    Meo Meo
+  <div class="container py-5">
+    <div class="row">
+      <div class="col-lg-6 mb-4">
+        <div class="card shadow-sm h-100">
+          <div class="card-body">
+            <h4 class="card-title mb-4"><i class="fas fa-info-circle me-2"></i>Thông tin đặt lịch : {{id}}</h4>
+            <div v-if="thayDoiLichHenStore.lichHenDetails">
+              <div class="card border-primary mb-3">
+                <div class="card-header bg-primary text-white">
+                  <i class="fas fa-calendar-check me-2"></i>Chi tiết lịch hẹn
+                </div>
+                <div class="card-body">
+                  <div class="row g-3">
+                    <div v-if="thayDoiLichHenStore.getDichVu && thayDoiLichHenStore.getCaLichHen">
+                      <div class="col mb-3">
+                        <div class="row">
+                          <div class="col">
+                            <h5 class="text-muted"><i class="fas fa-clipboard-list text-primary me-2"></i>Dịch vụ</h5>
+                            <p class="mb-0"><strong>Tên:</strong> {{ thayDoiLichHenStore.getDichVu.tendichvu }}</p>
+                            <p class="mb-0"><strong>Giá tiền:</strong> {{ formatCurrency(thayDoiLichHenStore.getDichVu.giatien) }}</p>
+                            <div class="col">
+                              <p class="mb-0"><strong>Mô tả:</strong> {{ thayDoiLichHenStore.getDichVu.mota }}</p>
+                            </div>
+                          </div>
+                          <div class="col">
+                            <img class="card-img-top" src="~/assets/image/cat2.jpg" alt="VN Pay">
+                          </div>
+                          <div class="col-12">
+                            <strong>Thời gian : </strong>
+                            <div class="row">
+                              <div class="col">
+                                Tên ca: {{ thayDoiLichHenStore.getCaLichHen.tenca }}
+                              </div>
+                              <div class="col">
+                                Giờ : {{ thayDoiLichHenStore.getCaLichHen.thoigianca }}
+                              </div>
+                              <div class="col">
+                                Ngày : {{ new Date(thayDoiLichHenStore.getDate).toLocaleDateString() }}
+                              </div>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                    <div v-if="thayDoiLichHenStore.getThuCung" class="col-12">
+                      <h5 class="text-muted mb-3"><i class="fas fa-paw text-primary me-2"></i>Thông tin thú cưng</h5>
+                      <div class="row">
+                        <div class="col-md-6 mb-2">
+                          <p class="mb-0"><strong>Tên:</strong> {{ thayDoiLichHenStore.getThuCung.ten }}</p>
+                        </div>
+                        <div class="col-md-6 mb-2">
+                          <p class="mb-0"><strong>Tuổi:</strong> {{ thayDoiLichHenStore.getThuCung.tuoi }}</p>
+                        </div>
+                        <div class="col-md-6 mb-2">
+                          <p class="mb-0"><strong>Giống:</strong> {{ thayDoiLichHenStore.getThuCung.giong }}</p>
+                        </div>
+                        <div class="col-md-6 mb-2">
+                          <p class="mb-0"><strong>Cân nặng:</strong> {{ thayDoiLichHenStore.getThuCung.cannang }} kg</p>
+                        </div>
+                        <div class="col-12">
+                          <p class="mb-0"><strong>Ghi chú:</strong> {{ thayDoiLichHenStore.getThuCung.ghichu || 'Không có' }}</p>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div v-else class="text-center">
+              <img src="~/assets/image/cat3.jpg" alt="Chọn dịch vụ" class="img-fluid rounded mb-3"
+                   style="max-height: 200px;">
+              <p class="lead">Đang tải thông tin lịch hẹn...</p>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="col-lg-6">
+          <div class="card-body">
+              <Calendar :id="id"/>
+          </div>
+      </div>
+    </div>
   </div>
 </template>
 
-<style scoped>
+<script setup lang="ts">
+import {useRoute} from 'vue-router'
+import Calendar from '~/components/CalendarChange.vue'
+import Pet from '~/components/Pet.vue'
+import {useServiceStore} from '~/stores/DichVuStores';
+import {useMauKhachDatDichVu} from '~/stores/MauKhachDatDichVu'
+import DichVu from "~/models/DichVu";
+import {useToast} from 'vue-toastification'
+import {useDatLichStore} from '~/stores/DatLichStores'
+import {ref, computed} from 'vue';
+import {useThayDoiLichHenStore} from '~/stores/ThayDoiLichHen'
 
+const thayDoiLichHenStore = useThayDoiLichHenStore()
+const accessToken = sessionStorage.getItem('access_token');
+const viewRole = sessionStorage.getItem('viewRole');
+const serviceStore = useServiceStore();
+const {getTempData} = useMauKhachDatDichVu()
+const tempData = computed(() => getTempData())
+const services = computed((): DichVu[] => {
+  return serviceStore.services.filter((service: DichVu) => service.trangthai);
+});
+
+const route = useRoute()
+const id = route.params.id
+onMounted(async () => {
+  await thayDoiLichHenStore.fetchLichHenDetails(Number(id))
+})
+
+
+const formatCurrency = (value: number) => {
+  return new Intl.NumberFormat('vi-VN', {style: 'currency', currency: 'VND'}).format(value);
+};
+
+</script>
+
+<style scoped>
+.accordion-button:not(.collapsed) {
+  background-color: #e7f1ff;
+  color: #0c63e4;
+}
+
+.accordion-button:focus {
+  box-shadow: none;
+  border-color: rgba(0, 0, 0, .125);
+}
+
+.card {
+  transition: all 0.3s ease;
+}
+
+.card:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+}
 </style>
+<script setup lang="ts">
+</script>

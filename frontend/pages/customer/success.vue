@@ -17,12 +17,14 @@ onMounted(() => {
         <h2 class="card-title text-center mb-4 text">
           <i class="fas fa-check-circle me-2"></i>Xác nhận thanh toán thành công
         </h2>
+        <li><strong>ID:</strong> {{ tempData.id }}</li>
         <div class="row">
           <div class="col-md-6 mb-4">
             <div class="card h-100">
               <div class="card-body">
                 <h4 class="card-title mb-3"><i class="fas fa-paw me-2"></i>Thông tin thú cưng</h4>
                 <ul class="list-unstyled">
+
                   <li><strong>Tên:</strong> {{ tempData.thucung.ten }}</li>
                   <li><strong>Cân nặng:</strong> {{ tempData.thucung.cannang }} kg</li>
                   <li><strong>Tuổi:</strong> {{ tempData.thucung.tuoi }} tuổi</li>
