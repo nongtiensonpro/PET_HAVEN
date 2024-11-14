@@ -1,7 +1,14 @@
 <script setup lang="ts">
+
+import {useMauKhachDatDichVu} from "~/stores/MauKhachDatDichVu";
+import {computed} from "vue";
+
 function thanhToanTaiQuay(){
   return navigateTo('/customer/success');
 }
+
+const { getTempData } = useMauKhachDatDichVu()
+const tempData = computed(() => getTempData())
 
 function thanhToanOnline() {
   const token = sessionStorage.getItem('access_token');
@@ -9,6 +16,7 @@ function thanhToanOnline() {
     method: 'POST',
     headers: {
       'Authorization': `Bearer ${token}`,
+      'idLichHen' : tempData.id
     }
   })
       .then(response => response.text()) // Xử lý phản hồi chuỗi (URL)
@@ -37,7 +45,7 @@ function thanhToanOnline() {
               <div class="card no-border">
                 <button type="button" class="custom-button"><img class="card-img-top" src="~/assets/image/vnpay.jpg" height="350rem" width="350rem" alt=""></button>
                 <div class="card-body">
-                  <button type="button" class="custom-button" @click="thanhToanOnline">Thanh toán với VN Pay</button>
+                  <button type="button" class="custom-button" @click="thanhToanOnline">Thanh toán với VN Pay {{tempData.id}}</button>
                 </div>
               </div>
             </div>
