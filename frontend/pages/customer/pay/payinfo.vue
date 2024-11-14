@@ -11,11 +11,11 @@ definePageMeta({
 });
 
 
-
+const token = localStorage.getItem('access_token');
 function thanhToanOnline() {
   const { getTempData } = useMauKhachDatDichVu()
   const tempData = computed(() => getTempData())
-  const token = sessionStorage.getItem('access_token');
+
   fetch('http://localhost:8080/api/payPal/payment/create', {
     method: 'POST',
     headers: {
@@ -26,7 +26,7 @@ function thanhToanOnline() {
       .then(response => response.text()) // Xử lý phản hồi chuỗi (URL)
       .then(url => {
         if (url) {
-         window.location.href = url;
+          window.location.href = url;
           // Redirect người dùng đến URL thanh toán của PayPal
         } else {
           console.error("Không thể tạo thanh toán");
