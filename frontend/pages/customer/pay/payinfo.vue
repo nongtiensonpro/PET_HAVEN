@@ -7,23 +7,25 @@ function thanhToanTaiQuay(){
   return navigateTo('/customer/success');
 }
 
-const { getTempData } = useMauKhachDatDichVu()
-const tempData = computed(() => getTempData())
+
+
 
 function thanhToanOnline() {
+  const { getTempData } = useMauKhachDatDichVu()
+  const tempData = computed(() => getTempData())
   const token = sessionStorage.getItem('access_token');
   fetch('http://localhost:8080/api/payPal/payment/create', {
     method: 'POST',
     headers: {
       'Authorization': `Bearer ${token}`,
-      'idLichHen' : tempData.id
+      'idLichHen' : tempData.value.id
     }
   })
       .then(response => response.text()) // Xử lý phản hồi chuỗi (URL)
       .then(url => {
         if (url) {
+         window.location.href = url;
           // Redirect người dùng đến URL thanh toán của PayPal
-          window.location.href = url; // Lấy URL thanh toán
         } else {
           console.error("Không thể tạo thanh toán");
         }
@@ -45,7 +47,7 @@ function thanhToanOnline() {
               <div class="card no-border">
                 <button type="button" class="custom-button"><img class="card-img-top" src="~/assets/image/vnpay.jpg" height="350rem" width="350rem" alt=""></button>
                 <div class="card-body">
-                  <button type="button" class="custom-button" @click="thanhToanOnline">Thanh toán với VN Pay {{tempData.id}}</button>
+                  <button type="button" class="custom-button" @click="thanhToanOnline">Thanh toán với VN Pay </button>
                 </div>
               </div>
             </div>

@@ -12,9 +12,9 @@ CREATE TABLE TaiKhoan
 CREATE TABLE GiamGia
 (
     ID           SERIAL PRIMARY KEY,
-    PhanTramGiam INT,
-    NgayBatDau   TIMESTAMP,
-    NgayKetThuc  TIMESTAMP,
+    PhanTramGiam INT not null ,
+    NgayBatDau   TIMESTAMP not null ,
+    NgayKetThuc  TIMESTAMP not null ,
     MoTa         TEXT,
     TrangThai    BOOLEAN
 );
@@ -37,8 +37,7 @@ CREATE TABLE DichVu
     MoTa      TEXT         NOT NULL,
     Anh       TEXT,
     GiaTien   INT          NOT NULL,
-    TrangThai   BOOLEAN NOT NULL,
-    idGiamGia   INT REFERENCES GiamGia (ID)
+    TrangThai   BOOLEAN NOT NULL
 );
 
 CREATE TABLE ThuCung
@@ -105,7 +104,8 @@ CREATE TABLE HoaDon
     NgayThanhToan       TIMESTAMP,
     PhuongThucThanhToan VARCHAR(50),
     TrangThai           INT not null,
-    NguoiThanhToan      VARCHAR(255)
+    NguoiThanhToan      VARCHAR(255),
+    idGiamGia   INT REFERENCES GiamGia (ID)
 );
 -- Quy ước:
 -- 1: Chờ thanh toán
@@ -124,6 +124,8 @@ CREATE TABLE DanhGia
     idHoaDon INT REFERENCES HoaDon(ID)
 );
 
+
+
 -- Thêm dữ liệu vào bảng TaiKhoan
 INSERT INTO TaiKhoan (Username, Pass, TrangThai, Gmail, Image, Role)
 VALUES ('user1', 'pass1', TRUE, 'user1@gmail.com', NULL, 'USER'),
@@ -138,15 +140,15 @@ VALUES ('Nguyen Van A', 25, 'Nam', 1, '0901234567'),
 
 -- Thêm dữ liệu vào bảng GiamGia
 INSERT INTO GiamGia (PhanTramGiam, NgayBatDau, NgayKetThuc, MoTa, TrangThai)
-VALUES (0, null, null, 'Default', TRUE),
+VALUES
        (20, '2024-11-01 00:00:00', '2024-11-30 23:59:59', 'Giảm giá tháng 11', TRUE),
        (15, '2024-12-01 00:00:00', '2024-12-31 23:59:59', 'Giảm giá tháng 12', TRUE);
 
 -- Thêm dữ liệu vào bảng DichVu
-INSERT INTO DichVu (TenDichVu, MoTa, Anh, GiaTien,trangthai,idGiamGia)
-VALUES ('Dịch vụ 1', 'Mô tả dịch vụ 1', NULL, 100000,true,null),
-       ('Dịch vụ 2', 'Mô tả dịch vụ 2', NULL, 150000,true,1),
-       ('Dịch vụ 3', 'Mô tả dịch vụ 3', NULL, 200000,true,1);
+INSERT INTO DichVu (TenDichVu, MoTa, Anh, GiaTien,trangthai)
+VALUES ('Dịch vụ 1', 'Mô tả dịch vụ 1', NULL, 100000,true),
+       ('Dịch vụ 2', 'Mô tả dịch vụ 2', NULL, 150000,true),
+       ('Dịch vụ 3', 'Mô tả dịch vụ 3', NULL, 200000,true);
 
 -- Thêm dữ liệu vào bảng ThuCung
 INSERT INTO ThuCung (Ten, CanNang, Tuoi, Giong, IDTaiKhoan, Image)
@@ -178,10 +180,10 @@ VALUES ('Nhắc lịch 1', 'Thông báo lịch hẹn 1', 1, FALSE, TRUE),
        ('Nhắc lịch 3', 'Thông báo lịch hẹn 3', 3, FALSE, TRUE);
 
 -- Thêm dữ liệu vào bảng HoaDon
-INSERT INTO HoaDon (idLichHen, Date, SoTien, NgayThanhToan, PhuongThucThanhToan, TrangThai,MaGiaoDich)
-VALUES (1, '2024-10-02 10:00:00', 90000, '2024-10-02 11:00:00', 'Offline', 1,'1'),
-       (2, '2024-10-03 14:00:00', 120000, '2024-10-03 15:00:00', 'Online', 2,'2'),
-       (3, '2024-10-04 09:00:00', 170000, '2024-10-04 10:00:00', 'Online', 3,'3');
+INSERT INTO HoaDon (idLichHen, Date, SoTien, NgayThanhToan, PhuongThucThanhToan, TrangThai,MaGiaoDich,idGiamGia)
+VALUES (1, '2024-10-02 10:00:00', 90000, '2024-10-02 11:00:00', 'Offline', 1,'1',2),
+       (2, '2024-10-03 14:00:00', 120000, '2024-10-03 15:00:00', 'Online', 2,'2',2),
+       (3, '2024-10-04 09:00:00', 170000, '2024-10-04 10:00:00', 'Online', 3,'3',2);
 
 -- Thêm dữ liệu vào bảng DanhGia
 INSERT INTO DanhGia (idTaiKhoan, SoSao, MoTa, Date, TrangThai,idHoaDon)

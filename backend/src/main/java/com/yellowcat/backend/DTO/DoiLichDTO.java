@@ -8,7 +8,7 @@ public class DoiLichDTO {
     @NotNull
     private String date;
     @NotNull
-    private Integer idcalichhen;
+    private String idcalichhen;
 
     public @NotNull String getDate() {
         return date;
@@ -18,11 +18,11 @@ public class DoiLichDTO {
         this.date = date;
     }
 
-    public @NotNull Integer getIdcalichhen() {
+    public @NotNull String getIdcalichhen() {
         return idcalichhen;
     }
 
-    public void setIdcalichhen(@NotNull Integer idcalichhen) {
+    public void setIdcalichhen(@NotNull String idcalichhen) {
         this.idcalichhen = idcalichhen;
     }
 }

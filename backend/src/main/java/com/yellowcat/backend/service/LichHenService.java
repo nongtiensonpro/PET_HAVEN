@@ -45,8 +45,8 @@ public class LichHenService {
         return lichhenRepository.findAll(pageable);
     }
 
-    public Optional<Lichhen> getLichHenByDateandCa(LocalDate date,Integer id){
-        return lichhenRepository.findByDateAndIdcalichhen_IdAndTrangthai(date,id,5);
+    public Optional<Lichhen> getLichHenByDateandCa(LocalDate date,Integer idCa){
+        return lichhenRepository.findByDateAndIdcalichhen_IdAndTrangthai(date,idCa,5);
     }
 
     public Page<Lichhen> findByIdUser(Pageable pageable, String idUser){
@@ -181,7 +181,7 @@ public class LichHenService {
                 System.out.println("Tiến trình bị hủy.");
                 return;  // Nếu tiến trình bị hủy thì kết thúc
             }
-            Thread.sleep( 30 * 1000); // Đợi
+            Thread.sleep( 10*60 * 1000); // Đợi
         } catch (InterruptedException e) {
             Thread.currentThread().interrupt();
             return; // Ngừng xử lý nếu bị gián đoạn

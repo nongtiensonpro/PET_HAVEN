@@ -61,7 +61,7 @@ export const useThayDoiLichHenStore = defineStore('thayDoiLichHenStore', {
                     },
                     body: JSON.stringify({
                         date: date,
-                        idCalichHen: idCalichHen
+                        idcalichhen: idCalichHen
                     })
                 });
 
@@ -70,7 +70,7 @@ export const useThayDoiLichHenStore = defineStore('thayDoiLichHenStore', {
                     const data = await response.json();
                     if (!response.ok) {
                         console.error('Error response:', data);
-                        throw new Error(`Failed to change appointment. Status: ${response.status}` + id + `id` + date + idCalichHen);
+                        throw new Error(`Failed to change appointment. Status: ${response.status}` + `id=` +id  +`date=:`+ date +`idcalichhen=`+ idCalichHen);
                     }
                     console.log('Appointment changed successfully:', data);
                     return data;

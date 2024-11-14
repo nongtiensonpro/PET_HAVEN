@@ -201,7 +201,7 @@ public class DatLichController {
                 return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Lịch chỉ được phép thay đổi một lần.");
             }
 //          Thay đổi thời gian và ca lịch
-            Optional<Lichhen> lichhenDoiOptional = lichHenService.getLichHenByDateandCa(LocalDate.parse(doiLichDTO.getDate()),doiLichDTO.getIdcalichhen());
+            Optional<Lichhen> lichhenDoiOptional = lichHenService.getLichHenByDateandCa(LocalDate.parse(doiLichDTO.getDate()),Integer.parseInt(doiLichDTO.getIdcalichhen()));
             if (!lichhenDoiOptional.isPresent()) {
                 return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Lịch lỗi.");
             }
