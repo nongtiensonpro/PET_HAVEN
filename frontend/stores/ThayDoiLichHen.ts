@@ -87,7 +87,22 @@ export const useThayDoiLichHenStore = defineStore('thayDoiLichHenStore', {
                 console.error('Error changing appointment time:', error);
                 throw error;
             }
-        }
+        },
+        async huyLichHen(id: number) {
+            const {updateDataAfterBooking} = useMauKhachDatDichVu();
+            const token = localStorage.getItem('access_token');
+            try {
+                const response = await fetch(`http://localhost:8080/api/dat-lich/huy-lich/${id}`, {
+                    method: 'PUT',
+                    headers: {
+                        'Authorization': `Bearer ${token}`,
+                    },
+                });
+                const data = await response.json();
+            } catch (error) {
+                console.error('Error fetching lich hen details:', error);
+            }
+        },
     },
     getters: {
         getDichVu: (state) => state.lichHenDetails?.dichvu,

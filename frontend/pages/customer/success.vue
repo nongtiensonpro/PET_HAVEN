@@ -19,7 +19,6 @@ onMounted(() => {
         <h2 class="card-title text-center mb-4 text">
           <i class="fas fa-check-circle me-2"></i>Xác nhận thanh toán thành công
         </h2>
-        <li><strong>ID:</strong> {{ tempData.id }}</li>
         <div class="row">
           <div class="col-md-6 mb-4">
             <div class="card h-100">

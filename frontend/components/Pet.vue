@@ -1,10 +1,5 @@
 <template>
   <div class="container py-5">
-    <div class="card shadow">
-      <div class="card-header bg-primary text-white">
-        <h2 class="mb-0 text-center">Thông tin thú cưng</h2>
-      </div>
-      <div class="card-body">
         <form @submit.prevent="saveData">
           <div class="row mb-3">
             <div class="col-md-6">
@@ -12,7 +7,7 @@
                 <label for="pet-select" class="form-label">Chọn loại thú cưng</label>
                 <select v-model="selectedPet" id="pet-select" class="form-select">
                   <option value="new">Thú cưng mới</option>
-                  <option value="existing">Thú cưng hiện có</option>
+                  <option v-if="listThuCung?.length > 0" value="existing">Thú cưng hiện có</option>
                 </select>
               </div>
             </div>
@@ -70,8 +65,6 @@
           </div>
         </form>
       </div>
-    </div>
-  </div>
 </template>
 
 <script setup lang="ts">
@@ -82,10 +75,17 @@ import ThuCungKhachHang from "~/models/ThuCungKhachHang";
 
 const datLichStore = useDatLichStore()
 const { saveTempData, getTempData ,updateDataAfterBooking} = useMauKhachDatDichVu();
-const listThuCung = computed((): ThuCungKhachHang[] => datLichStore.ListThuCung);
+const listThuCung = computed((): ThuCungKhachHang[] => datLichStore.ListThuCung || []);
 
 const selectedPet = ref('new');
 const selectedExistingPet = ref(null);
+onMounted(() => {
+  if (listThuCung.value.length > 0) {
+    selectedPet.value = 'existing';
+    selectedExistingPet.value = listThuCung.value[0].id;
+    loadExistingPet();
+  }
+});
 const petForm = reactive({
   ten: '',
   tuoi: '',
@@ -99,9 +99,17 @@ const errors = ref({});
 const validateForm = () => {
   errors.value = {};
   if (!petForm.ten) errors.value.ten = 'Vui lòng nhập tên thú cưng';
-  if (!petForm.tuoi) errors.value.tuoi = 'Vui lòng nhập tuổi';
+  if (!petForm.tuoi) {
+    errors.value.tuoi = 'Vui lòng nhập tuổi';
+  } else if (isNaN(petForm.tuoi) || Number(petForm.tuoi) <= 0) {
+    errors.value.tuoi = 'Tuổi phải là số dương';
+  }
   if (!petForm.giong) errors.value.giong = 'Vui lòng nhập giống';
-  if (!petForm.cannang) errors.value.cannang = 'Vui lòng nhập cân nặng';
+  if (!petForm.cannang) {
+    errors.value.cannang = 'Vui lòng nhập cân nặng';
+  } else if (isNaN(petForm.cannang) || Number(petForm.cannang) <= 0) {
+    errors.value.cannang = 'Cân nặng phải là số dương';
+  }
   return Object.keys(errors.value).length === 0;
 };
 
@@ -141,6 +149,9 @@ watch(selectedPet, (newValue) => {
   if (newValue === 'new') {
     selectedExistingPet.value = null;
     Object.keys(petForm).forEach(key => petForm[key] = '');
+  } else if (newValue === 'existing' && listThuCung.value.length > 0) {
+    selectedExistingPet.value = listThuCung.value[0].id;
+    loadExistingPet();
   }
 });
 

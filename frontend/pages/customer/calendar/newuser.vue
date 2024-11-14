@@ -92,11 +92,12 @@
           <div class="accordion-item">
             <h2 class="accordion-header">
               <button class="accordion-button" type="button" data-bs-toggle="collapse" data-bs-target="#collapseOne"
-                      aria-expanded="true" aria-controls="collapseOne">
-                <i class="fas fa-calendar-alt me-2"></i>Chọn ngày và giờ hẹn
+                      :aria-expanded="!isDateTimeSelected" :class="{ 'collapsed': isDateTimeSelected }">
+
+              <i class="fas fa-calendar-alt me-2"></i>Chọn ngày và giờ hẹn
               </button>
             </h2>
-            <div id="collapseOne" class="accordion-collapse collapse show" data-bs-parent="#bookingAccordion">
+            <div id="collapseOne" class="accordion-collapse collapse" :class="{ 'show': !isDateTimeSelected }" data-bs-parent="#bookingAccordion">
               <div class="accordion-body">
                 <Calendar/>
               </div>
@@ -104,21 +105,25 @@
           </div>
           <div class="accordion-item">
             <h2 class="accordion-header">
-              <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse"
-                      data-bs-target="#collapseTwo" aria-expanded="false" aria-controls="collapseTwo">
-                <i class="fas fa-paw me-2"></i>Thông tin thú cưng
+              <button class="accordion-button" type="button" data-bs-toggle="collapse"
+                      data-bs-target="#collapseTwo"
+                      :aria-expanded="isDateTimeSelected"
+                      :class="{ 'collapsed': !isDateTimeSelected }">
+
+              <i class="fas fa-paw me-2"></i>Thông tin thú cưng
               </button>
             </h2>
-            <div id="collapseTwo" class="accordion-collapse collapse" data-bs-parent="#bookingAccordion">
-              <div class="accordion-body">
+            <div id="collapseTwo" class="accordion-collapse collapse"
+                 :class="{ 'show': isDateTimeSelected }"
+                 data-bs-parent="#bookingAccordion">
+
+            <div class="accordion-body">
                 <Pet/>
               </div>
             </div>
           </div>
-
         </div>
       </div>
-
     </div>
     <div  v-if="isBookingComplete">
       <div class="col">
@@ -168,6 +173,10 @@ definePageMeta({
 });
 
 const datLichStore = useDatLichStore();
+
+const isDateTimeSelected = computed(() => {
+  return tempData.value?.idlichhen?.dichvu && tempData.value?.idlichhen?.calichhen;
+})
 
 const formatCurrency = (value: number) => {
   return new Intl.NumberFormat('vi-VN', {style: 'currency', currency: 'VND'}).format(value);

@@ -4,7 +4,7 @@
       <div class="col-lg-6 mb-4">
         <div class="card shadow-sm h-100">
           <div class="card-body">
-            <h4 class="card-title mb-4"><i class="fas fa-info-circle me-2"></i>Thông tin đặt lịch : {{id}}</h4>
+            <h4 class="card-title mb-4"><i class="fas fa-info-circle me-2"></i>Thông tin đặt lịch : {{ id }}</h4>
             <div v-if="thayDoiLichHenStore.lichHenDetails">
               <div class="card border-primary mb-3">
                 <div class="card-header bg-primary text-white">
@@ -18,7 +18,8 @@
                           <div class="col">
                             <h5 class="text-muted"><i class="fas fa-clipboard-list text-primary me-2"></i>Dịch vụ</h5>
                             <p class="mb-0"><strong>Tên:</strong> {{ thayDoiLichHenStore.getDichVu.tendichvu }}</p>
-                            <p class="mb-0"><strong>Giá tiền:</strong> {{ formatCurrency(thayDoiLichHenStore.getDichVu.giatien) }}</p>
+                            <p class="mb-0"><strong>Giá tiền:</strong>
+                              {{ formatCurrency(thayDoiLichHenStore.getDichVu.giatien) }}</p>
                             <div class="col">
                               <p class="mb-0"><strong>Mô tả:</strong> {{ thayDoiLichHenStore.getDichVu.mota }}</p>
                             </div>
@@ -59,7 +60,8 @@
                           <p class="mb-0"><strong>Cân nặng:</strong> {{ thayDoiLichHenStore.getThuCung.cannang }} kg</p>
                         </div>
                         <div class="col-12">
-                          <p class="mb-0"><strong>Ghi chú:</strong> {{ thayDoiLichHenStore.getThuCung.ghichu || 'Không có' }}</p>
+                          <p class="mb-0"><strong>Ghi chú:</strong>
+                            {{ thayDoiLichHenStore.getThuCung.ghichu || 'Không có' }}</p>
                         </div>
                       </div>
                     </div>
@@ -75,10 +77,18 @@
           </div>
         </div>
       </div>
-      <div class="col-lg-6">
+      <div v-if="thayDoiLichHenStore.trangthai !== 4" class="col-lg-6">
+        <div class="card-body">
+          <Calendar :id="id"/>
+        </div>
+      </div>
+      <div v-else class="col-lg-6">
+        <div class="card p-4 ">
+          <p class="text">Bạn đã hết thời gian đổi lịch hẹn và hủy lịch hẹn !</p>
+          <img src="~/assets/image/cat3.jpg" alt=""/>
           <div class="card-body">
-              <Calendar :id="id"/>
           </div>
+        </div>
       </div>
     </div>
   </div>
@@ -116,6 +126,7 @@ definePageMeta({
 });
 
 const formatCurrency = (value: number) => {
+  console.log('Thông tin đầy đủ của thayDoiLichHenStore:', JSON.stringify(thayDoiLichHenStore, null, 2));
   return new Intl.NumberFormat('vi-VN', {style: 'currency', currency: 'VND'}).format(value);
 };
 

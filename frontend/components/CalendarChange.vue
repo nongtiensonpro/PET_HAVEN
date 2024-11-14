@@ -23,6 +23,9 @@
         <button @click="confirmBooking" class="btn btn-primary mt-3" :disabled="!isFormValid">
           Xác nhận thay đổi lịch hẹn
         </button>
+        <button @click="huyLichHen"  class="btn btn-primary mt-3">
+          Hủy lịch hẹn
+        </button>
       </div>
     </div>
   </div>
@@ -54,7 +57,7 @@ const props = defineProps({
 
 const { saveTempData, getTempData, clearTempData } = useMauKhachDatDichVu()
 
-const {thayDoiLichHenStore} = useThayDoiLichHenStore()
+const {thayDoiLichHenStore,huyLichHen} = useThayDoiLichHenStore()
 
 const datLichStore = useDatLichStore()
 const toast = useToast()
@@ -172,6 +175,14 @@ async function confirmBooking() {
     }
   } else {
     toast.error('Vui lòng chọn ngày và thời gian mới', {timeout: 3000});
+  }
+}
+async function huyLichHenNe() {
+  try {
+    await huyLichHen(props.id);
+    toast.success('Đã hủy lịch h��n thành công', {timeout: 3000});
+  } catch (error) {
+    toast.error('Không thể hủy lịch h��n. Vui lòng thử lại. ' + error, {timeout: 3000});
   }
 }
 </script>

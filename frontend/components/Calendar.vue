@@ -6,33 +6,44 @@
     />
     <div class="booking-details card m-4">
       <div class="card-body">
-        <h3 class="mb-3">Chi tiết đặt lịch</h3>
         <div class="row">
           <div class="col-12 mb-3">
             <p class="selected-date">Bạn đã chọn ngày: <strong>{{ formattedSelectedDate }}</strong></p>
           </div>
-          <div class="col-md-6 mb-3">
-            <label for="service" class="form-label">Dịch vụ:</label>
-            <select id="service" v-model="selectedService" class="form-select">
-              <option value="" disabled>Chọn dịch vụ</option>
-              <option v-for="service in services" :key="service.id" :value="service.id">
-                {{ service.tendichvu }}
-              </option>
-            </select>
+          <div v-if="services && services.length && lichhens && lichhens.length">
+            <div class="row">
+              <div class="col-md-6 mb-3">
+                <label for="service" class="form-label">Dịch vụ:</label>
+                <select id="service" v-model="selectedService" class="form-select">
+                  <option value="" disabled>Chọn dịch vụ</option>
+                  <option v-for="service in services" :key="service.id" :value="service.id">
+                    {{ service.tendichvu }}
+                  </option>
+                </select>
+              </div>
+              <div class="col-md-6 mb-3">
+                <label for="time" class="form-label">Thời gian:</label>
+                <select id="time" v-model="selectedTime" class="form-select">
+                  <option value="" disabled>Chọn thời gian</option>
+                  <option v-for="lichhen in lichhens" :key="lichhen.id" :value="lichhen.id">
+                    {{ lichhen.tenca }}: {{ lichhen.thoigianca }}
+                  </option>
+                </select>
+              </div>
+            </div>
+
+            <div class="row">
+              <div class="col-12">
+                <button @click="confirmBooking" class="btn btn-primary mt-3" :disabled="!isFormValid">
+                  Tiếp tục
+                </button>
+              </div>
+            </div>
           </div>
-          <div class="col-md-6 mb-3">
-            <label for="time" class="form-label">Thời gian:</label>
-            <select id="time" v-model="selectedTime" class="form-select">
-              <option value="" disabled>Chọn thời gian</option>
-              <option v-for="lichhen in lichhens" :key="lichhen.id" :value="lichhen.id">
-                {{ lichhen.tenca }}: {{ lichhen.thoigianca }}
-              </option>
-            </select>
+          <div v-else class="col-12">
+            <p class="text-danger">Ngày bạn đã chọn không khả dụng. Vui lòng chọn lại ngày khác.</p>
           </div>
         </div>
-        <button @click="confirmBooking" class="btn btn-primary mt-3" :disabled="!isFormValid">
-          Tiếp tục
-        </button>
       </div>
     </div>
   </div>
@@ -72,6 +83,7 @@ const formattedSelectedDate = computed(() => {
 })
 
 const fetchCaHen = datLichStore.fetchCaHen
+
 
 const services = computed((): DichVu[] => datLichStore.DichVu)
 const lichhens = computed((): CaHen[] => datLichStore.CaLichHen)
