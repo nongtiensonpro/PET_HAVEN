@@ -30,7 +30,7 @@ export const useThayDoiLichHenStore = defineStore('thayDoiLichHenStore', {
     actions: {
         async fetchLichHenDetails(id: number) {
             const {updateDataAfterBooking} = useMauKhachDatDichVu();
-            const token = sessionStorage.getItem('access_token');
+            const token = localStorage.getItem('access_token');
             try {
                 const response = await fetch(`http://localhost:8080/api/lich-hen/findById/${id}`, {
                     method: 'GET',
@@ -46,7 +46,7 @@ export const useThayDoiLichHenStore = defineStore('thayDoiLichHenStore', {
             }
         },
         async thayDoiLichHenStore(id: string, date: string, idCalichHen: string) {
-            const token = sessionStorage.getItem('access_token');
+            const token = localStorage.getItem('access_token');
             if (!token) {
                 console.error('No access token found');
                 throw new Error('Authentication required');

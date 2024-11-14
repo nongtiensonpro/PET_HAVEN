@@ -286,7 +286,7 @@ export default {
       console.log('Authorization code:', code);
       this.exchangeAuthorizationCodeForToken(code);
     } else {
-      const accessToken = sessionStorage.getItem('access_token');
+      const accessToken = localStorage.getItem('access_token');
       if (accessToken) {
         this.fetchUserInfo(accessToken);
       }
@@ -351,11 +351,11 @@ export default {
     const viewRole = ref(0);
 
     if (process.client) {
-      const storedViewRole = sessionStorage.getItem('viewRole');
+      const storedViewRole = localStorage.getItem('viewRole');
       if (storedViewRole !== null) {
         viewRole.value = parseInt(storedViewRole, 10);
       } else {
-        sessionStorage.setItem('viewRole', '0');
+        localStorage.setItem('viewRole', '0');
       }
     }
 
@@ -363,13 +363,13 @@ export default {
       if (process.client) {
         if (viewRole.value === 0) {
           viewRole.value = 1;
-          sessionStorage.setItem('viewRole', '1');
+          localStorage.setItem('viewRole', '1');
           addNotification('Đã chuyển sang giao diện Nhân viên', 'system');
           toast.success('Đã chuyển sang giao diện Nhân viên');
           return navigateTo('/admin/adminhome');
         } else {
           viewRole.value = 0;
-          sessionStorage.setItem('viewRole', '0');
+          localStorage.setItem('viewRole', '0');
           addNotification('Đã chuyển sang giao diện Khách hàng', 'system');
           toast.success('Đã chuyển sang giao diện Khách hàng')
           return navigateTo('/');
@@ -450,8 +450,8 @@ export default {
         if (data.error) {
           console.error('Error fetching token:', data.error_description);
         } else {
-          sessionStorage.setItem('access_token', data.access_token);
-          sessionStorage.setItem('refresh_token', data.refresh_token);
+          localStorage.setItem('access_token', data.access_token);
+          localStorage.setItem('refresh_token', data.refresh_token);
           console.log('Access token:', data.access_token);
           this.$router.push('/'); // Chuyển hướng về trang chủ
           await this.fetchUserInfo(data.access_token);
@@ -464,7 +464,7 @@ export default {
       }
     },
     async refreshAccessToken() {
-      const refreshToken = sessionStorage.getItem('refresh_token');
+      const refreshToken = localStorage.getItem('refresh_token');
       if (!refreshToken) {
         console.error('No refresh token available');
         this.isLoggedIn = false;
@@ -496,8 +496,8 @@ export default {
         }
 
         const data = await response.json();
-        sessionStorage.setItem('access_token', data.access_token);
-        sessionStorage.setItem('refresh_token', data.refresh_token);
+        localStorage.setItem('access_token', data.access_token);
+        localStorage.setItem('refresh_token', data.refresh_token);
         console.log('New access token:', data.access_token);
         return data.access_token;
       } catch (error) {
@@ -554,7 +554,7 @@ export default {
     logout() {
       const userStore = useUserStore();
       userStore.clearUserInfo();
-      sessionStorage.clear();
+      localStorage.clear();
     },
 
   }

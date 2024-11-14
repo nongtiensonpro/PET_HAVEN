@@ -30,7 +30,9 @@ import axios from 'axios';
 import API_CONFIG from '../../apiconfig/ApiConfig';
 import {computed} from "vue";
 import {useUserStore} from "~/stores/user.ts";
-
+definePageMeta({
+  middleware: 'auth',
+});
 const userStore = useUserStore()
 
 const userInfo = computed(() => userStore.userInfo)

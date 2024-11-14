@@ -6,7 +6,9 @@ import {computed} from "vue";
 function thanhToanTaiQuay(){
   return navigateTo('/customer/success');
 }
-
+definePageMeta({
+  middleware: 'auth',
+});
 
 
 

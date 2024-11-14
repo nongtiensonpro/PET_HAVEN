@@ -111,7 +111,9 @@ const id = route.params.id
 onMounted(async () => {
   await thayDoiLichHenStore.fetchLichHenDetails(Number(id))
 })
-
+definePageMeta({
+  middleware: 'auth',
+});
 
 const formatCurrency = (value: number) => {
   return new Intl.NumberFormat('vi-VN', {style: 'currency', currency: 'VND'}).format(value);
@@ -120,15 +122,6 @@ const formatCurrency = (value: number) => {
 </script>
 
 <style scoped>
-.accordion-button:not(.collapsed) {
-  background-color: #e7f1ff;
-  color: #0c63e4;
-}
-
-.accordion-button:focus {
-  box-shadow: none;
-  border-color: rgba(0, 0, 0, .125);
-}
 
 .card {
   transition: all 0.3s ease;
@@ -139,5 +132,3 @@ const formatCurrency = (value: number) => {
   box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
 }
 </style>
-<script setup lang="ts">
-</script>

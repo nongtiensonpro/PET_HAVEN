@@ -20,7 +20,7 @@ export const useDatLichStore = defineStore('datLichStore', {
     }),
     actions: {
         async fetchCaHen(date: Date = new Date()) {
-            const token = sessionStorage.getItem('access_token');
+            const token = localStorage.getItem('access_token');
             this.date = date;
             try {
                 const response = await fetch(`http://localhost:8080/api/dat-lich/dat-lich-info?ngay=${date}`, {
@@ -38,7 +38,7 @@ export const useDatLichStore = defineStore('datLichStore', {
             }
         },
         async updateDatLichInfo(date: Date) {
-            const token = sessionStorage.getItem('access_token');
+            const token = localStorage.getItem('access_token');
             this.date = date;
             try {
                 const response = await fetch(`http://localhost:8080/api/dat-lich/dat-lich-info?ngay=${date}`, {
@@ -58,7 +58,7 @@ export const useDatLichStore = defineStore('datLichStore', {
         },
         async xacNhanDatLich() {
             const { getTempData,updateDataAfterBooking  } = useMauKhachDatDichVu();
-            const token = sessionStorage.getItem('access_token');
+            const token = localStorage.getItem('access_token');
             const dichVuVaThuCungKhachHangDat = getTempData();
 
 

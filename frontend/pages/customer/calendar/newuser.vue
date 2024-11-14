@@ -155,15 +155,17 @@ import { useToast } from 'vue-toastification'
 import { useDatLichStore } from '~/stores/DatLichStores'
 import { ref, computed } from 'vue';
 
-const accessToken = sessionStorage.getItem('access_token');
-const viewRole = sessionStorage.getItem('viewRole');
+const accessToken = localStorage.getItem('access_token');
+const viewRole = localStorage.getItem('viewRole');
 const serviceStore = useServiceStore();
 const {getTempData} = useMauKhachDatDichVu()
 const tempData = computed(() => getTempData())
 const services = computed((): DichVu[] => {
   return serviceStore.services.filter((service: DichVu) => service.trangthai);
 });
-
+definePageMeta({
+  middleware: 'auth',
+});
 
 const datLichStore = useDatLichStore();
 

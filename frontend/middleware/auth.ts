@@ -3,8 +3,8 @@ import { useToast } from 'vue-toastification';
 
 export default defineNuxtRouteMiddleware(async (to) => {
     if (process.client) {
-        const accessToken = sessionStorage.getItem('access_token');
-        const viewRole = sessionStorage.getItem('viewRole');
+        const accessToken = localStorage .getItem('access_token');
+        const viewRole = localStorage .getItem('viewRole');
         const userStore = useUserStore();
         const toast = useToast();
 
@@ -16,7 +16,7 @@ export default defineNuxtRouteMiddleware(async (to) => {
         if (!userStore.userInfo) {
             toast.error('Đã hết hạn đăng nhập. Đang cố gắng đăng nhập lại!');
 
-            const refreshToken = sessionStorage.getItem('refresh_token');
+            const refreshToken = localStorage .getItem('refresh_token');
             if (!refreshToken) {
                 toast.error('Không tìm thấy refresh token. Vui lòng đăng nhập lại.');
                 return navigateTo('/');
@@ -45,8 +45,8 @@ export default defineNuxtRouteMiddleware(async (to) => {
                 }
 
                 const data = await response.json();
-                sessionStorage.setItem('access_token', data.access_token);
-                sessionStorage.setItem('refresh_token', data.refresh_token);
+                localStorage .setItem('access_token', data.access_token);
+                localStorage .setItem('refresh_token', data.refresh_token);
                 console.log('New access token:', data.access_token);
 
 

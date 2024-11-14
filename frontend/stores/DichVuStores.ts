@@ -24,7 +24,7 @@ export const useServiceStore = defineStore('serviceStore', {
             }
         },
         async addDichVu(service: DichVu) {
-            const token = sessionStorage.getItem('access_token');
+            const token = localStorage.getItem('access_token');
             const formData = new FormData();
             formData.append('tenDichVu', service.tendichvu);
             formData.append('moTa', service.mota);
@@ -54,7 +54,7 @@ export const useServiceStore = defineStore('serviceStore', {
         },
         async updateDichVu(service: DichVu) {
             const updateDichVuUrl = API_ENDPOINTS.API_ENDPOINTS.dichVu.updateDichVu + service.id;
-            const token = sessionStorage.getItem('access_token');
+            const token = localStorage.getItem('access_token');
             const formDataUpdate = new FormData();
 
             formDataUpdate.append('tenDichVu', service.tendichvu);
@@ -91,7 +91,7 @@ export const useServiceStore = defineStore('serviceStore', {
         ,
         async deleteDichVu(serviceId: number) {
             const updateDichVuUrl = API_ENDPOINTS.API_ENDPOINTS.dichVu.deleteDichVu + serviceId;
-            const token = sessionStorage.getItem('access_token');
+            const token = localStorage.getItem('access_token');
             try {
                 const response = await fetch(updateDichVuUrl, {
                     method: 'DELETE',
@@ -115,7 +115,7 @@ export const useServiceStore = defineStore('serviceStore', {
         },
         async getDichVuByName(name: string) {
             const updateDichVuUrl = `${API_ENDPOINTS.API_ENDPOINTS.dichVu.getDichVuByName}?namedv=${encodeURIComponent(name)}`;
-            const token = sessionStorage.getItem('access_token');
+            const token = localStorage.getItem('access_token');
 
             if (!token) {
                 return { status: false, message: 'Vui lòng đăng nhập lại để sử dụng dịch vụ' };
@@ -152,7 +152,7 @@ export const useServiceStore = defineStore('serviceStore', {
         // Cập nhật Trạng thái dịch vụ
         async updateTTDV(serviceId: number) {
             const updateTTDichVuUrl = API_ENDPOINTS.API_ENDPOINTS.dichVu.updateTTDichVu + serviceId;
-            const token = sessionStorage.getItem('access_token');
+            const token = localStorage.getItem('access_token');
 
             try {
                 const response = await fetch(updateTTDichVuUrl, {
