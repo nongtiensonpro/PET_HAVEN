@@ -183,11 +183,16 @@ public class DatLichController {
     public ResponseEntity<?> thayDoiThoiGian(@PathVariable Integer id,@Valid @RequestBody DoiLichDTO doiLichDTO) {
         Lichhen lichhen = lichHenService.findById(id);
         Lichhen lichhenNew = new Lichhen();
+        Optional<Hoadon> hoadonOptional = hoaDonService.finHoadonByIdLich(id);
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         String idUser = authentication.getName();
 
         if (lichhen == null) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Lịch hẹn không tồn tại.");
+        }
+
+        if (!hoadonOptional.isPresent()) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Hóa đơn ko hợp lệ");
         }
 
         // Check xem có phải chủ lịch không
@@ -217,6 +222,10 @@ public class DatLichController {
             lichDoi.setSolanthaydoi(lichhen.getSolanthaydoi());
             lichHenService.addOrUpdate(lichDoi);
 
+//            Cập nhập lại hóa đơn chờ
+            Hoadon hoadon = hoadonOptional.get();
+            hoadon.setIdlichhen(lichDoi);
+
 //            Cập nhập số lần thay đổi
             lichhen.setSolanthaydoi(lichhen.getSolanthaydoi()+1);
 
@@ -235,6 +244,7 @@ public class DatLichController {
 
             lichhen.setTrangthai(5);
             lichhen.setEmailNguoiDat("default-email@example.com");
+            lichhen.setSolanthaydoi(0);
             if (lichhen.getTrangthaica()){
                 lichhen.setTrangthaica(false);
             }else {
@@ -242,7 +252,7 @@ public class DatLichController {
             }
             lichHenService.cancelScheduleChange();
             lichHenService.addOrUpdate(lichhen);
-            return ResponseEntity.ok("Thời gian của lịch hẹn đã được cập nhật.");
+            return new ResponseEntity<>(lichDoi, HttpStatus.OK);
         }
         return new ResponseEntity<>(HttpStatus.NOT_FOUND);
     }
