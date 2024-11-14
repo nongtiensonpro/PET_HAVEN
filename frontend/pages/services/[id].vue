@@ -8,7 +8,13 @@
         <div class="card-body">
           <div class="row">
             <div class="col">
-              <img :src="service.anh" class="card-img-top p-1" alt="...">
+              <div v-if="service.anh==null">
+                <img src="~/assets/image/cat1.jpg" class="card-img-top p-1" alt="...">
+              </div>
+              <div v-else>
+                <img :src="service.anh" class="card-img-top p-1" alt="...">
+              </div>
+
             </div>
             <div class="col">
               <h3 class="card-text">Mô tả: </h3>

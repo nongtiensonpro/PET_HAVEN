@@ -25,7 +25,7 @@
                             </div>
                           </div>
                           <div class="col">
-                            <img class="card-img-top" src="~/assets/image/cat2.jpg" alt="VN Pay">
+                            <img class="card-img-top" src="/assets/image/cat2.jpg" alt="VN Pay">
                           </div>
                           <div class="col-12">
                             <strong>Thời gian : </strong>
@@ -70,22 +70,22 @@
               </div>
             </div>
             <div v-else class="text-center">
-              <img src="~/assets/image/cat3.jpg" alt="Chọn dịch vụ" class="img-fluid rounded mb-3"
+              <img src="/assets/image/cat3.jpg" alt="Chọn dịch vụ" class="img-fluid rounded mb-3"
                    style="max-height: 200px;">
               <p class="lead">Đang tải thông tin lịch hẹn...</p>
             </div>
           </div>
         </div>
       </div>
-      <div v-if="thayDoiLichHenStore.trangthai !== 4" class="col-lg-6">
+      <div v-if="thayDoiLichHenStore.lichHenDetails && thayDoiLichHenStore.lichHenDetails.trangthai == 4" class="col-lg-6">
         <div class="card-body">
-          <Calendar :id="id"/>
+          <Calendar :id="String(id)"/>
         </div>
       </div>
       <div v-else class="col-lg-6">
         <div class="card p-4 ">
           <p class="text">Bạn đã hết thời gian đổi lịch hẹn và hủy lịch hẹn !</p>
-          <img src="~/assets/image/cat3.jpg" alt=""/>
+          <img src="/assets/image/cat3.jpg" alt=""/>
           <div class="card-body">
           </div>
         </div>
@@ -103,7 +103,7 @@ import {useMauKhachDatDichVu} from '~/stores/MauKhachDatDichVu'
 import DichVu from "~/models/DichVu";
 import {useToast} from 'vue-toastification'
 import {useDatLichStore} from '~/stores/DatLichStores'
-import {ref, computed} from 'vue';
+import {ref, computed, onMounted} from 'vue';
 import {useThayDoiLichHenStore} from '~/stores/ThayDoiLichHen'
 
 const thayDoiLichHenStore = useThayDoiLichHenStore()
@@ -117,7 +117,7 @@ const services = computed((): DichVu[] => {
 });
 
 const route = useRoute()
-const id = route.params.id
+const id = Array.isArray(route.params.id) ? route.params.id[0] : route.params.id;
 onMounted(async () => {
   await thayDoiLichHenStore.fetchLichHenDetails(Number(id))
 })

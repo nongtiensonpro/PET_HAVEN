@@ -36,7 +36,13 @@
                             </div>
                           </div>
                           <div class="col">
-                            <img class="card-img-top" src="~/assets/image/cat2.jpg" alt="VN Pay">
+                            <div v-if="tempData.idlichhen.dichvu.anh==null">
+                              <img class="card-img-top" src="~/assets/image/cat2.jpg" alt="Anh Meo Meo">
+                            </div>
+                            <div v-else>
+                              <img class="card-img-top" :src="tempData.idlichhen.dichvu.anh" alt="Anh Meo Meo">
+                            </div>
+
                           </div>
                           <div class="col-12">
                             <strong>Thời gian : </strong>

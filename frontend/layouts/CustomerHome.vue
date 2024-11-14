@@ -506,7 +506,6 @@ export default {
       }
     },
     async fetchUserInfo(accessToken: string) {
-      //const url = 'http://localhost:9082/realms/spring/protocol/openid-connect/userinfo';
       const url = 'http://localhost:8080/api/user';
       const userStore = useUserStore();
       try {
