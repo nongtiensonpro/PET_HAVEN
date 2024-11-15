@@ -13,7 +13,7 @@ public interface HoadonRepository extends JpaRepository<Hoadon, Integer> {
 
     List<Hoadon> findByNguoithanhtoanAndPhuongthucthanhtoan(String email,String phuongThuc);
 
-    Optional<Hoadon> findByIdlichhen_Id(Integer idlichhen);
+    Optional<Hoadon> findByIdlichhen_IdAndTrangthai(Integer idlichhen,int trangthai);
 
     Optional<Hoadon> findByMagiaodich(String idPayMent);
 }

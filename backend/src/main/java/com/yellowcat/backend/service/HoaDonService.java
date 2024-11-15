@@ -29,9 +29,10 @@ public class HoaDonService {
 
     public void addOrUpdate(Hoadon hoadon){hoadonRepository.save(hoadon);}
 
-    public Double TinhGiaTien(Integer idDichVu){
+    public Double TinhGiaTien(Integer idDichVu,Hoadon hoadon){
         float giaDichVu = dichVuService.findById(idDichVu).get().getGiatien();
         Optional<Giamgia> giamgiaOptional = giamGiaService.findGiamGiaTheoNgayHienTai();
+        Giamgia giamgia = giamgiaOptional.get();
         float phanTramGiam;
         if(!giamgiaOptional.isPresent()){
             phanTramGiam = 0;
@@ -40,6 +41,7 @@ public class HoaDonService {
             phanTramGiam = giamgiaOptional.get().getPhantramgiam();
         }
         Double giaTien = (double) (giaDichVu - giaDichVu*phanTramGiam/100);
+        hoadon.setIdgiamgia(giamgia);
         return giaTien;
     }
     public List<Hoadon> getAllHoaDonChuaThanhToan(int idTT){
@@ -52,7 +54,7 @@ public class HoaDonService {
 
     public List<Hoadon> LichSuThanhToanHoaDonTheoTaiKhoan(String email){return hoadonRepository.findByNguoithanhtoanAndPhuongthucthanhtoan(email,"Offline");}
 
-    public Optional<Hoadon> finHoadonByIdLich(Integer id){return hoadonRepository.findByIdlichhen_Id(id);}
+    public Optional<Hoadon> finHoadonByIdLich(Integer id){return hoadonRepository.findByIdlichhen_IdAndTrangthai(id,1);}
 
     public  Optional<Hoadon> findHoaDonOnline(String idPayPal)
     {return hoadonRepository.findByMagiaodich(idPayPal);}
@@ -69,5 +71,8 @@ public class HoaDonService {
         }
 
         return transactionId.toString();  // Trả về mã giao dịch duy nhất
+    }
+    public void deleteHoadonById(Integer id){
+        hoadonRepository.deleteById(id);
     }
 }
