@@ -7,11 +7,16 @@
        <div class="row">
          <div v-for="service in paginatedServices" :key="service.id" class="card col m-4">
            <h4 class="card-title">{{ service.tendichvu }}</h4>
-           <img :src="service.anh" class="card-img-top p-1" alt="...">
+           <div v-if="service.anh==null">
+              <img src="~/assets/image/cat1.jpg" class="card-img-top p-1" alt="Ảnh mặc định nè">
+           </div>
+          <div v-else>
+            <img :src="service.anh" class="card-img-top p-1" alt="...">
+          </div>
            <div class="card-body">
              <div class="row">
                <div class="col">
-                 <p class="card-text">{{ service.giatien.toLocaleString() }} Đ</p>
+                 <p class="card-text">{{ service.giatien.toLocaleString() }} USD</p>
                  <nuxt-link class="nav-link" :to="`/services/${service.id}`">Xem thêm</nuxt-link>
                </div>
              </div>

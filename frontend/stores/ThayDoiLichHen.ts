@@ -88,7 +88,7 @@ export const useThayDoiLichHenStore = defineStore('thayDoiLichHenStore', {
                 throw error;
             }
         },
-        async huyLichHen(id: number) {
+        async huyLichHen(id: String) {
             const {updateDataAfterBooking} = useMauKhachDatDichVu();
             const token = localStorage.getItem('access_token');
             try {

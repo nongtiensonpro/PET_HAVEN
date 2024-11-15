@@ -13,7 +13,7 @@ onMounted(() => {
 </script>
 
 <template>
-  <div class="container my-5">
+  <div v-if="tempData" class="container my-5">
     <div class="card shadow-lg">
       <div class="card-body">
         <h2 class="card-title text-center mb-4 text">

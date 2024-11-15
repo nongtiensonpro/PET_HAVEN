@@ -71,10 +71,6 @@ export default defineNuxtRouteMiddleware(async (to) => {
             return navigateTo('/');
         }
 
-        // Kiểm tra xem người dùng có quyền truy cập vào trang hiện tại hay không
-        if (userInfo.value && !userStore.hasAccess(to.path)) {
-            toast.error('Bạn không có quyền truy cập vào trang này.');
-            return navigateTo('/');
-        }
+        
     }
 });

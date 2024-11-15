@@ -8,7 +8,7 @@
         <div class="card-body">
           <div class="row">
             <div class="col">
-              <div v-if="service.anh==null">
+              <div v-if="service.anh===null">
                 <img src="~/assets/image/cat1.jpg" class="card-img-top p-1" alt="...">
               </div>
               <div v-else>
@@ -19,7 +19,7 @@
             <div class="col">
               <h3 class="card-text">Mô tả: </h3>
               <p>{{ service.mota }}</p>
-              <p class="text-center">Giá tiền: <strong>{{ service.giatien.toLocaleString() }} Đ</strong></p>
+              <p class="text-center">Giá tiền: <strong>{{ service.giatien.toLocaleString() }} USD</strong></p>
               <nuxt-link class="nav-link" :to="'/'">Quay về</nuxt-link>
             </div>
           </div>
