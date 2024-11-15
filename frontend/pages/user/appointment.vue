@@ -17,6 +17,12 @@ function handleHuyLichHen(id: String) {
   huyLichHen(id);
 }
 
+function thayDoiLichHen(id: String) {
+  return navigateTo(`/chi-tiet-lich/${id}`);
+}
+function chiTietLichHen(id: String) {
+  
+}
 // Hàm format trạng thái
 const getTrangThaiText = (trangthai: number) => {
   const trangThaiMap: Record<number, string> = {
@@ -106,11 +112,22 @@ const getTrangThaiClass = (trangthai: number) => {
                     </span>
                   </td>
                   <td>
-                    <button v-if="item.trangthai === 4"
-                            class="btn btn-sm btn-danger"
-                            @click="handleHuyLichHen(item.id)">
-                      Hủy lịch
+                    <div class="row">
+                        <div class="col-6">
+                          <button v-if="item.trangthai === 4 || item.trangthai === 6"
+                            class="custom-button"
+                            @click="thayDoiLichHen(item.id)">
+                      Hủy hoặc đổi lịch hẹn
                     </button>
+                        </div>
+                        <div class="col-6">
+                          <button v-if="item.trangthai === 0 || item.trangthai === 6"
+                            class="custom-button"
+                            @click="chiTietLichHen(item.id)">
+                      Chi tiết
+                    </button>
+                        </div>
+                    </div>
                   </td>
                 </tr>
               </tbody>
