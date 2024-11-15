@@ -32,6 +32,7 @@ import {computed} from "vue";
 import {useUserStore} from "~/stores/user.ts";
 definePageMeta({
   middleware: 'auth',
+  role: 'user',
 });
 const userStore = useUserStore()
 

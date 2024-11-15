@@ -4,6 +4,7 @@ import { useMauKhachDatDichVu } from "~/stores/MauKhachDatDichVu";
 
 definePageMeta({
   middleware: 'auth',
+  role: 'user',
 });
 
 const token = localStorage.getItem('access_token');

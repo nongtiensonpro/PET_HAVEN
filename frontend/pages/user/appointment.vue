@@ -8,6 +8,7 @@ const userStore = useUserStore()
 const lichHenStore = useQuanLyLichHenKhachHang()
 definePageMeta({
   middleware: 'auth',
+  role: 'user',
 });
 onMounted(async () => {
      await lichHenStore.fetchAppointments();

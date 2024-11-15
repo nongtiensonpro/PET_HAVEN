@@ -7,6 +7,7 @@ const userStore = useUserStore();
 const userInfo = computed(() => userStore.userInfo);
 definePageMeta({
   middleware: 'auth',
+  role: 'user',
 });
 
 function login1() {

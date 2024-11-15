@@ -123,6 +123,7 @@ onMounted(async () => {
 })
 definePageMeta({
   middleware: 'auth',
+  role: 'user',
 });
 
 const formatCurrency = (value: number) => {

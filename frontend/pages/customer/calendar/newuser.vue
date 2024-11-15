@@ -176,6 +176,7 @@ const services = computed((): DichVu[] => {
 });
 definePageMeta({
   middleware: 'auth',
+  role: 'user',
 });
 
 const datLichStore = useDatLichStore();

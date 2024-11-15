@@ -6,6 +6,7 @@ const { getTempData } = useMauKhachDatDichVu()
 const tempData = computed(() => getTempData())
 definePageMeta({
   middleware: 'auth',
+  role: 'user',
 });
 onMounted(() => {
   console.log('tempData:', tempData.value)
