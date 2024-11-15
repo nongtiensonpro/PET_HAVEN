@@ -27,7 +27,6 @@ public class PayPalController {
 
     @PostMapping("/payment/create")
     public ResponseEntity<String> createPayment(@RequestHeader String idLichHen) {
-        System.out.println(idLichHen);
         Optional<Hoadon> hoadonOptional = hoaDonService.finHoadonByIdLich(Integer.parseInt(idLichHen));
         Lichhen lichhen = lichHenService.findById(Integer.parseInt(idLichHen));
         if (!hoadonOptional.isPresent() || lichhen == null) {
@@ -77,12 +76,12 @@ public class PayPalController {
 
             // Kiểm tra nếu thanh toán thành công
             if (payment != null && payment.getState().equals("approved")) {
+                System.out.println("hello");
                 // Lấy hóa đơn từ dịch vụ dựa trên payerId
-                Optional<Hoadon> hoadonOptional = hoaDonService.findHoaDonOnline(payerId);
-
+                Optional<Hoadon> hoadonOptional = hoaDonService.findHoaDonOnline(paymentId);
                 if (hoadonOptional.isPresent()) {
                     Hoadon hoadon = hoadonOptional.get();
-
+                    hoadon.setNguoithanhtoan(payerId);
                     // Cập nhật trạng thái của hóa đơn thành "đã thanh toán"
                     hoadon.setTrangthai(2);
                     hoaDonService.addOrUpdate(hoadon);

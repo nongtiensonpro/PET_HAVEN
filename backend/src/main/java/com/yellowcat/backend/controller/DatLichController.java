@@ -110,13 +110,14 @@ public class DatLichController {
             return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
         }
 
-        Double SoTien = hoaDonService.TinhGiaTien(datLichDTO.getIdDichVu());
+
 
         Hoadon hoadon = new Hoadon();
         hoadon.setDate(LocalDateTime.now());
         hoadon.setIdlichhen(lichhen);
         hoadon.setPhuongthucthanhtoan("Offline");
         hoadon.setTrangthai(1);
+        Double SoTien = hoaDonService.TinhGiaTien(datLichDTO.getIdDichVu(),hoadon);
         hoadon.setSotien(SoTien);
         hoadon.setMagiaodich(hoaDonService.MaGiaoDichRandom());
         hoaDonService.addOrUpdate(hoadon);
@@ -135,7 +136,7 @@ public class DatLichController {
     public ResponseEntity<?> huyLichHen(@PathVariable Integer id) {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         String idUser = authentication.getName();
-
+        Optional<Hoadon> hoadonOptional = hoaDonService.finHoadonByIdLich(id);
         Lichhen lichhen = lichHenService.findById(id);
         if (lichhen == null) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Lịch hẹn không tồn tại.");
@@ -147,7 +148,7 @@ public class DatLichController {
         }
 
         if (lichhen.getTrangthai() == 4) {
-            // Tạo đối tượng lịch hẹn mới với trạng thái hủy
+            // Tạo bản ghi lưu lại lịch sử đặt với trạng thái hủy
             lichhen.setSolanthaydoi(lichhen.getSolanthaydoi()+1);
 
             Lichhen lichhenNew = new Lichhen();
@@ -163,7 +164,12 @@ public class DatLichController {
             lichhenNew.setTrangthaica(true);
             lichHenService.addOrUpdate(lichhenNew);
 
+//           Hủy hóa đơn chờ
+            Hoadon hoadonNew = hoadonOptional.get();
+            hoaDonService.deleteHoadonById(hoadonNew.getId());
+
             // Cập nhật lịch gốc với trạng thái đã hủy
+            lichhen.setIdkhachhang("demo");
             lichhen.setTrangthai(5);
             lichhen.setEmailNguoiDat("default-email@example.com");
             if (lichhen.getTrangthaica()) {
@@ -201,10 +207,7 @@ public class DatLichController {
         }
 
         if (lichhen != null && lichhen.getTrangthai() == 4) {
-            // Kiểm tra số lần thay đổi
-            if (lichhen.getSolanthaydoi() >= 1) {
-                return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Lịch chỉ được phép thay đổi một lần.");
-            }
+
 //          Thay đổi thời gian và ca lịch
             Optional<Lichhen> lichhenDoiOptional = lichHenService.getLichHenByDateandCa(LocalDate.parse(doiLichDTO.getDate()),Integer.parseInt(doiLichDTO.getIdcalichhen()));
             if (!lichhenDoiOptional.isPresent()) {
@@ -225,6 +228,7 @@ public class DatLichController {
 //            Cập nhập lại hóa đơn chờ
             Hoadon hoadon = hoadonOptional.get();
             hoadon.setIdlichhen(lichDoi);
+            hoaDonService.addOrUpdate(hoadon);
 
 //            Cập nhập số lần thay đổi
             lichhen.setSolanthaydoi(lichhen.getSolanthaydoi()+1);
@@ -244,7 +248,6 @@ public class DatLichController {
 
             lichhen.setTrangthai(5);
             lichhen.setEmailNguoiDat("default-email@example.com");
-            lichhen.setSolanthaydoi(0);
             if (lichhen.getTrangthaica()){
                 lichhen.setTrangthaica(false);
             }else {

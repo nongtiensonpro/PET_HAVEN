@@ -2,7 +2,9 @@ package com.yellowcat.backend.controller;
 
 import com.yellowcat.backend.DTO.DatLichDTO;
 import com.yellowcat.backend.DTO.DoiLichDTO;
+import com.yellowcat.backend.model.Hoadon;
 import com.yellowcat.backend.model.Lichhen;
+import com.yellowcat.backend.service.HoaDonService;
 import com.yellowcat.backend.service.LichHenService;
 import jakarta.validation.Valid;
 import org.hibernate.annotations.Parameter;
@@ -29,6 +31,9 @@ import java.util.Optional;
 public class LichHenController {
     @Autowired
     public LichHenService lichHenService;
+
+    @Autowired
+    private HoaDonService hoaDonService;
 
     @PreAuthorize("hasRole('admin')")
     @GetMapping("/all")
@@ -90,7 +95,7 @@ public class LichHenController {
     public ResponseEntity<?> doiTimeQuyenAdmin(@PathVariable Integer id,@Valid @RequestBody DoiLichDTO doiLichDTO) {
         Lichhen lichhen = lichHenService.findById(id);
         Lichhen lichhenNew = new Lichhen();
-
+        Optional<Hoadon> hoadonOptional = hoaDonService.finHoadonByIdLich(id);
         if (lichhen == null) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Lịch hẹn không tồn tại.");
         }
@@ -112,6 +117,10 @@ public class LichHenController {
             lichDoi.setTrangthaica(true);
             lichDoi.setSolanthaydoi(lichhen.getSolanthaydoi());
             lichHenService.addOrUpdate(lichDoi);
+
+            Hoadon hoadon = hoadonOptional.get();
+            hoadon.setIdlichhen(lichDoi);
+            hoaDonService.addOrUpdate(hoadon);
 
 //            Cập nhập số lần thay đổi
             lichhen.setSolanthaydoi(lichhen.getSolanthaydoi()+1);
