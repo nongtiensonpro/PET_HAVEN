@@ -1,16 +1,14 @@
 <script setup lang="ts">
 import { ref, computed } from 'vue';
 import { useMauKhachDatDichVu } from "~/stores/MauKhachDatDichVu";
-
-definePageMeta({
-  middleware: 'auth',
-  role: 'user',
-});
-
 const token = localStorage.getItem('access_token');
 const isLoading = ref(false);
 const countdown = ref(10);
 const showOverlay = ref(false);
+
+definePageMeta({
+  middleware: ['auth']
+})
 
 function thanhToanTaiQuay() {
   return navigateTo('/customer/success');

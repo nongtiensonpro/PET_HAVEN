@@ -5,9 +5,8 @@ import { computed, onMounted } from "vue";
 const { getTempData } = useMauKhachDatDichVu()
 const tempData = computed(() => getTempData())
 definePageMeta({
-  middleware: 'auth',
-  role: 'user',
-});
+  middleware: ['auth']
+})
 onMounted(() => {
   console.log('tempData:', tempData.value)
 })

@@ -10,8 +10,8 @@ import * as yup from 'yup';
 import type DichVu from "~/models/DichVu";
 
 definePageMeta({
-  middleware: 'auth',
-});
+  middleware: ['auth']
+})
 
 const toast = useToast();
 const serviceStore = useServiceStore();

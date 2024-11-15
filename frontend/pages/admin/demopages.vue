@@ -6,8 +6,8 @@ import { useRouter } from 'vue-router'
 const userStore = useUserStore()
 const router = useRouter()
 definePageMeta({
-  middleware: 'auth',
-});
+  middleware: ['auth']
+})
 const userInfo = computed(() => userStore.userInfo)
 // Đây là trang demo
 // Xử lí khi chưa đăng nhập và có đường dấn vào đây và với vai trò không phù hợp

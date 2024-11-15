@@ -175,9 +175,8 @@ const services = computed((): DichVu[] => {
   return serviceStore.services.filter((service: DichVu) => service.trangthai);
 });
 definePageMeta({
-  middleware: 'auth',
-  role: 'user',
-});
+  middleware: ['auth']
+})
 
 const datLichStore = useDatLichStore();
 

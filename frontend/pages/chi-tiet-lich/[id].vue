@@ -122,9 +122,8 @@ onMounted(async () => {
   await thayDoiLichHenStore.fetchLichHenDetails(Number(id))
 })
 definePageMeta({
-  middleware: 'auth',
-  role: 'user',
-});
+  middleware: ['auth']
+})
 
 const formatCurrency = (value: number) => {
   console.log('Thông tin đầy đủ của thayDoiLichHenStore:', JSON.stringify(thayDoiLichHenStore, null, 2));

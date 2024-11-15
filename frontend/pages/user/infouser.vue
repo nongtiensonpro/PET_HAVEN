@@ -6,10 +6,8 @@ const userStore = useUserStore();
 
 const userInfo = computed(() => userStore.userInfo);
 definePageMeta({
-  middleware: 'auth',
-  role: 'user',
-});
-
+  middleware: ['auth']
+})
 function login1() {
   if (process.client) {
     window.location.href = 'http://localhost:8080/oauth2/authorization/keycloak';

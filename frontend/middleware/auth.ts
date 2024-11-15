@@ -3,29 +3,23 @@ import { useToast } from 'vue-toastification';
 
 export default defineNuxtRouteMiddleware(async (to) => {
     if (process.client) {
-        const accessToken = localStorage.getItem('access_token');
-        const viewRole = localStorage.getItem('viewRole');
+        const accessToken = localStorage .getItem('access_token');
+        const viewRole = localStorage .getItem('viewRole');
         const userStore = useUserStore();
         const toast = useToast();
 
-        // Kiểm tra nếu không có token hoặc vai trò
         if (!accessToken || !viewRole) {
             toast.error('Vui lòng đăng nhập để tiếp tục.');
             return navigateTo('/');
         }
 
-        // Lấy meta từ route để kiểm tra vai trò yêu cầu
-        const requiredRole = to.meta.role || 'user'; // Mặc định là 'user'
-
-        if (viewRole !== requiredRole) {
-            toast.error('Bạn không có quyền truy cập vào trang này.');
-            return navigateTo('/unauthorized'); // Điều hướng đến trang không có quyền
+        if (to.path.includes('/admin') && viewRole !== '1') {
+            toast.error('Bạn không có quyền truy cập trang này!'+ viewRole);
+            return navigateTo('/');
         }
-
-        // Kiểm tra userInfo nếu hết hạn token
         if (!userStore.userInfo) {
             toast.error('Đã hết hạn đăng nhập. Đang cố gắng đăng nhập lại!');
-            const refreshToken = localStorage.getItem('refresh_token');
+            const refreshToken = localStorage .getItem('refresh_token');
             if (!refreshToken) {
                 toast.error('Không tìm thấy refresh token. Vui lòng đăng nhập lại.');
                 return navigateTo('/');
@@ -38,7 +32,6 @@ export default defineNuxtRouteMiddleware(async (to) => {
                 client_id: 'PetHaven',
                 client_secret: 'GuFIaAADNfBUpuahqxLvMPWzqt6g8fRL',
             });
-
             try {
                 const response = await fetch(url, {
                     method: 'POST',
@@ -54,9 +47,12 @@ export default defineNuxtRouteMiddleware(async (to) => {
                 }
 
                 const data = await response.json();
-                localStorage.setItem('access_token', data.access_token);
-                localStorage.setItem('refresh_token', data.refresh_token);
+                localStorage .setItem('access_token', data.access_token);
+                localStorage .setItem('refresh_token', data.refresh_token);
                 console.log('New access token:', data.access_token);
+
+
+                return;
             } catch (error) {
                 console.error('Lỗi khi làm mới token:', error);
                 toast.error('Đăng nhập lại thất bại!');
