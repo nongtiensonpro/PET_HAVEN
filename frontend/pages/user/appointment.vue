@@ -6,7 +6,9 @@ import {useThayDoiLichHenStore } from '~/stores/ThayDoiLichHen'
 const {thayDoiLichHenStore,huyLichHen} = useThayDoiLichHenStore()
 const userStore = useUserStore()
 const lichHenStore = useQuanLyLichHenKhachHang()
-
+definePageMeta({
+  middleware: 'auth',
+});
 onMounted(async () => {
      await lichHenStore.fetchAppointments();
 })

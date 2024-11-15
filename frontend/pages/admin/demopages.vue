@@ -7,6 +7,7 @@ const userStore = useUserStore()
 const router = useRouter()
 definePageMeta({
   middleware: 'auth',
+  role: 'user',
 });
 const userInfo = computed(() => userStore.userInfo)
 // Đây là trang demo

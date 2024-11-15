@@ -173,6 +173,7 @@
                           <nuxt-link class="dropdown-item" :to="`/admin/service/servicelist`">Tổng quan dịch vụ
                           </nuxt-link>
                           <nuxt-link class="dropdown-item" :to="`/admin/service/bookingservice`">Quản lý đặt lịch
+                          </nuxt-link><nuxt-link class="dropdown-item" :to="`/admin/quanlydatlich/demo`">Quản lý đặt lịch 123
                           </nuxt-link>
                         </li>
                       </ul>

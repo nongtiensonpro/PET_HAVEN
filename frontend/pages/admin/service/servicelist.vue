@@ -11,6 +11,7 @@ import type DichVu from "~/models/DichVu";
 
 definePageMeta({
   middleware: 'auth',
+  role: 'user',
 });
 
 const toast = useToast();
