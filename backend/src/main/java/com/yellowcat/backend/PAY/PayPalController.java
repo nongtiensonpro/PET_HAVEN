@@ -8,10 +8,12 @@ import com.yellowcat.backend.model.Lichhen;
 import com.yellowcat.backend.service.HoaDonService;
 import com.yellowcat.backend.service.LichHenService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.net.URI;
 import java.util.Optional;
 
 @RestController
@@ -28,14 +30,14 @@ public class PayPalController {
     @PostMapping("/payment/create")
     public ResponseEntity<String> createPayment(@RequestHeader String idLichHen) {
         Optional<Hoadon> hoadonOptional = hoaDonService.finHoadonByIdLich(Integer.parseInt(idLichHen));
-        Lichhen lichhen = lichHenService.findById(Integer.parseInt(idLichHen));
-        if (!hoadonOptional.isPresent() || lichhen == null) {
+
+        if (!hoadonOptional.isPresent()) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Hóa đơn không tồn tại");
         }
         Hoadon hoadon = hoadonOptional.get();
         try {
-            String cancelUrl = "http://localhost:8080/api/payPal/payment/cancel";
-            String successUrl = "http://localhost:8080/api/payPal/payment/success";
+            String cancelUrl = "http://localhost:8080/api/payPal/payment/cancel/" + idLichHen;
+            String successUrl = "http://localhost:8080/api/payPal/payment/success/"+idLichHen;
             Payment payment = payPalService.createPayment(
                     hoadon.getSotien(),
                     "USD",
@@ -47,12 +49,8 @@ public class PayPalController {
             );
             for (Links links : payment.getLinks()) {
                 if (links.getRel().equals("approval_url")) {
-                    hoadon.setPhuongthucthanhtoan("Online");
                     hoadon.setMagiaodich(payment.getId());
                     hoaDonService.addOrUpdate(hoadon);
-
-                    lichhen.setTrangthai(6);
-                    lichHenService.addOrUpdate(lichhen);
                     return ResponseEntity.ok(links.getHref());
                 }
             }
@@ -62,14 +60,11 @@ public class PayPalController {
         return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Không thể tạo thanh toán");
     }
 
-    @GetMapping("/payment/cancel")
-    public String cancelPayment() {
-        return "Thanh toán đã bị hủy!";
-    }
-
-    @GetMapping("/payment/success")
+    @GetMapping("/payment/success/{id}")
     public ResponseEntity<String> successPayment(@RequestParam("paymentId") String paymentId,
-                                                 @RequestParam("PayerID") String payerId) {
+                                                 @RequestParam("PayerID") String payerId,
+                                                 @PathVariable String id
+                                                 ) {
         try {
             // Thực hiện thanh toán
             Payment payment = payPalService.executePayment(paymentId, payerId);
@@ -78,16 +73,24 @@ public class PayPalController {
             if (payment != null && payment.getState().equals("approved")) {
                 System.out.println("hello");
                 // Lấy hóa đơn từ dịch vụ dựa trên payerId
+                Lichhen lichhen = lichHenService.findById(Integer.parseInt(id));
                 Optional<Hoadon> hoadonOptional = hoaDonService.findHoaDonOnline(paymentId);
                 if (hoadonOptional.isPresent()) {
                     Hoadon hoadon = hoadonOptional.get();
                     hoadon.setNguoithanhtoan(payerId);
                     // Cập nhật trạng thái của hóa đơn thành "đã thanh toán"
                     hoadon.setTrangthai(2);
+                    hoadon.setPhuongthucthanhtoan("Online");
+                    hoadon.setMagiaodich(payment.getId());
                     hoaDonService.addOrUpdate(hoadon);
-
                     // Trả về phản hồi thành công
-                    return ResponseEntity.ok().body("Thanh toán thành công!");
+                    lichhen.setTrangthai(6);
+                    lichHenService.addOrUpdate(lichhen);
+                    // Redirect đến trang chi tiết lịch hẹn
+                    String redirectUrl = "http://localhost:3000/chi-tiet-lich/" + id;
+                    HttpHeaders headers = new HttpHeaders();
+                    headers.setLocation(URI.create(redirectUrl));
+                    return new ResponseEntity<>(headers, HttpStatus.FOUND);
                 } else {
                     // Trả về lỗi nếu không tìm thấy hóa đơn
                     return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Không tìm thấy hóa đơn tương ứng.");
@@ -102,5 +105,11 @@ public class PayPalController {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Lỗi khi xử lý thanh toán.");
         }
     }
-
+    @GetMapping("/payment/cancel/{id}")
+    public ResponseEntity<?> cancelPayment(@PathVariable String id) {
+        String redirectUrl = "http://localhost:3000/chi-tiet-lich/" + id;
+        HttpHeaders headers = new HttpHeaders();
+        headers.setLocation(URI.create(redirectUrl));
+        return new ResponseEntity<>(headers, HttpStatus.FOUND);
+    }
 }

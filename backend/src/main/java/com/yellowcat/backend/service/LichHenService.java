@@ -147,12 +147,12 @@ public class LichHenService {
     @Async
     public void sendEmailWithActions(Lichhen lichhen) {
         try {
-            String cancelUrl = "http://localhost:3000/thay-doi-lich/" + lichhen.getId();
             String Url = "http://localhost:3000/chi-tiet-lich/" + lichhen.getId();
 
             String message = "Chào bạn,\n\n"
-                    + "Cảm ơn bạn đã đặt lịch. Bạn có thể sử dụng các liên kết dưới đây để quản lý lịch hẹn của mình:\n\n"
-                    + "Hủy hoặc thay đổi thời gian lịch: " + cancelUrl + "\n"
+                    + "Cảm ơn bạn đã đặt lịch."
+                    + "Hẹn gặp bạn vào" + lichhen.getIdcalichhen().getThoigianca()+ "Ngày" +lichhen.getDate()
+                    + " Bạn có thể sử dụng các liên kết dưới đây để quản lý lịch hẹn của mình:\n\n"
                     + "Chi tiết lịch hẹn: " + Url + "\n\n"
                     + "Trân trọng,\n"
                     + "Đội ngũ hỗ trợ";
@@ -181,7 +181,7 @@ public class LichHenService {
                 System.out.println("Tiến trình bị hủy.");
                 return;  // Nếu tiến trình bị hủy thì kết thúc
             }
-            Thread.sleep( 30 * 1000); // Đợi
+            Thread.sleep( 2 * 60 * 1000); // Đợi
         } catch (InterruptedException e) {
             Thread.currentThread().interrupt();
             return; // Ngừng xử lý nếu bị gián đoạn
@@ -197,7 +197,7 @@ public class LichHenService {
             return;
         }
 
-        if (lichhen.getTrangthai() == 4) {
+        if (lichhen.getTrangthai() == 4 || lichhen.getTrangthai() == 6) {
             lichhen.setTrangthai(3); // Cập nhật sang trạng thái 3 (Chờ thanh toán)
             lichhenRepository.save(lichhen);
             System.out.println("Đã cập nhật trạng thái của lịch hẹn ID: " + lichhenId + " thành 3 (Chờ thanh toán)");
