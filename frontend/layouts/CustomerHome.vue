@@ -26,11 +26,11 @@
           </div>
           <div v-else>
             <button class="custom-button" style="min-width: 150px" type="button" data-bs-toggle="offcanvas"
-                    data-bs-target="#offcanvasWithBothOptions" aria-controls="offcanvasWithBothOptions">
+              data-bs-target="#offcanvasWithBothOptions" aria-controls="offcanvasWithBothOptions">
               Cài đặt
             </button>
             <div class="offcanvas offcanvas-start" data-bs-scroll="true" tabindex="-1" id="offcanvasWithBothOptions"
-                 aria-labelledby="offcanvasWithBothOptionsLabel">
+              aria-labelledby="offcanvasWithBothOptionsLabel">
               <div class="offcanvas-header">
                 <h5 class="offcanvas-title" id="offcanvasWithBothOptionsLabel">
                   Chào mừng {{
@@ -54,7 +54,8 @@
                     <button type="button" class="custom-button">
                       <nuxt-link class="nav-link" :to="`/user/infouser`">Thông tin tài khoản</nuxt-link>
                     </button>
-                  </div><div class="col-12 p-4">
+                  </div>
+                  <div class="col-12 p-4">
                     <button type="button" class="custom-button">
                       <nuxt-link class="nav-link" :to="`/user/appointment`">Quản lý lịch hẹn</nuxt-link>
                     </button>
@@ -72,30 +73,29 @@
             </div>
           </div>
           <button type="button" style="max-width: 30px; text-align: center" class="custom-button m-2"
-                  @click="changeLanguage">
+            @click="changeLanguage">
             {{ currentLanguage === 'vi' ? switchToEnglish : switchToVietnamese }}
           </button>
           <div class="dropdown">
             <!-- Nút dropdown kết hợp với badge thông báo -->
             <button class="custom-button dropdown-toggle position-relative" style="min-width: 100px" type="button"
-                    data-bs-toggle="dropdown"
-                    aria-expanded="false">
+              data-bs-toggle="dropdown" aria-expanded="false">
               <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-bell-fill"
-                   viewBox="0 0 16 16">
+                viewBox="0 0 16 16">
                 <path
-                    d="M8 16a2 2 0 0 0 2-2H6a2 2 0 0 0 2 2m.995-14.901a1 1 0 1 0-1.99 0A5 5 0 0 0 3 6c0 1.098-.5 6-2 7h14c-1.5-1-2-5.902-2-7 0-2.42-1.72-4.44-4.005-4.901"/>
+                  d="M8 16a2 2 0 0 0 2-2H6a2 2 0 0 0 2 2m.995-14.901a1 1 0 1 0-1.99 0A5 5 0 0 0 3 6c0 1.098-.5 6-2 7h14c-1.5-1-2-5.902-2-7 0-2.42-1.72-4.44-4.005-4.901" />
               </svg>
 
               <!-- Badge hiển thị số lượng thông báo -->
               <span class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger">
-                  <span class="badge-pill">{{ notifications.length }}</span>
-                </span>
+                <span class="badge-pill">{{ notifications.length }}</span>
+              </span>
               <span class="visually-hidden">unread messages</span>
             </button>
             <!-- Danh sách dropdown -->
 
             <ul class="dropdown-menu p-4 m-4">
-              <li v-if="notifications.length==0">
+              <li v-if="notifications.length == 0">
                 Không có thông báo nào !
               </li>
               <li v-else>
@@ -107,7 +107,7 @@
                 <a>{{ notification.type }}</a>
                 <a class="dropdown-item" href="#">
                   {{ notification.message }}
-                  <button @click="handleRemoveNotification(notification.id-1)" class="btn btn-link p-0 m-0 text-danger">
+                  <button @click="handleRemoveNotification(notification.id - 1)" class="btn btn-link p-0 m-0 text-danger">
                     X
                   </button>
                 </a>
@@ -120,18 +120,18 @@
 
       <!-- Navbar -->
       <div class="container">
-        <div v-if="viewRole===0">
+        <div v-if="viewRole === 0">
           <nav class="navbar navbar-expand-lg bg-body-tertiary">
             <div class="container-fluid">
               <NuxtLink class="nav-link active" aria-current="page" to="/">{{ home }}</NuxtLink>
               <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav"
-                      aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+                aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
                 <span class="navbar-toggler-icon"></span>
               </button>
               <div class="collapse navbar-collapse" id="navbar">
                 <ul class="navbar-nav">
                   <li class="nav-item" v-for="service in services" :key="service.id">
-                    <div v-if="services.length==0">
+                    <div v-if="services.length == 0">
                       {{ serviceNotAvailable }}
                     </div>
                     <div v-else>
@@ -141,7 +141,7 @@
                     </div>
                   </li>
                   <li class="nav-item">
-                    <div v-if="services.length>0">
+                    <div v-if="services.length > 0">
                       <Nuxt-link class="nav-link" :to="`/customer/calendar/newuser`" aria-current="page">
                         <div style="font-size: medium;">Đặt lịch</div>
                       </Nuxt-link>
@@ -157,7 +157,7 @@
             <div class="container-fluid">
               <nuxt-link class="nav-link" :to="`/admin/adminhome`">Admin</nuxt-link>
               <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav"
-                      aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+                aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
                 <span class="navbar-toggler-icon"></span>
               </button>
               <div class="collapse navbar-collapse" id="navbarNav">
@@ -173,11 +173,15 @@
                           <nuxt-link class="dropdown-item" :to="`/admin/service/servicelist`">Tổng quan dịch vụ
                           </nuxt-link>
                           <nuxt-link class="dropdown-item" :to="`/admin/service/bookingservice`">Quản lý đặt lịch
-                          </nuxt-link><nuxt-link class="dropdown-item" :to="`/admin/quanlydatlich/demo`">Quản lý đặt lịch 123
+                          </nuxt-link><nuxt-link class="dropdown-item" :to="`/admin/quanlydatlich/demo`">Quản lý đặt
+                            lịch 123
                           </nuxt-link>
                         </li>
                       </ul>
                     </div>
+                  </li>
+                  <li class="nav-item">
+                    <NuxtLink class="nav-link" :to="`/admin/quanlyhoadon`">Quản lý hóa đơn</NuxtLink>
                   </li>
                 </ul>
               </div>
@@ -188,12 +192,12 @@
 
       <!--    Hiển thị thân trang web-->
       <div class="container h-100 w-100 m-4 p-1">
-        <NuxtPage/>
+        <NuxtPage />
       </div>
 
 
       <footer>
-        <div v-if="viewRole==0">
+        <div v-if="viewRole == 0">
           <div class="container">
             <div class="row">
               <div class="col">
@@ -209,9 +213,7 @@
                       </div>
                       <div class="col">
                         <a href="https://facebook.com/nongtiensonpro" role="button"><img
-                            src="../assets/image/logo-fb.png"
-                            width="32" height="32"
-                            class="me-3" alt="Facebook"></a>
+                            src="../assets/image/logo-fb.png" width="32" height="32" class="me-3" alt="Facebook"></a>
                         <a href="https://facebook.com/nongtiensonpro" role="button"><img
                             src="../assets/image/logo-youtobe.png" width="32" height="32" class="me-3"
                             alt="YouTube"></a>
@@ -230,7 +232,7 @@
               <div class="col">
                 <h3>{{ servicesTitle }}</h3>
 
-                <div v-if="services.length==0">
+                <div v-if="services.length == 0">
                   {{ serviceNotAvailable }}
                 </div>
                 <div v-else>
@@ -255,8 +257,8 @@
               </div>
               <div class="col">
                 <iframe
-                    src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3413.541940628307!2d105.74466886584491!3d21.038129618650437!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x313455e940879933%3A0xcf10b34e9f1a03df!2zVHLGsOG7nW5nIENhbyDEkeG6s25nIEZQVCBQb2x5dGVjaG5pYw!5e1!3m2!1svi!2s!4v1681224799580!5m2!1svi!2s"
-                    width="100%" height="100%" style="border:0;"  loading="lazy"></iframe>
+                  src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3413.541940628307!2d105.74466886584491!3d21.038129618650437!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x313455e940879933%3A0xcf10b34e9f1a03df!2zVHLGsOG7nW5nIENhbyDEkeG6s25nIEZQVCBQb2x5dGVjaG5pYw!5e1!3m2!1svi!2s!4v1681224799580!5m2!1svi!2s"
+                  width="100%" height="100%" style="border:0;" loading="lazy"></iframe>
               </div>
             </div>
             <div>
@@ -273,13 +275,13 @@
 </template>
 
 <script lang="ts">
-import {useServiceStore} from '~/stores/DichVuStores';
-import {computed, ref} from 'vue';
+import { useServiceStore } from '~/stores/DichVuStores';
+import { computed, ref } from 'vue';
 import DichVu from '~/models/DichVu';
 import logoImage from '@/image/LogoPetHaven.png';
-import {useI18n} from 'vue-i18n';
-import {useUserStore} from '~/stores/user';
-import {useNotificationStore} from '~/stores/useNotificationStore';
+import { useI18n } from 'vue-i18n';
+import { useUserStore } from '~/stores/user';
+import { useNotificationStore } from '~/stores/useNotificationStore';
 import { useToast } from 'vue-toastification';
 
 const toast = useToast();
@@ -299,7 +301,7 @@ export default {
   },
   setup() {
     const notificationStore = useNotificationStore();
-    const {addNotification, removeNotification} = notificationStore;
+    const { addNotification, removeNotification } = notificationStore;
 
     const notifications = notificationStore.notifications;
 
@@ -314,7 +316,7 @@ export default {
     const handleRemoveNotification = (index: number) => {
       removeNotification(index);
     };
-    const {t, locale} = useI18n();
+    const { t, locale } = useI18n();
     const serviceStore = useServiceStore();
     const services = computed((): DichVu[] => {
       return serviceStore.services.filter((service: DichVu) => service.trangthai);
@@ -565,6 +567,4 @@ export default {
 };
 </script>
 
-<style scoped>
-
-</style>
+<style scoped></style>
