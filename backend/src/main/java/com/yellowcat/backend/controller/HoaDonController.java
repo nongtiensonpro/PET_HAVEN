@@ -23,7 +23,7 @@ import java.util.Optional;
 
 @Controller
 @RestController
-@RequestMapping("/hoa-don")
+@RequestMapping("/api/hoa-don")
 public class HoaDonController {
     @Autowired
     HoaDonService hoaDonService;
@@ -96,8 +96,13 @@ public class HoaDonController {
     }
 
     @GetMapping("/in-hoa-don")
-        public ResponseEntity<byte[]> getInvoice() {
-        byte[] pdfBytes = pdfExportService.generateInvoice("Nguyễn Văn A", "HD12345", "Dịch vụ Spotify Premium");
+        public ResponseEntity<byte[]> getInvoice(@RequestParam Integer id) {
+        Optional<Hoadon> hoadonOptional = hoaDonService.findById(id);
+        if (!hoadonOptional.isPresent()) {
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        }
+        Hoadon hoadon = hoadonOptional.get();
+        byte[] pdfBytes = pdfExportService.generateInvoice(hoadon.getNgaythanhtoan().toString(),hoadon.getMagiaodich(),hoadon.getPhuongthucthanhtoan(),hoadon.getIdlichhen().getDichvu().getTendichvu(),hoadon.getSotien());
 
         HttpHeaders headers = new HttpHeaders();
         headers.setContentType(MediaType.APPLICATION_PDF);
