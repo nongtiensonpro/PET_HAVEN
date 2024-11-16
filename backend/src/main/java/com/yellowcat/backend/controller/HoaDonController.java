@@ -42,11 +42,11 @@ public class HoaDonController {
     @PreAuthorize("hasAnyRole('admin')")
     @GetMapping("/all")
     public List<Hoadon> getAllHoaDon(){
-        List<Hoadon> listHdChuaTT = hoaDonService.getAllHoaDonChuaThanhToan(1);
+        List<Hoadon> listHdChuaTT = hoaDonService.getALl();
         return listHdChuaTT;
     }
 
-    @PreAuthorize("hasAnyRole('manager')")
+    @PreAuthorize("hasAnyRole('admin', 'manager')")
     @GetMapping("/Lich-su-thanh-toan-nhan-vien")
     public List<Hoadon> getAllHoaDonTheoTK(){
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
