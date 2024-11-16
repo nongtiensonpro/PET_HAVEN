@@ -1,10 +1,15 @@
 package com.yellowcat.backend.service;
 
+import com.itextpdf.kernel.colors.ColorConstants;
 import com.itextpdf.kernel.pdf.PdfWriter;
+import com.itextpdf.kernel.pdf.canvas.draw.SolidLine;
 import com.itextpdf.layout.Document;
+import com.itextpdf.layout.borders.Border;
+import com.itextpdf.layout.borders.SolidBorder;
+import com.itextpdf.layout.element.Cell;
+import com.itextpdf.layout.element.LineSeparator;
 import com.itextpdf.layout.element.Paragraph;
 import com.itextpdf.layout.element.Table;
-import com.itextpdf.layout.properties.UnitValue;
 import org.springframework.stereotype.Service;
 
 import java.io.ByteArrayOutputStream;
@@ -12,37 +17,35 @@ import java.io.ByteArrayOutputStream;
 @Service
 public class PdfExportService {
 
-    public byte[] generateInvoice(String customerName, String invoiceId, String details) {
-        try (ByteArrayOutputStream outputStream = new ByteArrayOutputStream()) {
+
+    public byte[] generateInvoice(String NgayThanhToan, String MaHoaDon, String PhuongThucThanhToan, String DichVu, double SoTien) {        try (ByteArrayOutputStream outputStream = new ByteArrayOutputStream()) {
             PdfWriter writer = new PdfWriter(outputStream);
             com.itextpdf.kernel.pdf.PdfDocument pdfDoc = new com.itextpdf.kernel.pdf.PdfDocument(writer);
             Document document = new Document(pdfDoc);
 
             // Tiêu đề hóa đơn
-            document.add(new Paragraph("HÓA ĐƠN THANH TOÁN").setBold().setFontSize(20));
+            document.add(new Paragraph("HÓA ĐƠN THANH TOÁN")
+                    .setBold()
+                    .setFontSize(18)
+                    .setMarginBottom(20));
 
-            // Thông tin khách hàng
-            document.add(new Paragraph("Tên khách hàng: " + customerName));
-            document.add(new Paragraph("Mã hóa đơn: " + invoiceId));
-            document.add(new Paragraph("Chi tiết: " + details));
-            document.add(new Paragraph(" "));
+            // Tạo bảng với 2 cột
+            float[] columnWidths = {3, 7}; // Độ rộng các cột
+            Table table = new Table(columnWidths)
+                    .setWidth(500)
+                    .setMarginBottom(10);
 
-            // Bảng chi tiết
-            Table table = new Table(UnitValue.createPercentArray(new float[]{4, 4, 2}));
-            table.addHeaderCell("Mục");
-            table.addHeaderCell("Mô tả");
-            table.addHeaderCell("Số tiền");
+            // Thêm các hàng thông tin
+            addTableRowWithBorder(table, "Ngày thanh toán", NgayThanhToan);
+            addTableRowWithBorder(table, "Số đơn đặt hàng", MaHoaDon);
+            addTableRowWithBorder(table, "Phương thức thanh toán", PhuongThucThanhToan);
+            addTableRowWithBorder(table, "Dịch vụ", DichVu);
+            addTableRowWithBorder(table, "Số tiền", String.valueOf(SoTien));
 
-            // Thêm các dòng vào bảng
-            table.addCell("1");
-            table.addCell("Spotify Premium");
-            table.addCell("$9.99");
-            table.addCell("2");
-            table.addCell("Thuế VAT");
-            table.addCell("$0.99");
-
+            // Thêm bảng vào document
             document.add(table);
 
+            // Đóng document
             document.close();
             return outputStream.toByteArray();
         } catch (Exception e) {
@@ -50,5 +53,21 @@ public class PdfExportService {
         }
     }
 
+    /**
+     * Hàm tiện ích để thêm một hàng vào bảng với viền mỏng
+     */
+    private void addTableRowWithBorder(Table table, String label, String value) {
+        // Cell bên trái (nhãn)
+        table.addCell(new Cell()
+                .add(new Paragraph(label).setBold())
+                .setBorderBottom(new SolidBorder(ColorConstants.BLACK, 0.5f))); // Viền mỏng
 
+        // Cell bên phải (giá trị)
+        table.addCell(new Cell()
+                .add(new Paragraph(value))
+                .setBorderBottom(new SolidBorder(ColorConstants.BLACK, 0.5f))); // Viền mỏng
+    }
 }
+
+
+
