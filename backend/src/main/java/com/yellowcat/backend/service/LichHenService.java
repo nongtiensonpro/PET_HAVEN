@@ -49,6 +49,10 @@ public class LichHenService {
         return lichhenRepository.findByDateAndIdcalichhen_IdAndTrangthai(date,idCa,5);
     }
 
+    public List<Lichhen> listLichHomNay(){
+        return lichhenRepository.findByDate(LocalDate.now());
+    }
+
     public Page<Lichhen> findByIdUser(Pageable pageable, String idUser){
         return lichhenRepository.findByIdkhachhang(idUser, pageable);
     }

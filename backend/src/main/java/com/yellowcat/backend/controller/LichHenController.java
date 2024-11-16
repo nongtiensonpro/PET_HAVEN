@@ -157,4 +157,14 @@ public class LichHenController {
         return ResponseEntity.ok(lichhen);
     }
 
+    @PreAuthorize("hasAnyRole('admin', 'manager')")
+    @GetMapping("/lich-hom-nay")
+    public ResponseEntity<?> lichHomNay() {
+        List<Lichhen> listHomNay = lichHenService.listLichHomNay();
+        if (listHomNay.isEmpty()) {
+            return  ResponseEntity.status(HttpStatus.OK).body("Nay được nghỉ à");
+        }
+        return ResponseEntity.ok(listHomNay);
+    }
+
 }
