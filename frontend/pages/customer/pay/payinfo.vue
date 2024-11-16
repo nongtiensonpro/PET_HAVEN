@@ -61,8 +61,14 @@ function thanhToanOnline() {
 
 <template>
   <div class="container">
+    
     <div class="card no-border">
-      <h4 class="card-title text-center text p-4">Tùy chọn thanh toán</h4>
+      <div class="col-12">
+            <div class="text text-center">
+              <div>Chúc mừng bạn đã đặt lịch hẹn thành công </div><p>Một email đã gửi về hộp thư của bạn</p>
+              <p>Bạn có 24 giờ để thay đổi và hủy lịch hẹn</p>
+            </div>
+      </div>
       <div class="card-body">
         <div class="row">
           <div class="col">
@@ -78,10 +84,11 @@ function thanhToanOnline() {
           <div class="col">
             <div class="card no-border">
               <button type="button" @click="thanhToanTaiQuay" class="custom-button">
-                <img class="card-img-top" src="~/assets/image/tratienmat.png" alt="Trả tiền mặt">
+                    <img class="card-img-top" src="~/assets/image/tratienmat.png" alt="Trả tiền mặt">  
               </button>
               <div class="card-body">
-                <button type="button" @click="thanhToanTaiQuay" class="custom-button">Thanh toán tại quầy</button>
+                <button type="button" @click="thanhToanTaiQuay" class="custom-button">
+                 Tiếp tục thanh toán tại quầy</button>
               </div>
             </div>
           </div>
@@ -134,5 +141,8 @@ function thanhToanOnline() {
   border-radius: 5px;
   text-align: center;
 }
-
+.text{
+  font-size: 1.5rem;
+  padding-top: 10px;
+}
 </style>

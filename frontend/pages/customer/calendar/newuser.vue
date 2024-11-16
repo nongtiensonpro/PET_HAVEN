@@ -165,7 +165,7 @@ import DichVu from "~/models/DichVu";
 import { useToast } from 'vue-toastification'
 import { useDatLichStore } from '~/stores/DatLichStores'
 import { ref, computed } from 'vue';
-
+import Swal from 'sweetalert2';
 const accessToken = localStorage.getItem('access_token');
 const viewRole = localStorage.getItem('viewRole');
 const serviceStore = useServiceStore();
@@ -209,7 +209,17 @@ async function payAtCounter() {
   const timer = setInterval(() => {
     elapsedTime.value++;
   }, 1000);
-
+  const result = await Swal.fire({
+      title: 'Xác nhận',
+      text: "Bạn có đặt lịch hẹn không?",
+      icon: 'success',
+      showCancelButton: true,
+      confirmButtonColor: '#3085d6',
+      cancelButtonColor: '#d33',
+      confirmButtonText: 'Có',
+      cancelButtonText: 'Không'
+    });
+  if(result.isConfirmed) {
   try {
     await datLichStore.xacNhanDatLich();
     clearInterval(timer);
@@ -220,6 +230,7 @@ async function payAtCounter() {
     isLoading.value = false;
     toast.error('Xảy ra lỗi khi xác nhận đặt lịch');
   }
+}
 }
 
 

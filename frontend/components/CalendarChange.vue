@@ -23,7 +23,7 @@
         <button @click="confirmBooking" class="btn btn-primary mt-3" :disabled="!isFormValid">
           Xác nhận thay đổi lịch hẹn
         </button>
-        <button @click="huyLichHen"  class="btn btn-primary mt-3">
+        <button @click="huyLichHenNe"  class="btn btn-primary mt-3">
           Hủy lịch hẹn
         </button>
       </div>
@@ -44,7 +44,7 @@ import CaHen from "~/models/CaHen"
 import { useDatLichStore } from '~/stores/DatLichStores'
 import { useMauKhachDatDichVu } from '~/stores/MauKhachDatDichVu'
 import { useThayDoiLichHenStore } from '~/stores/ThayDoiLichHen'
-
+import Swal from 'sweetalert2';
 import DichVuKhachDat from "~/models/DichVuKhachDat";
 
 
@@ -160,30 +160,54 @@ async function confirmBooking() {
     const selectedCaLichHen = lichhens.value.find(ca => ca.id === Number(selectedTime.value));
 
     if (!selectedCaLichHen) {
-      toast.error('Không tìm thấy ca lịch hẹn đã chọn', {timeout: 3000});
+      toast.error('Không tìm thấy ca lịch hẹn đã chọn', { timeout: 3000 });
       return;
     }
 
     const newCaLichHenId = selectedCaLichHen.id;
     const newDate = selectedDate.value.toISOString().split('T')[0];
 
-    try {
-      await thayDoiLichHenStore(props.id, newDate, newCaLichHenId);
-      toast.success('Đã thay đổi lịch hẹn thành công', {timeout: 3000});
-    } catch (error) {
-      toast.error('Không thể thay đổi lịch hẹn. Vui lòng thử lại. ' + error, {timeout: 3000});
+    const result = await Swal.fire({
+      title: 'Xác nhận',
+      text: "Bạn có muốn thay đổi lịch hẹn không?",
+      icon: 'warning',
+      showCancelButton: true,
+      confirmButtonColor: '#3085d6',
+      cancelButtonColor: '#d33',
+      confirmButtonText: 'Có',
+      cancelButtonText: 'Không'
+    });
+
+    if (result.isConfirmed) {
+      try {
+        await thayDoiLichHenStore(props.id, newDate, newCaLichHenId);
+        toast.success('Đã thay đổi lịch hẹn thành công', { timeout: 3000 });
+      } catch (error) {
+        toast.error('Không thể thay đổi lịch hẹn. Vui lòng thử lại. ' + error, { timeout: 3000 });
+      }
     }
   } else {
-    toast.error('Vui lòng chọn ngày và thời gian mới', {timeout: 3000});
+    toast.error('Vui lòng chọn ngày và thời gian mới', { timeout: 3000 });
   }
 }
 async function huyLichHenNe() {
+  const result = await Swal.fire({
+      title: 'Xác nhận',
+      text: "Bạn có muốn hủy lịch hẹn không?",
+      icon: 'warning',
+      showCancelButton: true,
+      confirmButtonColor: '#3085d6',
+      cancelButtonColor: '#d33',
+      confirmButtonText: 'Có',
+      cancelButtonText: 'Không'
+    });
+  if(result.isConfirmed) {
   try {
     await huyLichHen(props.id);
-    toast.success('Đã hủy lịch h��n thành công', {timeout: 3000});
+    toast.success('Đã hủy lịch hẹn thành công', {timeout: 3000});
   } catch (error) {
-    toast.error('Không thể hủy lịch h��n. Vui lòng thử lại. ' + error, {timeout: 3000});
-  }
+    toast.error('Không thể hủy lịch hẹn. Vui lòng thử lại. ' + error, {timeout: 3000});
+  }}
 }
 </script>
 

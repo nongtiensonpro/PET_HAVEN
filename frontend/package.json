@@ -22,6 +22,7 @@
     "consola": "^3.2.3",
     "defu": "^6.1.4",
     "nuxt": "^3.13.2",
+    "sweetalert2": "^11.14.5",
     "vee-validate": "^4.14.3",
     "vue": "^3.2.0",
     "vue-router": "^4.0.0",

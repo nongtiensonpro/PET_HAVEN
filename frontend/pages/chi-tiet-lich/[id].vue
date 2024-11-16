@@ -4,11 +4,13 @@
       <div class="col-lg-6 mb-4">
         <div class="card shadow-sm h-100">
           <div class="card-body">
-            <h4 class="card-title mb-4"><i class="fas fa-info-circle me-2"></i>Thông tin đặt lịch : {{ id }}</h4>
             <div v-if="thayDoiLichHenStore.lichHenDetails">
               <div class="card border-primary mb-3">
                 <div class="card-header bg-primary text-white">
-                  <i class="fas fa-calendar-check me-2"></i>Chi tiết lịch hẹn
+                  <i class="fas fa-calendar-check me-2"></i>Chi tiết lịch hẹn {{ id }}
+                   <div :class="getTrangThaiClass(thayDoiLichHenStore.lichHenDetails.trangthai)">
+                    <span class="badge bg-success"> {{ getTrangThaiText(thayDoiLichHenStore.lichHenDetails.trangthai) }}</span>
+                   </div>
                 </div>
                 <div class="card-body">
                   <div class="row g-3">
@@ -129,7 +131,30 @@ const formatCurrency = (value: number) => {
   console.log('Thông tin đầy đủ của thayDoiLichHenStore:', JSON.stringify(thayDoiLichHenStore, null, 2));
   return new Intl.NumberFormat('vi-VN', {style: 'currency', currency: 'VND'}).format(value);
 };
-
+const getTrangThaiText = (trangthai: number) => {
+  const trangThaiMap: Record<number, string> = {
+    0: 'Thành công',
+    1: 'Thất bại',
+    2: 'Đã hủy',
+    3: 'Chờ thanh toán',
+    4: 'Chờ xác nhận',
+    5: 'Rỗng',
+    6: 'Thanh toán thành công'
+  }
+  return trangThaiMap[trangthai] || 'Không xác định'
+}
+const getTrangThaiClass = (trangthai: number) => {
+  const classMap: Record<number, string> = {
+    0: 'text-success',
+    1: 'text-danger',
+    2: 'text-danger',
+    3: 'text-info',
+    4: 'text-warning',
+    5: 'text-secondary',
+    6: 'text-success'
+  }
+  return classMap[trangthai] || ''
+}
 </script>
 
 <style scoped>

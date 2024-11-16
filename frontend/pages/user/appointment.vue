@@ -6,6 +6,9 @@ import {useThayDoiLichHenStore } from '~/stores/ThayDoiLichHen'
 const {thayDoiLichHenStore,huyLichHen} = useThayDoiLichHenStore()
 const userStore = useUserStore()
 const lichHenStore = useQuanLyLichHenKhachHang()
+const isLoading = ref(false);
+const countdown = ref(10);
+const showOverlay = ref(false);
 definePageMeta({
   middleware: ['auth']
 })
@@ -23,6 +26,52 @@ function thayDoiLichHen(id: String) {
 function chiTietLichHen(id: String) {
   
 }
+
+function startCountdown() {
+  showOverlay.value = true;
+  isLoading.value = true;
+  countdown.value = 10;
+  const timer = setInterval(() => {
+    countdown.value--;
+    if (countdown.value <= 0) {
+      clearInterval(timer);
+      isLoading.value = false;
+      showOverlay.value = false;
+    }
+  }, 1000);
+}
+
+const token = localStorage.getItem('access_token');
+function thanhToan(id: String) {
+  const { getTempData } = useMauKhachDatDichVu()
+  const tempData = computed(() => getTempData())
+
+  startCountdown(); // Start the countdown
+
+  fetch('http://localhost:8080/api/payPal/payment/create', {
+    method: 'POST',
+    headers: {
+      'Authorization': `Bearer ${token}`,
+      'idLichHen': id
+    }
+  })
+  .then(response => response.text())
+  .then(url => {
+    if (url) {
+      window.location.href = url;
+    } else {
+      console.error("Không thể tạo thanh toán");
+      isLoading.value = false;
+      showOverlay.value = false;
+    }
+  })
+  .catch(error => {
+    console.error("Lỗi:", error);
+    isLoading.value = false;
+    showOverlay.value = false;
+  });
+}
+
 // Hàm format trạng thái
 const getTrangThaiText = (trangthai: number) => {
   const trangThaiMap: Record<number, string> = {
@@ -113,18 +162,25 @@ const getTrangThaiClass = (trangthai: number) => {
                   </td>
                   <td>
                     <div class="row">
-                        <div class="col-6">
+                        <div class="col">
                           <button v-if="item.trangthai === 4 || item.trangthai === 6"
                             class="custom-button"
                             @click="thayDoiLichHen(item.id)">
                       Hủy hoặc đổi lịch hẹn
                     </button>
                         </div>
-                        <div class="col-6">
+                        <div class="col">
                           <button v-if="item.trangthai === 0 || item.trangthai === 6"
                             class="custom-button"
                             @click="chiTietLichHen(item.id)">
                       Chi tiết
+                    </button>
+                        </div>
+                        <div class="col">
+                          <button v-if="item.trangthai === 3"
+                            class="custom-button"
+                            @click="thanhToan(item.id)">
+                      Thanh toán
                     </button>
                         </div>
                     </div>
@@ -155,6 +211,16 @@ const getTrangThaiClass = (trangthai: number) => {
         </div>
       </div>
     </div>
+    <!-- Overlay and countdown -->
+    <div v-if="showOverlay" class="overlay">
+      <div class="overlay-content">
+        <p>Đang chuyển hướng đến PayPal...</p>
+        <p>Vui lòng chờ {{ countdown }} giây</p>
+        <div class="spinner-border text-primary" role="status">
+          <span class="visually-hidden">Loading...</span>
+        </div>
+      </div>
+    </div>
   </div>
 </template>
 
@@ -164,5 +230,37 @@ const getTrangThaiClass = (trangthai: number) => {
 }
 .table td {
   vertical-align: middle;
+}
+
+.no-border {
+  border: none !important;
+  box-shadow: none !important;
+}
+
+.card-img-top {
+  width: 100%;
+  height: auto;
+  max-height: 350px;
+  object-fit: contain;
+}
+
+.overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.7);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 1000;
+}
+
+.overlay-content {
+  background-color: white;
+  padding: 20px;
+  border-radius: 5px;
+  text-align: center;
 }
 </style>
