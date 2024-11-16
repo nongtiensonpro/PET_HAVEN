@@ -17,7 +17,6 @@ public class Hoadon {
     @Column(name = "id", nullable = false)
     private Integer id;
 
-    @JsonProperty
     @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "idlichhen")
     private Lichhen idlichhen;
@@ -56,7 +55,7 @@ public class Hoadon {
     @Column(name = "magiaodich", nullable = false)
     private String magiaodich;
 
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "idgiamgia")
     private Giamgia idgiamgia;
 
