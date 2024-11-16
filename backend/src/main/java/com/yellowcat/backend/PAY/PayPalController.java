@@ -14,6 +14,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.net.URI;
+import java.time.LocalDateTime;
 import java.util.Optional;
 
 @RestController
@@ -82,6 +83,7 @@ public class PayPalController {
                     hoadon.setTrangthai(2);
                     hoadon.setPhuongthucthanhtoan("Online");
                     hoadon.setMagiaodich(payment.getId());
+                    hoadon.setNgaythanhtoan(LocalDateTime.now());
                     hoaDonService.addOrUpdate(hoadon);
                     // Trả về phản hồi thành công
                     lichhen.setTrangthai(6);
