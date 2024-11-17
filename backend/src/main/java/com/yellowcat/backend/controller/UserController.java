@@ -1,5 +1,8 @@
 package com.yellowcat.backend.controller;
 
+import com.yellowcat.backend.model.Thucung;
+import com.yellowcat.backend.service.ThuCungService;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.oauth2.jwt.Jwt;
@@ -14,6 +17,9 @@ import java.util.Map;
 @RestController
 @CrossOrigin(origins = "http://localhost:3000")
 public class UserController {
+
+    @Autowired
+    ThuCungService thuCungService;
 
     @GetMapping("/api/user")
     public Map<String, Object> getCurrentUser() {
@@ -36,10 +42,13 @@ public class UserController {
             username = jwt.getClaimAsString("email");
         }
 
+        List<Thucung> thucungList = thuCungService.findListThuCungByidChu(idUser);
+
         Map<String, Object> response = new HashMap<>();
         response.put("roles", petHavenRoles);
         response.put("idUser", idUser);
         response.put("username", username);
+        response.put("listThuCung", thucungList);
 
         return response;
     }

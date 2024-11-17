@@ -6,6 +6,7 @@ import com.yellowcat.backend.model.Hoadon;
 import com.yellowcat.backend.model.Lichhen;
 import com.yellowcat.backend.service.HoaDonService;
 import com.yellowcat.backend.service.LichHenService;
+import com.yellowcat.backend.service.PdfExportService;
 import jakarta.validation.Valid;
 import org.hibernate.annotations.Parameter;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -34,6 +35,9 @@ public class LichHenController {
 
     @Autowired
     private HoaDonService hoaDonService;
+
+    @Autowired
+    private PdfExportService pdfExportService;
 
     @PreAuthorize("hasRole('admin')")
     @GetMapping("/all")
@@ -165,6 +169,40 @@ public class LichHenController {
             return  ResponseEntity.status(HttpStatus.OK).body("Nay được nghỉ à");
         }
         return ResponseEntity.ok(listHomNay);
+    }
+
+    @PreAuthorize("hasAnyRole('admin', 'manager')")
+    @GetMapping("/thanh-toan/{id}")
+    public ResponseEntity<?> ThanhToanHoaDon(@PathVariable Integer id){
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        Jwt jwt = (Jwt) authentication.getPrincipal();
+        String Email = jwt.getClaimAsString("email");
+
+        Lichhen lichhen = lichHenService.findById(id);
+        Optional<Hoadon> hoadonOptional = hoaDonService.finHoadonByIdLich(id);
+        if (hoadonOptional.isPresent()) {
+            Hoadon hoadon = hoadonOptional.get();
+
+            if (lichhen == null) {
+                return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+            }
+            lichhen.setTrangthai(0);
+            lichHenService.addOrUpdate(lichhen);
+
+            hoadon.setNgaythanhtoan(LocalDateTime.now());
+            hoadon.setTrangthai(2);
+            hoadon.setNguoithanhtoan(Email);
+            hoaDonService.addOrUpdate(hoadon);
+
+            // Tạo file PDF hóa đơn
+            String thoiGian = hoadon.getIdlichhen().getDate().toString()+ ' ' + hoadon.getIdlichhen().getIdcalichhen().getThoigianca();
+            byte[] pdfBytes = pdfExportService.generateInvoice(hoadon.getNgaythanhtoan().toString(),hoadon.getMagiaodich(),hoadon.getPhuongthucthanhtoan(),hoadon.getIdlichhen().getDichvu().getTendichvu(),hoadon.getSotien(),thoiGian);
+
+            hoaDonService.sendHoaDonSauThanhToan(lichhen,pdfBytes);
+
+            return new ResponseEntity<>(HttpStatus.CREATED);
+        }
+        return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
     }
 
 }

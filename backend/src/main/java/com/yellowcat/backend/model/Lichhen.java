@@ -71,6 +71,19 @@ public class Lichhen {
     @Column(name = "solanthaydoi")
     private Integer solanthaydoi;
 
+    @NotNull
+    @ColumnDefault("0")
+    @Column(name = "solannhacnho", nullable = false)
+    private Integer solannhacnho;
+
+    public Integer getSolannhacnho() {
+        return solannhacnho;
+    }
+
+    public void setSolannhacnho(Integer solannhacnho) {
+        this.solannhacnho = solannhacnho;
+    }
+
     public Integer getSolanthaydoi() {
         return solanthaydoi;
     }

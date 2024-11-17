@@ -68,33 +68,6 @@ public class HoaDonController {
         return new ResponseEntity<>(hoaDon, HttpStatus.OK);
     }
 
-    @PreAuthorize("hasAnyRole('admin', 'manager')")
-    @GetMapping("/thanh-toan/{id}")
-    public ResponseEntity<?> ThanhToanHoaDon(@PathVariable Integer id){
-        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-        Jwt jwt = (Jwt) authentication.getPrincipal();
-        String Email = jwt.getClaimAsString("email");
-
-        Optional<Hoadon> hoadonOptional = hoaDonService.findById(id);
-        if (hoadonOptional.isPresent()) {
-            Hoadon hoadon = hoadonOptional.get();
-
-            Lichhen lichhen = lichHenService.findById(hoadon.getIdlichhen().getId());
-            if (lichhen == null) {
-                return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
-            }
-            lichhen.setTrangthai(0);
-            lichHenService.addOrUpdate(lichhen);
-
-            hoadon.setNgaythanhtoan(LocalDateTime.now());
-            hoadon.setTrangthai(2);
-            hoadon.setNguoithanhtoan(Email);
-            hoaDonService.addOrUpdate(hoadon);
-            return new ResponseEntity<>(HttpStatus.CREATED);
-        }
-        return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
-    }
-
     @GetMapping("/in-hoa-don")
         public ResponseEntity<byte[]> getInvoice(@RequestParam Integer id) {
         Optional<Hoadon> hoadonOptional = hoaDonService.findById(id);
