@@ -76,7 +76,7 @@ public class PayPalController {
             // Kiểm tra nếu thanh toán thành công
             if (payment != null && payment.getState().equals("approved")) {
                 System.out.println("hello");
-                // Lấy hóa đơn từ dịch vụ dựa trên payerId
+                // Lấy hóa đơn từ dịch vụ dựa trên Id
                 Lichhen lichhen = lichHenService.findById(Integer.parseInt(id));
                 Optional<Hoadon> hoadonOptional = hoaDonService.findHoaDonOnline(paymentId);
                 if (hoadonOptional.isPresent()) {

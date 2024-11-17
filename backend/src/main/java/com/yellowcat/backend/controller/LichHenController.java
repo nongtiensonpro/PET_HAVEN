@@ -106,7 +106,7 @@ public class LichHenController {
 
         if (lichhen != null && lichhen.getTrangthai() == 4) {
 //          Thay đổi thời gian và ca lịch
-            Optional<Lichhen> lichhenDoiOptional = lichHenService.getLichHenByDateandCa(LocalDate.parse(doiLichDTO.getDate()),Integer.parseInt(doiLichDTO.getIdcalichhen()));
+            Optional<Lichhen> lichhenDoiOptional = lichHenService.getLichHenByDateandCa(doiLichDTO.getDate(),Integer.parseInt(doiLichDTO.getIdcalichhen()));
             if (!lichhenDoiOptional.isPresent()) {
                 return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Lịch lỗi.");
             }
