@@ -119,6 +119,7 @@ public class LichHenService {
                     lichHenRong.setIdkhachhang("demo");
                     lichHenRong.setTrangthaica(false);
                     lichHenRong.setSolanthaydoi(0);
+                    lichHenRong.setSolannhacnho(0);
                     // Lưu vào bảng lichhen
                     lichhenRepository.save(lichHenRong);
                 }
