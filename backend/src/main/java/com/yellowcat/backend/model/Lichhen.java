@@ -71,9 +71,8 @@ public class Lichhen {
     @Column(name = "solanthaydoi")
     private Integer solanthaydoi;
 
-    @NotNull
-    @ColumnDefault("0")
-    @Column(name = "solannhacnho", nullable = false)
+
+    @Column(name = "solannhacnho")
     private Integer solannhacnho;
 
     public Integer getSolannhacnho() {

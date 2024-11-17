@@ -1,20 +1,21 @@
 package com.yellowcat.backend.DTO;
 
 import jakarta.validation.constraints.NotNull;
+import org.springframework.format.annotation.DateTimeFormat;
 
 import java.time.LocalDate;
 
 public class DoiLichDTO {
-    @NotNull
-    private String date;
+    @DateTimeFormat(pattern = "yyyy-MM-dd")  // Thêm annotation này để xử lý định dạng ngày tháng
+    private LocalDate date;
     @NotNull
     private String idcalichhen;
 
-    public @NotNull String getDate() {
+    public @NotNull LocalDate getDate() {
         return date;
     }
 
-    public void setDate(@NotNull String date) {
+    public void setDate(@NotNull LocalDate date) {
         this.date = date;
     }
 

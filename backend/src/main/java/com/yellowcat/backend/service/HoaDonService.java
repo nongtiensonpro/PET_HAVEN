@@ -62,7 +62,7 @@ public class HoaDonService {
 
     public List<Hoadon> LichSuThanhToanHoaDonTheoTaiKhoan(String email){return hoadonRepository.findByNguoithanhtoanAndPhuongthucthanhtoan(email,"Offline");}
 
-    public Optional<Hoadon> finHoadonByIdLich(Integer id){return hoadonRepository.findByIdlichhen_IdAndTrangthai(id,1);}
+    public Optional<Hoadon> finHoadonByIdLich(Integer id){return hoadonRepository.findByIdlichhen_Id(id);}
 
     public  Optional<Hoadon> findHoaDonOnline(String idPayPal)
     {return hoadonRepository.findByMagiaodich(idPayPal);}

@@ -206,10 +206,10 @@ public class DatLichController {
             return ResponseEntity.status(HttpStatus.FORBIDDEN).body("Bạn không phải là chủ lịch hẹn này.");
         }
 
-        if (lichhen != null && lichhen.getTrangthai() == 4 || lichhen.getTrangthai() == 6) {
+        if ( lichhen.getTrangthai() == 4 || lichhen.getTrangthai() == 6) {
 
 //          Thay đổi thời gian và ca lịch
-            Optional<Lichhen> lichhenDoiOptional = lichHenService.getLichHenByDateandCa(LocalDate.parse(doiLichDTO.getDate()),Integer.parseInt(doiLichDTO.getIdcalichhen()));
+            Optional<Lichhen> lichhenDoiOptional = lichHenService.getLichHenByDateandCa(doiLichDTO.getDate(),Integer.parseInt(doiLichDTO.getIdcalichhen()));
             if (!lichhenDoiOptional.isPresent()) {
                 return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Lịch lỗi.");
             }
@@ -248,6 +248,7 @@ public class DatLichController {
 
             lichhen.setTrangthai(5);
             lichhen.setEmailNguoiDat("default-email@example.com");
+            lichhen.setIdkhachhang("demo");
             if (lichhen.getTrangthaica()){
                 lichhen.setTrangthaica(false);
             }else {

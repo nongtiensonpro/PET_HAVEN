@@ -193,7 +193,7 @@ public class LichHenService {
                 System.out.println("Tiến trình bị hủy.");
                 return;  // Nếu tiến trình bị hủy thì kết thúc
             }
-            Thread.sleep( 2 * 60 * 1000); // Đợi
+            Thread.sleep( 20 * 60 * 1000); // Đợi
         } catch (InterruptedException e) {
             Thread.currentThread().interrupt();
             return; // Ngừng xử lý nếu bị gián đoạn
