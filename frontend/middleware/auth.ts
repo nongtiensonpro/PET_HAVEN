@@ -16,7 +16,7 @@ export default defineNuxtRouteMiddleware(async (to) => {
             return navigateTo('/');
         }
 
-        if (to.path.includes('/admin') && !userStore.userInfo.role.includes('admin')) {
+        if (to.path.includes('/admin') && userStore.userInfo && !(userStore.userInfo.role?.includes('admin'))) {
             toast.error('Bạn không có quyền truy cập trang này! ');
             return navigateTo('/');
         }
