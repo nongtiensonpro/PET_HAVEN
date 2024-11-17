@@ -7,6 +7,7 @@ import com.yellowcat.backend.model.Hoadon;
 import com.yellowcat.backend.model.Lichhen;
 import com.yellowcat.backend.service.HoaDonService;
 import com.yellowcat.backend.service.LichHenService;
+import com.yellowcat.backend.service.PdfExportService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
@@ -27,6 +28,8 @@ public class PayPalController {
     private HoaDonService hoaDonService;
     @Autowired
     private LichHenService lichHenService;
+    @Autowired
+    private PdfExportService pdfExportService;
 
     @PostMapping("/payment/create")
     public ResponseEntity<String> createPayment(@RequestHeader String idLichHen) {
@@ -88,6 +91,15 @@ public class PayPalController {
                     // Trả về phản hồi thành công
                     lichhen.setTrangthai(6);
                     lichHenService.addOrUpdate(lichhen);
+
+//                    Gửi hóa đơn khi thanh toán thành công
+                    // Tạo file PDF hóa đơn
+                    String thoiGian = hoadon.getIdlichhen().getDate().toString()+ ' ' + hoadon.getIdlichhen().getIdcalichhen().getThoigianca();
+                    byte[] pdfBytes = pdfExportService.generateInvoice(hoadon.getNgaythanhtoan().toString(),hoadon.getMagiaodich(),hoadon.getPhuongthucthanhtoan(),hoadon.getIdlichhen().getDichvu().getTendichvu(),hoadon.getSotien(),thoiGian);
+
+                    hoaDonService.sendHoaDonSauThanhToan(lichhen,pdfBytes);
+
+
                     // Redirect đến trang chi tiết lịch hẹn
                     String redirectUrl = "http://localhost:3000/chi-tiet-lich/" + id;
                     HttpHeaders headers = new HttpHeaders();

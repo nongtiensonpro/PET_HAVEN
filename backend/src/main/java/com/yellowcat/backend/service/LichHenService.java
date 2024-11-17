@@ -155,7 +155,7 @@ public class LichHenService {
 
             String message = "Chào bạn,\n\n"
                     + "Cảm ơn bạn đã đặt lịch."
-                    + "Hẹn gặp bạn vào" + lichhen.getIdcalichhen().getThoigianca()+ "Ngày" +lichhen.getDate()
+                    + "Hẹn gặp bạn vào: " + lichhen.getIdcalichhen().getThoigianca()+ " Ngày: " +lichhen.getDate()
                     + " Bạn có thể sử dụng các liên kết dưới đây để quản lý lịch hẹn của mình:\n\n"
                     + "Chi tiết lịch hẹn: " + Url + "\n\n"
                     + "Trân trọng,\n"
@@ -194,14 +194,13 @@ public class LichHenService {
         // Xóa cache Hibernate để chắc chắn lấy dữ liệu từ DB
         entityManager.clear();
 
-        // Kiểm tra và cập nhật trạng thái sau khi đợi 30 giây
         Optional<Lichhen> lichhenOptional = lichhenRepository.findById(lichhenId);
         Lichhen lichhen = lichhenOptional.get();
         if (lichhen == null) {
             return;
         }
 
-        if (lichhen.getTrangthai() == 4 || lichhen.getTrangthai() == 6) {
+        if (lichhen.getTrangthai() == 4) {
             lichhen.setTrangthai(3); // Cập nhật sang trạng thái 3 (Chờ thanh toán)
             lichhenRepository.save(lichhen);
             System.out.println("Đã cập nhật trạng thái của lịch hẹn ID: " + lichhenId + " thành 3 (Chờ thanh toán)");
