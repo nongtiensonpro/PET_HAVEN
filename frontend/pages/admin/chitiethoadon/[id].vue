@@ -4,7 +4,7 @@
         <div v-if="loading">Đang tải thông tin hóa đơn...</div>
 
       <div v-else>
-        <h1>Chi tiết hóa đơn #{{ hoaDon.idlichhen.id }}</h1>
+        <h1>Chi tiết hóa đơn #{{ hoaDon.id }}</h1>
         <div class="row">
             <div class="col">
               <div class="card p-4">
@@ -39,8 +39,17 @@
               </div>
             </div>
           </div>
+        <div class="row">
+          <div class="col">
+            <button @click="inHoaDon(hoaDon.id)" class="custom-button">In hóa đơn</button>
+          </div>
+          <div class="col">
+            <button @click="goBack" class="custom-button">Quay lại</button>
+          </div>
         </div>
-        <button @click="goBack" class="btn btn-secondary mt-3">Quay lại</button>
+        </div>
+
+
     </div>
 </template>
 
@@ -89,6 +98,10 @@ onMounted(() => {
     const id = Number(route.params.id);
     fetchHoaDon(id);
 });
+
+function inHoaDon(id : String) {
+  store.inHoaDon(id);
+}
 </script>
 
 <style scoped>

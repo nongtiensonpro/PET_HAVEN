@@ -54,6 +54,9 @@ if (userInfo.value === null) {
               Bạn chưa lưu thông tin thú cưng nào !
             </div>
             <div v-else>
+              <div class="text fs-4">
+                Danh sách thú cưng của của chủ nhân :
+              </div>
               <div v-for="thuCung in userInfo?.listThuCung" :key="userInfo?.listThuCung.id" class="card m-4">
                 <div class="card-body">
                   <table class="table">
