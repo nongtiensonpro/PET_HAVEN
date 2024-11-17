@@ -56,7 +56,7 @@ public class DatLichController {
         List<Calichhen> CaLichHen = caLichHenService.getAllByDate(ngay);
         response.put("CaLichHen", CaLichHen);
 
-        List<Thucung> listThuCung = thuCungService.findListThuCungByid(idUser);
+        List<Thucung> listThuCung = thuCungService.findListThuCungByidChu(idUser);
         response.put("ListThuCung", listThuCung);
 
         return ResponseEntity.ok(response);

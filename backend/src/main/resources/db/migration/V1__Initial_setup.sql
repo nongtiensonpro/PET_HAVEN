@@ -72,7 +72,8 @@ CREATE TABLE LichHen
     TrangThaiCa BOOLEAN,
     ThoiGianHuy TIMESTAMP,
     ThoiGianThayDoi TIMESTAMP,
-    SoLanThayDoi INT not null default 0
+    SoLanThayDoi INT not null default 0,
+    SoLanNhacNho int not null default 0
 );
 -- quy ước trang thai:
 -- 0 : thành công

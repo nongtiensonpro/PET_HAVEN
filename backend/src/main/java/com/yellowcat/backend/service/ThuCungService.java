@@ -16,5 +16,5 @@ public class ThuCungService {
         return thucungRepository.save(thucung);
     }
 
-    public List<Thucung> findListThuCungByid(String idTK) {return thucungRepository.findByIdtaikhoan(idTK);}
+    public List<Thucung> findListThuCungByidChu(String idTK) {return thucungRepository.findByIdtaikhoan(idTK);}
 }

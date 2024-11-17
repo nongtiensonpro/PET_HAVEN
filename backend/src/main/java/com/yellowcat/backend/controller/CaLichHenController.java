@@ -34,12 +34,6 @@ public class CaLichHenController {
     }
 //-----------------------------------------------------------
 
-    @PutMapping("/reset-trang-thai-ca")
-    public ResponseEntity<Void> ResetTrangThaiCa(@RequestParam("ngay") @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate ngay) {
-        caLichHenService.resetTrangThaiCa(ngay);
-        return ResponseEntity.ok().build();
-    }
-
     @PreAuthorize("hasAnyRole('admin', 'manager')")
     @PutMapping("/cap-nhap-ngay-nghi")
     public ResponseEntity<Void> falseAllCa(@RequestParam("ngay") @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate ngay) {

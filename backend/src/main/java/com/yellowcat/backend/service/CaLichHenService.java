@@ -17,16 +17,6 @@ public class CaLichHenService {
     @Autowired
     private CalichhenRepository caLichHenRepository;
 
-
-    @Transactional
-    public void resetTrangThaiCa(LocalDate ngay) {
-        // Bước 1: Đặt tất cả các ca về false
-        caLichHenRepository.updateTrangThaiAll(false);
-
-        // Bước 2: Đặt những ca đã được đặt trong ngày đó về true
-        caLichHenRepository.updateTrangThaiCaDatThanhCong(ngay);
-    }
-
     public void UpdateNgayNghi(LocalDate ngay){
         caLichHenRepository.updateNgayNghi(ngay);
     }

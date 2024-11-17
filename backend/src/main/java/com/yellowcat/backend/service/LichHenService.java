@@ -13,10 +13,16 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.scheduling.annotation.EnableAsync;
+import org.springframework.scheduling.annotation.EnableScheduling;
 import org.springframework.scheduling.annotation.Scheduled;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
+import java.time.Duration;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.LocalTime;
 import java.util.List;
 import java.util.Optional;
 import java.util.concurrent.atomic.AtomicBoolean;
@@ -24,6 +30,7 @@ import java.util.concurrent.atomic.AtomicBoolean;
 
 @Service
 @EnableAsync
+@EnableScheduling
 public class LichHenService {
 
     private final LichhenRepository lichhenRepository;
@@ -206,6 +213,44 @@ public class LichHenService {
             System.out.println("Đã cập nhật trạng thái của lịch hẹn ID: " + lichhenId + " thành 3 (Chờ thanh toán)");
         } else {
             System.out.println("Lịch hẹn"+ lichhenId +  " đã bị hủy hoặc thay đổi trạng thái, không cập nhật nữa.");
+        }
+    }
+
+    @Scheduled(fixedRate = 60000)  // Mỗi phút
+    public void checkAppointments() {
+        LocalDate currentDate = LocalDate.now();
+        LocalTime currentTime = LocalTime.now();
+
+        // Truy vấn các ca lịch hẹn trong cùng ngày và với giờ cụ thể
+        List<Lichhen> lichhens = lichhenRepository.findByDate(currentDate);
+
+        for (Lichhen lichhen : lichhens) {
+            LocalTime appointmentTime = lichhen.getIdcalichhen().getThoigianca();
+
+            // Tính toán sự chênh lệch giữa thời gian hiện tại và thời gian ca lịch hẹn
+            Duration duration = Duration.between(currentTime, appointmentTime);
+
+            //gửi thông báo
+            if (duration.toMinutes() <= 60 && duration.toMinutes() > 0 && lichhen.getSolannhacnho()<1) {
+                sendEmailNhacNho(lichhen,String.valueOf(duration.toMinutes()));
+                lichhen.setSolannhacnho(lichhen.getSolannhacnho()+1);
+                lichhenRepository.save(lichhen);
+            }
+        }
+    }
+
+    @Async
+    public void sendEmailNhacNho(Lichhen lichhen,String gio) {
+        try {
+            String message = "Chào bạn,\n\n"
+                    + "Cảm ơn bạn đã đặt lịch."
+                    + "Còn" + gio + " phút nữa là đến lịch hẹn của bạn "
+                    + "Xin hãy sắp xếp thời gian , lịch hẹn của bạn sẽ bắt đầu lúc: " + lichhen.getDate() + ' ' + lichhen.getIdcalichhen().getThoigianca();
+
+            emailService.sendEmail(lichhen.getEmailNguoiDat(),"Nhắc nhở lịch hẹn",message);
+            System.out.println("Email nhắc nhở đã được gửi thành công.");
+        } catch (Exception e) {
+            System.err.println("Gửi email thất bại: " + e.getMessage());
         }
     }
 }
