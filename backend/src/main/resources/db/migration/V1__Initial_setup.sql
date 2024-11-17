@@ -73,7 +73,7 @@ CREATE TABLE LichHen
     ThoiGianHuy TIMESTAMP,
     ThoiGianThayDoi TIMESTAMP,
     SoLanThayDoi INT not null default 0,
-    SoLanNhacNho int not null default 0
+    SoLanNhacNho INT
 );
 -- quy ước trang thai:
 -- 0 : thành công
