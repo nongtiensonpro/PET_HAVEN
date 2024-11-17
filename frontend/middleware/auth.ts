@@ -18,10 +18,8 @@ export default defineNuxtRouteMiddleware(async (to) => {
             return navigateTo('/');
         }
         if (!userStore.userInfo) {
-            toast.error('Đã hết hạn đăng nhập. Đang cố gắng đăng nhập lại!');
             const refreshToken = localStorage .getItem('refresh_token');
             if (!refreshToken) {
-                toast.error('Không tìm thấy refresh token. Vui lòng đăng nhập lại.');
                 return navigateTo('/');
             }
 
@@ -42,20 +40,16 @@ export default defineNuxtRouteMiddleware(async (to) => {
                 });
 
                 if (!response.ok) {
-                    toast.error("Phiên đăng nhập đã hết hạn, vui lòng đăng nhập lại.");
                     return navigateTo('/');
                 }
 
                 const data = await response.json();
                 localStorage .setItem('access_token', data.access_token);
                 localStorage .setItem('refresh_token', data.refresh_token);
-                console.log('New access token:', data.access_token);
 
 
                 return;
             } catch (error) {
-                console.error('Lỗi khi làm mới token:', error);
-                toast.error('Đăng nhập lại thất bại!');
                 return navigateTo('/');
             }
         }

@@ -19,7 +19,7 @@
                     <td>{{ formatDate(hoaDon.date) }}</td>
                     <td>{{ hoaDon.phuongthucthanhtoan }}</td>
                     <td>{{ hoaDon.sotien }} USD</td>
-                    <td>{{ getTrangThai(hoaDon.trangthai) }} : {{ hoaDon.trangthai }}</td>
+                    <td>{{ getTrangThai(hoaDon.trangthai) }}</td>
                     <td>
                         <button @click="viewHoaDon(hoaDon.id)" class="btn btn-primary">Chi tiết</button>
                     </td>
@@ -52,9 +52,8 @@ const formatDate = (dateString: string) => {
 };
 const getTrangThai = (trangthai: number) => {
     switch (trangthai) {
+        case 1: return 'Chờ thanh toán';
         case 2: return 'Thành công';
-        case 1: return 'Chờ thanh toán OK';
-
         case 3: return 'Thất bại';
         default: return 'Không xác định';
     }

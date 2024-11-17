@@ -7,7 +7,7 @@
             <div v-if="thayDoiLichHenStore.lichHenDetails">
               <div class="card border-primary mb-3">
                 <div class="card-header bg-primary text-white">
-                  <i class="fas fa-calendar-check me-2"></i>Chi tiết lịch hẹn {{ id }}
+                  <i class="fas fa-calendar-check me-2"></i>Chi tiết lịch hẹn
                    <div :class="getTrangThaiClass(thayDoiLichHenStore.lichHenDetails.trangthai)">
                     <span class="badge bg-success"> {{ getTrangThaiText(thayDoiLichHenStore.lichHenDetails.trangthai) }}</span>
                    </div>
@@ -79,7 +79,7 @@
           </div>
         </div>
       </div>
-      <div v-if="thayDoiLichHenStore.lichHenDetails && thayDoiLichHenStore.lichHenDetails.trangthai == 4" class="col-lg-6">
+      <div v-if="thayDoiLichHenStore.lichHenDetails && (thayDoiLichHenStore.lichHenDetails.trangthai == 4 || thayDoiLichHenStore.lichHenDetails.trangthai == 6)" class="col-lg-6">
         <div class="card-body">
           <Calendar :id="String(id)"/>
         </div>
