@@ -1,8 +1,10 @@
 import { defineStore } from 'pinia'
+import ThuCungKhachHang from "~/models/ThuCungKhachHang";
 
 interface UserInfo {
   name: string
   roles: string[]
+  listThuCung : ThuCungKhachHang[]
 }
 
 export const useUserStore = defineStore('user', {

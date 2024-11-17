@@ -551,7 +551,8 @@ export default {
         const roles = userInfoData.roles || [];
         userStore.setUserInfo({
           name: userInfoData.username || '',
-          role: roles || ''
+          role: roles || '',
+          listThuCung : userInfoData.listThuCung|| ''
         });
 
         if (userInfoData.username) {

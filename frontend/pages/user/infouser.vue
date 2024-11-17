@@ -49,6 +49,35 @@ if (userInfo.value === null) {
                      class="form-control" name="" id="name" aria-describedby="helpId" placeholder="" v-model="userInfo.name">
             </div>
           </div>
+          <div class="container p-4">
+            <div v-if="userInfo?.listThuCung==null">
+              Bạn chưa lưu thông tin thú cưng nào !
+            </div>
+            <div v-else>
+              <div v-for="thuCung in userInfo?.listThuCung" :key="userInfo?.listThuCung.id" class="card m-4">
+                <div class="card-body">
+                  <table class="table">
+                    <thead>
+                    <tr>
+                      <th>Tên</th>
+                      <th>Cân nặng</th>
+                      <th>Giống</th>
+                      <th>Tuổi</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    <tr>
+                      <td>{{thuCung.ten}}</td>
+                      <td>{{thuCung.cannang}}</td>
+                      <td>{{thuCung.giong}}</td>
+                      <td>{{thuCung.tuoi}}</td>
+                    </tr>
+                    </tbody>
+                  </table>
+                </div>
+              </div>
+            </div>
+          </div>
         </div>
       </div>
     </div>
