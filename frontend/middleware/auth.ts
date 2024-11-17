@@ -1,20 +1,23 @@
-import { useUserStore } from '~/stores/user';
+
 import { useToast } from 'vue-toastification';
+import {useUserStore} from '~/stores/user';
+import {computed} from "vue";
 
 export default defineNuxtRouteMiddleware(async (to) => {
     if (process.client) {
         const accessToken = localStorage .getItem('access_token');
         const viewRole = localStorage .getItem('viewRole');
-        const userStore = useUserStore();
-        const toast = useToast();
 
+        const toast = useToast();
+        const userStore = useUserStore();
+        const userInfo = computed(() => userStore.userInfo);
         if (!accessToken || !viewRole) {
             toast.error('Vui lòng đăng nhập để tiếp tục.');
             return navigateTo('/');
         }
 
-        if (to.path.includes('/admin') && viewRole !== '1') {
-            toast.error('Bạn không có quyền truy cập trang này!'+ viewRole);
+        if (to.path.includes('/admin') && !userStore.userInfo.role.includes('admin')) {
+            toast.error('Bạn không có quyền truy cập trang này! ');
             return navigateTo('/');
         }
         if (!userStore.userInfo) {

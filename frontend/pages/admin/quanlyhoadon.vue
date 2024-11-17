@@ -15,7 +15,7 @@
             </thead>
             <tbody>
                 <tr v-for="hoaDon in hoaDonList" :key="hoaDon.id">
-                    <td>{{ hoaDon.id }}</td>
+                    <td>{{ hoaDon.idlichhen.id }}</td>
                     <td>{{ formatDate(hoaDon.date) }}</td>
                     <td>{{ hoaDon.phuongthucthanhtoan }}</td>
                     <td>{{ hoaDon.sotien }} USD</td>
@@ -35,7 +35,9 @@ import { useQuanLyHoaDonStore } from '~/stores/QuanLyHoaDon';
 
 const store = useQuanLyHoaDonStore();
 const hoaDonList = ref([]);
-
+definePageMeta({
+  middleware: ['auth']
+})
 const fetchHoaDon = async () => {
     await store.fetchListHoaDon();
     hoaDonList.value = store.ListHoaDon;

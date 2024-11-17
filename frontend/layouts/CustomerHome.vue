@@ -33,9 +33,19 @@
               aria-labelledby="offcanvasWithBothOptionsLabel">
               <div class="offcanvas-header">
                 <h5 class="offcanvas-title" id="offcanvasWithBothOptionsLabel">
-                  Chào mừng {{
-                    Array.isArray(userInfo.role) && userInfo.role.includes('admin') ? 'Admin' : 'Khách hàng'
-                  }} {{ userInfo.name }}
+                  <div v-if="Array.isArray(userInfo.role) && userInfo.role.includes('admin') || userInfo.role.includes('manager')">
+                    <div class="p-4 text fs-4">
+                      <div v-if="userInfo.role.includes('admin')">
+                        Chào mừng Admin {{userInfo?.name}}
+                      </div>
+                      <div v-else-if="userInfo.role.includes('manager')">
+                        Chào mừng  nhân viên {{userInfo?.name}}
+                      </div>
+                      <div v-else>
+                        Chào mừng chủ nhân {{userInfo?.name}} !
+                      </div>
+                    </div>
+                  </div>
                 </h5>
                 <button type="button" class="btn-close" data-bs-dismiss="offcanvas" aria-label="Close"></button>
               </div>
@@ -44,7 +54,7 @@
 
                 <div class="row">
                   <div class="col-12">
-                    <div v-if="Array.isArray(userInfo.role) && userInfo.role.includes('admin')">
+                    <div v-if="Array.isArray(userInfo.role) && userInfo.role.includes('admin') || userInfo.role.includes('manager')">
                       <button type="button" class="custom-button" @click="changeRole">
                         Khách hàng/ Nhân Viên
                       </button>
@@ -93,7 +103,6 @@
               <span class="visually-hidden">unread messages</span>
             </button>
             <!-- Danh sách dropdown -->
-
             <ul class="dropdown-menu p-4 m-4">
               <li v-if="notifications.length == 0">
                 Không có thông báo nào !
@@ -107,7 +116,8 @@
                 <a>{{ notification.type }}</a>
                 <a class="dropdown-item" href="#">
                   {{ notification.message }}
-                  <button @click="handleRemoveNotification(notification.id - 1)" class="btn btn-link p-0 m-0 text-danger">
+                  <button @click="handleRemoveNotification(notification.id - 1)"
+                    class="btn btn-link p-0 m-0 text-danger">
                     X
                   </button>
                 </a>
@@ -162,27 +172,12 @@
               </button>
               <div class="collapse navbar-collapse" id="navbarNav">
                 <ul class="navbar-nav">
-                  <li class="nav-item">
-                    <div class="dropdown">
-                      <a class="nav-link" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
-                        Dịch vụ
-                      </a>
-
-                      <ul class="dropdown-menu">
-                        <li>
-                          <nuxt-link class="dropdown-item" :to="`/admin/service/servicelist`">Tổng quan dịch vụ
-                          </nuxt-link>
-                          <nuxt-link class="dropdown-item" :to="`/admin/service/bookingservice`">Quản lý đặt lịch
-                          </nuxt-link><nuxt-link class="dropdown-item" :to="`/admin/quanlydatlich/demo`">Quản lý đặt
-                            lịch 123
-                          </nuxt-link>
-                        </li>
-                      </ul>
-                    </div>
-                  </li>
-                  <li class="nav-item">
-                    <NuxtLink class="nav-link" :to="`/admin/quanlyhoadon`">Quản lý hóa đơn</NuxtLink>
-                  </li>
+                    <li class="nav-item" >
+                      <NuxtLink class="nav-link" :to="`/admin/quanlyhoadon`">Quản lý hóa đơn</NuxtLink>
+                    </li>
+                    <li class="nav-item">
+                      <NuxtLink class="nav-link" :to="`/admin/service/servicelist`">Tổng quan dịch vụ</NuxtLink>
+                    </li>
                 </ul>
               </div>
             </div>
@@ -190,11 +185,9 @@
         </div>
       </div>
 
-      <!--    Hiển thị thân trang web-->
       <div class="container h-100 w-100 m-4 p-1">
         <NuxtPage />
       </div>
-
 
       <footer>
         <div v-if="viewRole == 0">
@@ -244,8 +237,6 @@
                     </li>
                   </ul>
                 </div>
-
-
               </div>
               <div class="col">
                 <div class="col col-md-auto">
@@ -267,7 +258,7 @@
           </div>
         </div>
         <div v-else>
-          Đây là footer dành cho nhân viên và quản lý
+<!--          Đây là footer dành cho nhân viên và quản lý-->
         </div>
       </footer>
     </div>
@@ -356,7 +347,7 @@ export default {
 
 
     const viewRole = ref(0);
-
+    localStorage.setItem('viewRole', '0');
     if (process.client) {
       const storedViewRole = localStorage.getItem('viewRole');
       if (storedViewRole !== null) {

@@ -1,24 +1,44 @@
 <template>
     <div class="container">
-        <!-- <h1>Chi tiết hóa đơn #{{ hoaDon.id }}</h1> -->
+
         <div v-if="loading">Đang tải thông tin hóa đơn...</div>
-        <div v-else>
-            <h3>Thông tin khách hàng</h3>
-            <p><strong>Email:</strong> {{ hoaDon.idlichhen.emailNguoiDat }}</p>
-            <p><strong>Ngày đặt:</strong> {{ formatDate(hoaDon.date) }}</p>
-            <p><strong>Phương thức thanh toán:</strong> {{ hoaDon.phuongthucthanhtoan }}</p>
-            <p><strong>Số tiền:</strong> {{ hoaDon.sotien }} USD</p>
-            <p><strong>Trạng thái:</strong> {{ getTrangThai(hoaDon.trangthai) }}</p>
 
-            <h3>Thông tin thú cưng</h3>
-            <p><strong>Tên thú cưng:</strong> {{ hoaDon.idlichhen.thucung.ten }}</p>
-            <p><strong>Giống:</strong> {{ hoaDon.idlichhen.thucung.giong }}</p>
-            <p><strong>Cân nặng:</strong> {{ hoaDon.idlichhen.thucung.cannang }} kg</p>
-            <p><strong>Tuổi:</strong> {{ hoaDon.idlichhen.thucung.tuoi }} năm</p>
-
-            <h3>Thông tin dịch vụ</h3>
-            <p><strong>Tên dịch vụ:</strong> {{ hoaDon.idlichhen.dichvu.tendichvu }}</p>
-            <p><strong>Mô tả:</strong> {{ hoaDon.idlichhen.dichvu.mota }}</p>
+      <div v-else>
+        <h1>Chi tiết hóa đơn #{{ hoaDon.idlichhen.id }}</h1>
+        <div class="row">
+            <div class="col">
+              <div class="card p-4">
+                <h3>Thông tin khách hàng</h3>
+                <div class="card-body">
+                  <p><strong>Email:</strong> {{ hoaDon.idlichhen.emailNguoiDat }}</p>
+                  <p><strong>Ngày đặt:</strong> {{ formatDate(hoaDon.date) }}</p>
+                  <p><strong>Phương thức thanh toán:</strong> {{ hoaDon.phuongthucthanhtoan }}</p>
+                  <p><strong>Số tiền:</strong> {{ hoaDon.sotien }} USD</p>
+                  <p><strong>Trạng thái:</strong> {{ getTrangThai(hoaDon.trangthai) }}</p>
+                </div>
+              </div>
+            </div>
+            <div class="col">
+              <div class="card p-4">
+                <h3>Thông tin thú cưng</h3>
+                <div class="card-body">
+                  <p><strong>Tên thú cưng:</strong> {{ hoaDon.idlichhen.thucung.ten }}</p>
+                  <p><strong>Giống:</strong> {{ hoaDon.idlichhen.thucung.giong }}</p>
+                  <p><strong>Cân nặng:</strong> {{ hoaDon.idlichhen.thucung.cannang }} kg</p>
+                  <p><strong>Tuổi:</strong> {{ hoaDon.idlichhen.thucung.tuoi }} năm</p>
+                </div>
+              </div>
+            </div>
+            <div class="col">
+              <div class="card p-4">
+                <h3>Thông tin dịch vụ</h3>
+                <div class="card-body">
+                  <p><strong>Tên dịch vụ:</strong> {{ hoaDon.idlichhen.dichvu.tendichvu }}</p>
+                  <p><strong>Mô tả:</strong> {{ hoaDon.idlichhen.dichvu.mota }}</p>
+                </div>
+              </div>
+            </div>
+          </div>
         </div>
         <button @click="goBack" class="btn btn-secondary mt-3">Quay lại</button>
     </div>

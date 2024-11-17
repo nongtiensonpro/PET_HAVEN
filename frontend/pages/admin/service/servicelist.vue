@@ -176,13 +176,12 @@ const updateTTService = async (serviceId: String) => {
 <template>
   <div class="container p-4">
     <div class="container">
-      <div class="row">
+      <div class="row p-4">
         <div class="col-10">
           <div class="form-group">
             <div class="row">
               <div class="col-8">
-                <label for="">Tìm kiếm</label>
-                <input type="text" class="form-control" name="" id="" aria-describedby="helpId" placeholder=""
+                <input type="text" class="form-control" name="" id="" style="min-height: 100%" aria-describedby="helpId" placeholder="Tìm kiếm ?"
                        v-model="name">
               </div>
               <div class="col-2">
@@ -293,21 +292,21 @@ const updateTTService = async (serviceId: String) => {
     <table class="table">
       <thead>
       <tr>
-        <th scope="col">STT</th>
-        <th scope="col">Tên dịch vụ</th>
-        <th scope="col">Giá tiền</th>
-        <th scope="col">Trạng thái</th>
-        <th>Hành động</th>
+        <th class="text-center" scope="col">STT</th>
+        <th class="text-center" scope="col">Tên dịch vụ</th>
+        <th class="text-center" scope="col">Giá tiền</th>
+        <th class="text-center" scope="col">Trạng thái</th>
+        <th class="text-center">Hành động</th>
       </tr>
       </thead>
       <tbody>
       <tr v-for="(service, index) in serviceStore.services" :key="service.id">
-        <th scope="row">{{ index + 1 }}</th>
-        <td>{{ service.tendichvu }}</td>
-        <td>{{ service.giatien.toLocaleString() }} VND</td>
-        <td>{{ service.trangthai == true ? 'Hoạt động' : 'Không hoạt động' }}</td>
+        <th class="text-center" scope="row">{{ index + 1 }}</th>
+        <td class="text-center">{{ service.tendichvu }}</td>
+        <td class="text-center">{{ service.giatien.toLocaleString() }} VND</td>
+        <td class="text-center">{{ service.trangthai == true ? 'Hoạt động' : 'Không hoạt động' }}</td>
         <td>
-          <div class="row">
+          <div  class="row">
             <div class="col">
               <button type="button" class="nav-link" @click="deleteService(service.id)" data-bs-dismiss="modal">Xóa
               </button>

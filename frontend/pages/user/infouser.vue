@@ -31,13 +31,22 @@ if (userInfo.value === null) {
               <img class="card-img-top" src="../../assets/image/cat3.jpg" alt="">
             </div>
             <div class="col-8">
+              <div v-if="Array.isArray(userInfo.role) && userInfo.role.includes('admin') || userInfo.role.includes('manager')">
+                <div class="p-4 text fs-4">
+                  <div v-if="userInfo.role.includes('admin')">
+                    Bạn đang đăng nhập với tài khoản có quyền Admin
+                  </div>
+                  <div v-else-if="userInfo.role.includes('manager')">
+                    Bạn đang đăng nhập với tài khoản có quyền nhân viên
+                  </div>
+                  <div v-else>
+                    Chào mừng khách hàng cảm ơn bạn đã sử dụng dịch vụ !
+                  </div>
+                </div>
+              </div>
               <label for="">Tên người dùng</label>
               <input type="text"
                      class="form-control" name="" id="name" aria-describedby="helpId" placeholder="" v-model="userInfo.name">
-              <div v-if="Array.isArray(userInfo.role) && userInfo.role.includes('admin')">
-                <label for="">Roles :</label>
-               Quản trị viên
-              </div>
             </div>
           </div>
         </div>
