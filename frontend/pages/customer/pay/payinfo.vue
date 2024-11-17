@@ -66,7 +66,7 @@ function thanhToanOnline() {
       <div class="col-12">
             <div class="text text-center">
               <div>Chúc mừng bạn đã đặt lịch hẹn thành công </div><p>Một email đã gửi về hộp thư của bạn</p>
-              <p>Bạn có 24 giờ để thay đổi và hủy lịch hẹn</p>
+              <p>Bạn có 20 phút để thay đổi và hủy lịch hẹn</p>
             </div>
       </div>
       <div class="card-body">

@@ -1,6 +1,9 @@
 package com.yellowcat.backend.service;
 
+import com.itextpdf.io.font.PdfEncodings;
 import com.itextpdf.kernel.colors.ColorConstants;
+import com.itextpdf.kernel.font.PdfFont;
+import com.itextpdf.kernel.font.PdfFontFactory;
 import com.itextpdf.kernel.pdf.PdfWriter;
 import com.itextpdf.kernel.pdf.canvas.draw.SolidLine;
 import com.itextpdf.layout.Document;
@@ -18,13 +21,19 @@ import java.io.ByteArrayOutputStream;
 public class PdfExportService {
 
 
-    public byte[] generateInvoice(String NgayThanhToan, String MaHoaDon, String PhuongThucThanhToan, String DichVu, double SoTien) {        try (ByteArrayOutputStream outputStream = new ByteArrayOutputStream()) {
+    public byte[] generateInvoice(String NgayThanhToan, String MaHoaDon, String PhuongThucThanhToan, String DichVu, double SoTien, String ThoiGian) {
+        try (ByteArrayOutputStream outputStream = new ByteArrayOutputStream()) {
             PdfWriter writer = new PdfWriter(outputStream);
             com.itextpdf.kernel.pdf.PdfDocument pdfDoc = new com.itextpdf.kernel.pdf.PdfDocument(writer);
             Document document = new Document(pdfDoc);
 
+            // Load font hỗ trợ tiếng Việt
+            String fontPath = "fonts/arial.ttf";
+            PdfFont vietnameseFont = PdfFontFactory.createFont(fontPath, PdfEncodings.IDENTITY_H);
+
             // Tiêu đề hóa đơn
             document.add(new Paragraph("HÓA ĐƠN THANH TOÁN")
+                    .setFont(vietnameseFont) // Cài đặt font tiếng Việt
                     .setBold()
                     .setFontSize(18)
                     .setMarginBottom(20));
@@ -36,11 +45,12 @@ public class PdfExportService {
                     .setMarginBottom(10);
 
             // Thêm các hàng thông tin
-            addTableRowWithBorder(table, "Ngày thanh toán", NgayThanhToan);
-            addTableRowWithBorder(table, "Số đơn đặt hàng", MaHoaDon);
-            addTableRowWithBorder(table, "Phương thức thanh toán", PhuongThucThanhToan);
-            addTableRowWithBorder(table, "Dịch vụ", DichVu);
-            addTableRowWithBorder(table, "Số tiền", String.valueOf(SoTien));
+            addTableRowWithBorder(table, "Ngày thanh toán", NgayThanhToan, vietnameseFont);
+            addTableRowWithBorder(table, "Số đơn đặt hàng", MaHoaDon, vietnameseFont);
+            addTableRowWithBorder(table, "Phương thức thanh toán", PhuongThucThanhToan, vietnameseFont);
+            addTableRowWithBorder(table, "Dịch vụ", DichVu, vietnameseFont);
+            addTableRowWithBorder(table, "Số tiền", String.valueOf(SoTien), vietnameseFont);
+            addTableRowWithBorder(table, "Thời gian", ThoiGian, vietnameseFont);
 
             // Thêm bảng vào document
             document.add(table);
@@ -53,19 +63,10 @@ public class PdfExportService {
         }
     }
 
-    /**
-     * Hàm tiện ích để thêm một hàng vào bảng với viền mỏng
-     */
-    private void addTableRowWithBorder(Table table, String label, String value) {
-        // Cell bên trái (nhãn)
-        table.addCell(new Cell()
-                .add(new Paragraph(label).setBold())
-                .setBorderBottom(new SolidBorder(ColorConstants.BLACK, 0.5f))); // Viền mỏng
-
-        // Cell bên phải (giá trị)
-        table.addCell(new Cell()
-                .add(new Paragraph(value))
-                .setBorderBottom(new SolidBorder(ColorConstants.BLACK, 0.5f))); // Viền mỏng
+    // Hàm hỗ trợ thêm hàng vào bảng
+    private void addTableRowWithBorder(Table table, String column1, String column2, PdfFont font) {
+        table.addCell(new Cell().add(new Paragraph(column1).setFont(font))); // Cột 1
+        table.addCell(new Cell().add(new Paragraph(column2).setFont(font))); // Cột 2
     }
 }
 

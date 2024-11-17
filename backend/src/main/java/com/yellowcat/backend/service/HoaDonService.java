@@ -2,8 +2,13 @@ package com.yellowcat.backend.service;
 
 import com.yellowcat.backend.model.Giamgia;
 import com.yellowcat.backend.model.Hoadon;
+import com.yellowcat.backend.model.Lichhen;
 import com.yellowcat.backend.repository.HoadonRepository;
+import jakarta.mail.internet.MimeMessage;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.core.io.ByteArrayResource;
+import org.springframework.mail.javamail.MimeMessageHelper;
+import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 
 import java.security.SecureRandom;
@@ -22,6 +27,9 @@ public class HoaDonService {
 
     @Autowired
     GiamGiaService giamGiaService;
+
+    @Autowired
+    EmailService emailService;
 
     private static final String CHARACTERS = "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
     private static final int LENGTH = 17;
@@ -74,5 +82,26 @@ public class HoaDonService {
     }
     public void deleteHoadonById(Integer id){
         hoadonRepository.deleteById(id);
+    }
+
+    @Async
+    public void sendHoaDonSauThanhToan(Lichhen lichhen, byte[] pdfBytes) {
+        try {
+            // Nội dung email
+            String subject = "Hóa đơn thanh toán";
+            String body = "Cảm ơn bạn đã đặt lịch của chúng tôi. Vui lòng xem hóa đơn đính kèm.";
+
+            emailService.sendEmailWithHoaDon(
+                    lichhen.getEmailNguoiDat(),  // Địa chỉ email người nhận
+                    subject,                     // Tiêu đề email
+                    body,                        // Nội dung email
+                    pdfBytes,                    // File PDF dưới dạng byte[]
+                    "invoice.pdf"                // Tên file đính kèm
+            );
+
+            System.out.println("Email hóa đơn đã được gửi thành công.");
+        } catch (Exception e) {
+            System.err.println("Gửi email hóa đơn thất bại: " + e.getMessage());
+        }
     }
 }
