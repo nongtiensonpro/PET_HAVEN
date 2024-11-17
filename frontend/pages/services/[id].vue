@@ -9,12 +9,11 @@
           <div class="row">
             <div class="col">
               <div v-if="service.anh===null">
-                <img src="~/assets/image/cat1.jpg" class="card-img-top p-1" alt="...">
+                <img src="~/assets/image/cat1.jpg" class="card-img-top" alt="...">
               </div>
               <div v-else>
-                <img :src="service.anh" class="card-img-top p-1" alt="...">
+                <img :src="service.anh" class="card-img-top" alt="...">
               </div>
-
             </div>
             <div class="col">
               <h3 class="card-text">Mô tả: </h3>
@@ -23,8 +22,6 @@
               <nuxt-link class="nav-link" :to="'/'">Quay về</nuxt-link>
             </div>
           </div>
-
-
         </div>
       </div>
       <div v-else class="text-danger p-4">{{ errorMessage }}</div>
@@ -57,12 +54,6 @@ onMounted(async () => {
 
 <style scoped>
 .text-danger {
-  color: red;
-}
-.card {
-  border: 0.6px solid #400D01;
-  border-radius: 0.25rem;
-  background: #F2F0D8 !important;
-  color: #400D01 !important;
-}
+   color: red;
+ }
 </style>
