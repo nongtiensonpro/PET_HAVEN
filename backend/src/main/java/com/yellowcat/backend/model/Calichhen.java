@@ -1,10 +1,8 @@
 package com.yellowcat.backend.model;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonProperty;
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
-import jakarta.persistence.Id;
-import jakarta.persistence.Table;
+import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
 import org.hibernate.annotations.ColumnDefault;
@@ -13,11 +11,15 @@ import java.time.LocalTime;
 
 
 @Entity
-@Table(name = "calichhen")
+@Table(name = "calichhen", indexes = {
+        @Index(name = "idx_calichhen_thoigianca", columnList = "thoigian")
+})
 public class Calichhen {
     @Id
+    @JsonProperty
     @ColumnDefault("nextval('calichhen_id_seq'::regclass)")
     @Column(name = "id", nullable = false)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
 
     @JsonProperty
@@ -27,6 +29,7 @@ public class Calichhen {
     private String tenca;
 
     @JsonProperty
+    @JsonFormat(pattern = "H:mm")
     @NotNull
     @Column(name = "thoigianca", nullable = false)
     private LocalTime thoigianca;

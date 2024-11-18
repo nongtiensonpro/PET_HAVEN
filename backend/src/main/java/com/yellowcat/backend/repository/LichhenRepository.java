@@ -26,4 +26,6 @@ public interface LichhenRepository extends JpaRepository<Lichhen, Integer> {
 
     List<Lichhen> findByDate(LocalDate date);
 
+    List<Lichhen> findByIdcalichhen_IdAndDateAfter(int idcalichhen_Id, LocalDate date);
+
 }
