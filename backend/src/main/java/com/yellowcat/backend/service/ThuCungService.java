@@ -3,9 +3,13 @@ package com.yellowcat.backend.service;
 import com.yellowcat.backend.model.Thucung;
 import com.yellowcat.backend.repository.ThucungRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Optional;
 
 @Service
 public class ThuCungService {
@@ -33,4 +37,12 @@ public class ThuCungService {
     }
 
     public List<Thucung> findListThuCungByidChu(String idTK) {return thucungRepository.findByIdtaikhoan(idTK);}
+
+    public Page<Thucung> pageThuCung(Pageable pageable){
+        return thucungRepository.findAll(pageable);
+    }
+
+    public Optional<Thucung> findThuCungById(int id) {
+        return thucungRepository.findById(id);
+    }
 }
