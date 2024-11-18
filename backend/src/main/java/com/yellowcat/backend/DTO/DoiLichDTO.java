@@ -6,7 +6,7 @@ import org.springframework.format.annotation.DateTimeFormat;
 import java.time.LocalDate;
 
 public class DoiLichDTO {
-    @DateTimeFormat(pattern = "yyyy-MM-dd")  // Thêm annotation này để xử lý định dạng ngày tháng
+    @DateTimeFormat(pattern = "yyyy-MM-dd")
     private LocalDate date;
     @NotNull
     private String idcalichhen;

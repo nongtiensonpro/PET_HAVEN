@@ -1,12 +1,16 @@
 package com.yellowcat.backend.service;
 
 import com.yellowcat.backend.model.Calichhen;
+import com.yellowcat.backend.model.Lichhen;
 import com.yellowcat.backend.repository.CalichhenRepository;
 import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Lazy;
 import org.springframework.stereotype.Service;
 
+import java.time.Duration;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.util.List;
 import java.util.Optional;
@@ -17,21 +21,30 @@ public class CaLichHenService {
     @Autowired
     private CalichhenRepository caLichHenRepository;
 
+    @Lazy
+    @Autowired
+    private LichHenService lichHenService;
+
     public void UpdateNgayNghi(LocalDate ngay){
         caLichHenRepository.updateNgayNghi(ngay);
     }
 
     public void addOrUpdate(Calichhen calichhen){
+        boolean exists = caLichHenRepository.existsByThoigiancaAndIdNot(calichhen.getThoigianca(), calichhen.getId() == null ? -1 : calichhen.getId());
+
+        if (calichhen.getId() == null) {
+            lichHenService.taoLichHenRongKhiThemMoiCa();
+        }
+
+        if (exists){
+            throw new IllegalArgumentException("Thời gian ca này đã tồn tại.");
+        }
         caLichHenRepository.save(calichhen);
     }
 
     public Optional<Calichhen> findById (Integer id){
         return caLichHenRepository.findById(id)
     ;}
-
-    public void DoiTrangthaiCaTrongNgay(int idCaLichHen, LocalDate ngay, boolean trangThai){
-        caLichHenRepository.updateTrangThaiCaTrongNgay(idCaLichHen, ngay, trangThai);
-    }
 
     public List<Calichhen> getAllByDate(LocalDate date){
         return caLichHenRepository.findAllCaAndStatusByDateaAndTrangthaiFalse(date);

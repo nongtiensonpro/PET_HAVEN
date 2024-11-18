@@ -56,6 +56,10 @@ public class LichHenService {
         return lichhenRepository.findByDateAndIdcalichhen_IdAndTrangthai(date,idCa,5);
     }
 
+    public List<Lichhen> getLichhenByDateAndIdCa(Integer idCa){
+        return lichhenRepository.findByIdcalichhen_IdAndDateAfter(idCa,LocalDate.now());
+    }
+
     public List<Lichhen> listLichHomNay(){
         return lichhenRepository.findByDate(LocalDate.now());
     }
@@ -100,6 +104,11 @@ public class LichHenService {
         System.out.println("Đã tạo lịch hẹn rỗng mới cho 7 ngày tới khi khởi động.");
     }
 
+    @Transactional
+    public void taoLichHenRongKhiThemMoiCa(){
+        taoLichHenRong();
+    }
+
     private void taoLichHenRong() {
         // Lấy tất cả các ca từ bảng calichhen
         List<Calichhen> danhSachCa = caLichHenService.findAll();
@@ -109,19 +118,21 @@ public class LichHenService {
 
         while (!startDate.isAfter(endDate)) {
             for (Calichhen ca : danhSachCa) {
-                // Kiểm tra xem lịch hẹn rỗng đã tồn tại chưa, tránh thêm trùng
-                if (!lichhenRepository.existsByDateAndIdcalichhen_Id(startDate, ca.getId())) {
-                    Lichhen lichHenRong = new Lichhen();
-                    lichHenRong.setDate(startDate); // Chỉ thiết lập ngày
-                    lichHenRong.setTrangthai(5); // Gán trạng thái là "Rỗng"
-                    lichHenRong.setIdcalichhen(ca); // Gắn ID ca lịch hẹn để liên kết
-                    lichHenRong.setEmailNguoiDat("default-email@example.com"); // Giá trị mặc định
-                    lichHenRong.setIdkhachhang("demo");
-                    lichHenRong.setTrangthaica(false);
-                    lichHenRong.setSolanthaydoi(0);
-                    lichHenRong.setSolannhacnho(0);
-                    // Lưu vào bảng lichhen
-                    lichhenRepository.save(lichHenRong);
+                if (ca.getTrangthai()){
+                    // Kiểm tra xem lịch hẹn rỗng đã tồn tại chưa, tránh thêm trùng
+                    if (!lichhenRepository.existsByDateAndIdcalichhen_Id(startDate, ca.getId())) {
+                        Lichhen lichHenRong = new Lichhen();
+                        lichHenRong.setDate(startDate); // Chỉ thiết lập ngày
+                        lichHenRong.setTrangthai(5); // Gán trạng thái là "Rỗng"
+                        lichHenRong.setIdcalichhen(ca); // Gắn ID ca lịch hẹn để liên kết
+                        lichHenRong.setEmailNguoiDat("default-email@example.com"); // Giá trị mặc định
+                        lichHenRong.setIdkhachhang("demo");
+                        lichHenRong.setTrangthaica(false);
+                        lichHenRong.setSolanthaydoi(0);
+                        lichHenRong.setSolannhacnho(0);
+                        // Lưu vào bảng lichhen
+                        lichhenRepository.save(lichHenRong);
+                    }
                 }
             }
             startDate = startDate.plusDays(1); // Chuyển sang ngày tiếp theo
