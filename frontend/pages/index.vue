@@ -15,8 +15,7 @@
                    <img :src="service.anh" class="card-img-top" alt="...">
                  </div>
              <div class="card-header">
-               <h2 class="mb-0 fs-4">{{ service.tendichvu }}</h2>
-               <div>{{ service.giatien.toLocaleString() }} USD - Xem thêm</div>
+               <h2 class="mb-0 fs-4">{{ service.tendichvu }} - {{ service.giatien.toLocaleString() }} USD</h2>
              </div>
            </div>
            </nuxt-link>

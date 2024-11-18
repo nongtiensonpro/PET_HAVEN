@@ -192,6 +192,9 @@
                     <li class="nav-item">
                       <NuxtLink class="nav-link" :to="`/admin/service/servicelist`">Tổng quan dịch vụ</NuxtLink>
                     </li>
+                  <li class="nav-item">
+                      <NuxtLink class="nav-link" :to="`/nhanvien/checkin`">Thanh toán tại quầy</NuxtLink>
+                    </li>
                 </ul>
               </div>
             </div>
@@ -238,7 +241,6 @@
               </div>
               <div class="col">
                 <h3>{{ servicesTitle }}</h3>
-
                 <div v-if="services.length == 0">
                   {{ serviceNotAvailable }}
                 </div>

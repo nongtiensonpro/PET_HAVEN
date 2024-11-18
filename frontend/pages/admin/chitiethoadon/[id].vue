@@ -11,16 +11,8 @@
                 <h3>Thông tin khách hàng</h3>
                 <div class="card-body">
                   <p><strong>Email:</strong> {{ hoaDon.idlichhen.emailNguoiDat }}</p>
-                  <p><strong>Ngày đặt:</strong> {{ formatDate(hoaDon.date) }}</p>
-                  <p><strong>Phương thức thanh toán:</strong> {{ hoaDon.phuongthucthanhtoan }}</p>
-                  <p><strong>Số tiền:</strong> {{ hoaDon.sotien }} USD</p>
-                  <p><strong>Trạng thái:</strong> {{ getTrangThai(hoaDon.trangthai) }}</p>
                 </div>
-              </div>
-            </div>
-            <div class="col">
-              <div class="card p-4">
-                <h3>Thông tin thú cưng</h3>
+                <h3>Thông thú cưng</h3>
                 <div class="card-body">
                   <p><strong>Tên thú cưng:</strong> {{ hoaDon.idlichhen.thucung.ten }}</p>
                   <p><strong>Giống:</strong> {{ hoaDon.idlichhen.thucung.giong }}</p>
@@ -29,12 +21,22 @@
                 </div>
               </div>
             </div>
+
             <div class="col">
               <div class="card p-4">
+                <h3>Thông tin hóa đơn</h3>
+                <div class="card-body">
+                  <p><strong>Ngày đặt:</strong> {{ formatDate(hoaDon.date) }}</p>
+                  <p><strong>Phương thức thanh toán:</strong> {{ hoaDon.phuongthucthanhtoan }}</p>
+                  <p><strong>Số tiền:</strong> {{ hoaDon.sotien }} USD</p>
+                  <p><strong>Trạng thái:</strong> {{ getTrangThai(hoaDon.trangthai) }}</p>
+                  <p><strong>Người thanh toán:</strong>
+                    {{hoaDon.nguoithanhtoan}}
+                  </p>
+                </div>
                 <h3>Thông tin dịch vụ</h3>
                 <div class="card-body">
                   <p><strong>Tên dịch vụ:</strong> {{ hoaDon.idlichhen.dichvu.tendichvu }}</p>
-                  <p><strong>Mô tả:</strong> {{ hoaDon.idlichhen.dichvu.mota }}</p>
                 </div>
               </div>
             </div>
