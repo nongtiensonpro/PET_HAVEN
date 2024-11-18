@@ -165,31 +165,22 @@
         <div v-else>
           <nav class="navbar navbar-expand-lg bg-body-tertiary">
             <div class="container-fluid">
-              <nuxt-link class="nav-link" :to="`/admin/adminhome`">
-                <div v-if="Array.isArray(userInfo.role) && userInfo.role.includes('admin') || userInfo.role.includes('manager')">
-                  <div>
-                    <div v-if="userInfo.role.includes('admin')">
-                      Admin
-                    </div>
-                    <div v-else-if="userInfo.role.includes('manager')">
-                      Nhân viên
-                    </div>
-                    <div v-else>
-                      Chào mừng chủ nhân !
-                    </div>
-                  </div>
-                </div>
+              <nuxt-link v-if="userInfo?.roles && userInfo.roles.includes('admin')" class="nav-link" :to="`/admin/adminhome`">
+                Trang chủ
               </nuxt-link>
+              <div v-else>
+                Nhân viên
+              </div>
               <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav"
                 aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
                 <span class="navbar-toggler-icon"></span>
               </button>
               <div class="collapse navbar-collapse" id="navbarNav">
                 <ul class="navbar-nav">
-                    <li class="nav-item" >
-                      <NuxtLink class="nav-link" :to="`/admin/quanlyhoadon`">Quản lý hóa đơn</NuxtLink>
+                    <li class="nav-item" v-if="userInfo?.roles && userInfo.roles.includes('admin')">
+                        <NuxtLink class="nav-link" :to="`/admin/quanlyhoadon`">Quản lý hóa đơn</NuxtLink>
                     </li>
-                    <li class="nav-item">
+                    <li class="nav-item" v-if="userInfo?.roles && userInfo.roles.includes('admin')">
                       <NuxtLink class="nav-link" :to="`/admin/service/servicelist`">Tổng quan dịch vụ</NuxtLink>
                     </li>
                   <li class="nav-item">
