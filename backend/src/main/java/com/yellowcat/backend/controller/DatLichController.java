@@ -147,7 +147,7 @@ public class DatLichController {
             return ResponseEntity.status(HttpStatus.FORBIDDEN).body("Bạn không phải là chủ lịch hẹn này.");
         }
 
-        if (lichhen.getTrangthai() == 4 || lichhen.getTrangthai() == 6 ) {
+        if (lichhen.getTrangthai() == 4) {
             // Tạo bản ghi lưu lại lịch sử đặt với trạng thái hủy
             lichhen.setSolanthaydoi(lichhen.getSolanthaydoi()+1);
 
@@ -217,7 +217,11 @@ public class DatLichController {
             Lichhen lichDoi = lichhenDoiOptional.get();
             lichDoi.setEmailNguoiDat(lichhen.getEmailNguoiDat());
             lichDoi.setIdkhachhang(lichhen.getIdkhachhang());
-            lichDoi.setTrangthai(3); // Đặt trạng thái là "Chờ thanh toán"
+            if (lichhen.getTrangthai() == 4) {
+                lichDoi.setTrangthai(3); // Đặt trạng thái là "Chờ thanh toán"
+            }else {
+                lichDoi.setTrangthai(lichhen.getTrangthai());
+            }
             lichDoi.setThoigianthaydoi(LocalDateTime.now());
             lichDoi.setThucung(lichhen.getThucung());
             lichDoi.setDichvu(lichhen.getDichvu());
