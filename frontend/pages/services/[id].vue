@@ -3,7 +3,12 @@
     <div class="card">
       <div v-if="service">
         <div class="card-header">
-          <h2 class="mb-0">Chi tiết dịch vụ : {{ service.tendichvu }}</h2>
+          <div class="row">
+            <div class="col">
+              <h2 class="mb-0">{{ service.tendichvu }} - {{ service.giatien.toLocaleString() }} USD</h2>
+            </div>
+
+          </div>
         </div>
         <div class="card-body">
           <div class="row">
@@ -16,16 +21,21 @@
               </div>
             </div>
             <div class="col">
-              <h3 class="card-text">Mô tả: </h3>
-              <p>{{ service.mota }}</p>
-              <p class="text-center">Giá tiền: <strong>{{ service.giatien.toLocaleString() }} USD</strong></p>
-              <nuxt-link class="nav-link" :to="'/'">Quay về</nuxt-link>
+              <div class="">
+                <div class="card-header">
+                 Mô tả:
+                </div>
+                <div class="card-body">
+                  <p>{{ service.mota }}</p>
+                </div>
+              </div>
             </div>
           </div>
         </div>
       </div>
       <div v-else class="text-danger p-4">{{ errorMessage }}</div>
     </div>
+    <a  id="" class="custom-button p-4" href="/" role="button">Trở về trang chủ</a>
   </div>
 </template>
 
