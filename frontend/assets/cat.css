@@ -122,3 +122,20 @@ html, body{
     color: #400D01 !important;
     font-family: 'Baloo 2', sans-serif !important;
 }
+
+.card {
+    border: 0.6px solid #400D01;
+    border-radius: 0.25rem;
+    background: #F2F0D8 !important;
+    color: #400D01 !important;
+}
+
+.pagination {
+    display: flex;
+    justify-content: center;
+    margin-top: 20px;
+}
+
+.pagination button {
+    margin: 0 10px;
+}
