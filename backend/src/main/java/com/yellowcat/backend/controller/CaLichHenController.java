@@ -1,6 +1,6 @@
 package com.yellowcat.backend.controller;
 
-import com.yellowcat.backend.DTO.UpdateCaLichHenDTO;
+import com.yellowcat.backend.DTO.updateCaDTO;
 import com.yellowcat.backend.model.Calichhen;
 import com.yellowcat.backend.model.Lichhen;
 import com.yellowcat.backend.service.CaLichHenService;
@@ -16,13 +16,14 @@ import org.springframework.web.bind.annotation.*;
 import java.time.LocalDate;
 import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
+import java.time.format.DateTimeParseException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 
 @RestController
-@PreAuthorize("hasAnyRole('admin', 'manager')")
+@PreAuthorize("hasAnyRole('admin')")
 @RequestMapping(("/api/ca-lich-hen"))
 public class CaLichHenController {
 
@@ -33,22 +34,26 @@ public class CaLichHenController {
 
 //-----------------------------------------------------------
     @PostMapping("/add")
-    public ResponseEntity<?> addOne(@RequestBody @Valid Calichhen calichhen){
+    public ResponseEntity<?> addOne(@Valid @RequestBody updateCaDTO dto){
+        Calichhen calichhen = new Calichhen();
+        calichhen.setTenca(dto.getName());
+        LocalTime time = LocalTime.parse(dto.getTime(), DateTimeFormatter.ofPattern("HH:mm"));
+        calichhen.setThoigianca(time);
         calichhen.setTrangthai(true);
         caLichHenService.addOrUpdate(calichhen);
         return ResponseEntity.ok().build();
     }
 
     @PutMapping("/update")
-    public ResponseEntity<?> updateOne(@RequestBody @Valid UpdateCaLichHenDTO updateCaLichHenDTO){
-        Optional<Calichhen> calichhenOptional = caLichHenService.findById(updateCaLichHenDTO.getId());
+    public ResponseEntity<?> updateOne(@Valid @RequestBody updateCaDTO dto){
+        Optional<Calichhen> calichhenOptional = caLichHenService.findById(dto.getId());
         if(!calichhenOptional.isPresent()){
             return ResponseEntity.notFound().build();
         }
         Calichhen calichhenUpdate = calichhenOptional.get();
-        calichhenUpdate.setTenca(updateCaLichHenDTO.getTenCa());
-        LocalTime thoiGian = LocalTime.parse(updateCaLichHenDTO.getThoiGian(), DateTimeFormatter.ofPattern("H:mm"));
-        calichhenUpdate.setThoigianca(thoiGian);
+        LocalTime time = LocalTime.parse(dto.getTime(), DateTimeFormatter.ofPattern("HH:mm"));
+        calichhenUpdate.setThoigianca(time);
+        calichhenUpdate.setTenca(dto.getName());
         caLichHenService.addOrUpdate(calichhenUpdate);
         return ResponseEntity.ok().build();
     }

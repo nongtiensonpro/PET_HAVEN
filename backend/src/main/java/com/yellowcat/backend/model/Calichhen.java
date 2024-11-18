@@ -29,7 +29,6 @@ public class Calichhen {
     private String tenca;
 
     @JsonProperty
-    @JsonFormat(pattern = "H:mm")
     @NotNull
     @Column(name = "thoigianca", nullable = false)
     private LocalTime thoigianca;
