@@ -10,4 +10,5 @@ import java.util.Optional;
 @Repository
 public interface ThucungRepository extends JpaRepository<Thucung, Integer> {
     List<Thucung> findByIdtaikhoan(String idtaikhoan);
+    Optional<Thucung> findById(int id);
 }
