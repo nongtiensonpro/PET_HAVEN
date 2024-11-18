@@ -5,15 +5,16 @@ import com.yellowcat.backend.service.ThuCungService;
 import org.keycloak.OAuth2Constants;
 import org.keycloak.admin.client.Keycloak;
 import org.keycloak.admin.client.KeycloakBuilder;
+import org.keycloak.admin.client.resource.UserResource;
+import org.keycloak.representations.idm.RoleRepresentation;
 import org.keycloak.representations.idm.UserRepresentation;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.oauth2.jwt.Jwt;
-import org.springframework.web.bind.annotation.CrossOrigin;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.time.Instant;
 import java.util.HashMap;
@@ -89,6 +90,7 @@ public class UserController {
                 .grantType(OAuth2Constants.PASSWORD)
                 .build();
     }
+
     @GetMapping("/api/all-users")
     public List<UserRepresentation> getAllUsers() {
         Keycloak keycloak = getKeycloakInstance();
@@ -102,4 +104,5 @@ public class UserController {
             keycloak.close();
         }
     }
+
 }
