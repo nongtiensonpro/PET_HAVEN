@@ -22,8 +22,10 @@ function capNhatTrangThai(ca: CaLichHen) {
 </script>
 
 <template>
-  <div class="container p-4">
-    <ThemCa />
+  <div class="row">
+    <div class="col-2">
+        <ThemCa />
+    </div>
   </div>
   <div class="container">
     <table class="table">

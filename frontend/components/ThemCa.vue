@@ -9,19 +9,27 @@ const thoigianca = ref("");
 const trangthai = ref(false);
 
 const themCaHen = async () => {
-    const newCaHen = new CaLichHen(0, tenca.value, new Date(thoigianca.value), trangthai.value);
-    await caLichHenStore.themCaLichHen(newCaHen);
-    // Reset form fields
-    tenca.value = "";
-    thoigianca.value = "";
-    trangthai.value = false;
+    
+    try {
+        const [hours, minutes] = thoigianca.value.split(':');
+        const date = new Date();
+        date.setHours(parseInt(hours), parseInt(minutes), 0, 0);
+
+        const newCaHen = new CaLichHen(0, tenca.value, date, trangthai.value);
+        await caLichHenStore.themCaLichHen(newCaHen);
+        tenca.value = "";
+        thoigianca.value = "";
+        trangthai.value = false;
+    } catch (e) {
+        
+    }
 }
 </script>
 
 <template>
     <div class="container">
         <!-- Button trigger modal -->
-        <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#exampleModal">
+        <button type="button" class="custom-button" data-bs-toggle="modal" data-bs-target="#exampleModal">
             Thêm Ca Hẹn
         </button>
 
@@ -41,8 +49,7 @@ const themCaHen = async () => {
                             </div>
                             <div class="form-group">
                                 <label for="thoigianca">Thời gian ca:</label>
-                                <input id="thoigianca" v-model="thoigianca" type="time" required
-                                    class="form-input" />
+                                <input id="thoigianca" v-model="thoigianca" type="time" required class="form-input" />
                             </div>
                             <div class="form-group">
                                 <label for="trangthai">Trạng thái:</label>

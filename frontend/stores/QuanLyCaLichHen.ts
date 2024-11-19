@@ -30,29 +30,41 @@ export const useCaLichHenStore = defineStore('useCalichhen', {
             }
         },
         async themCaLichHen(caHen: CaLichHen) {
-            console.log(caHen)
+            console.log(caHen);
+
+            // Hàm chuyển đổi định dạng thời gian sang HH:MM
+            const formatTimeToHHMM = (time: string): string => {
+                const date = new Date(time); // Chuyển chuỗi thời gian sang đối tượng Date
+                const hours = date.getHours().toString().padStart(2, '0'); // Lấy giờ, thêm số 0 nếu cần
+                const minutes = date.getMinutes().toString().padStart(2, '0'); // Lấy phút, thêm số 0 nếu cần
+                return `${hours}:${minutes}`;
+            };
+
+            // Đảm bảo thoigianca có định dạng đúng
+            const formattedTime = formatTimeToHHMM(caHen.thoigianca);
+            console.log(formattedTime+"MEO MEO MEO")
             const token = localStorage.getItem('access_token');
             try {
                 const response = await fetch("http://localhost:8080/api/ca-lich-hen/add", {
                     headers: {
-                        Authorization: `Bearer ${token}`,
+                        Authorization: `Bearer ${token}`, // Thêm dấu backtick để đúng cú pháp
                         'Content-Type': 'application/json', // Thêm header Content-Type
                     },
                     method: 'POST',
                     body: JSON.stringify({
-                        'time': caHen.thoigianca,
+                        'time': formattedTime, 
                         'name': caHen.tenca
                     })
                 });
+
                 if (!response.ok) {
                     throw new Error("Lỗi thêm ca lịch hẹn");
                 }
-                const data = await response.json();
-                console.log(data)
             } catch (e) {
-                throw new Error("Lỗi thêm ca lịch hẹn" + e);
+                throw new Error("Lỗi thêm ca lịch hẹn: " + e.message);
             }
-        },
+        }
+        ,
         async capNhatTrangThaiCa(caHen: CaLichHen) {
             const token = localStorage.getItem('access_token');
             try {
