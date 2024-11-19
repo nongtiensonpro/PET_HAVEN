@@ -18,6 +18,9 @@ onMounted(() => {
 function capNhatTrangThai(ca: CaLichHen) {
   caLichHenStore.capNhatTrangThaiCa(ca);
   fetchCaLichHens();
+  setTimeout(() => {
+    fetchCaLichHens();
+  }, 100);
 }
 
 function capNhat(ca: CaLichHen) {
