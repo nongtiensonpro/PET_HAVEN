@@ -10,7 +10,7 @@
         <th>Email</th>
         <th>Xác nhận Email</th>
         <th>Thời gian tạo</th>
-        <th>Trạng thái</th>
+        <th>Trạng thái truy cập</th>
         <th>Vai trò</th>
         <th>Thao tác</th>
       </tr>
@@ -24,11 +24,12 @@
         <td>{{ user.email }}</td>
         <td>{{  user.emailVerified==true?'Kích hoạt':'Chưa kích hoạt' }}</td>
         <td>{{ new Date(user.createdTimestamp).toLocaleString() }}</td>
-        <td>{{  user.enabled==true?'Hoạt động':'Không hoạt động' }}</td>
+        <td>{{  user.enabled==true?'Được phép':'Không được phép' }}</td>
         <td> ? </td>
         <td>
               <button class="btn btn-sm btn-outline-warning m-1" @click="editUser(user.id)">Edit</button>
-              <button class="btn btn-sm btn-outline-danger" @click="deleteUser(user.id)">Delete</button>
+              <button class="btn btn-sm btn-outline-danger m-1" @click="deleteUser(user.id)">Chặn</button>
+              <button class="btn btn-sm btn-outline-danger m-1">Chi tiết</button>
         </td>
       </tr>
       </tbody>
