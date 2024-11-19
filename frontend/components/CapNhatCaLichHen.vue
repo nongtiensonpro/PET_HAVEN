@@ -1,8 +1,8 @@
 <script setup lang="ts">
-import type CaLichHen from '~/models/CaHen'
+import type CaLichHens from '~/models/CaHen'
 
 const props = defineProps<{
-  ca: CaLichHen
+  ca: CaLichHens
 }>()
 
 const emit = defineEmits(['cap-nhat'])
@@ -11,11 +11,11 @@ const emit = defineEmits(['cap-nhat'])
 </script>
 
 <template>
-  <button type="button" class="btn btn-sm btn-outline-warning m-1" data-bs-toggle="modal" data-bs-target="#exampleModal">
+  <button type="button" class="btn btn-sm btn-outline-warning m-1" data-bs-toggle="modal" data-bs-target="#exampleModal123">
     Cập nhật Ne
   </button>
 
-  <div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+  <div class="modal fade" id="exampleModal123" tabindex="-1" aria-labelledby="exampleModal123" aria-hidden="true">
     <div class="modal-dialog">
       <div class="modal-content">
         <div class="modal-header">
