@@ -2,7 +2,7 @@
 import { onMounted, ref } from "vue";
 import {useCaLichHenStore} from "~/stores/QuanLyCaLichHen"
 import type CaLichHen from "~/models/CaHen";
-
+import ThemCa from '~/components/ThemCa.vue'
 const caLichHenStore = useCaLichHenStore();
 const caLichHens = ref<CaLichHen[]>([]);
 
@@ -22,32 +22,36 @@ function capNhatTrangThai(ca: CaLichHen) {
 </script>
 
 <template>
+  <div class="container p-4">
+    <ThemCa />
+  </div>
   <div class="container">
     <table class="table">
       <thead>
-      <tr>
-        <th>ID</th>
-        <th>Tên ca</th>
-        <th>Thời gian ca</th>
-        <th>Trạng thái</th>
-        <th>Thao tác</th>
-      </tr>
+        <tr>
+          <th>ID</th>
+          <th>Tên ca</th>
+          <th>Thời gian ca</th>
+          <th>Trạng thái</th>
+          <th>Thao tác</th>
+        </tr>
       </thead>
       <tbody>
 
-      <tr v-for="ca in caLichHens" :key="ca.id">
-        <td>{{ ca.id }}</td>
-        <td>{{ ca.tenca }}</td>
-        <td>{{ ca.thoigianca }}</td>
-        <td>
+        <tr v-for="ca in caLichHens" :key="ca.id">
+          <td>{{ ca.id }}</td>
+          <td>{{ ca.tenca }}</td>
+          <td>{{ ca.thoigianca }}</td>
+          <td>
             <span :class="ca.trangthai ? 'active' : 'inactive'">
               {{ ca.trangthai ? 'Hoạt động' : 'Không hoạt động' }}
             </span>
-        </td>
-        <td>
-              <button type="button" @click="capNhatTrangThai(ca)" class="btn btn-sm btn-outline-warning m-1">Cập nhật trạng thái</button>
-        </td>
-      </tr>
+          </td>
+          <td>
+            <button type="button" @click="capNhatTrangThai(ca)" class="btn btn-sm btn-outline-warning m-1">Cập nhật
+              trạng thái</button>
+          </td>
+        </tr>
       </tbody>
     </table>
   </div>

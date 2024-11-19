@@ -30,14 +30,19 @@ export const useCaLichHenStore = defineStore('useCalichhen', {
             }
         },
         async themCaLichHen(caHen: CaLichHen) {
+            console.log(caHen)
             const token = localStorage.getItem('access_token');
             try {
                 const response = await fetch("http://localhost:8080/api/ca-lich-hen/add", {
                     headers: {
                         Authorization: `Bearer ${token}`,
+                        'Content-Type': 'application/json', // Thêm header Content-Type
                     },
                     method: 'POST',
-                    body: JSON.stringify(caHen)
+                    body: JSON.stringify({
+                        'time': caHen.thoigianca,
+                        'name': caHen.tenca
+                    })
                 });
                 if (!response.ok) {
                     throw new Error("Lỗi thêm ca lịch hẹn");
