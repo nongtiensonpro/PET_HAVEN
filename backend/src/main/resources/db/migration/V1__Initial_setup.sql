@@ -118,7 +118,7 @@ CREATE TABLE DanhGia
 (
     ID         SERIAL PRIMARY KEY,
     idTaiKhoan VARCHAR(255) not null ,
-    SoSao      INT,
+    SoSao      VARCHAR(5) not null ,
     MoTa       TEXT,
     Date       TIMESTAMP,
     TrangThai  BOOLEAN,
@@ -188,6 +188,6 @@ VALUES (1, '2024-10-02 10:00:00', 90000, '2024-10-02 11:00:00', 'Offline', 1,'1'
 
 -- Thêm dữ liệu vào bảng DanhGia
 INSERT INTO DanhGia (idTaiKhoan, SoSao, MoTa, Date, TrangThai,idHoaDon)
-VALUES (1, 5, 'Rất tốt', '2024-10-01 12:00:00', TRUE,1),
-       (2, 4, 'Tốt', '2024-09-30 11:00:00', TRUE,1),
-       (3, 3, 'Bình thường', '2024-09-29 10:00:00', FALSE,1);
+VALUES (1, 5, 'Rất tốt', '2024-10-01 12:00:00', TRUE,'1'),
+       (2, 4, 'Tốt', '2024-09-30 11:00:00', TRUE,'1'),
+       (3, 3, 'Bình thường', '2024-09-29 10:00:00', FALSE,'1');

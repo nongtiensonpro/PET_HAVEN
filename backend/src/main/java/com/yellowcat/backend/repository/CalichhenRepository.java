@@ -25,6 +25,9 @@ public interface CalichhenRepository extends JpaRepository<Calichhen, Integer> {
             "ORDER BY c.thoigianca ASC")
     List<Calichhen> findAllCaAndStatusByDateaAndTrangthaiFalse(@Param("ngay") LocalDate ngay);
 
+    @Query("select c from  Calichhen c ORDER BY c.thoigianca")
+    List<Calichhen> findAll();
+
     @Query("SELECT COUNT(c) > 0 FROM Calichhen c WHERE c.thoigianca = :thoigianca AND c.id <> :id")
     boolean existsByThoigiancaAndIdNot(@Param("thoigianca") LocalTime thoigianca, @Param("id") Integer id);
 

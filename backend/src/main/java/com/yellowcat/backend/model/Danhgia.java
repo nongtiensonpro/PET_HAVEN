@@ -6,6 +6,8 @@ import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
 
 import java.time.Instant;
+import java.time.LocalDateTime;
+import java.time.LocalTime;
 
 @Entity
 @Table(name = "danhgia")
@@ -24,15 +26,19 @@ public class Danhgia {
 
     @JsonProperty
     @Column(name = "sosao")
-    private Integer sosao;
+    private String sosao;
 
     @JsonProperty
     @Column(name = "mota", length = Integer.MAX_VALUE)
     private String mota;
 
+    public void setSosao(String sosao) {
+        this.sosao = sosao;
+    }
+
     @JsonProperty
     @Column(name = "date")
-    private Instant date;
+    private LocalDateTime date;
 
     @JsonProperty
     @Column(name = "trangthai")
@@ -58,14 +64,6 @@ public class Danhgia {
         this.idtaikhoan = idtaikhoan;
     }
 
-    public Integer getSosao() {
-        return sosao;
-    }
-
-    public void setSosao(Integer sosao) {
-        this.sosao = sosao;
-    }
-
     public String getMota() {
         return mota;
     }
@@ -74,11 +72,11 @@ public class Danhgia {
         this.mota = mota;
     }
 
-    public Instant getDate() {
+    public LocalDateTime getDate() {
         return date;
     }
 
-    public void setDate(Instant date) {
+    public void setDate(LocalDateTime date) {
         this.date = date;
     }
 
