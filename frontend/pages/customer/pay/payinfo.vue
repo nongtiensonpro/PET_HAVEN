@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import { ref, computed } from 'vue';
 import { useMauKhachDatDichVu } from "~/stores/MauKhachDatDichVu";
+import Swal from 'sweetalert2';
 const token = localStorage.getItem('access_token');
 const isLoading = ref(false);
 const countdown = ref(10);
@@ -28,34 +29,46 @@ function startCountdown() {
   }, 1000);
 }
 
-function thanhToanOnline() {
-  const { getTempData } = useMauKhachDatDichVu()
-  const tempData = computed(() => getTempData())
-
-  startCountdown(); // Start the countdown
-
-  fetch('http://localhost:8080/api/payPal/payment/create', {
-    method: 'POST',
-    headers: {
-      'Authorization': `Bearer ${token}`,
-      'idLichHen': tempData.value.id
-    }
-  })
-  .then(response => response.text())
-  .then(url => {
-    if (url) {
-      window.location.href = url;
-    } else {
-      console.error("Không thể tạo thanh toán");
-      isLoading.value = false;
-      showOverlay.value = false;
-    }
-  })
-  .catch(error => {
-    console.error("Lỗi:", error);
-    isLoading.value = false;
-    showOverlay.value = false;
+async function thanhToanOnline() {
+  const result = await Swal.fire({
+    title: 'Xác nhận',
+    text: "Bạn có chắc chắn có muốn thanh toán chứ, sau khi thanh toán sẽ không được hủy lịch?",
+    icon: 'warning',
+    showCancelButton: true,
+    confirmButtonColor: '#3085d6',
+    cancelButtonColor: '#d33',
+    confirmButtonText: 'Có',
+    cancelButtonText: 'Không'
   });
+  if (result.isConfirmed) {
+    const {getTempData} = useMauKhachDatDichVu()
+    const tempData = computed(() => getTempData())
+
+    startCountdown(); // Start the countdown
+
+    fetch('http://localhost:8080/api/payPal/payment/create', {
+      method: 'POST',
+      headers: {
+        'Authorization': `Bearer ${token}`,
+        'idLichHen': tempData.value.id
+      }
+    })
+        .then(response => response.text())
+        .then(url => {
+          if (url) {
+            window.location.href = url;
+          } else {
+            console.error("Không thể tạo thanh toán");
+            isLoading.value = false;
+            showOverlay.value = false;
+          }
+        })
+        .catch(error => {
+          console.error("Lỗi:", error);
+          isLoading.value = false;
+          showOverlay.value = false;
+        });
+  }
 }
 </script>
 

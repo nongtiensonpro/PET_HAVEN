@@ -2,30 +2,28 @@
   <div class="container">
     <div v-if="services.length === 0">Dịch vụ không khả dụng, vui lòng thử lại sau!</div>
     <div v-else>
-      <h2>Dịch vụ của chúng tôi</h2>
+     <h2 class="text text-center ">Dịch vụ của chúng tôi</h2>
      <div class="container">
        <div class="row">
          <div v-for="service in paginatedServices" :key="service.id" class="card col m-4">
-           <h4 class="card-title">{{ service.tendichvu }}</h4>
-           <div v-if="service.anh==null">
-              <img src="~/assets/image/cat1.jpg" class="card-img-top p-1" alt="Ảnh mặc định nè">
-           </div>
-          <div v-else>
-            <img :src="service.anh" class="card-img-top p-1" alt="...">
-          </div>
+           <nuxt-link class="nav-link" :to="`/services/${service.id}`">
            <div class="card-body">
-             <div class="row">
-               <div class="col">
-                 <p class="card-text">{{ service.giatien.toLocaleString() }} USD</p>
-                 <nuxt-link class="nav-link" :to="`/services/${service.id}`">Xem thêm</nuxt-link>
-               </div>
+                 <div v-if="service.anh==null">
+                   <img src="~/assets/image/cat1.jpg" class="card-img-top" alt="Ảnh mặc định nè">
+                 </div>
+                 <div v-else>
+                   <img :src="service.anh" class="card-img-top" alt="...">
+                 </div>
+             <div class="card-header">
+               <h2 class="mb-0 fs-4">{{ service.tendichvu }} - {{ service.giatien.toLocaleString() }} USD</h2>
              </div>
            </div>
+           </nuxt-link>
          </div>
+
        </div>
      </div>
-
-      <div class="pagination">
+      <div class="pagination align-content-center">
         <button @click="prevPage" :disabled="currentPage === 1">Trang trước</button>
         <span>Trang {{ currentPage }} trên {{ totalPages }}</span>
         <button @click="nextPage" :disabled="currentPage === totalPages">Trang sau</button>
@@ -85,27 +83,5 @@ export default {
 </script>
 
 <style scoped>
-.card {
-  background-color: transparent; /* Loại bỏ nền trắng */
-  border: none; /* Nếu không muốn viền */
-  box-shadow: none; /* Nếu không muốn bóng */
-}
 
-.card-title {
-  color: #333; /* Điều chỉnh màu tiêu đề nếu cần */
-}
-
-.card-body {
-  color: #666; /* Điều chỉnh màu văn bản nếu cần */
-}
-
-.pagination {
-  display: flex;
-  justify-content: center;
-  margin-top: 20px;
-}
-
-.pagination button {
-  margin: 0 10px;
-}
 </style>
