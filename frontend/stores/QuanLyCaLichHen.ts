@@ -87,8 +87,8 @@ export const useCaLichHenStore = defineStore('useCalichhen', {
             throw new Error(`Lỗi cập nhật ca lịch hẹn: ${response.status} ${response.statusText}`);
         }
 
-        const data = await response;
-        console.log('Cập nhật thành công:', data);
+        const data = await response.json();
+        console.log(data);
     } catch (error) {
         console.error('Lỗi khi cập nhật ca lịch hẹn:', error);
         throw error; // Re-throw the error for the caller to handle
