@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { ref } from "vue";
-import { useCaLichHenStore } from "~/stores/QuanLyCaLichHen";
+// import { useCaLichHenStore } from "~/stores/QuanLyCaLichHen";
 import  CaLichHen from "~/models/CaHen";
 
 const caLichHenStore = useCaLichHenStore();
@@ -9,7 +9,7 @@ const thoigianca = ref("");
 const trangthai = ref(false);
 
 const themCaHen = async () => {
-    
+
     try {
         const [hours, minutes] = thoigianca.value.split(':');
         const date = new Date();
@@ -21,7 +21,7 @@ const themCaHen = async () => {
         thoigianca.value = "";
         trangthai.value = false;
     } catch (e) {
-        
+
     }
 }
 </script>

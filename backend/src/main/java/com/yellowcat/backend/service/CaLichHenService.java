@@ -21,24 +21,27 @@ public class CaLichHenService {
     @Autowired
     private CalichhenRepository caLichHenRepository;
 
-    @Lazy
     @Autowired
-    private LichHenService lichHenService;
+    private LichHenManager lichHenManager;
 
     public void UpdateNgayNghi(LocalDate ngay){
         caLichHenRepository.updateNgayNghi(ngay);
     }
 
     public void addOrUpdate(Calichhen calichhen){
-        boolean exists = caLichHenRepository.existsByThoigiancaAndIdNot(calichhen.getThoigianca(), calichhen.getId() == null ? -1 : calichhen.getId());
+        boolean exists = caLichHenRepository.existsByThoigiancaAndIdNot(
+                calichhen.getThoigianca(),
+                calichhen.getId() == null ? -1 : calichhen.getId()
+        );
 
-        if (calichhen.getId() == null) {
-            lichHenService.taoLichHenRongKhiThemMoiCa();
-        }
-
-        if (exists){
+        if (exists) {
             throw new IllegalArgumentException("Thời gian ca này đã tồn tại.");
         }
+
+        if (calichhen.getId() == null) {
+            lichHenManager.handleLichHenLogic(calichhen);
+        }
+
         caLichHenRepository.save(calichhen);
     }
 
