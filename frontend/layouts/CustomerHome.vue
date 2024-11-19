@@ -189,6 +189,9 @@
                   <li class="nav-item" v-if="userInfo?.role && userInfo.role.includes('admin')">
                     <NuxtLink class="nav-link" :to="`/admin/quanlytaikhoan`">Quản lý tài khoản</NuxtLink>
                   </li>
+                  <li class="nav-item" v-if="userInfo?.role && userInfo.role.includes('admin')">
+                    <NuxtLink class="nav-link" :to="`/admin/quanlyca`">Quản lý ca</NuxtLink>
+                  </li>
                   <li class="nav-item"
                     v-if="userInfo?.role && (userInfo.role.includes('admin') || userInfo.role.includes('manager'))">
                     <NuxtLink class="nav-link" :to="`/nhanvien/checkin`">Thanh toán tại quầy</NuxtLink>
