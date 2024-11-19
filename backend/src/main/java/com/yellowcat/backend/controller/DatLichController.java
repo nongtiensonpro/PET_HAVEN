@@ -104,6 +104,7 @@ public class DatLichController {
         lichhen.setThucung(thucung);
         lichhen.setDate(LocalDate.parse(datLichDTO.getDate()));
         lichhen.setDichvu(dichvu);
+        lichhen.setSolannhacnho(0);
         if(!lichhen.getTrangthaica()){
             lichhen.setTrangthaica(true);
         }else {

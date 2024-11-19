@@ -33,6 +33,12 @@ public class CaLichHenController {
     private LichHenService lichHenService;
 
 //-----------------------------------------------------------
+    @GetMapping("/all")
+    public List<Calichhen> getList(){
+        List<Calichhen> listCa = caLichHenService.findAll();
+        return listCa;
+    }
+
     @PostMapping("/add")
     public ResponseEntity<?> addOne(@Valid @RequestBody updateCaDTO dto){
         Calichhen calichhen = new Calichhen();

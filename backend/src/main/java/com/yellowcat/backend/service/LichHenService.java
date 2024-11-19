@@ -243,7 +243,7 @@ public class LichHenService {
             Duration duration = Duration.between(currentTime, appointmentTime);
 
             //gửi thông báo
-            if (duration.toMinutes() <= 60 && duration.toMinutes() > 0 && lichhen.getSolannhacnho()<1) {
+            if (duration.toMinutes() <= 60 && duration.toMinutes() > 0 && lichhen.getSolannhacnho()<1 && !lichhen.getEmailNguoiDat().equalsIgnoreCase("default-email@example.com")) {
                 sendEmailNhacNho(lichhen,String.valueOf(duration.toMinutes()));
                 lichhen.setSolannhacnho(lichhen.getSolannhacnho()+1);
                 lichhenRepository.save(lichhen);
