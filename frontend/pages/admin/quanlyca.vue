@@ -5,6 +5,7 @@ import type CaLichHen from "~/models/CaHen";
 import ThemCa from '~/components/ThemCa.vue'
 const caLichHenStore = useCaLichHenStore();
 const caLichHens = ref<CaLichHen[]>([]);
+import CapNhatCaHen from '~/pages/admin/capnhatcalichhen.vue'
 
 const fetchCaLichHens = async () => {
    caLichHens.value = await caLichHenStore.fethcCaLichHen();
@@ -16,6 +17,11 @@ onMounted(() => {
 
 function capNhatTrangThai(ca: CaLichHen) {
   caLichHenStore.capNhatTrangThaiCa(ca);
+  fetchCaLichHens();
+}
+
+function capNhat(ca: CaLichHen) {
+  caLichHenStore.capNhatCaLichHen(ca);
   fetchCaLichHens();
 }
 
@@ -52,6 +58,8 @@ function capNhatTrangThai(ca: CaLichHen) {
           <td>
             <button type="button" @click="capNhatTrangThai(ca)" class="btn btn-sm btn-outline-warning m-1">Cập nhật
               trạng thái</button>
+
+            <a name="" id="" class="btn btn-sm btn-outline-warning m-1" :to="`/admin/capnhatcalichhen`" role="button">Cập nhật</a>
           </td>
         </tr>
       </tbody>

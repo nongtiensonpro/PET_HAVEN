@@ -1,5 +1,6 @@
 import {defineStore} from "pinia";
 import type CaLichHen from "~/models/CaHen";
+import {tr} from "cronstrue/dist/i18n/locales/tr";
 
 interface CaLichHenStoreState {
     calichhen: CaLichHen[];
@@ -66,24 +67,33 @@ export const useCaLichHenStore = defineStore('useCalichhen', {
         }
         ,
         async capNhatTrangThaiCa(caHen: CaLichHen) {
-            const token = localStorage.getItem('access_token');
-            try {
-                const response = await fetch("http://localhost:8080/api/ca-lich-hen/cap-nhap-trang-thai-ca", {
-                    headers: {
-                        Authorization: `Bearer ${token}`,
-                    },
-                    method: 'POST',
-                    body: JSON.stringify(caHen)
-                });
-                if (!response.ok) {
-                    throw new Error("Lỗi cập nhật ca lịch hẹn");
-                }
-                const data = await response.json();
-                console.log(data)
-            } catch (e) {
-                throw new Error("Lỗi cập nhật ca lịch hẹn" +e );
-            }
-        },
+    const token = localStorage.getItem('access_token');
+    try {
+        const response = await fetch("http://localhost:8080/api/ca-lich-hen/cap-nhap-trang-thai-ca", {
+            headers: {
+                Authorization: `Bearer ${token}`,
+                'Content-Type': 'application/json',
+            },
+            method: 'PUT',
+            body: JSON.stringify({
+                'idCaLichHen': caHen.id,
+                'isConfirmed': !caHen.trangthai
+            })
+        });
+
+        if (!response.ok) {
+            const errorData = await response.json().catch(() => ({}));
+            console.error('Error response:', errorData);
+            throw new Error(`Lỗi cập nhật ca lịch hẹn: ${response.status} ${response.statusText}`);
+        }
+
+        const data = await response;
+        console.log('Cập nhật thành công:', data);
+    } catch (error) {
+        console.error('Lỗi khi cập nhật ca lịch hẹn:', error);
+        throw error; // Re-throw the error for the caller to handle
+    }
+},
         async capNhatCaLichHen(caHen: CaLichHen) {
             const token = localStorage.getItem('access_token');
             try {
