@@ -189,10 +189,12 @@ public class LichHenController {
             lichhen.setTrangthai(0);
             lichHenService.addOrUpdate(lichhen);
 
-            hoadon.setNgaythanhtoan(LocalDateTime.now());
-            hoadon.setTrangthai(2);
-            hoadon.setNguoithanhtoan(Email);
-            hoaDonService.addOrUpdate(hoadon);
+            if (hoadon.getTrangthai() == 1){
+                hoadon.setNgaythanhtoan(LocalDateTime.now());
+                hoadon.setTrangthai(2);
+                hoadon.setNguoithanhtoan(Email);
+                hoaDonService.addOrUpdate(hoadon);
+            }
 
             // Tạo file PDF hóa đơn
             String thoiGian = hoadon.getIdlichhen().getDate().toString()+ ' ' + hoadon.getIdlichhen().getIdcalichhen().getThoigianca();

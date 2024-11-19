@@ -128,7 +128,7 @@ public class CaLichHenController {
             }
         }
 
-        return ResponseEntity.ok("Trạng thái ca đã được cập nhật.");
+        return ResponseEntity.ok(calichhen);
     }
 
 
