@@ -11,6 +11,7 @@
         <th>Xác nhận Email</th>
         <th>Thời gian tạo</th>
         <th>Trạng thái</th>
+        <th>Vai trò</th>
         <th>Thao tác</th>
       </tr>
       </thead>
@@ -21,9 +22,10 @@
         <td>{{ user.firstName }}</td>
         <td>{{ user.lastName }}</td>
         <td>{{ user.email }}</td>
-        <td>{{ user.emailVerified }}</td>
+        <td>{{  user.emailVerified==true?'Kích hoạt':'Chưa kích hoạt' }}</td>
         <td>{{ new Date(user.createdTimestamp).toLocaleString() }}</td>
-        <td>{{ user.enabled }}</td>
+        <td>{{  user.enabled==true?'Hoạt động':'Không hoạt động' }}</td>
+        <td> ? </td>
         <td>
               <button class="btn btn-sm btn-outline-warning m-1" @click="editUser(user.id)">Edit</button>
               <button class="btn btn-sm btn-outline-danger" @click="deleteUser(user.id)">Delete</button>
@@ -38,9 +40,9 @@
 import { useStore } from '~/stores/UserStores';
 import { onMounted, ref } from "vue";
 import UserModel from '~/models/User';
-
+import {useToast} from 'vue-toastification'
 const User = ref<UserModel[]>([]);
-
+const toast = useToast();
 const userStore = useStore();
 
 const loadUsers = async () => {
@@ -62,14 +64,14 @@ onMounted(() => {
   loadUsers();
 });
 
+
+
 const editUser = (id: string) => {
-  console.log('Chỉnh sửa tài khoản với ID:', id);
-  // Thực hiện điều hướng hoặc mở popup chỉnh sửa
+  toast.success('Chức năng đang phát triển', {});
 };
 
 const deleteUser = (id: string) => {
-  console.log('Xóa tài khoản với ID:', id);
-  // Thực hiện xóa tài khoản
+  toast.success('Chức năng đang phát triển', {});
 };
 </script>
 
