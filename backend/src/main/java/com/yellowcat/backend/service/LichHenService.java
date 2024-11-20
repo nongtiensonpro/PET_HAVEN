@@ -64,6 +64,10 @@ public class LichHenService {
         return lichhenRepository.findByDate(LocalDate.now());
     }
 
+    public void ThemNgayNghi(LocalDate date){
+        lichhenRepository.updateNgayNghi(date);
+    }
+
     public Page<Lichhen> findByIdUser(Pageable pageable, String idUser){
         return lichhenRepository.findByIdkhachhang(idUser, pageable);
     }
@@ -83,6 +87,10 @@ public class LichHenService {
 
     public Lichhen findById(Integer id){
         return lichhenRepository.findById(id).orElse(null);
+    }
+
+    public List<Lichhen> getListByDate(LocalDate date){
+        return lichhenRepository.findByDate(date);
     }
 
     public Page<Lichhen> findAllLichWithTrangThai(Pageable pageable,boolean tt,LocalDate date){

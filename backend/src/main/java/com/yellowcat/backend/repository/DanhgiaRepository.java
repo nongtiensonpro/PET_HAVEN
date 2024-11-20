@@ -7,7 +7,7 @@ import java.util.List;
 import java.util.Optional;
 
 public interface DanhgiaRepository extends JpaRepository<Danhgia, Integer> {
-    List<Danhgia> findByIdhoadon_Idlichhen_Dichvu_Id(int idDichVu);
-    Optional<Danhgia> findByIdhoadon_IdAndIdtaikhoan(int idHd, String idTk);
+    List<Danhgia> findByIdhoadon_Idlichhen_Dichvu_IdAndTrangthai(int idDichVu,boolean tt);
+    Optional<Danhgia> findByIdhoadon_IdAndIdtaikhoanAndTrangthai(int idHd, String idTk,boolean tt);
     Optional<Danhgia> findById(Integer id);
 }

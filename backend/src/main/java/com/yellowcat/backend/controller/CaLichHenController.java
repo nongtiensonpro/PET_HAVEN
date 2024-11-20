@@ -3,8 +3,10 @@ package com.yellowcat.backend.controller;
 import com.yellowcat.backend.DTO.updateCaDTO;
 import com.yellowcat.backend.model.Calichhen;
 import com.yellowcat.backend.model.Lichhen;
+import com.yellowcat.backend.model.Ngaynghi;
 import com.yellowcat.backend.service.CaLichHenService;
 import com.yellowcat.backend.service.LichHenService;
+import com.yellowcat.backend.service.NgayNghiService;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.format.annotation.DateTimeFormat;
@@ -31,6 +33,8 @@ public class CaLichHenController {
     private CaLichHenService caLichHenService;
     @Autowired
     private LichHenService lichHenService;
+    @Autowired
+    private NgayNghiService ngayNghiService;
 
 //-----------------------------------------------------------
     @GetMapping("/all")
@@ -66,10 +70,46 @@ public class CaLichHenController {
 //-----------------------------------------------------------
 
     @PutMapping("/cap-nhap-ngay-nghi")
-    public ResponseEntity<Void> falseAllCa(@RequestBody @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate ngay) {
-        caLichHenService.UpdateNgayNghi(ngay);
-        return ResponseEntity.ok().build();
+    public ResponseEntity<?> falseAllCa(@RequestBody @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate ngay) {
+        List<Lichhen> listLich = lichHenService.getListByDate(ngay);
+        List<Lichhen> listLicDaDat = new ArrayList<>();
+        Optional<Ngaynghi> ngaynghiOptional = ngayNghiService.getNgaynghi(ngay);
+        if(ngaynghiOptional.isPresent()){
+            return ResponseEntity.badRequest().body("Ngày nghỉ đã tồn tại");
+        }
+
+        // Kiểm tra từng lịch hẹn
+        for (Lichhen lichhen : listLich) {
+            boolean isInvalid = lichhen.getTrangthai() != 5 && lichhen.getTrangthaica();
+            if (isInvalid) {
+                listLicDaDat.add(lichhen);
+            }
+        }
+
+        // Nếu có lịch đã được đặt (không hợp lệ), trả về danh sách đó
+        if (!listLicDaDat.isEmpty()) {
+            return ResponseEntity.status(HttpStatus.ACCEPTED)
+                    .body(Map.of(
+                            "message", "Không thể cập nhật ngày nghỉ vì có lịch đã được đặt.",
+                            "lichDaDat", listLicDaDat
+                    ));
+        }
+
+        // Nếu không có lịch vi phạm, tiến hành cập nhật ngày nghỉ
+        Ngaynghi ngaynghi = new Ngaynghi();
+        ngaynghi.setNgaynghi(ngay);
+        ngaynghi.setTrangthai(true);
+        ngayNghiService.addOrUpdate(ngaynghi);
+
+        // Cập nhật trạng thái ca làm việc
+        lichHenService.ThemNgayNghi(ngay);
+
+        return ResponseEntity.ok(Map.of(
+                "message", "Ngày nghỉ đã được cập nhật thành công.",
+                "lichHen", listLich
+        ));
     }
+
 
 
     @PutMapping("/cap-nhap-trang-thai-ca")

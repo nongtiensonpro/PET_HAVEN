@@ -24,9 +24,6 @@ public class CaLichHenService {
     @Autowired
     private LichHenManager lichHenManager;
 
-    public void UpdateNgayNghi(LocalDate ngay){
-        caLichHenRepository.updateNgayNghi(ngay);
-    }
 
     public void addOrUpdate(Calichhen calichhen){
         boolean exists = caLichHenRepository.existsByThoigiancaAndIdNot(
