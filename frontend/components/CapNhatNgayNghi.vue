@@ -3,25 +3,24 @@
 </script>
 
 <template>
-  <!-- Button trigger modal -->
-  <button type="button" class="btn btn-sm btn-warning m-1" data-bs-toggle="modal" data-bs-target="#exampleModal">
+
+  <button type="button" class="btn btn-sm btn-warning m-1" data-bs-toggle="modal" data-bs-target="#capNhatNgayNghiModal">
     Cập nhật ngày nghỉ
   </button>
 
-  <!-- Modal -->
-  <div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+  <div class="modal fade" id="capNhatNgayNghiModal" tabindex="-1" aria-labelledby="capNhatNgayNghiModalLabel" aria-hidden="true">
     <div class="modal-dialog">
       <div class="modal-content">
         <div class="modal-header">
-          <h1 class="modal-title fs-5" id="exampleModalLabel">Modal title</h1>
+          <h1 class="modal-title fs-5" id="capNhatNgayNghiModalLabel">Cập nhật ngày nghỉ</h1>
           <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
         </div>
         <div class="modal-body">
-          ...
+
         </div>
         <div class="modal-footer">
-          <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-          <button type="button" class="btn btn-primary">Save changes</button>
+          <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Đóng</button>
+          <button type="button" class="btn btn-primary">Lưu thay đổi</button>
         </div>
       </div>
     </div>

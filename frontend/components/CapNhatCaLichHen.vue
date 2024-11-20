@@ -1,21 +1,38 @@
 <script setup lang="ts">
 import { useCaLichHenStore } from '~/stores/QuanLyCaLichHen'
 import type CaLichHens from '~/models/CaHen'
-
+import Swal from "sweetalert2";
+import { useToast } from 'vue-toastification'
 const props = defineProps<{
   ca: CaLichHens
 }>()
 
 const emit = defineEmits(['cap-nhat'])
-
+const toast = useToast();
 const caLichHenStore = useCaLichHenStore()
 
 
 async function capNhatCa(ca :CaLichHens) {
 
-  await caLichHenStore.capNhatCaLichHen(ca)
-
-  emit('cap-nhat')
+  const result = await Swal.fire({
+    title: 'Xác nhận',
+    text: `Bạn có chắc chắn cập nhật ca chứ?`,
+    icon: 'warning',
+    showCancelButton: true,
+    confirmButtonColor: '#3085d6',
+    cancelButtonColor: '#d33',
+    confirmButtonText: 'Có',
+    cancelButtonText: 'Không'
+  });
+  if (result.isConfirmed) {
+    try {
+      await caLichHenStore.capNhatCaLichHen(ca)
+      emit('cap-nhat')
+      toast.success('Cập nhật ca lịch hẹn thành công!')
+    }catch (e) {
+      toast.success('Cập nhật ca lịch hẹn thất bại!')
+    }
+  }
 }
 </script>
 

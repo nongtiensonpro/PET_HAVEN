@@ -7,7 +7,9 @@ const caLichHenStore = useCaLichHenStore();
 const caLichHens = ref<CaLichHen[]>([]);
 import CapNhatCaHen from '~/components/CapNhatCaLichHen.vue'
 import CapNhatNgayNghi from "~/components/CapNhatNgayNghi.vue";
-
+import Swal from 'sweetalert2';
+import { useToast } from 'vue-toastification'
+const toast = useToast();
 const fetchCaLichHens = async () => {
    caLichHens.value = await caLichHenStore.fethcCaLichHen();
 }
@@ -16,12 +18,31 @@ onMounted(() => {
   fetchCaLichHens()
 })
 
-function capNhatTrangThai(ca: CaLichHen) {
-  caLichHenStore.capNhatTrangThaiCa(ca);
-  fetchCaLichHens();
-  setTimeout(() => {
-    fetchCaLichHens();
-  }, 100);
+async function capNhatTrangThai(ca: CaLichHen) {
+  const result = await Swal.fire({
+    title: 'Xác nhận',
+   text: `Bạn có chắc chắn ${ca.trangthai ? 'ẩn' : 'hiện'} ca "${ca.tenca}" chứ?`,
+    icon: 'warning',
+    showCancelButton: true,
+    confirmButtonColor: '#3085d6',
+    cancelButtonColor: '#d33',
+    confirmButtonText: 'Có',
+    cancelButtonText: 'Không'
+  });
+
+  if (result.isConfirmed) {
+    try {
+      caLichHenStore.capNhatTrangThaiCa(ca);
+      fetchCaLichHens();
+      setTimeout(() => {
+        fetchCaLichHens();
+      }, 100);
+      toast.success('Cập nhật ca lịch hẹn thành công!')
+    }catch (e) {
+      toast.success('Cập nhật ca lịch hẹn thất bại!')
+
+    }
+  }
 }
 
 function capNhat(ca: CaLichHen) {
