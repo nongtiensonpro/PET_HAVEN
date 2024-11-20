@@ -2,6 +2,7 @@ import {defineStore} from "pinia";
 import type CaLichHen from "~/models/CaHen";
 import {tr} from "cronstrue/dist/i18n/locales/tr";
 import {ca} from "cronstrue/dist/i18n/locales/ca";
+import {data} from "autoprefixer";
 
 interface CaLichHenStoreState {
     calichhen: CaLichHen[];
@@ -58,7 +59,7 @@ export const useCaLichHenStore = defineStore('useCalichhen', {
                     throw new Error("Lỗi thêm ca lịch hẹn");
                 }
             } catch (e) {
-                throw new Error("Lỗi thêm ca lịch hẹn: " + e.message);
+                throw new Error("Lỗi thêm ca lịch hẹn: " + e);
             }
         }
         ,
@@ -126,6 +127,34 @@ export const useCaLichHenStore = defineStore('useCalichhen', {
                 console.log(data);
             } catch (e) {
                 throw new Error("Lỗi cập nhật ca lịch hẹn: " + e);
+            }
+        },
+        async themNgayNghi(ngayNghi: string) {
+            console.log(ngayNghi+ "Gau Gau")
+            const token = localStorage.getItem('access_token');
+            try {
+                const response = await fetch("http://localhost:8080/api/ca-lich-hen/cap-nhap-ngay-nghi", {
+                    headers: {
+                        'Authorization': `Bearer ${token}`,
+                        'Content-Type': 'application/json',
+                    },
+                    method: 'PUT',
+                    body: JSON.stringify({
+                        'ngay': ngayNghi
+                    })
+                });
+
+                if (!response.ok) {
+                    const errorText = await response.text();
+                    throw new Error(`Lỗi cập nhật ngày nghỉ: ${response.status} ${errorText}`);
+                }
+
+                const data = await response.json();
+                console.log("Ngày nghỉ đã được cập nhật:", data);
+                return data;
+            } catch (error) {
+                console.error("Lỗi khi cập nhật ngày nghỉ:", error);
+                throw error; // Re-throw the error for the caller to handle
             }
         }
     }
