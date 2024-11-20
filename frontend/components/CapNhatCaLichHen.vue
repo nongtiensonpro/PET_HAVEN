@@ -12,14 +12,16 @@ const caLichHenStore = useCaLichHenStore()
 
 
 async function capNhatCa(ca :CaLichHens) {
+
   await caLichHenStore.capNhatCaLichHen(ca)
+
   emit('cap-nhat')
 }
 </script>
 
 <template>
   <button type="button" class="btn btn-sm btn-outline-warning m-1" data-bs-toggle="modal" data-bs-target="#exampleModal123">
-    Cập nhật Ca
+    Cập nhật
   </button>
 
   <div class="modal fade" id="exampleModal123" tabindex="-1" aria-labelledby="exampleModal123" aria-hidden="true">

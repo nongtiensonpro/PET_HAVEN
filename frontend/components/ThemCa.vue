@@ -29,7 +29,7 @@ const themCaHen = async () => {
 <template>
     <div class="container">
         <!-- Button trigger modal -->
-        <button type="button" class="custom-button" data-bs-toggle="modal" data-bs-target="#exampleModal">
+        <button type="button" class="btn btn-sm btn-warning m-1" data-bs-toggle="modal" data-bs-target="#exampleModal">
             Thêm Ca Hẹn
         </button>
 

@@ -6,6 +6,7 @@ import ThemCa from '~/components/ThemCa.vue'
 const caLichHenStore = useCaLichHenStore();
 const caLichHens = ref<CaLichHen[]>([]);
 import CapNhatCaHen from '~/components/CapNhatCaLichHen.vue'
+import CapNhatNgayNghi from "~/components/CapNhatNgayNghi.vue";
 
 const fetchCaLichHens = async () => {
    caLichHens.value = await caLichHenStore.fethcCaLichHen();
@@ -31,10 +32,18 @@ function capNhat(ca: CaLichHen) {
 </script>
 
 <template>
-  <div class="row">
-    <div class="col-2">
-        <ThemCa />
-    </div>
+
+    <div class="">
+      <div class="card-body">
+        <div class="row">
+        <div class="col-2">
+          <ThemCa />
+        </div>
+        <div class="col-3">
+          <CapNhatNgayNghi />
+        </div>
+        </div>
+      </div>
   </div>
   <div class="container">
     <table class="table">
