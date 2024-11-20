@@ -59,8 +59,7 @@ function capNhat(ca: CaLichHen) {
             </span>
           </td>
           <td>
-            <button type="button" @click="capNhatTrangThai(ca)" class="btn btn-sm btn-outline-warning m-1">Cập nhật
-              trạng thái</button>
+            <button type="button" @click="capNhatTrangThai(ca)" class="btn btn-sm btn-outline-warning m-1">{{ca.trangthai?'Ẩn ca':'Hiện ca'}}</button>
             <CapNhatCaHen :ca="ca" @cap-nhat="capNhat">
 
             </CapNhatCaHen>
