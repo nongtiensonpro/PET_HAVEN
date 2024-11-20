@@ -1,6 +1,7 @@
 package com.yellowcat.backend.repository;
 
 import com.yellowcat.backend.model.Calichhen;
+import jakarta.transaction.Transactional;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
@@ -12,11 +13,6 @@ import java.util.List;
 import java.util.Optional;
 
 public interface CalichhenRepository extends JpaRepository<Calichhen, Integer> {
-
-    @Modifying
-    @Query("UPDATE Calichhen c SET c.trangthai = true WHERE c.id IN " +
-            "(SELECT lh.idcalichhen.id FROM Lichhen lh WHERE lh.date = :ngay)")
-    void updateNgayNghi(@Param("ngay") LocalDate ngay);
 
     // Truy vấn để lấy tất cả các trạng thái của các ca trong một ngày
     @Query("SELECT c FROM Calichhen c LEFT join Lichhen l ON c.id = l.idcalichhen.id " +

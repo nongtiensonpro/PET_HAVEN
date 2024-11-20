@@ -1,9 +1,13 @@
 package com.yellowcat.backend.repository;
 
 import com.yellowcat.backend.model.Lichhen;
+import jakarta.transaction.Transactional;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Modifying;
+import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
 import java.time.LocalDate;
@@ -27,5 +31,10 @@ public interface LichhenRepository extends JpaRepository<Lichhen, Integer> {
     List<Lichhen> findByDate(LocalDate date);
 
     List<Lichhen> findByIdcalichhen_IdAndDateAfter(int idcalichhen_Id, LocalDate date);
+
+    @Modifying
+    @Transactional
+    @Query("UPDATE Lichhen l Set l.trangthaica = true WHERE l.date =:ngay")
+    void updateNgayNghi(@Param("ngay") LocalDate ngay);
 
 }

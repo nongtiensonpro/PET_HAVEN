@@ -77,15 +77,41 @@ public class DanhGiaController {
 
     @PutMapping("/update")
     public ResponseEntity<?> updateDanhGia(@Valid @RequestBody VietDanhGiaDTO dto){
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        String idUser = authentication.getName();
         Optional<Danhgia> danhgiaOptional = danhGiaService.getDanhGiaById(dto.getId());
         if (!danhgiaOptional.isPresent()){
             return ResponseEntity.notFound().build();
         }
         Danhgia danhgia = danhgiaOptional.get();
-        danhgia.setSosao(dto.getStar());
-        danhgia.setMota(dto.getMoTa());
-        danhGiaService.addOrUpdateDanhGia(danhgia);
-        return ResponseEntity.ok(danhgia);
 
+        if (!idUser.equalsIgnoreCase(danhgia.getIdtaikhoan())){
+            return ResponseEntity.badRequest().body("Phải là chủ mới được đổi ý");
+        }
+
+        danhgia.setTrangthai(false);
+        danhGiaService.addOrUpdateDanhGia(danhgia);
+
+        Danhgia danhgiaUpdate = new Danhgia();
+        danhgiaUpdate.setTrangthai(true);
+        danhgiaUpdate.setDate(LocalDateTime.now());
+        danhgiaUpdate.setMota(dto.getMoTa());
+        danhgiaUpdate.setSosao(dto.getStar());
+        danhGiaService.addOrUpdateDanhGia(danhgiaUpdate);
+
+        return ResponseEntity.ok(danhgiaUpdate);
+
+    }
+
+    @PutMapping("/an-danh-gia")
+    public ResponseEntity<?> anDanhGia(@RequestBody Integer id){
+       Optional<Danhgia> danhgiaOptional =  danhGiaService.getDanhGiaById(id);
+       if (!danhgiaOptional.isPresent()){
+           return ResponseEntity.notFound().build();
+       }
+       Danhgia danhgia = danhgiaOptional.get();
+       danhgia.setTrangthai(false);
+       danhGiaService.addOrUpdateDanhGia(danhgia);
+       return ResponseEntity.ok(danhgia);
     }
 }

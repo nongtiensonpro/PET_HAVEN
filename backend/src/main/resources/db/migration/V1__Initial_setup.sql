@@ -125,6 +125,13 @@ CREATE TABLE DanhGia
     idHoaDon INT REFERENCES HoaDon(ID)
 );
 
+CREATE TABLE NgayNghi
+(
+    ID          SERIAL PRIMARY KEY,
+    NgayNghi    TIMESTAMP not null ,
+    TrangThai   BOOLEAN
+);
+
 
 
 -- Thêm dữ liệu vào bảng TaiKhoan
@@ -191,3 +198,4 @@ INSERT INTO DanhGia (idTaiKhoan, SoSao, MoTa, Date, TrangThai,idHoaDon)
 VALUES (1, 5, 'Rất tốt', '2024-10-01 12:00:00', TRUE,'1'),
        (2, 4, 'Tốt', '2024-09-30 11:00:00', TRUE,'1'),
        (3, 3, 'Bình thường', '2024-09-29 10:00:00', FALSE,'1');
+

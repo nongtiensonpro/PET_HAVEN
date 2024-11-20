@@ -18,11 +18,11 @@ public class DanhGiaService {
     }
 
     public List<Danhgia> getAllDanhGiaTheoDichVu(Integer idDichVu) {
-        return DanhGiaRepository.findByIdhoadon_Idlichhen_Dichvu_Id(idDichVu);
+        return DanhGiaRepository.findByIdhoadon_Idlichhen_Dichvu_IdAndTrangthai(idDichVu,true);
     }
 
     public Optional<Danhgia> getDanhGiaoTheoHD(Integer idHd ,String idTk){
-        return DanhGiaRepository.findByIdhoadon_IdAndIdtaikhoan(idHd, idTk);
+        return DanhGiaRepository.findByIdhoadon_IdAndIdtaikhoanAndTrangthai(idHd, idTk,true);
     }
 
     public Optional<Danhgia> getDanhGiaById(Integer id){
