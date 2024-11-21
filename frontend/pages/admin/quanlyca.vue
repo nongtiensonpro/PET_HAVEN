@@ -1,21 +1,38 @@
 <script setup lang="ts">
 import { onMounted, ref } from "vue";
 import {useCaLichHenStore} from "~/stores/QuanLyCaLichHen"
+import type NgayNghi from "~/models/NgayNghi";
 import type CaLichHen from "~/models/CaHen";
 import ThemCa from '~/components/ThemCa.vue'
+
 const caLichHenStore = useCaLichHenStore();
 const caLichHens = ref<CaLichHen[]>([]);
+
+const listNgayNghi = ref<NgayNghi[]>([]);
+
 import CapNhatCaHen from '~/components/CapNhatCaLichHen.vue'
 import CapNhatNgayNghi from "~/components/CapNhatNgayNghi.vue";
 import Swal from 'sweetalert2';
 import { useToast } from 'vue-toastification'
+
 const toast = useToast();
 const fetchCaLichHens = async () => {
    caLichHens.value = await caLichHenStore.fethcCaLichHen();
 }
 
+
+const fetchNgayNghi = async () => {
+  const ngayNghiData = await caLichHenStore.fetchNgayNghi();
+  console.log(ngayNghiData+'MIU MIU');
+  if (Array.isArray(ngayNghiData)) {
+    listNgayNghi.value = ngayNghiData;
+  } else {
+    listNgayNghi.value = [];
+  }
+}
 onMounted(() => {
   fetchCaLichHens()
+  fetchNgayNghi()
 })
 
 async function capNhatTrangThai(ca: CaLichHen) {
@@ -66,7 +83,10 @@ function capNhat(ca: CaLichHen) {
         </div>
       </div>
   </div>
-  <div class="container">
+  <div class="row">
+
+
+  <div class="col container">
     <table class="table">
       <thead>
         <tr>
@@ -91,12 +111,35 @@ function capNhat(ca: CaLichHen) {
           <td>
             <button type="button" @click="capNhatTrangThai(ca)" class="btn btn-sm btn-outline-warning m-1">{{ca.trangthai?'Ẩn ca':'Hiện ca'}}</button>
             <CapNhatCaHen :ca="ca" @cap-nhat="capNhat">
-
             </CapNhatCaHen>
           </td>
         </tr>
       </tbody>
     </table>
+  </div>
+  <div class="col container">
+    <table class="table">
+      <thead>
+      <tr>
+        <th>ID</th>
+        <th>Ngày nghỉ</th>
+        <th>Trạng thái</th>
+        <th>Thao tác</th>
+      </tr>
+      </thead>
+      <tbody>
+
+      <tr v-for="ngay in listNgayNghi" :key="ngay.id">
+        <td>{{ ngay.id }}</td>
+        <td>{{ ngay.ngaynghi }}</td>
+        <td>{{ ngay.trangthai?'Hoạt động':'Không hoạt động' }}</td>
+        <td>
+          <button type="button"  class="btn btn-sm btn-outline-warning m-1">Hủy ngày nghỉ</button>
+        </td>
+      </tr>
+      </tbody>
+    </table>
+  </div>
   </div>
 </template>
 

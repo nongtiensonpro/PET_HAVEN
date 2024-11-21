@@ -3,14 +3,17 @@ import type CaLichHen from "~/models/CaHen";
 import {tr} from "cronstrue/dist/i18n/locales/tr";
 import {ca} from "cronstrue/dist/i18n/locales/ca";
 import {data} from "autoprefixer";
+import type NgayNghi from "~/models/NgayNghi"
 
 interface CaLichHenStoreState {
     calichhen: CaLichHen[];
+    ngayNghi: NgayNghi[];
 }
 
 export const useCaLichHenStore = defineStore('useCalichhen', {
     state: (): CaLichHenStoreState => ({
-        calichhen: [] as CaLichHen[]
+        calichhen: [] as CaLichHen[],
+        ngayNghi: [] as NgayNghi[]
     }),
     actions: {
         async fethcCaLichHen() {
@@ -167,7 +170,7 @@ export const useCaLichHenStore = defineStore('useCalichhen', {
             }
         },
         async themNgayNghi(ngayNghi: string) {
-            console.log(ngayNghi+ "Gau Gau")
+            console.log(ngayNghi + "Gau Gau")
             const token = localStorage.getItem('access_token');
             try {
                 const response = await fetch("http://localhost:8080/api/ca-lich-hen/cap-nhap-ngay-nghi", {
@@ -192,6 +195,27 @@ export const useCaLichHenStore = defineStore('useCalichhen', {
             } catch (error) {
                 console.error("Lỗi khi cập nhật ngày nghỉ:", error);
                 throw error; // Re-throw the error for the caller to handle
+            }
+        },
+        async fetchNgayNghi() {
+            const token = localStorage.getItem('access_token');
+            try {
+                const response = await fetch('http://localhost:8080/api/ngay-nghi/all', {
+                    method: 'GET',
+                    headers: {
+                        'Authorization': `Bearer ${token}`,
+                    }
+                });
+                if (!response.ok) {
+                    throw new Error("Failed to fetch ngày nghỉ");
+                }
+                const data = await response.json();
+                console.log('Fetched Ngay Nghi:', data);
+                this.ngayNghi = data;
+                return this.ngayNghi;
+            } catch (e) {
+                console.error("Error fetching ngày nghỉ:", e);
+                throw e;
             }
         }
     }
