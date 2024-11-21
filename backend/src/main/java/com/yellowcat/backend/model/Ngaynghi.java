@@ -1,5 +1,6 @@
 package com.yellowcat.backend.model;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
@@ -18,6 +19,7 @@ public class Ngaynghi {
 
     @JsonProperty
     @NotNull
+    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd")
     @Column(name = "ngaynghi", nullable = false)
     private LocalDate ngaynghi;
     @JsonProperty
