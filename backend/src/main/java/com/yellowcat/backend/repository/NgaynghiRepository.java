@@ -1,7 +1,9 @@
 package com.yellowcat.backend.repository;
 
 import com.yellowcat.backend.model.Ngaynghi;
+import jakarta.transaction.Transactional;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Modifying;
 
 import java.time.LocalDate;
 import java.util.List;
@@ -11,4 +13,5 @@ public interface NgaynghiRepository extends JpaRepository<Ngaynghi, Integer> {
     Optional<Ngaynghi> findByNgaynghi(LocalDate date);
 
     List<Ngaynghi> findByTrangthaiTrue();
+
 }

@@ -1,8 +1,11 @@
+import type ThuCungKhachHang from "~/models/ThuCungKhachHang";
+import type DichVu from "~/models/DichVu";
+
 export class Lichhen {
     id: number;
     idkhachhang: string;
-    thucung: Thucung;
-    dichvu: Dichvu;
+    thucung: ThuCungKhachHang;
+    dichvu: DichVu;
     emailNguoiDat: string;
     date: string; // LocalDate trong Java là string trong TypeScript
     trangthai: number;
@@ -11,8 +14,8 @@ export class Lichhen {
     constructor(
         id: number,
         idkhachhang: string,
-        thucung: Thucung,
-        dichvu: Dichvu,
+        thucung: ThuCungKhachHang,
+        dichvu: DichVu,
         emailNguoiDat: string,
         date: string,
         trangthai: number,

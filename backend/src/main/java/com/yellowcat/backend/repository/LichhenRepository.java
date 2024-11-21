@@ -28,6 +28,8 @@ public interface LichhenRepository extends JpaRepository<Lichhen, Integer> {
 
     Page<Lichhen> findByTrangthaicaAndDateAfter(boolean trangthaica, LocalDate date, Pageable pageable);
 
+    List<Lichhen> findByDateAndTrangthaicaTrue(LocalDate date);
+
     List<Lichhen> findByDate(LocalDate date);
 
     List<Lichhen> findByIdcalichhen_IdAndDateAfter(int idcalichhen_Id, LocalDate date);

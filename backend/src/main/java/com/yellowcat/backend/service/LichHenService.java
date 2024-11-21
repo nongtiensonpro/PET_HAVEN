@@ -61,7 +61,7 @@ public class LichHenService {
     }
 
     public List<Lichhen> listLichHomNay(){
-        return lichhenRepository.findByDate(LocalDate.now());
+        return lichhenRepository.findByDateAndTrangthaicaTrue(LocalDate.now());
     }
 
     public void ThemNgayNghi(LocalDate date){
