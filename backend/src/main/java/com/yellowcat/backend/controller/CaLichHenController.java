@@ -1,5 +1,6 @@
 package com.yellowcat.backend.controller;
 
+import com.yellowcat.backend.DTO.NgayNghiDTO;
 import com.yellowcat.backend.DTO.updateCaDTO;
 import com.yellowcat.backend.model.Calichhen;
 import com.yellowcat.backend.model.Lichhen;
@@ -70,10 +71,11 @@ public class CaLichHenController {
 //-----------------------------------------------------------
 
     @PutMapping("/cap-nhap-ngay-nghi")
-    public ResponseEntity<?> falseAllCa(@RequestBody @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate ngay) {
-        List<Lichhen> listLich = lichHenService.getListByDate(ngay);
+    public ResponseEntity<?> falseAllCa(@RequestBody NgayNghiDTO ngay) {
+        System.out.println(ngay);
+        List<Lichhen> listLich = lichHenService.getListByDate(ngay.getDate());
         List<Lichhen> listLicDaDat = new ArrayList<>();
-        Optional<Ngaynghi> ngaynghiOptional = ngayNghiService.getNgaynghi(ngay);
+        Optional<Ngaynghi> ngaynghiOptional = ngayNghiService.getNgaynghi(ngay.getDate());
         if(ngaynghiOptional.isPresent()){
             return ResponseEntity.badRequest().body("Ngày nghỉ đã tồn tại");
         }
@@ -97,12 +99,12 @@ public class CaLichHenController {
 
         // Nếu không có lịch vi phạm, tiến hành cập nhật ngày nghỉ
         Ngaynghi ngaynghi = new Ngaynghi();
-        ngaynghi.setNgaynghi(ngay);
+        ngaynghi.setNgaynghi(ngay.getDate());
         ngaynghi.setTrangthai(true);
         ngayNghiService.addOrUpdate(ngaynghi);
 
         // Cập nhật trạng thái ca làm việc
-        lichHenService.ThemNgayNghi(ngay);
+        lichHenService.ThemNgayNghi(ngay.getDate());
 
         return ResponseEntity.ok(Map.of(
                 "message", "Ngày nghỉ đã được cập nhật thành công.",

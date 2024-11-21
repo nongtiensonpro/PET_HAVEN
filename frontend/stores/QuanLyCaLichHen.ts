@@ -73,22 +73,59 @@ export const useCaLichHenStore = defineStore('useCalichhen', {
                     },
                     method: 'PUT',
                     body: JSON.stringify({
-                        'idCaLichHen': caHen.id,
-                        'isConfirmed': !caHen.trangthai
-                    })
+                        idCaLichHen: caHen.id,
+                        isConfirmed: false,
+                    }),
                 });
 
-                if (!response.ok) {
-                    const errorData = await response.json().catch(() => ({}));
-                    console.error('Error response:', errorData);
-                    throw new Error(`Lỗi cập nhật ca lịch hẹn: ${response.status} ${response.statusText}`);
-                }
+                if (response.status === 202) {
+                    const data = await response.json();
 
-                const data = await response.json();
-                console.log(data);
+                    // Hiển thị danh sách lịch trùng và yêu cầu xác nhận
+                    const message = `${data.message}\n\nDanh sách lịch trùng:\n` +
+                        data.lichDaDat
+                            .map((lich: any) =>
+                                `- Dịch vụ: ${lich.dichvu.tendichvu}, Ngày: ${lich.date}, Ca: ${lich.idcalichhen.tenca}`
+                            )
+                            .join("\n");
+
+                    // Hỏi người dùng xác nhận
+                    const isConfirmed = confirm(`${message}\n\nBạn có chắc chắn muốn tiếp tục không?`);
+
+                    if (isConfirmed) {
+                        // Nếu người dùng đồng ý, gửi yêu cầu xác nhận
+                        const confirmResponse = await fetch("http://localhost:8080/api/ca-lich-hen/cap-nhap-trang-thai-ca", {
+                            method: "PUT",
+                            headers: {
+                                Authorization: `Bearer ${token}`,
+                                "Content-Type": "application/json",
+                            },
+                            body: JSON.stringify({
+                                idCaLichHen: caHen.id,
+                                isConfirmed: true,
+                            }),
+                        });
+
+                        if (confirmResponse.ok) {
+                            console.log("Cập nhật ca lịch hẹn thành công!");
+                        } else {
+                            console.log("Cập nhật ca lịch hẹn thất bại!");
+                        }
+                    } else {
+                        console.log("Bạn đã hủy thao tác cập nhật ca lịch hẹn.");
+                    }
+                } else if (response.ok) {
+                    // Nếu phản hồi thành công và không có lịch trùng
+                    console.log("Cập nhật ca lịch hẹn thành công!");
+                } else {
+                    // Xử lý lỗi khác
+                    const errorText = await response.text();
+                    console.log(`Lỗi cập nhật ca lịch hẹn: ${errorText}`);
+                }
             } catch (error) {
-                console.error('Lỗi khi cập nhật ca lịch hẹn:', error);
-                throw error; // Re-throw the error for the caller to handle
+                // Xử lý lỗi kết nối hoặc ngoại lệ
+                console.error("Lỗi khi cập nhật ca lịch hẹn:", error);
+                console.log("Có lỗi xảy ra khi cập nhật ca lịch hẹn.");
             }
         },
         async capNhatCaLichHen(caHen: CaLichHen) {
@@ -140,7 +177,7 @@ export const useCaLichHenStore = defineStore('useCalichhen', {
                     },
                     method: 'PUT',
                     body: JSON.stringify({
-                        'ngay': ngayNghi
+                        'date': ngayNghi.valueOf()
                     })
                 });
 
