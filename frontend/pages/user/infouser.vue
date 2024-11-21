@@ -1,6 +1,8 @@
 <script setup lang="ts">
 import {useUserStore} from '~/stores/user';
 import {computed} from "vue";
+import ThemThuCung from "~/components/ThemThuCung.vue"
+import CapNhatThuCung from "~/components/CapNhatThuCung.vue"
 
 const userStore = useUserStore();
 
@@ -50,14 +52,19 @@ if (userInfo.value === null) {
             </div>
           </div>
           <div class="container p-4">
-            <div v-if="userInfo?.listThuCung==null">
+            <div class="row">
+              <div class="col-2">
+                <ThemThuCung/>
+              </div>
+            </div>
+            <div v-if="userInfo?.listThuCung==0">
               Bạn chưa lưu thông tin thú cưng nào !
             </div>
             <div v-else>
               <div class="text fs-4">
                 Danh sách thú cưng của của chủ nhân :
               </div>
-              <div v-for="thuCung in userInfo?.listThuCung" :key="userInfo?.listThuCung.id" class="card m-4">
+              <div v-if="userInfo.listThuCung.length>0" v-for="thuCung in userInfo?.listThuCung" :key="userInfo?.listThuCung.id" class="card m-4">
                 <div class="card-body">
                   <table class="table">
                     <thead>
@@ -66,6 +73,7 @@ if (userInfo.value === null) {
                       <th>Cân nặng</th>
                       <th>Giống</th>
                       <th>Tuổi</th>
+                      <th>Thao tác</th>
                     </tr>
                     </thead>
                     <tbody>
@@ -74,6 +82,9 @@ if (userInfo.value === null) {
                       <td>{{thuCung.cannang}}</td>
                       <td>{{thuCung.giong}}</td>
                       <td>{{thuCung.tuoi}}</td>
+                      <td>
+                          <CapNhatThuCung/>
+                      </td>
                     </tr>
                     </tbody>
                   </table>
