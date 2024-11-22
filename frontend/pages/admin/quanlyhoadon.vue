@@ -1,7 +1,7 @@
 <template>
     <div class="container">
         <h1>Quản lý hóa đơn</h1>
-        <button @click="fetchHoaDon" class="btn btn-primary">Tải danh sách hóa đơn</button>
+        <button @click="fetchHoaDon" class="btn btn-sm btn-success m-4">Tải danh sách hóa đơn</button>
         <table class="table table-striped mt-3">
             <thead>
                 <tr>
@@ -30,7 +30,7 @@
 </template>
 
 <script setup lang="ts">
-import { ref } from 'vue';
+import {onMounted, ref} from 'vue';
 import { useQuanLyHoaDonStore } from '~/stores/QuanLyHoaDon';
 
 const store = useQuanLyHoaDonStore();
@@ -42,6 +42,11 @@ const fetchHoaDon = async () => {
     await store.fetchListHoaDon();
     hoaDonList.value = store.ListHoaDon;
 };
+
+onMounted(() => {
+  fetchHoaDon();
+});
+
 const formatDate = (dateString: string) => {
     const date = new Date(dateString);
     const day = String(date.getDate()).padStart(2, '0');

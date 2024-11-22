@@ -1,5 +1,8 @@
 <template>
   <div class="container">
+    <div>
+      <button type="button" @click="lamMoi()" class="btn btn-sm btn-success m-4">Làm mới bảng</button>
+    </div>
     <table class="table">
       <thead>
       <tr>
@@ -65,7 +68,9 @@ onMounted(() => {
   loadUsers();
 });
 
-
+function lamMoi() {
+  loadUsers();
+}
 
 const editUser = (id: string) => {
   toast.success('Chức năng đang phát triển', {});

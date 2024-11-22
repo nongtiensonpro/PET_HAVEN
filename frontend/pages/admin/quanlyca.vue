@@ -67,6 +67,11 @@ function capNhat(ca: CaLichHen) {
   fetchCaLichHens();
 }
 
+function lammoi() {
+  fetchCaLichHens();
+  fetchNgayNghi();
+}
+
 </script>
 
 <template>
@@ -80,6 +85,9 @@ function capNhat(ca: CaLichHen) {
         <div class="col-3">
           <CapNhatNgayNghi />
         </div>
+          <div class="col-3">
+            <button type="button" @click="lammoi()" class="btn btn-sm btn-success">Làm mới</button>
+          </div>
         </div>
       </div>
   </div>
