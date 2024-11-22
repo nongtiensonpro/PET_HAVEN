@@ -10,6 +10,7 @@ const userInfo = computed(() => userStore.userInfo);
 definePageMeta({
   middleware: ['auth']
 })
+
 function login1() {
   if (process.client) {
     window.location.href = 'http://localhost:8080/oauth2/authorization/keycloak';
@@ -33,7 +34,8 @@ if (userInfo.value === null) {
               <img class="card-img-top" src="../../assets/image/cat3.jpg" alt="">
             </div>
             <div class="col-8">
-              <div v-if="Array.isArray(userInfo.role) && userInfo.role.includes('admin') || userInfo.role.includes('manager')">
+              <div
+                  v-if="Array.isArray(userInfo.role) && userInfo.role.includes('admin') || userInfo.role.includes('manager')">
                 <div class="p-4 text fs-4">
                   <div v-if="userInfo.role.includes('admin')">
                     Bạn đang đăng nhập với tài khoản có quyền Admin
@@ -47,8 +49,8 @@ if (userInfo.value === null) {
                 </div>
               </div>
               <label for="">Tên người dùng</label>
-              <input type="text"
-                     class="form-control" name="" id="name" aria-describedby="helpId" placeholder="" v-model="userInfo.name">
+              <input type="text" class="form-control" name="" id="name" aria-describedby="helpId" placeholder=""
+                     v-model="userInfo.name">
             </div>
           </div>
           <div class="container p-4">
@@ -57,14 +59,15 @@ if (userInfo.value === null) {
                 <ThemThuCung/>
               </div>
             </div>
-            <div v-if="userInfo?.listThuCung==0">
+            <div v-if="userInfo?.listThuCung == 0">
               Bạn chưa lưu thông tin thú cưng nào !
             </div>
             <div v-else>
               <div class="text fs-4">
                 Danh sách thú cưng của của chủ nhân :
               </div>
-              <div v-if="userInfo.listThuCung.length>0" v-for="thuCung in userInfo?.listThuCung" :key="userInfo?.listThuCung.id" class="card m-4">
+              <div v-if="userInfo.listThuCung.length > 0" v-for="thuCung in userInfo?.listThuCung"
+                   :key="userInfo?.listThuCung.id" class="card m-4">
                 <div class="card-body">
                   <table class="table">
                     <thead>
@@ -78,12 +81,15 @@ if (userInfo.value === null) {
                     </thead>
                     <tbody>
                     <tr>
-                      <td>{{thuCung.ten}}</td>
-                      <td>{{thuCung.cannang}}</td>
-                      <td>{{thuCung.giong}}</td>
-                      <td>{{thuCung.tuoi}}</td>
+                      <td>{{ thuCung.ten }}</td>
+                      <td>{{ thuCung.cannang }}</td>
+                      <td>{{ thuCung.giong }}</td>
+                      <td>{{ thuCung.tuoi }}</td>
                       <td>
-                          <CapNhatThuCung/>
+                        <CapNhatThuCung
+                            :thuCung="thuCung"
+                            @update:thuCung="thuCung"
+                        ></CapNhatThuCung>
                       </td>
                     </tr>
                     </tbody>
@@ -98,6 +104,4 @@ if (userInfo.value === null) {
   </div>
 </template>
 
-<style scoped>
-
-</style>
+<style scoped></style>

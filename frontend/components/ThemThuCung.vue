@@ -1,14 +1,72 @@
 <script setup lang="ts">
+import {computed, ref} from 'vue';
+import { useStore } from '~/stores/UserStores';
+import {useUserStore} from '~/stores/user';
+const userStoreNe = useUserStore();
+const userInfo = computed(() => userStoreNe.userInfo);
 
+const userStore = useStore();
+const petName = ref('');
+const petWeight = ref('');
+const petBreed = ref('');
+const petAge = ref('');
+const errors = ref({
+  name: '',
+  weight: '',
+  breed: '',
+  age: ''
+});
+
+function validateFields() {
+  let isValid = true;
+  errors.value = { name: '', weight: '', breed: '', age: '' };
+
+  if (!petName.value) {
+    errors.value.name = 'Tên thú cưng không được để trống';
+    isValid = false;
+  }
+  if (!petWeight.value || isNaN(Number(petWeight.value))) {
+    errors.value.weight = 'Cân nặng phải là một số';
+    isValid = false;
+  }
+  if (!petBreed.value) {
+    errors.value.breed = 'Giống không được để trống';
+    isValid = false;
+  }
+  if (!petAge.value || isNaN(Number(petAge.value))) {
+    errors.value.age = 'Tuổi phải là một số';
+    isValid = false;
+  }
+
+  return isValid;
+}
+
+function addPet() {
+  if (!validateFields()) {
+    return;
+  }
+
+  const newPet = {
+    ten: petName.value,
+    cannang: petWeight.value,
+    giong: petBreed.value,
+    tuoi: petAge.value,
+
+  };
+  userStore.addPet(newPet);
+
+  petName.value = '';
+  petWeight.value = '';
+  petBreed.value = '';
+  petAge.value = '';
+}
 </script>
 
 <template>
-  <!-- Button trigger modal -->
   <button type="button" class="btn btn-sm btn-warning m-1" data-bs-toggle="modal" data-bs-target="#exampleModal">
     Thêm thú cưng
   </button>
 
-  <!-- Modal -->
   <div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
     <div class="modal-dialog">
       <div class="modal-content">
@@ -17,11 +75,24 @@
           <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
         </div>
         <div class="modal-body">
-          ...
+          <div>
+            <label>Tên thú cưng:</label>
+            <input type="text" v-model="petName" class="form-control" />
+            <span class="text-danger">{{ errors.name }}</span><br>
+            <label>Cân nặng:</label>
+            <input type="text" v-model="petWeight" class="form-control" />
+            <span class="text-danger">{{ errors.weight }}</span><br>
+            <label>Giống:</label>
+            <input type="text" v-model="petBreed" class="form-control" />
+            <span class="text-danger">{{ errors.breed }}</span><br>
+            <label>Tuổi:</label>
+            <input type="text" v-model="petAge" class="form-control" />
+            <span class="text-danger">{{ errors.age }}</span><br>
+          </div>
         </div>
         <div class="modal-footer">
-          <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-          <button type="button" class="btn btn-primary">Save changes</button>
+          <button type="button" class="custom-button" data-bs-dismiss="modal">Đóng</button>
+          <button type="button" class="custom-button" @click="addPet">Thêm</button>
         </div>
       </div>
     </div>
@@ -29,5 +100,7 @@
 </template>
 
 <style scoped>
-
+.text-danger {
+  color: red;
+}
 </style>

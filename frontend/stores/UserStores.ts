@@ -1,4 +1,5 @@
 import { defineStore } from "pinia";
+import type ThuCungKhachHang from "~/models/ThuCungKhachHang";
 import type User from "~/models/User";
 
 interface UserState {
@@ -30,5 +31,53 @@ export const useStore = defineStore("userStore", {
                 return [];
             }
         },
+        async addPet(pet: ThuCungKhachHang) {
+            console.log('Tên : '+pet.ten+ ' Tuổi : ' + pet.tuoi + ' Giống : ' + pet.giong+ ' Cân nặng : ' + pet.cannang+'gau gau gau')
+            const token = localStorage.getItem("access_token");
+            try {
+                const response = await fetch("http://localhost:8080/api/thu-cung/add", {
+                    method: "POST",
+                    headers: {
+                        "Content-Type": "application/json",
+                        Authorization: `Bearer ${token}`,
+                    },
+                    body: JSON.stringify(pet),
+                });
+                if (!response.ok) {
+                    throw new Error("Failed to add pet");
+                }
+                const data = await response.json();
+                console.log(data);
+                this.fetchUsers();
+                return data;
+            } catch (error) {
+                console.error("Error adding pet:", error);
+                return null;
+            }
+        },
+        async updatePet(pet: ThuCungKhachHang) {
+            console.log('ID' + pet.idtaikhoan+ ' Tên : '+pet.ten+ ' Tuổi : ' + pet.tuoi + ' Giống : ' + pet.giong+ ' Cân nặng : ' + pet.cannang+'gau gau gau')
+            const token = localStorage.getItem("access_token");
+            try {
+                const response = await fetch("http://localhost:8080/api/thu-cung/update", {
+                    method: "PUT",
+                    headers: {
+                        "Content-Type": "application/json",
+                        Authorization: `Bearer ${token}`,
+                    },
+                    body: JSON.stringify(pet),
+                });
+                if (!response.ok) {
+                    throw new Error("Failed to add pet");
+                }
+                const data = await response.json();
+                console.log(data);
+                this.fetchUsers();
+                return data;
+            } catch (error) {
+                console.error("Error adding pet:", error);
+                return null;
+            }
+        }
     },
 });
