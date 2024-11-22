@@ -104,4 +104,20 @@ public class HoaDonService {
             System.err.println("Gửi email hóa đơn thất bại: " + e.getMessage());
         }
     }
+
+    public List<Object[]> thongKeTheoNgay() {
+        return hoadonRepository.thongKeTheoNgay();
+    }
+
+    public List<Object[]> thongKeTheoTuan() {
+        return hoadonRepository.thongKeTheoTuan();
+    }
+
+    public List<Object[]> thongKeTheoThang() {
+        return hoadonRepository.thongKeTheoThang();
+    }
+
+    public List<Object[]> thongKeTheoNam() {
+        return hoadonRepository.thongKeTheoNam();
+    }
 }
