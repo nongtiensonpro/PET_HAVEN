@@ -5,6 +5,7 @@ import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 
 @Entity
@@ -23,7 +24,7 @@ public class Hoadon {
 
     @JsonProperty
     @Column(name = "date")
-    private LocalDateTime date;
+    private LocalDate date;
 
     @JsonProperty
     @NotNull
@@ -99,11 +100,11 @@ public class Hoadon {
         this.idlichhen = idlichhen;
     }
 
-    public LocalDateTime getDate() {
+    public LocalDate getDate() {
         return date;
     }
 
-    public void setDate(LocalDateTime date) {
+    public void setDate(LocalDate date) {
         this.date = date;
     }
 

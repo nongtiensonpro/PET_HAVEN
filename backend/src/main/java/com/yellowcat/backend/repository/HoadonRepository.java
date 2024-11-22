@@ -12,14 +12,13 @@ import java.util.Optional;
 
 public interface HoadonRepository extends JpaRepository<Hoadon, Integer> {
 
-    List<Hoadon> findByTrangthai(Integer trangthai);
+    List<Hoadon> findByIdlichhen_Date(LocalDate date);
 
     @Query("SELECT h FROM Hoadon h WHERE h.nguoithanhtoan = :email " +
-            "AND h.phuongthucthanhtoan = :phuongThuc " +
-            "AND h.date = CURRENT_DATE " +
-            "AND h.trangthai = 2")
-    List<Hoadon> findPaidTodayByEmailAndPaymentMethod(@Param("email") String email,
-                                                      @Param("phuongThuc") String phuongThuc);
+            "AND h.phuongthucthanhtoan = 'Offline' " +
+            "AND h.date = :date ")
+    List<Hoadon> findByNguoithanhtoanAndPhuongthucthanhtoan(@Param("email") String email
+    , @Param("date") LocalDate date);
     Optional<Hoadon> findByIdlichhen_Id(Integer idlichhen);
 
     Optional<Hoadon> findByMagiaodich(String idPayMent);

@@ -1,5 +1,6 @@
 import type ThuCungKhachHang from "~/models/ThuCungKhachHang";
 import type DichVu from "~/models/DichVu";
+import type CaLichHen from "~/models/CaHen";
 
 export class Lichhen {
     id: number;
@@ -9,7 +10,7 @@ export class Lichhen {
     emailNguoiDat: string;
     date: string; // LocalDate trong Java là string trong TypeScript
     trangthai: number;
-    idcalichhen: Calichhen;
+    idcalichhen: CaLichHen;
 
     constructor(
         id: number,
@@ -19,7 +20,7 @@ export class Lichhen {
         emailNguoiDat: string,
         date: string,
         trangthai: number,
-        idcalichhen: Calichhen
+        idcalichhen: CaLichHen
     ) {
         this.id = id;
         this.idkhachhang = idkhachhang;

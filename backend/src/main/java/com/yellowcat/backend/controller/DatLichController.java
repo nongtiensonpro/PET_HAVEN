@@ -48,7 +48,6 @@ public class DatLichController {
 
     @GetMapping("/dat-lich-info")
     public ResponseEntity<Map<String, Object>> getDatLichInfo(@RequestParam("ngay") LocalDate ngay) {
-        System.out.println(ngay + " 123");
         Map<String, Object> response = new HashMap<>();
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();
         String idUser = auth.getName();
@@ -125,7 +124,7 @@ public class DatLichController {
 
 
         Hoadon hoadon = new Hoadon();
-        hoadon.setDate(LocalDateTime.now());
+        hoadon.setDate(LocalDate.now());
         hoadon.setIdlichhen(lichhen);
         hoadon.setPhuongthucthanhtoan("Offline");
         hoadon.setTrangthai(1);

@@ -36,9 +36,9 @@ public class CaLichHenService {
         }
 
         if (calichhen.getId() == null) {
-            lichHenManager.handleLichHenLogic(calichhen);
+            caLichHenRepository.save(calichhen);
+            lichHenManager.taoLichHenRong();
         }
-
         caLichHenRepository.save(calichhen);
     }
 

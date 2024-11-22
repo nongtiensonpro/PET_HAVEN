@@ -14,4 +14,7 @@ public interface NgaynghiRepository extends JpaRepository<Ngaynghi, Integer> {
 
     List<Ngaynghi> findByTrangthaiTrue();
 
+    List<Ngaynghi>findByTrangthaiTrueAndNgaynghi(LocalDate ngaynghi);
+
+
 }
