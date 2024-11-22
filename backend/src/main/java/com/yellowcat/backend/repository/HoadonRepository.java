@@ -27,26 +27,25 @@ public interface HoadonRepository extends JpaRepository<Hoadon, Integer> {
 
 //    ________________Thống kê______________________
 // Thống kê theo ngày
-@Query("SELECT FUNCTION('DATE', h.date) AS ngay, SUM(h.sotien) AS doanhthu " +
-        "FROM Hoadon h " +
-        "WHERE h.trangthai = 2 " +
-        "GROUP BY FUNCTION('DATE', h.date) " +
-        "ORDER BY FUNCTION('DATE', h.date)")
-List<Object[]> thongKeTheoNgay();
+    @Query("SELECT FUNCTION('DATE', h.date) AS ngay, SUM(h.sotien) AS doanhthu " +
+            "FROM Hoadon h " +
+            "WHERE h.trangthai = 2 AND FUNCTION('DATE', h.date) BETWEEN :startDate AND :endDate " +
+            "GROUP BY FUNCTION('DATE', h.date) " +
+            "ORDER BY FUNCTION('DATE', h.date)")
+    List<Object[]> thongKeTheoNgay(@Param("startDate") LocalDate startDate, @Param("endDate") LocalDate endDate);
 
-    // Thống kê theo tháng
     @Query("SELECT FUNCTION('DATE_TRUNC', 'month', h.date) AS thang, SUM(h.sotien) AS doanhthu " +
             "FROM Hoadon h " +
-            "WHERE h.trangthai = 2 " +
+            "WHERE h.trangthai = 2 AND h.date BETWEEN :startDate AND :endDate " +
             "GROUP BY FUNCTION('DATE_TRUNC', 'month', h.date) " +
             "ORDER BY FUNCTION('DATE_TRUNC', 'month', h.date)")
-    List<Object[]> thongKeTheoThang();
+    List<Object[]> thongKeTheoThang(@Param("startDate") LocalDate startDate, @Param("endDate") LocalDate endDate);
 
-    // Thống kê theo năm
     @Query("SELECT FUNCTION('DATE_TRUNC', 'year', h.date) AS nam, SUM(h.sotien) AS doanhthu " +
             "FROM Hoadon h " +
-            "WHERE h.trangthai = 2 " +
+            "WHERE h.trangthai = 2 AND h.date BETWEEN :startDate AND :endDate " +
             "GROUP BY FUNCTION('DATE_TRUNC', 'year', h.date) " +
             "ORDER BY FUNCTION('DATE_TRUNC', 'year', h.date)")
-    List<Object[]> thongKeTheoNam();
+    List<Object[]> thongKeTheoNam(@Param("startDate") LocalDate startDate, @Param("endDate") LocalDate endDate);
+
 }

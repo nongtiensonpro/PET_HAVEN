@@ -13,6 +13,8 @@ import org.springframework.stereotype.Service;
 
 import java.security.SecureRandom;
 import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
+import java.time.format.DateTimeParseException;
 import java.util.Date;
 import java.util.List;
 import java.util.Optional;
@@ -105,19 +107,24 @@ public class HoaDonService {
         }
     }
 
-    public List<Object[]> thongKeTheoNgay() {
-        return hoadonRepository.thongKeTheoNgay();
+    public List<Object[]> thongKeTheoNgay(LocalDate startDate, LocalDate endDate) {
+        return hoadonRepository.thongKeTheoNgay(startDate, endDate);
     }
 
-    public List<Object[]> thongKeTheoTuan() {
-        return hoadonRepository.thongKeTheoTuan();
+    public List<Object[]> thongKeTheoThang(LocalDate startDate, LocalDate endDate) {
+        return hoadonRepository.thongKeTheoThang(startDate, endDate);
     }
 
-    public List<Object[]> thongKeTheoThang() {
-        return hoadonRepository.thongKeTheoThang();
+    public List<Object[]> thongKeTheoNam(LocalDate startDate, LocalDate endDate) {
+        return hoadonRepository.thongKeTheoNam(startDate, endDate);
     }
 
-    public List<Object[]> thongKeTheoNam() {
-        return hoadonRepository.thongKeTheoNam();
+    public LocalDate parseDate(String date) {
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
+        try {
+            return LocalDate.parse(date, formatter);
+        } catch (DateTimeParseException e) {
+            throw new IllegalArgumentException("Invalid date format: " + date);
+        }
     }
 }

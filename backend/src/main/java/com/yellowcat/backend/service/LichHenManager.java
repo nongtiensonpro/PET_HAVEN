@@ -21,7 +21,6 @@ public class LichHenManager {
 
     public void taoLichHenRong() {
         // Lấy tất cả các ca từ bảng calichhen
-        System.out.println("toi dep trai");
         List<Calichhen> danhSachCa = calichhenRepository.findAll();
 
         LocalDate startDate = LocalDate.now();

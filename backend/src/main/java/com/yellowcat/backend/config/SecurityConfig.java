@@ -3,10 +3,13 @@ package com.yellowcat.backend.config;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.security.config.annotation.method.configuration.EnableGlobalMethodSecurity;
+import org.springframework.security.config.annotation.method.configuration.EnableMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfiguration;
+import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.oauth2.client.registration.ClientRegistration;
 import org.springframework.security.oauth2.client.registration.ClientRegistrationRepository;
 import org.springframework.security.oauth2.client.registration.InMemoryClientRegistrationRepository;
@@ -25,7 +28,14 @@ import java.util.List;
 
 @Configuration
 @EnableWebSecurity
+@EnableMethodSecurity
 public class SecurityConfig{
+
+    private final jwtAuthConverter jwtAuthConverter;
+
+    public SecurityConfig(com.yellowcat.backend.config.jwtAuthConverter jwtAuthConverter) {
+        this.jwtAuthConverter = jwtAuthConverter;
+    }
 
     @Bean
     public JwtDecoder jwtDecoder() {
@@ -41,6 +51,7 @@ public class SecurityConfig{
         return jwtDecoder;
     }
 
+
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http.cors();
@@ -51,7 +62,6 @@ public class SecurityConfig{
                 )
 
                 .oauth2Login(oauth2 -> oauth2
-//                        .loginPage("/login") // Đường dẫn đến trang đăng nhập tùy chỉnh
                         .defaultSuccessUrl("/home", true) // Đường dẫn đến trang thành công
                         .failureUrl("/login?error=true") // Đường dẫn đến trang lỗi
                 )
@@ -66,12 +76,14 @@ public class SecurityConfig{
                 )
                 .oauth2ResourceServer(oauth2 -> oauth2
                         .jwt(jwt -> jwt
-                                .jwtAuthenticationConverter(jwtAuthenticationConverter()) // Xác thực JWT
+                                .decoder(jwtDecoder()) // Cung cấp JwtDecoder
+                                .jwtAuthenticationConverter(jwtAuthConverter) // Sử dụng JwtAuthenticationConverter
                         )
-                );
+                )
 
-
-
+                // Cấu hình Stateless session (không sử dụng session)
+                .sessionManagement()
+                .sessionCreationPolicy(SessionCreationPolicy.STATELESS);
 
 
 
@@ -96,17 +108,6 @@ public class SecurityConfig{
                 .authorizationGrantType(AuthorizationGrantType.AUTHORIZATION_CODE)
                 .build();
     }
-    @Bean
-    JwtAuthenticationConverter jwtAuthenticationConverter() {
-        JwtGrantedAuthoritiesConverter grantedAuthoritiesConverter = new JwtGrantedAuthoritiesConverter();
-        grantedAuthoritiesConverter.setAuthorityPrefix("ROLE_");
-        grantedAuthoritiesConverter.setAuthoritiesClaimName("roles");
-
-        JwtAuthenticationConverter jwtAuthenticationConverter = new JwtAuthenticationConverter();
-        jwtAuthenticationConverter.setJwtGrantedAuthoritiesConverter(grantedAuthoritiesConverter);
-        return jwtAuthenticationConverter;
-    }
-
 
     @Bean
     public CorsConfigurationSource corsConfigurationSource() {
@@ -120,9 +121,6 @@ public class SecurityConfig{
         source.registerCorsConfiguration("/api/**", configuration); // Cấu hình CORS cho tất cả API
         return source;
     }
-
-
-
 
 
 }
