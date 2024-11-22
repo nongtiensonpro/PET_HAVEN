@@ -39,14 +39,13 @@ public class ThuCungController {
     }
 
     @PutMapping("/update")
-    public ResponseEntity<?> updateThuCung(@RequestBody Integer id) {
+    public ResponseEntity<?> updateThuCung(@RequestBody Thucung thucung) {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-        Optional<Thucung> thucungOptional = thuCungService.findThuCungById(id);
+        Optional<Thucung> thucungOptional = thuCungService.findThuCungById(thucung.getId());
         if (!thucungOptional.isPresent()) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body("không tìm thấy thú cưng");
         }
         String idUser = authentication.getName();
-        Thucung thucung = thucungOptional.get();
         if (!thucung.getIdtaikhoan().equalsIgnoreCase(idUser)){
             return ResponseEntity.badRequest().build();
         }

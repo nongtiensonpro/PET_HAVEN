@@ -13,6 +13,8 @@ import org.springframework.stereotype.Service;
 
 import java.security.SecureRandom;
 import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
+import java.time.format.DateTimeParseException;
 import java.util.Date;
 import java.util.List;
 import java.util.Optional;
@@ -104,6 +106,5 @@ public class HoaDonService {
             System.err.println("Gửi email hóa đơn thất bại: " + e.getMessage());
         }
     }
-
 
 }

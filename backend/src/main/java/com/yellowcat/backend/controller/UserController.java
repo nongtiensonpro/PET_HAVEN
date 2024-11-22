@@ -29,6 +29,14 @@ public class UserController {
     @Autowired
     ThuCungService thuCungService;
 
+    @GetMapping("/debug")
+    public ResponseEntity<?> debug() {
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        System.out.println(authentication.getAuthorities());
+        return ResponseEntity.ok(authentication.getAuthorities());
+    }
+
+
     @GetMapping("/api/user")
     public Map<String, Object> getCurrentUser() {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
@@ -104,5 +112,7 @@ public class UserController {
             keycloak.close();
         }
     }
+
+
 
 }
