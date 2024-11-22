@@ -18,6 +18,7 @@ import org.springframework.web.bind.annotation.*;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -42,25 +43,35 @@ public class DatLichController {
     @Autowired
     private HoaDonService hoaDonService;
 
+    @Autowired
+    private NgayNghiService ngayNghiService;
+
     @GetMapping("/dat-lich-info")
     public ResponseEntity<Map<String, Object>> getDatLichInfo(@RequestParam("ngay") LocalDate ngay) {
+        System.out.println(ngay + " 123");
         Map<String, Object> response = new HashMap<>();
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();
         String idUser = auth.getName();
+
+        // Kiểm tra ngày nghỉ (ngày lễ)
+        Optional<Ngaynghi> ngaynghiOptional = ngayNghiService.getNgaynghi(ngay);
+        if (!ngaynghiOptional.isPresent()) {
+            // Lấy các ca có thể đặt
+            List<Calichhen> CaLichHen = caLichHenService.getAllByDate(ngay);
+            response.put("CaLichHen", CaLichHen);
+        }
 
         // Lấy danh sách dịch vụ
         List<Dichvu> danhSachDichVu = dichVuService.getListTrangThaiTrue();
         response.put("dichVu", danhSachDichVu);
 
-        // Lấy các ca có thể đặt
-        List<Calichhen> CaLichHen = caLichHenService.getAllByDate(ngay);
-        response.put("CaLichHen", CaLichHen);
-
+        // Lấy danh sách thú cưng
         List<Thucung> listThuCung = thuCungService.findListThuCungByidChu(idUser);
         response.put("ListThuCung", listThuCung);
 
         return ResponseEntity.ok(response);
     }
+
 
     // API tạo lịch hẹn khi khách hàng ấn nút xác nhận
     @PutMapping("/xac-nhan-dat")
