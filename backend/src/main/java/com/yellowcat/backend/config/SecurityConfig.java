@@ -46,7 +46,7 @@ public class SecurityConfig{
         http.cors();
         http
                 .authorizeHttpRequests(authz -> authz
-                        .requestMatchers("/api/dich-vu/all", "/login", "/oauth2/**","/","/Dang-xuat","/images/AvatarDichVu/**","/api/payPal/payment/**").permitAll() // Cho phép truy cập không cần xác thực
+                        .requestMatchers("/api/dich-vu/all", "/login", "/oauth2/**","/","/Dang-xuat","/images/AvatarDichVu/**","/api/payPal/payment/**","/api/danh-gia/danh-gia-theo-dich-vu/**").permitAll() // Cho phép truy cập không cần xác thực
                         .anyRequest().authenticated() // Yêu cầu xác thực cho các yêu cầu còn lại
                 )
 

@@ -18,7 +18,9 @@ import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 
 import java.time.LocalDateTime;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 
 @Controller
@@ -84,6 +86,4 @@ public class HoaDonController {
 
         return ResponseEntity.ok().headers(headers).body(pdfBytes);
     }
-
-
 }
