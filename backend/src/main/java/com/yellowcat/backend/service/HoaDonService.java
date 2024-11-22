@@ -105,19 +105,5 @@ public class HoaDonService {
         }
     }
 
-    public List<Object[]> thongKeTheoNgay() {
-        return hoadonRepository.thongKeTheoNgay();
-    }
 
-    public List<Object[]> thongKeTheoTuan() {
-        return hoadonRepository.thongKeTheoTuan();
-    }
-
-    public List<Object[]> thongKeTheoThang() {
-        return hoadonRepository.thongKeTheoThang();
-    }
-
-    public List<Object[]> thongKeTheoNam() {
-        return hoadonRepository.thongKeTheoNam();
-    }
 }
