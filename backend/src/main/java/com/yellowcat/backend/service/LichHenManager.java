@@ -19,14 +19,9 @@ public class LichHenManager {
     @Autowired
     private CalichhenRepository calichhenRepository;
 
-    public void handleLichHenLogic(Calichhen calichhen) {
-        if (calichhen.getId() == null) {
-            taoLichHenRong();
-        }
-        calichhenRepository.save(calichhen);
-    }
     public void taoLichHenRong() {
         // Lấy tất cả các ca từ bảng calichhen
+        System.out.println("toi dep trai");
         List<Calichhen> danhSachCa = calichhenRepository.findAll();
 
         LocalDate startDate = LocalDate.now();

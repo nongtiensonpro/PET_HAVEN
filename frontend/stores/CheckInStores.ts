@@ -7,7 +7,6 @@ import type {Lichhen} from "~/models/LichSuDatLich";
 interface CheckInState {
     ListHoaDon: HoaDonKhachHang[];
     ListHoaDonDaThanhToan : HoaDonKhachHang[];
-    ListLichHomNay : Lichhen[];
 }
 
 
@@ -16,25 +15,9 @@ export const useCheckInStore = defineStore('checkInStore', {
     state: (): CheckInState => ({
         ListHoaDon: [],
         ListHoaDonDaThanhToan: [],
-        ListLichHomNay : [],
+
     }),
     actions: {
-        async fetchLichHen2(){
-            const token = localStorage.getItem('access_token');
-            try {
-                const response = await fetch('http://localhost:8080/api/lich-hen/lich-hom-nay', {
-                    method: 'GET',
-                    headers: {
-                        'Authorization': `Bearer ${token}`,
-                    }
-                });
-                const data = await response.json();
-                this.ListLichHomNay = data;
-                console.log(this.ListLichHomNay);
-            } catch (error) {
-                console.error('Error fetching data:', error);
-            }
-        },
         async fetchHoaDon() {
             const token = localStorage.getItem('access_token');
             try {

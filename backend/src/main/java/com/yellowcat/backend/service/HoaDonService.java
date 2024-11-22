@@ -52,15 +52,15 @@ public class HoaDonService {
         hoadon.setIdgiamgia(giamgia);
         return giaTien;
     }
-    public List<Hoadon> getAllHoaDonChuaThanhToan(int idTT){
-        return hoadonRepository.findByTrangthai(idTT);
+    public List<Hoadon> getAllHoaDonChuaThanhToan(){
+        return hoadonRepository.findByIdlichhen_Date(LocalDate.now());
     }
 
     public List<Hoadon> getALl(){return hoadonRepository.findAll();}
 
     public Optional<Hoadon> findById(int id){return hoadonRepository.findById(id);}
 
-    public List<Hoadon> LichSuThanhToanHoaDonTheoTaiKhoan(String email){return hoadonRepository.findPaidTodayByEmailAndPaymentMethod(email,"Offline");}
+    public List<Hoadon> LichSuThanhToanHoaDonTheoTaiKhoan(String email){return hoadonRepository.findByNguoithanhtoanAndPhuongthucthanhtoan(email,LocalDate.now());}
 
     public Optional<Hoadon> finHoadonByIdLich(Integer id){return hoadonRepository.findByIdlichhen_Id(id);}
 

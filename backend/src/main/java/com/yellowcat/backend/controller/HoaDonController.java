@@ -35,7 +35,7 @@ public class HoaDonController {
     @PreAuthorize("hasAnyRole('admin', 'manager')")
     @GetMapping("/all-chuaTT")
     public List<Hoadon> getAllHoaDonChuaThanhToan(){
-        List<Hoadon> listHdChuaTT = hoaDonService.getAllHoaDonChuaThanhToan(1);
+        List<Hoadon> listHdChuaTT = hoaDonService.getAllHoaDonChuaThanhToan();
         return listHdChuaTT;
     }
 
