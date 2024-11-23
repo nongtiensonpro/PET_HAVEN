@@ -23,7 +23,7 @@ public class jwtAuthConverter implements Converter<Jwt, AbstractAuthenticationTo
     private final JwtGrantedAuthoritiesConverter jwtGrantedAuthoritiesConverter =
             new JwtGrantedAuthoritiesConverter();
 
-    private final String pname = "preferred_username";
+    private final String pname = "sub";
 
     @Override
     public AbstractAuthenticationToken convert(@NonNull Jwt jwt) {

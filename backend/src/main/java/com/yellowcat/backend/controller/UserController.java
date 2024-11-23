@@ -1,6 +1,8 @@
 package com.yellowcat.backend.controller;
 
+import com.yellowcat.backend.model.Thongtincanhan;
 import com.yellowcat.backend.model.Thucung;
+import com.yellowcat.backend.service.ThongTinCaNhanService;
 import com.yellowcat.backend.service.ThuCungService;
 import org.keycloak.OAuth2Constants;
 import org.keycloak.admin.client.Keycloak;
@@ -20,6 +22,7 @@ import java.time.Instant;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 @RestController
@@ -28,6 +31,9 @@ public class UserController {
 
     @Autowired
     ThuCungService thuCungService;
+
+    @Autowired
+    ThongTinCaNhanService thongTinCaNhanService;
 
     @GetMapping("/debug")
     public ResponseEntity<?> debug() {
@@ -39,10 +45,10 @@ public class UserController {
 
     @GetMapping("/api/user")
     public Map<String, Object> getCurrentUser() {
-        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-        String idUser = authentication.getName();
+        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+        String idUser = auth.getName();
 
-        Jwt jwt = (Jwt) authentication.getPrincipal();
+        Jwt jwt = (Jwt) auth.getPrincipal();
         Map<String, Object> resourceAccess = jwt.getClaim("resource_access");
         List<String> petHavenRoles = null;
 
@@ -56,6 +62,16 @@ public class UserController {
         String username = jwt.getClaimAsString("preferred_username");
         if (username == null) {
             username = jwt.getClaimAsString("email");
+        }
+        String name = jwt.getClaimAsString("name");
+
+        Thongtincanhan thongtincanhan = new Thongtincanhan();
+        thongtincanhan.setIdtaikhoan(idUser);
+        thongtincanhan.setHoten(name);
+        thongtincanhan.setEmail(username);
+        Optional<Thongtincanhan> thongtincanhanOptional = thongTinCaNhanService.getThongtincanhanByIdTaiKhoan(idUser);
+        if (!thongtincanhanOptional.isPresent()) {
+            thongTinCaNhanService.addOrUpdate(thongtincanhan);
         }
 
         List<Thucung> thucungList = thuCungService.findListThuCungByidChu(idUser);
