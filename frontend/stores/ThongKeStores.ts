@@ -42,6 +42,7 @@ export const useThongKeStore = defineStore('thongKe', {
                 }
 
                 const responseData = await response.json();
+                console.log(responseData)
                 if (responseData.data && Array.isArray(responseData.data)) {
                     this.thongKeItems = responseData.data.map((item: any) => ({
                         date: new Date(item[0]),
@@ -69,7 +70,7 @@ export const useThongKeStore = defineStore('thongKe', {
                 const url = new URL('http://localhost:8080/api/thong-ke/thang');
 
                 const response = await fetch(url, {
-                    method: 'GET',
+                    method: 'POST',
                     headers: {
                         'Authorization': `Bearer ${token}`,
                         'Content-Type': 'application/json'
@@ -114,7 +115,7 @@ export const useThongKeStore = defineStore('thongKe', {
                 const url = new URL('http://localhost:8080/api/thong-ke/nam');
 
                 const response = await fetch(url, {
-                    method: 'GET',
+                    method: 'POST',
                     headers: {
                         'Authorization': `Bearer ${token}`,
                         'Content-Type': 'application/json'
@@ -160,7 +161,7 @@ export const useThongKeStore = defineStore('thongKe', {
                 const url = new URL('http://localhost:8080/api/thong-ke/top10User');
 
                 const response = await fetch(url, {
-                    method: 'GET',
+                    method: 'POST',
                     headers: {
                         'Authorization': `Bearer ${token}`,
                         'Content-Type': 'application/json'

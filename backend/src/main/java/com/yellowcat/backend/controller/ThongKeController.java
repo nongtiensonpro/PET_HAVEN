@@ -21,7 +21,7 @@ public class ThongKeController {
     @Autowired
     private HoaDonService hoaDonService;
 
-    @GetMapping("/ngay")
+    @PostMapping("/ngay")
     public ResponseEntity<Map<String, Object>> thongKeTheoNgay(@RequestBody ThongKeDTO dto) {
         LocalDate startDate = hoaDonService.parseDate(dto.getStartDate());
         LocalDate endDate = hoaDonService.parseDate(dto.getEndDate());
@@ -34,7 +34,7 @@ public class ThongKeController {
         return ResponseEntity.ok(response);
     }
 
-    @GetMapping("/thang")
+    @PostMapping("/thang")
     public ResponseEntity<Map<String, Object>> thongKeTheoThang(@RequestBody ThongKeDTO dto) {
         LocalDate startDate = hoaDonService.parseDate(dto.getStartDate());
         LocalDate endDate = hoaDonService.parseDate(dto.getEndDate());
@@ -47,7 +47,7 @@ public class ThongKeController {
         return ResponseEntity.ok(response);
     }
 
-    @GetMapping("/nam")
+    @PostMapping("/nam")
     public ResponseEntity<Map<String, Object>> thongKeTheoNam(@RequestBody ThongKeDTO dto) {
         LocalDate startDate = hoaDonService.parseDate(dto.getStartDate());
         LocalDate endDate = hoaDonService.parseDate(dto.getEndDate());
@@ -60,7 +60,7 @@ public class ThongKeController {
         return ResponseEntity.ok(response);
     }
 
-    @GetMapping("/top10User")
+    @PostMapping("/top10User")
     public ResponseEntity<Map<String, Object>> thongKeNguoiDung(@RequestBody ThongKeDTO dto) {
         LocalDate startDate = hoaDonService.parseDate(dto.getStartDate());
         LocalDate endDate = hoaDonService.parseDate(dto.getEndDate());
@@ -72,6 +72,5 @@ public class ThongKeController {
 
         return ResponseEntity.ok(response);
     }
-
-
 }
+
