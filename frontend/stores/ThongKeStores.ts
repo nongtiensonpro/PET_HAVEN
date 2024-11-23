@@ -88,6 +88,7 @@ export const useThongKeStore = defineStore('thongKe', {
                 }
 
                 const responseData = await response.json();
+                console.log(responseData)
                 if (responseData.data && Array.isArray(responseData.data)) {
                     this.thongKeItems = responseData.data.map((item: any) => ({
                         date: new Date(item[0]),
@@ -133,6 +134,7 @@ export const useThongKeStore = defineStore('thongKe', {
                 }
 
                 const responseData = await response.json();
+                console.log(responseData)
                 if (responseData.data && Array.isArray(responseData.data)) {
                     this.thongKeItems = responseData.data.map((item: any) => ({
                         date: new Date(item[0]),
