@@ -1,5 +1,7 @@
 package com.yellowcat.backend.service;
 
+import com.yellowcat.backend.DTO.ThongKeResponDTO;
+import com.yellowcat.backend.DTO.ThongKeTimeDTO;
 import com.yellowcat.backend.model.Giamgia;
 import com.yellowcat.backend.model.Hoadon;
 import com.yellowcat.backend.model.Lichhen;
@@ -15,6 +17,7 @@ import java.security.SecureRandom;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.time.format.DateTimeParseException;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.Optional;
@@ -106,5 +109,44 @@ public class HoaDonService {
             System.err.println("Gửi email hóa đơn thất bại: " + e.getMessage());
         }
     }
+
+    public List<Object[]> thongKeTheoNgay(LocalDate startDate, LocalDate endDate) {
+        return hoadonRepository.thongKeTheoNgay(startDate, endDate);
+    }
+
+    public List<Object[]> thongKeTheoThang(LocalDate startDate, LocalDate endDate) {
+        return hoadonRepository.thongKeTheoThang(startDate, endDate);
+    }
+
+    public List<Object[]> thongKeTheoNam(LocalDate startDate, LocalDate endDate) {
+        List<Object[]> rawData =  hoadonRepository.thongKeTheoNam(startDate,endDate);
+        return rawData;
+    }
+
+    public List<ThongKeResponDTO> Top10KhachHang(LocalDate startDate, LocalDate endDate){
+        List<Object[]> rawData =  hoadonRepository.findTopCustomers(startDate,endDate);
+        List<ThongKeResponDTO> result = new ArrayList<>();
+
+        for (Object[] row : rawData) {
+            String emailNguoiDat = (String) row[0];  // Email người đặt
+            int tongSoLichHen = ((Number) row[1]).intValue();  // Tổng số lịch hẹn
+            double tongSoTien = ((Number) row[2]).doubleValue();  // Tổng số tiền
+
+            ThongKeResponDTO dto = new ThongKeResponDTO(emailNguoiDat, tongSoLichHen, tongSoTien);
+            result.add(dto);
+        }
+        return result;
+    }
+
+    public LocalDate parseDate(String date) {
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
+        try {
+            return LocalDate.parse(date, formatter);
+        } catch (DateTimeParseException e) {
+            throw new IllegalArgumentException("Invalid date format: " + date);
+        }
+    }
+
+
 
 }

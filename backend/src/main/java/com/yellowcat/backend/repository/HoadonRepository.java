@@ -48,4 +48,30 @@ public interface HoadonRepository extends JpaRepository<Hoadon, Integer> {
             "ORDER BY FUNCTION('DATE_TRUNC', 'year', h.date)")
     List<Object[]> thongKeTheoNam(@Param("startDate") LocalDate startDate, @Param("endDate") LocalDate endDate);
 
+    @Query(value = """
+    SELECT
+        l.emailnguoidat AS emailnguoidat,
+        COUNT(*) AS tong_so_lich_hen,
+        SUM(d.giatien) AS tong_so_tien
+    FROM
+        lichhen l
+        JOIN
+        dichvu d
+        ON
+        l.iddichvu = d.id
+    WHERE
+        l.date BETWEEN :ngayBatDau AND :ngayKetThuc
+    GROUP BY
+        l.emailnguoidat
+    ORDER BY
+        tong_so_tien DESC,
+        tong_so_lich_hen DESC
+    LIMIT 10
+""", nativeQuery = true)
+    List<Object[]> findTopCustomers(
+            @Param("ngayBatDau") LocalDate ngayBatDau,
+            @Param("ngayKetThuc") LocalDate ngayKetThuc
+    );
+
+
 }

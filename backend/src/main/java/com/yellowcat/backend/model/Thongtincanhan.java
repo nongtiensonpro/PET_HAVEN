@@ -34,6 +34,30 @@ public class Thongtincanhan {
     @Column(name = "sdt", length = 20)
     private String sdt;
 
+    @Size(max = 100)
+    @Column(name = "image", length = 100)
+    private String image;
+
+    @Size(max = 255)
+    @Column(name = "email")
+    private String email;
+
+    public String getEmail() {
+        return email;
+    }
+
+    public void setEmail(String email) {
+        this.email = email;
+    }
+
+    public String getImage() {
+        return image;
+    }
+
+    public void setImage(String image) {
+        this.image = image;
+    }
+
     public Integer getId() {
         return id;
     }
