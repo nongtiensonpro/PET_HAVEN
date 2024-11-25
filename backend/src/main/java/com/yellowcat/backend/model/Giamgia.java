@@ -1,5 +1,6 @@
 package com.yellowcat.backend.model;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
@@ -24,11 +25,13 @@ public class Giamgia {
 
     @NotNull
     @JsonProperty
+    @JsonFormat(pattern = "yyyy-MM-dd")
     @Column(name = "ngaybatdau")
     private LocalDate ngaybatdau;
 
     @NotNull
     @JsonProperty
+    @JsonFormat(pattern = "yyyy-MM-dd")
     @Column(name = "ngayketthuc")
     private LocalDate ngayketthuc;
 
