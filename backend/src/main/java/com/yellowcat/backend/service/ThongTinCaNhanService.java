@@ -5,6 +5,7 @@ import com.yellowcat.backend.repository.ThongtincanhanRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
 import java.util.Optional;
 
 @Service
@@ -18,5 +19,9 @@ public class ThongTinCaNhanService {
 
     public Optional<Thongtincanhan> getThongtincanhanByIdTaiKhoan(String id) {
         return thongtincanhanRepository.findByIdtaikhoan(id);
+    }
+
+    public List<Thongtincanhan> getAllThongtincanhan() {
+        return thongtincanhanRepository.findAll();
     }
 }

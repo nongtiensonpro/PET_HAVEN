@@ -42,6 +42,18 @@ public class Thongtincanhan {
     @Column(name = "email")
     private String email;
 
+    @Size(max = 10)
+    @Column(name = "role", length = 10)
+    private String role;
+
+    public String getRole() {
+        return role;
+    }
+
+    public void setRole(String role) {
+        this.role = role;
+    }
+
     public String getEmail() {
         return email;
     }

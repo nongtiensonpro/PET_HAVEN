@@ -1,51 +1,24 @@
 export default class User {
     id: string;
-    username: string;
-    firstName: string;
-    lastName: string;
+    idtaikhoan: string;
+    hoten: string;
+    gioitinh: string;
     email: string;
-    emailVerified: boolean;
-    createdTimestamp: number;
-    enabled: boolean;
-    access: {
-        manageGroupMembership: boolean;
-        view: boolean;
-        mapRoles: boolean;
-        impersonate: boolean;
-        manage: boolean;
-    };
+    role: string;
 
     constructor(
-        id: string = '',
-        username: string = '',
-        firstName: string = '',
-        lastName: string = '',
-        email: string = '',
-        emailVerified: boolean = false,
-        createdTimestamp: number = 0,
-        enabled: boolean = false,
-        access: {
-            manageGroupMembership: boolean;
-            view: boolean;
-            mapRoles: boolean;
-            impersonate: boolean;
-            manage: boolean;
-        } = {
-            manageGroupMembership: false,
-            view: false,
-            mapRoles: false,
-            impersonate: false,
-            manage: false
-        }
+        id:string,
+        idtaikhoan: string,
+        hoten: string,
+        gioitinh: string,
+        email: string,
+        role: string
     ) {
         this.id = id;
-        this.username = username;
-        this.firstName = firstName;
-        this.lastName = lastName;
+        this.idtaikhoan = idtaikhoan;
+        this.hoten = hoten;
+        this.gioitinh = gioitinh;
         this.email = email;
-        this.emailVerified = emailVerified;
-        this.createdTimestamp = createdTimestamp;
-        this.enabled = enabled;
-        this.access = access;
+        this.role = role;
     }
 }

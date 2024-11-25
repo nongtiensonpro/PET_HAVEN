@@ -23,21 +23,14 @@ public class GiamGiaController {
     private GiamGiaService giamGiaService;
 
     @GetMapping("/all")
-    public Page<Giamgia> getAll(@RequestParam int page) {
-        Pageable pageable = PageRequest.of(page,10);
-        return giamGiaService.getGiamgia(pageable);
+    public List<Giamgia> getAll() {
+        return giamGiaService.getGiamgia();
     }
 
     @PostMapping("/add")
     public Giamgia create(@RequestBody Giamgia giamgia) {
          Giamgia createGiamGia = giamGiaService.addOrUpdate(giamgia);
         return new ResponseEntity<>(createGiamGia, HttpStatus.CREATED).getBody();
-    }
-
-    @DeleteMapping("/delete/{id}")
-    public ResponseEntity<String> delete(@PathVariable int id) {
-        giamGiaService.removeGiamgia(id);
-        return ResponseEntity.status(HttpStatus.OK).body("xoa thanh cong");
     }
 
     @PutMapping("/update/{id}")

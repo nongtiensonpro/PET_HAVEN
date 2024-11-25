@@ -23,20 +23,16 @@ public class GiamGiaService {
 
 
 
-    public Page<Giamgia> getGiamgia(Pageable pageable) {
-        return giamgiaRepository.findAll(pageable);
+    public List<Giamgia> getGiamgia() {
+        return giamgiaRepository.findAll();
     }
 
     public Giamgia addOrUpdate(Giamgia giamgia){
         return giamgiaRepository.save(giamgia);
     }
 
-    public String removeGiamgia(Integer id){
-        giamgiaRepository.deleteById(id);
-        return "ok";
-    }
 
-    public Optional<Giamgia> findGiamGiaTheoNgayHienTai(){
+    public List<Giamgia> findGiamGiaTheoNgayHienTai(){
         return giamgiaRepository.findByNgaybatdauLessThanEqualAndNgayketthucGreaterThanEqualAndTrangthai(LocalDate.now(),LocalDate.now(),true);
     }
 
