@@ -28,7 +28,8 @@ CREATE TABLE ThongTinCaNhan
     idTaiKhoan varchar(255) not null ,
     SDT        VARCHAR(20),
     Image      VARCHAR(100),
-    Email      varchar(255)
+    Email      varchar(255),
+    Role       varchar(100)
 );
 
 CREATE TABLE DichVu

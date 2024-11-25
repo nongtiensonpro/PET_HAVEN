@@ -8,30 +8,22 @@
       <tr>
         <th>ID</th>
         <th>Tên người dùng</th>
-        <th>Tên</th>
-        <th>Họ</th>
+        <th>Giới tính</th>
         <th>Email</th>
-        <th>Xác nhận Email</th>
-        <th>Thời gian tạo</th>
-        <th>Trạng thái truy cập</th>
         <th>Vai trò</th>
         <th>Thao tác</th>
       </tr>
       </thead>
       <tbody>
       <tr v-for="user in User" :key="user.id">
-        <td>{{ user.id }}</td>
-        <td>{{ user.username }}</td>
-        <td>{{ user.firstName }}</td>
-        <td>{{ user.lastName }}</td>
+        <td>{{ user.idtaikhoan }}</td>
+        <td>{{ user.hoten }}</td>
+        <td>{{ user.gioitinh }}</td>
         <td>{{ user.email }}</td>
-        <td>{{  user.emailVerified==true?'Kích hoạt':'Chưa kích hoạt' }}</td>
-        <td>{{ new Date(user.createdTimestamp).toLocaleString() }}</td>
-        <td>{{  user.enabled==true?'Được phép':'Không được phép' }}</td>
-        <td> ? </td>
+        <td>{{ user.role }}</td>
         <td>
-              <button class="btn btn-sm btn-outline-warning m-1" @click="editUser(user.id)">Edit</button>
-              <button class="btn btn-sm btn-outline-danger m-1" @click="deleteUser(user.id)">Chặn</button>
+              <button class="btn btn-sm btn-outline-warning m-1" @click="editUser(user.ID)">Edit</button>
+              <button class="btn btn-sm btn-outline-danger m-1" @click="deleteUser(user.ID)">Chặn</button>
               <button class="btn btn-sm btn-outline-danger m-1">Chi tiết</button>
         </td>
       </tr>
@@ -51,17 +43,7 @@ const userStore = useStore();
 
 const loadUsers = async () => {
   const fetchedUsers = await userStore.fetchUsers();
-  User.value = fetchedUsers.map(user => new UserModel(
-    user.id,
-    user.username,
-    user.firstName,
-    user.lastName,
-    user.email,
-    user.emailVerified,
-    user.createdTimestamp,
-    user.enabled,
-    user.access
-  ));
+  User.value = fetchedUsers.valueOf();
 };
 
 onMounted(() => {

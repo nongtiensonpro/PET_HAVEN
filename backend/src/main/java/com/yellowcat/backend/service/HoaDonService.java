@@ -17,10 +17,7 @@ import java.security.SecureRandom;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.time.format.DateTimeParseException;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
 
 @Service
 public class HoaDonService {
@@ -44,17 +41,17 @@ public class HoaDonService {
 
     public Double TinhGiaTien(Integer idDichVu,Hoadon hoadon){
         float giaDichVu = dichVuService.findById(idDichVu).get().getGiatien();
-        Optional<Giamgia> giamgiaOptional = giamGiaService.findGiamGiaTheoNgayHienTai();
-        Giamgia giamgia = giamgiaOptional.get();
-        float phanTramGiam;
-        if(!giamgiaOptional.isPresent()){
-            phanTramGiam = 0;
-        }
-        else {
-            phanTramGiam = giamgiaOptional.get().getPhantramgiam();
+
+        Optional<Giamgia> maxGiamGia = giamGiaService.findGiamGiaTheoNgayHienTai()
+                .stream()
+                .max(Comparator.comparing(Giamgia::getPhantramgiam));
+        float phanTramGiam =0;
+        if (maxGiamGia.isPresent()) {
+            phanTramGiam = maxGiamGia.get().getPhantramgiam();
+            hoadon.setIdgiamgia(maxGiamGia.get()); // Gán giảm giá lớn nhất vào hóa đơn
         }
         Double giaTien = (double) (giaDichVu - giaDichVu*phanTramGiam/100);
-        hoadon.setIdgiamgia(giamgia);
+        hoadon.setIdgiamgia(maxGiamGia.get());
         return giaTien;
     }
     public List<Hoadon> getAllHoaDonChuaThanhToan(){

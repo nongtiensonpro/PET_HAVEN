@@ -1,5 +1,6 @@
 package com.yellowcat.backend.controller;
 
+import com.yellowcat.backend.DTO.UserDTO;
 import com.yellowcat.backend.model.Thongtincanhan;
 import com.yellowcat.backend.model.Thucung;
 import com.yellowcat.backend.service.ThongTinCaNhanService;
@@ -8,21 +9,20 @@ import org.keycloak.OAuth2Constants;
 import org.keycloak.admin.client.Keycloak;
 import org.keycloak.admin.client.KeycloakBuilder;
 import org.keycloak.admin.client.resource.UserResource;
+import org.keycloak.representations.idm.ClientRepresentation;
 import org.keycloak.representations.idm.RoleRepresentation;
 import org.keycloak.representations.idm.UserRepresentation;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.oauth2.jwt.Jwt;
 import org.springframework.web.bind.annotation.*;
 
 import java.time.Instant;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Optional;
+import java.util.*;
 import java.util.stream.Collectors;
 
 @RestController
@@ -69,6 +69,7 @@ public class UserController {
         thongtincanhan.setIdtaikhoan(idUser);
         thongtincanhan.setHoten(name);
         thongtincanhan.setEmail(username);
+        thongtincanhan.setRole(String.join(", ", petHavenRoles));
         Optional<Thongtincanhan> thongtincanhanOptional = thongTinCaNhanService.getThongtincanhanByIdTaiKhoan(idUser);
         if (!thongtincanhanOptional.isPresent()) {
             thongTinCaNhanService.addOrUpdate(thongtincanhan);
@@ -115,20 +116,10 @@ public class UserController {
                 .build();
     }
 
+    @PreAuthorize("hasRole('admin')")
     @GetMapping("/api/all-users")
-    public List<UserRepresentation> getAllUsers() {
-        Keycloak keycloak = getKeycloakInstance();
-        try {
-            List<UserRepresentation> users = keycloak.realm(realm).users().list();
-            return users;
-        } catch (Exception e) {
-            e.printStackTrace();
-            throw e;
-        } finally {
-            keycloak.close();
-        }
+    public List<Thongtincanhan> getAllUsersWithClientRoles() {
+        return thongTinCaNhanService.getAllThongtincanhan();
     }
-
-
 
 }
