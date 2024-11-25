@@ -16,8 +16,8 @@ import java.util.List;
 import java.util.Optional;
 
 @RestController
-@RequestMapping("/giam-gia")
 @PreAuthorize("hasRole('admin')")
+@RequestMapping("/api/giam-gia")
 public class GiamGiaController {
     @Autowired
     private GiamGiaService giamGiaService;
@@ -46,5 +46,21 @@ public class GiamGiaController {
 
         giamGiaService.addOrUpdate(giamgia2);
         return ResponseEntity.status(HttpStatus.OK).body("update thanh cong");
+    }
+
+    @PutMapping("/update-tt/{id}")
+    public ResponseEntity<String> updateTt(@PathVariable int id) {
+        boolean tt;
+        Optional<Giamgia> giamgiaOptional = giamGiaService.findById(id);
+        if (!giamgiaOptional.isPresent()){
+            return ResponseEntity.notFound().build();
+        }
+        Giamgia giamgia = giamgiaOptional.get();
+        tt = giamgia.getTrangthai();
+        tt = !tt;
+        giamgia.setTrangthai(tt);
+        giamGiaService.addOrUpdate(giamgia);
+        return ResponseEntity.ok().build();
+
     }
 }
