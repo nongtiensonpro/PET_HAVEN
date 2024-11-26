@@ -192,6 +192,9 @@
                   <li class="nav-item" v-if="userInfo?.role && userInfo.role.includes('admin')">
                     <NuxtLink class="nav-link" :to="`/admin/thongke`">Thống kê</NuxtLink>
                   </li>
+                  <li class="nav-item" v-if="userInfo?.role && userInfo.role.includes('admin')">
+                    <NuxtLink class="nav-link" :to="`/admin/vouchers`">Vouchers</NuxtLink>
+                  </li>
                   <li class="nav-item"
                     v-if="userInfo?.role && (userInfo.role.includes('admin') || userInfo.role.includes('manager'))">
                     <NuxtLink class="nav-link" :to="`/nhanvien/checkin`">Thanh toán tại quầy</NuxtLink>
