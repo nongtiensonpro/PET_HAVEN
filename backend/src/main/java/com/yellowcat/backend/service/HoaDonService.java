@@ -55,7 +55,8 @@ public class HoaDonService {
         return giaTien;
     }
     public List<Hoadon> getAllHoaDonChuaThanhToan(){
-        return hoadonRepository.findByIdlichhen_Date(LocalDate.now());
+        System.out.println(LocalDate.now());
+        return hoadonRepository.findByDate(LocalDate.now());
     }
 
     public List<Hoadon> getALl(){return hoadonRepository.findAll();}

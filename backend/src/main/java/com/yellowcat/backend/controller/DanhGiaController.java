@@ -79,7 +79,8 @@ public class DanhGiaController {
     public ResponseEntity<?> updateDanhGia(@Valid @RequestBody VietDanhGiaDTO dto){
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         String idUser = authentication.getName();
-        Optional<Danhgia> danhgiaOptional = danhGiaService.getDanhGiaById(dto.getId());
+        Optional<Danhgia> danhgiaOptional = danhGiaService.getDanhGiaById(dto.getIdDanhGia());
+        System.out.println(dto.getIdDanhGia());
         if (!danhgiaOptional.isPresent()){
             return ResponseEntity.notFound().build();
         }
@@ -97,6 +98,8 @@ public class DanhGiaController {
         danhgiaUpdate.setDate(LocalDateTime.now());
         danhgiaUpdate.setMota(dto.getMoTa());
         danhgiaUpdate.setSosao(dto.getStar());
+        danhgiaUpdate.setIdtaikhoan(idUser);
+        danhgiaUpdate.setIdhoadon(danhgia.getIdhoadon());
         danhGiaService.addOrUpdateDanhGia(danhgiaUpdate);
 
         return ResponseEntity.ok(danhgiaUpdate);

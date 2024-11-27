@@ -44,6 +44,13 @@
                       Thanh toán
                     </button>
 
+                    <button
+                        v-if="hoaDon.idlichhen.trangthai === 6 "
+                        @click="thanhToanHoaDon(hoaDon.idlichhen.id)"
+                        class="btn btn-sm btn-outline-primary m-1">
+                      Checkin
+                    </button>
+
                     <button type="button" class="btn btn-sm btn-outline-primary m-1" data-bs-toggle="modal"
                             data-bs-target="#exampleModal">
                       Chi tiết
