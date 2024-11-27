@@ -3,7 +3,7 @@ package com.yellowcat.backend.DTO;
 import jakarta.validation.constraints.NotNull;
 
 public class VietDanhGiaDTO {
-    private Integer id;
+    private int idDanhGia;
     @NotNull
     private String moTa;
     @NotNull
@@ -19,12 +19,8 @@ public class VietDanhGiaDTO {
         return idLichHen;
     }
 
-    public Integer getId() {
-        return id;
-    }
-
-    public void setId(Integer id) {
-        this.id = id;
+    public int getIdDanhGia() {
+        return idDanhGia;
     }
 
     public @NotNull String getMoTa() {

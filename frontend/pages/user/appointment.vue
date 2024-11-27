@@ -177,7 +177,7 @@ const getTrangThaiClass = (trangthai: number) => {
                     </button>
                         </div>
                         <div class="col">
-                          <button v-if="item.trangthai === 3"
+                          <button v-if="item.trangthai === 3 || item.trangthai === 4"
                             class="custom-button"
                             @click="thanhToan(item.id)">
                       Thanh toán
