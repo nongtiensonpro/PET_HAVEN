@@ -1,6 +1,6 @@
 <template>
   <div>
-    <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#addVoucherModal">
+    <button type="button" class="btn btn-sm btn-success" data-bs-toggle="modal" data-bs-target="#addVoucherModal">
       <i class="fas fa-plus-circle me-2"></i>Thêm Voucher
     </button>
 
@@ -49,7 +49,9 @@
 import { ref } from 'vue';
 import { useVoucherStore } from '~/stores/VorchersStores';
 import Voucher from '~/models/Voucher';
+import {useToast} from 'vue-toastification';
 
+const toast = useToast();
 const voucherStore = useVoucherStore();
 const voucher = ref(new Voucher(0, 0, new Date(), new Date(), '', true));
 const errors = ref({});
@@ -76,15 +78,18 @@ function validate() {
 
 async function submitVoucher() {
   if (validate()) {
-    await voucherStore.addVoucher(voucher.value);
-    // Reset form after submission
-    voucher.value = new Voucher(0, 0, new Date(), new Date(), '', true);
-    // Close modal
-    const modal = document.getElementById('addVoucherModal');
-    if (modal) {
-      const bsModal = bootstrap.Modal.getInstance(modal);
-      bsModal?.hide();
-    }
+   try {
+     await voucherStore.addVoucher(voucher.value);
+     voucher.value = new Voucher(0, 0, new Date(), new Date(), '', true);
+     const modal = document.getElementById('addVoucherModal');
+     if (modal) {
+       const bsModal = bootstrap.Modal.getInstance(modal);
+       bsModal?.hide();
+     }
+     toast.success('Thêm voucher thành công.');
+   }catch (error) {
+     toast.error('Thêm voucher thất bại, vui lòng thử lại sau.');
+   }
   }
 }
 </script>

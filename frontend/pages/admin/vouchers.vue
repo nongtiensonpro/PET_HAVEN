@@ -30,7 +30,7 @@
             <td>{{ voucher.mota }}</td>
             <td>
               <span class="badge bg-success text-white">
-                {{ voucher.phantramgiamgia }}%
+                {{ voucher.phantramgiam }}%
               </span>
             </td>
             <td>{{ formatDate(voucher.ngaybatdau) }}</td>
@@ -41,15 +41,20 @@
               </span>
             </td>
             <td>
-              <CapNhatVoucher :voucher="voucher" @updated="fetchVouchers" class="mr-2" />
-              <button
-                type="button"
-                class="btn btn-sm"
-                :class="voucher.trangthai ? 'btn-danger' : 'btn-success'"
-                @click="toggleStatus(voucher.id)"
-              >
-                {{ voucher.trangthai ? 'Hủy' : 'Kích hoạt' }}
-              </button>
+              <div class="d-flex">
+                <CapNhatVoucher
+                  :voucher="voucher"
+                  @updated="fetchVouchers"
+                />
+                <button
+                    @click="updateTrangThaiVoucher(voucher.id)"
+                  type="button"
+                  class="btn btn-sm ms-2"
+                  :class="voucher.trangthai ? 'btn-danger' : 'btn-success'"
+                >
+                  {{ voucher.trangthai ? 'Hủy' : 'Kích hoạt' }}
+                </button>
+              </div>
             </td>
           </tr>
         </tbody>
@@ -63,35 +68,30 @@ import { onMounted, ref } from 'vue';
 import { useVoucherStore } from '~/stores/VorchersStores';
 import AddVoucher from '~/components/AddVoucher.vue';
 import CapNhatVoucher from '~/components/CapNhatVoucher.vue';
+import type Voucher from "~/models/Voucher";
+import {useToast} from 'vue-toastification';
+
+const toast = useToast();
 
 const voucherStore = useVoucherStore();
-const vouchers = ref(voucherStore.ListVoucher);
-
-interface Props {
-  voucher: any; // Replace 'any' with your actual Voucher type
-  additionalClass?: string;
-}
-
-const props = defineProps<Props>();
+const vouchers = ref<Voucher[]>([]);
 
 onMounted(() => {
   fetchVouchers();
 });
 
-function fetchVouchers() {
-  voucherStore.fetchVoucher().then(() => {
+async function fetchVouchers() {
+  try {
+    await voucherStore.fetchVoucher();
     vouchers.value = voucherStore.ListVoucher;
-  });
+    console.log('Fetched vouchers:', vouchers.value);
+  } catch (error) {
+    console.error('Error fetching vouchers:', error);
+  }
 }
 
 function refreshVouchers() {
   fetchVouchers();
-}
-
-function toggleStatus(id: number) {
-  voucherStore.updateTrangThaiVoucher(id).then(() => {
-    fetchVouchers();
-  });
 }
 
 function formatDate(date: Date | string) {
@@ -100,6 +100,20 @@ function formatDate(date: Date | string) {
   }
   return date.toLocaleDateString('vi-VN');
 }
+
+
+async function updateTrangThaiVoucher(id: number) {
+  try {
+
+      await voucherStore.updateTrangThaiVoucher(id);
+      fetchVouchers();
+      toast.success('Cập nhật trạng thái voucher thành công!');
+
+  } catch (error) {
+    toast.error('Cập nhật trạng thái voucher thất bại!');
+  }
+}
+
 </script>
 
 <style scoped>

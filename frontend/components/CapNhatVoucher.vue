@@ -45,7 +45,7 @@
               <label for="phantramgiamgia" class="form-label">Giảm giá (%):</label>
               <input
                 id="phantramgiamgia"
-                v-model.number="voucher.phantramgiamgia"
+                v-model.number="voucher.phantramgiam"
                 type="number"
                 class="form-control"
                 placeholder="Giảm giá"
@@ -122,12 +122,12 @@ async function updateVoucher() {
 
 function validateVoucher(voucher: Voucher) {
   return (
-    voucher.mota &&
-    voucher.phantramgiamgia > 0 &&
-    voucher.phantramgiamgia <= 100 &&
-    voucher.ngaybatdau &&
-    voucher.ngayketthuc &&
-    new Date(voucher.ngaybatdau) < new Date(voucher.ngayketthuc)
+      voucher.mota &&
+      voucher.phantramgiam > 0 &&
+      voucher.phantramgiam <= 100 &&
+      voucher.ngaybatdau &&
+      voucher.ngayketthuc &&
+      new Date(voucher.ngaybatdau) < new Date(voucher.ngayketthuc)
   );
 }
 
