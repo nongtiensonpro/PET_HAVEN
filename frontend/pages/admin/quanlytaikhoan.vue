@@ -22,9 +22,9 @@
         <td>{{ user.email }}</td>
         <td>{{ user.role }}</td>
         <td>
-              <button class="btn btn-sm btn-outline-warning m-1" @click="editUser(user.ID)">Edit</button>
-              <button class="btn btn-sm btn-outline-danger m-1" @click="deleteUser(user.ID)">Chặn</button>
-              <button class="btn btn-sm btn-outline-danger m-1">Chi tiết</button>
+              <button class="btn btn-sm btn-outline-warning m-1" @click="editUser(user.idtaikhoan)">Edit</button>
+              <button class="btn btn-sm btn-outline-danger m-1" @click="deleteUser(user.idtaikhoan)">Chặn</button>
+              <button class="btn btn-sm btn-outline-danger m-1" @click="chitietUser(user.idtaikhoan)">Chi tiết</button>
         </td>
       </tr>
       </tbody>
@@ -42,8 +42,12 @@ const toast = useToast();
 const userStore = useStore();
 
 const loadUsers = async () => {
-  const fetchedUsers = await userStore.fetchUsers();
-  User.value = fetchedUsers.valueOf();
+  try {
+    const fetchedUsers = await userStore.fetchUsers();
+    User.value = fetchedUsers.valueOf();
+  }catch (error) {
+    toast.error('Làm mới tài khoản thất bại')
+  }
 };
 
 onMounted(() => {
@@ -55,12 +59,16 @@ function lamMoi() {
 }
 
 const editUser = (id: string) => {
-  toast.success('Chức năng đang phát triển', {});
+  toast.success('Chức năng đang phát triển : ' + id, {});
 };
 
 const deleteUser = (id: string) => {
-  toast.success('Chức năng đang phát triển', {});
+  toast.success('Chức năng đang phát triển : ' +id, {});
 };
+
+const chitietUser = (id: string) => {
+  toast.success('Chức năng đang phát triển : ' + id, {});
+}
 </script>
 
 <style scoped>

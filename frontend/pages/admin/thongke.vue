@@ -83,12 +83,15 @@
 import { ref, onMounted, watch, computed } from 'vue';
 import { useThongKeStore } from '~/stores/ThongKeStores';
 import DatePicker from 'vue-datepicker-next';
+import {useToast} from 'vue-toastification';
+const toast = useToast();
 
 const store = useThongKeStore();
 const dateRange = ref<[string | null, string | null]>([null, null]);
 const statisticType = ref('day');
 const loading = ref(false);
 const error = ref<string | null>(null);
+
 
 const hasData = computed(() => store.thongKeItems.length > 0);
 
@@ -107,10 +110,8 @@ const fetchData = async () => {
     alert('Vui lòng chọn ngày bắt đầu và ngày kết thúc.');
     return;
   }
-
   loading.value = true;
   error.value = null;
-
   try {
     const [startDate, endDate] = dateRange.value;
     const fetchFunction = {
@@ -118,15 +119,15 @@ const fetchData = async () => {
       month: store.getUserThongKeTheoThang,
       year: store.getUserThongKeTheoNam
     }[statisticType.value];
-
     if (typeof fetchFunction !== 'function') {
       throw new Error('Invalid statistic type');
     }
-
     await fetchFunction(startDate, endDate);
+    store.thongKeItems.sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime());
+    toast.success('Thống kê dữ liệu thành công!');
   } catch (err) {
-    console.error('Error fetching data:', err);
-    error.value = 'Có lỗi xảy ra khi lấy dữ liệu.';
+    toast.error('Thống kê dữ liệu thất bại!');
+    error.value = 'Có lỗi xảy ra khi tải dữ liệu.';
   } finally {
     loading.value = false;
   }

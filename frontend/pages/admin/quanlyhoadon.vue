@@ -32,9 +32,11 @@
 <script setup lang="ts">
 import {onMounted, ref} from 'vue';
 import { useQuanLyHoaDonStore } from '~/stores/QuanLyHoaDon';
+import UserModel from "~/models/User";
+import HoaDonKhachHang from "~/models/HoaDonKhachHang";
 
 const store = useQuanLyHoaDonStore();
-const hoaDonList = ref([]);
+const hoaDonList = ref<HoaDonKhachHang[]>([]);
 definePageMeta({
   middleware: ['auth']
 })

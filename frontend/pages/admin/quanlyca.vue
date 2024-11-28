@@ -17,17 +17,24 @@ import { useToast } from 'vue-toastification'
 
 const toast = useToast();
 const fetchCaLichHens = async () => {
-   caLichHens.value = await caLichHenStore.fethcCaLichHen();
+  try {
+    caLichHens.value = await caLichHenStore.fethcCaLichHen();
+  }catch (e) {
+    toast.error('Lấy dữ liệu ca lịch hẹn thất bại!')
+  }
 }
 
 
 const fetchNgayNghi = async () => {
-  const ngayNghiData = await caLichHenStore.fetchNgayNghi();
-  console.log(ngayNghiData+'MIU MIU');
-  if (Array.isArray(ngayNghiData)) {
-    listNgayNghi.value = ngayNghiData;
-  } else {
-    listNgayNghi.value = [];
+  try {
+    const ngayNghiData = await caLichHenStore.fetchNgayNghi();
+    if (Array.isArray(ngayNghiData)) {
+      listNgayNghi.value = ngayNghiData;
+    } else {
+      listNgayNghi.value = [];
+    }
+  }catch (e) {
+    toast.error('Lấy dữ liệu ngày nghỉ thất bại!')
   }
 }
 onMounted(() => {
@@ -49,8 +56,8 @@ async function capNhatTrangThai(ca: CaLichHen) {
 
   if (result.isConfirmed) {
     try {
-      caLichHenStore.capNhatTrangThaiCa(ca);
-      fetchCaLichHens();
+      await caLichHenStore.capNhatTrangThaiCa(ca);
+      await fetchCaLichHens();
       setTimeout(() => {
         fetchCaLichHens();
       }, 100);
@@ -68,8 +75,12 @@ function capNhat(ca: CaLichHen) {
 }
 
 function lammoi() {
-  fetchCaLichHens();
-  fetchNgayNghi();
+  try {
+    fetchCaLichHens();
+    fetchNgayNghi();
+  }catch (e) {
+    toast.error('Lấy danh sách ca lịch hẹn thất bại!')
+  }
 }
 
 </script>

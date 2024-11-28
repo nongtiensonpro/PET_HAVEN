@@ -95,6 +95,9 @@
 import { defineProps, defineEmits } from 'vue';
 import { useVoucherStore } from '~/stores/VorchersStores';
 import Voucher from '~/models/Voucher';
+import {useToast} from 'vue-toastification';
+import Swal from "sweetalert2";
+const toast = useToast();
 
 const props = defineProps<{
   voucher: Voucher;
@@ -107,16 +110,28 @@ const voucherStore = useVoucherStore();
 
 async function updateVoucher() {
   if (validateVoucher(props.voucher)) {
-    try {
-      await voucherStore.updateVoucher(props.voucher);
-      emit('updated');
-      closeModal();
-    } catch (error) {
-      console.error('Error updating voucher:', error);
-      alert('Có lỗi xảy ra khi cập nhật voucher. Vui lòng thử lại.');
+    const result = await Swal.fire({
+      title: 'Xác nhận',
+      text: "Bạn có muốn cập nhật Voucher không?",
+      icon: 'success',
+      showCancelButton: true,
+      confirmButtonColor: '#3085d6',
+      cancelButtonColor: '#d33',
+      confirmButtonText: 'Có',
+      cancelButtonText: 'Không'
+    });
+    if (result.isConfirmed) {
+      try {
+        await voucherStore.updateVoucher(props.voucher);
+        emit('updated');
+        closeModal();
+        toast.success('Cập nhật voucher thành công.');
+      } catch (error) {
+        toast.error('Có lỗi xảy ra khi cập nhật voucher. Vui lòng thử lại.');
+      }
     }
   } else {
-    alert('Vui lòng điền đầy đủ thông tin hợp lệ.');
+    toast.error('Vui lòng điền đầy điền thông tin hợp lệ.');
   }
 }
 

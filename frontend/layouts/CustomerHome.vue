@@ -509,7 +509,6 @@ export default {
 
         if (!response.ok) {
           const errorData = await response.json();
-          toast.error("Phiên đăng nhập đã hết hạn vui lòng đăng nhập lại");
           console.error(`Error refreshing token: ${errorData.error_description}`);
         }
 

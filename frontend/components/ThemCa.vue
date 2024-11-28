@@ -2,7 +2,17 @@
 import { ref } from "vue";
 // import { useCaLichHenStore } from "~/stores/QuanLyCaLichHen";
 import  CaLichHen from "~/models/CaHen";
+import { Modal } from 'bootstrap';
+import {useToast} from 'vue-toastification';
+const toast = useToast();
+let modal: Modal | null = null;
 
+onMounted(() => {
+  const modalElement = document.getElementById('exampleModal');
+  if (modalElement) {
+    modal = new Modal(modalElement);
+  }
+});
 const caLichHenStore = useCaLichHenStore();
 const tenca = ref("");
 const thoigianca = ref("");
@@ -20,8 +30,12 @@ const themCaHen = async () => {
         tenca.value = "";
         thoigianca.value = "";
         trangthai.value = false;
+        toast.success('Thêm ca hẹn thành công');
+      if (modal) {
+        modal.hide();
+      }
     } catch (e) {
-
+        toast.error('Thêm ca hẹn thất bại');
     }
 }
 </script>
@@ -51,10 +65,10 @@ const themCaHen = async () => {
                                 <label for="thoigianca">Thời gian ca:</label>
                                 <input id="thoigianca" v-model="thoigianca" type="time" required class="form-input" />
                             </div>
-                            <div class="form-group">
-                                <label for="trangthai">Trạng thái:</label>
-                                <input id="trangthai" type="checkbox" v-model="trangthai" class="form-checkbox" />
-                            </div>
+<!--                            <div class="form-group">-->
+<!--                                <label for="trangthai">Trạng thái:</label>-->
+<!--                                <input id="trangthai" type="checkbox" v-model="trangthai" class="form-checkbox" />-->
+<!--                            </div>-->
                             <button type="submit" class="form-button">Thêm</button>
                         </form>
                     </div>

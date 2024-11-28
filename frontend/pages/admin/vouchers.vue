@@ -1,7 +1,6 @@
 <template>
   <div class="voucher-list container mt-5">
     <h1 class="title mb-4">Quản lý Voucher</h1>
-
     <div class="row mb-4">
       <div class="col-md-6">
         <add-voucher @added="fetchVouchers" />
@@ -12,11 +11,11 @@
         </button>
       </div>
     </div>
-
     <div class="table-responsive">
       <table class="table table-hover">
         <thead class="thead-light">
           <tr>
+            <th>ID</th>
             <th>Mô tả</th>
             <th>Giảm giá</th>
             <th>Ngày bắt đầu</th>
@@ -27,6 +26,7 @@
         </thead>
         <tbody>
           <tr v-for="voucher in vouchers" :key="voucher.id">
+            <td>{{ voucher.id }}</td>
             <td>{{ voucher.mota }}</td>
             <td>
               <span class="badge bg-success text-white">
@@ -70,6 +70,7 @@ import AddVoucher from '~/components/AddVoucher.vue';
 import CapNhatVoucher from '~/components/CapNhatVoucher.vue';
 import type Voucher from "~/models/Voucher";
 import {useToast} from 'vue-toastification';
+import Swal from "sweetalert2";
 
 const toast = useToast();
 
@@ -84,14 +85,18 @@ async function fetchVouchers() {
   try {
     await voucherStore.fetchVoucher();
     vouchers.value = voucherStore.ListVoucher;
-    console.log('Fetched vouchers:', vouchers.value);
   } catch (error) {
-    console.error('Error fetching vouchers:', error);
+    toast.error('Lấy vouchers thất bại!');
   }
 }
 
 function refreshVouchers() {
-  fetchVouchers();
+  try {
+    fetchVouchers();
+    toast.success('Làm mới vouchers thành công!');
+  }catch (e) {
+    toast.error('Làm mới vouchers thất bại!');
+  }
 }
 
 function formatDate(date: Date | string) {
@@ -103,14 +108,24 @@ function formatDate(date: Date | string) {
 
 
 async function updateTrangThaiVoucher(id: number) {
-  try {
-
+  const result = await Swal.fire({
+    title: 'Xác nhận',
+    text: "Bạn có muốn cập nhật trạng thái Voucher không?",
+    icon: 'success',
+    showCancelButton: true,
+    confirmButtonColor: '#3085d6',
+    cancelButtonColor: '#d33',
+    confirmButtonText: 'Có',
+    cancelButtonText: 'Không'
+  });
+  if (result.isConfirmed) {
+    try {
       await voucherStore.updateTrangThaiVoucher(id);
-      fetchVouchers();
+      await fetchVouchers();
       toast.success('Cập nhật trạng thái voucher thành công!');
-
-  } catch (error) {
-    toast.error('Cập nhật trạng thái voucher thất bại!');
+    } catch (error) {
+      toast.error('Cập nhật trạng thái voucher thất bại!');
+    }
   }
 }
 

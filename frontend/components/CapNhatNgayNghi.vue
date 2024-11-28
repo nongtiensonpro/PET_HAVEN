@@ -1,7 +1,19 @@
 <script setup lang="ts">
-import { ref, computed } from 'vue';
+import { ref, computed, onMounted } from 'vue';
+import { Modal } from 'bootstrap';
+import { useToast } from 'vue-toastification';
+
 const caLichHenStore = useCaLichHenStore();
+const toast = useToast();
 const ngayNghi = ref('');
+let modal: Modal | null = null;
+
+onMounted(() => {
+  const modalElement = document.getElementById('capNhatNgayNghiModal');
+  if (modalElement) {
+    modal = new Modal(modalElement);
+  }
+});
 
 const formattedNgayNghi = computed({
   get() {
@@ -12,8 +24,17 @@ const formattedNgayNghi = computed({
   }
 });
 
-function themNgayNghi() {
-  caLichHenStore.themNgayNghi(formattedNgayNghi.value);
+async function themNgayNghi() {
+  try {
+    await caLichHenStore.themNgayNghi(formattedNgayNghi.value);
+    toast.success('Cập nhật ngày nghỉ thành công');
+    ngayNghi.value = ''; // Reset form
+    if (modal) {
+      modal.hide(); // Đóng modal
+    }
+  } catch (error) {
+    toast.error('Cập nhật ngày nghỉ thất bại');
+  }
 }
 </script>
 
@@ -45,6 +66,7 @@ function themNgayNghi() {
     </div>
   </div>
 </template>
+
 
 <style scoped>
 .form-container {

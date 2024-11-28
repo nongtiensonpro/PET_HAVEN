@@ -18,7 +18,9 @@ definePageMeta({
             </div>
             <ul class="list-group list-group-flush">
               <nuxt-link class="list-group-item" :to="`/admin/service/servicelist`">Tổng quan dịch vụ</nuxt-link>
-            </ul>
+            </ul><ul class="list-group list-group-flush">
+            <nuxt-link class="list-group-item" :to="`/admin/vouchers`">Voucher</nuxt-link>
+          </ul>
           </div>
         </div>
         <div class="col">
@@ -29,7 +31,14 @@ definePageMeta({
               <p class="card-text">
                 Quản lý đặt lịch và lịch sử đặt lịch dịch vụ của Pet Haven
               </p>
+
             </div>
+            <ul class="list-group list-group-flush">
+              <nuxt-link class="list-group-item" :to="`/admin/quanlyhoadon`">Quản lý hóa đơn</nuxt-link>
+            </ul>
+            <ul class="list-group list-group-flush">
+              <nuxt-link class="list-group-item" :to="`/admin/quanlyca`">Quản lý ca</nuxt-link>
+            </ul>
           </div>
         </div>
         <div class="col">
@@ -41,6 +50,23 @@ definePageMeta({
                 Quản lý các thông tin tài khoản của khách hàng và nhân viên
               </p>
             </div>
+            <ul class="list-group list-group-flush">
+              <nuxt-link class="list-group-item" :to="`/admin/quanlytaikhoan`">Quản lý tài khoản</nuxt-link>
+            </ul>
+          </div>
+        </div>
+        <div class="col">
+          <div class="card" style="width: 18rem;">
+            <img src="~/assets/image/cat2.jpg" class="card-img-top p-4" alt="...">
+            <div class="card-body">
+              <h5 class="card-title">Thống kê</h5>
+              <p class="card-text">
+                Thống kê doanh thu của Pet Haven
+              </p>
+            </div>
+            <ul class="list-group list-group-flush">
+              <nuxt-link class="list-group-item" :to="`/admin/thongke`">Thống kê</nuxt-link>
+            </ul>
           </div>
         </div>
       </div>
