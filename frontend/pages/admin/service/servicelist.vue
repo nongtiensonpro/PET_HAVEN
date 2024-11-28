@@ -8,6 +8,7 @@ import InputField from '~/components/InputField.vue';
 import {useForm} from 'vee-validate';
 import * as yup from 'yup';
 import type DichVu from "~/models/DichVu";
+import UpdateDichVu from "~/components/UpdateDichVu.vue";
 
 definePageMeta({
   middleware: ['auth']
@@ -99,26 +100,6 @@ const createService = async (formValues) => {
   }
 };
 
-const saveService = async (service : DichVu) => {
-  try {
-
-    const result = await serviceStore.updateDichVu(service);
-    if (result.success) {
-      notificationStore.addNotification("Dịch vụ đã được cập nhật thành công!");
-      toast.success('Dịch vụ đã được lưu thành công!');
-      await serviceStore.fetchServices();
-      selectedFile.value = null;
-      anh.value = null;
-    } else {
-      notificationStore.addNotification(`Có lỗi xảy ra khi cập nhật dịch vụ: ${result.message}`);
-      toast.error(result.message);
-    }
-  } catch (error) {
-    notificationStore.addNotification("Dịch vụ đã được cập nhật thất bại!", user.userInfo.name);
-    console.error('Lỗi khi lưu dịch vụ:', error);
-    toast.error('Có lỗi xảy ra khi lưu dịch vụ :' + error);
-  }
-};
 
 const name = ref('');
 
@@ -322,81 +303,7 @@ const updateTTService = async (serviceId: String) => {
               </button>
             </div>
             <div class="col">
-              <button type="button" class="nav-link" data-bs-toggle="modal" :data-bs-target="'#modal' + service.id">
-                Chi tiết
-              </button>
-              <div class="modal fade" :id="'modal' + service.id" tabindex="-1"
-                   :aria-labelledby="'modalLabel' + service.id"
-                   aria-hidden="true">
-                <div class="modal-dialog">
-                  <div class="modal-content">
-                    <div class="modal-header">
-                      <h1 class="modal-title fs-5" :id="'modalLabel' + service.id">Thông tin chi tiết dịch vụ:
-                        {{ service.tendichvu }}</h1>
-                      <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                    </div>
-                    <div class="modal-body">
-                      <div class="row">
-                        <div class="col-6">
-                          <div v-if="anh==null">
-                            <img :src="service.anh" class="card-img-top p-1" alt="...">
-                          </div>
-                          <div v-else>
-                            <img :src="anh" class="card-img-top p-1" alt="...">
-                          </div>
-                          <input type="file" id="fileUpdate" accept="image/png, image/jpeg, image/gif"
-                                 @change="handleFileChange"/>
-                        </div>
-                        <div class="col-6">
-                          <div class="form-group">
-                            <label for="">Tên dịch vụ</label>
-                            <input type="text"
-                                   class="form-control" name="" id="" aria-describedby="helpId" placeholder=""
-                                   v-model="service.tendichvu">
-                          </div>
-                          <div class="form-group">
-                            <label for="">Giá tiền</label>
-                            <input type="text"
-                                   class="form-control" name="" id="" aria-describedby="helpId" placeholder=""
-                                   v-model="service.giatien">
-                          </div>
-                          <div class="form-group">
-                            <label for="">Trạng thái</label>
-                            {{ service.trangthai == true ? 'Hoạt động' : 'Không hoạt động' }}
-                          </div>
-                        </div>
-                        <div class="col-12">
-                          <input type="text" name="mota" id="mota" class="form-control" v-model="service.mota"/>
-                        </div>
-                      </div>
-                    </div>
-                    <div class="p-4">
-                      <div class="row">
-                        <div class="col">
-                          <button type="button" class="custom-button" data-bs-dismiss="modal">Đóng</button>
-                        </div>
-                        <div class="col">
-                          <button type="button" class="custom-button" @click="saveService(service)"
-                                  data-bs-dismiss="modal">
-                            Lưu thay đổi
-                          </button>
-                        </div>
-                        <div class="col">
-                          <button type="button" class="custom-button" @click="updateTTService(service.id)">
-                            <span v-if="service.trangthai">
-                              Ẩn dịch vụ
-                            </span>
-                            <span v-else>
-                              Hiện dịch vụ
-                            </span>
-                          </button>
-                        </div>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-              </div>
-
+              <update-dich-vu :service="service"/>
 <!--              MEOMEO-->
             </div>
           </div>
