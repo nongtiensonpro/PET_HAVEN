@@ -3,6 +3,7 @@ package com.yellowcat.backend.controller;
 import com.yellowcat.backend.DTO.VietDanhGiaDTO;
 import com.yellowcat.backend.model.Danhgia;
 import com.yellowcat.backend.model.Hoadon;
+import com.yellowcat.backend.model.Lichhen;
 import com.yellowcat.backend.service.DanhGiaService;
 import com.yellowcat.backend.service.HoaDonService;
 import com.yellowcat.backend.service.LichHenService;
@@ -115,6 +116,20 @@ public class DanhGiaController {
        Danhgia danhgia = danhgiaOptional.get();
        danhgia.setTrangthai(false);
        danhGiaService.addOrUpdateDanhGia(danhgia);
+       return ResponseEntity.ok(danhgia);
+    }
+
+    @GetMapping("/thong-tin-danh-gia")
+    public ResponseEntity<?> getThongTinDanhGia(@RequestParam Integer idLich){
+       Lichhen lichhenOptional =  lichHenService.findById(idLich);
+       if (lichhenOptional==null){
+           return ResponseEntity.notFound().build();
+       }
+       Optional<Danhgia> danhgiaOptional = danhGiaService.getDanhGiaByIDLich(idLich);
+       if (!danhgiaOptional.isPresent()){
+           return ResponseEntity.notFound().build();
+       }
+       Danhgia danhgia = danhgiaOptional.get();
        return ResponseEntity.ok(danhgia);
     }
 }

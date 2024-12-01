@@ -51,7 +51,6 @@ public class HoaDonService {
             hoadon.setIdgiamgia(maxGiamGia.get()); // Gán giảm giá lớn nhất vào hóa đơn
         }
         Double giaTien = (double) (giaDichVu - giaDichVu*phanTramGiam/100);
-        hoadon.setIdgiamgia(maxGiamGia.get());
         return giaTien;
     }
     public List<Hoadon> getAllHoaDonChuaThanhToan(){
