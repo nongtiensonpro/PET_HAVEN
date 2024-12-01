@@ -24,7 +24,7 @@ function thayDoiLichHen(id: String) {
   return navigateTo(`/chi-tiet-lich/${id}`);
 }
 function chiTietLichHen(id: String) {
-  
+  return navigateTo(`/chitietlich_danhgia/${id}`);
 }
 
 function startCountdown() {
