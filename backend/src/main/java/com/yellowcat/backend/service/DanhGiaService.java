@@ -17,6 +17,10 @@ public class DanhGiaService {
         DanhGiaRepository.save(danhgia);
     }
 
+    public Optional<Danhgia> getDanhGiaByIDLich(int id) {
+        return DanhGiaRepository.findByIdhoadon_Idlichhen_IdAndTrangthaiTrue(id);
+    }
+
     public List<Danhgia> getAllDanhGiaTheoDichVu(Integer idDichVu) {
         return DanhGiaRepository.findByIdhoadon_Idlichhen_Dichvu_IdAndTrangthai(idDichVu,true);
     }

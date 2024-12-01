@@ -1,13 +1,3 @@
-CREATE TABLE TaiKhoan
-(
-    ID        SERIAL PRIMARY KEY,
-    Username  VARCHAR(100) NOT NULL,
-    Pass      VARCHAR(255) NOT NULL,
-    TrangThai BOOLEAN      NOT NULL,
-    Gmail     VARCHAR(255),
-    Image     TEXT,
-    Role      VARCHAR(50)  NOT NULL
-);
 
 CREATE TABLE GiamGia
 (
@@ -87,16 +77,6 @@ CREATE TABLE LichHen
 -- 6 : Thanh toán thành công
 
 
-CREATE TABLE NhacLichHen
-(
-    ID          SERIAL PRIMARY KEY,
-    TenThongBao VARCHAR(100) NOT NULL,
-    MoTa        TEXT         NOT NULL,
-    idTaiKhoan  VARCHAR(255) NOT NULL ,
-    ISRead      BOOLEAN,
-    TrangThai   BOOLEAN
-);
-
 CREATE TABLE HoaDon
 (
     ID                  SERIAL PRIMARY KEY,
@@ -136,11 +116,6 @@ CREATE TABLE NgayNghi
 
 
 
--- Thêm dữ liệu vào bảng TaiKhoan
-INSERT INTO TaiKhoan (Username, Pass, TrangThai, Gmail, Image, Role)
-VALUES ('user1', 'pass1', TRUE, 'user1@gmail.com', NULL, 'USER'),
-       ('user2', 'pass2', FALSE, 'user2@gmail.com', NULL, 'ADMIN'),
-       ('user3', 'pass3', TRUE, 'user3@gmail.com', NULL, 'USER');
 
 -- Thêm dữ liệu vào bảng ThongTinCaNhan
 INSERT INTO ThongTinCaNhan (HoTen, Tuoi, GioiTinh, idTaiKhoan, SDT)
@@ -182,12 +157,6 @@ INSERT INTO LichHen (idKhachHang, idThuCung, idDichVu, Date, TrangThai , idCaLic
 VALUES (1, 1, 1, '2024-10-02 ', 1 , 1,TRUE),
        (2, 2, 2, '2024-10-03 ', 2, 2,TRUE),
        (3, 3, 3, '2024-10-04 ', 3 , 3,TRUE);
-
--- Thêm dữ liệu vào bảng NhacLichHen
-INSERT INTO NhacLichHen (TenThongBao, MoTa, idTaiKhoan, ISRead, TrangThai)
-VALUES ('Nhắc lịch 1', 'Thông báo lịch hẹn 1', 1, FALSE, TRUE),
-       ('Nhắc lịch 2', 'Thông báo lịch hẹn 2', 2, TRUE, FALSE),
-       ('Nhắc lịch 3', 'Thông báo lịch hẹn 3', 3, FALSE, TRUE);
 
 -- Thêm dữ liệu vào bảng HoaDon
 INSERT INTO HoaDon (idLichHen, Date, SoTien, NgayThanhToan, PhuongThucThanhToan, TrangThai,MaGiaoDich,idGiamGia)
