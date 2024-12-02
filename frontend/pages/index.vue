@@ -32,53 +32,42 @@
   </div>
 </template>
 
-<script lang="ts">
+<script setup lang="ts">
 import { useServiceStore } from '~/stores/DichVuStores';
 import { onMounted, computed, ref } from 'vue';
 import DichVu from '~/models/DichVu';
+import {useVoucherStore} from '~/stores/VorchersStores'
 
-export default {
-  setup() {
-    const serviceStore = useServiceStore();
-    const itemsPerPage = 4; // Số lượng dịch vụ hiển thị trên mỗi trang
-    const currentPage = ref(1); // Trang hiện tại
+const voucherStore = useVoucherStore();
+const serviceStore = useServiceStore();
+const itemsPerPage = 4; // Số lượng dịch vụ hiển thị trên mỗi trang
+const currentPage = ref(1); // Trang hiện tại
 
-    onMounted(() => {
-      serviceStore.fetchServices();
-    });
+onMounted(() => {
+  serviceStore.fetchServices();
+});
 
-    const services = computed((): DichVu[] => {
-      return serviceStore.services.filter((service: DichVu) => service.trangthai);
-    });
-    const totalPages = computed(() => Math.ceil(services.value.length / itemsPerPage));
+const services = computed((): DichVu[] => {
+  return serviceStore.services.filter((service: DichVu) => service.trangthai);
+});
+const totalPages = computed(() => Math.ceil(services.value.length / itemsPerPage));
 
-    // Tính toán các dịch vụ được hiển thị trên trang hiện tại
-    const paginatedServices = computed(() => {
-      const start = (currentPage.value - 1) * itemsPerPage;
-      return services.value.slice(start, start + itemsPerPage);
-    });
+// Tính toán các dịch vụ được hiển thị trên trang hiện tại
+const paginatedServices = computed(() => {
+  const start = (currentPage.value - 1) * itemsPerPage;
+  return services.value.slice(start, start + itemsPerPage);
+});
 
-    const nextPage = () => {
-      if (currentPage.value < totalPages.value) {
-        currentPage.value++;
-      }
-    };
+const nextPage = () => {
+  if (currentPage.value < totalPages.value) {
+    currentPage.value++;
+  }
+};
 
-    const prevPage = () => {
-      if (currentPage.value > 1) {
-        currentPage.value--;
-      }
-    };
-
-    return {
-      services,
-      paginatedServices,
-      currentPage,
-      totalPages,
-      nextPage,
-      prevPage,
-    };
-  },
+const prevPage = () => {
+  if (currentPage.value > 1) {
+    currentPage.value--;
+  }
 };
 </script>
 

@@ -241,20 +241,17 @@ const formatCurrency = (amount) => {
 
 const getTrangThai = (status) => {
   switch (status) {
-    case 0:
-      return 'Thành công';
     case 1:
-      return 'Thất bại';
+      return 'Chờ thanh toán';
+    case 2:
+      return 'Thành công'
     case 3:
-      return 'Chờ thanh toán'
-    case 6:
-      return 'Thanh toán thành công'
-    case 4 :
-      return 'Chờ xác nhận'
+      return 'Thất bại'
     default:
       return 'Không xác định';
   }
 };
+
 
 function taiHoaDon(id: string) {
   useQuanLyHoaDon.inHoaDon(id)
