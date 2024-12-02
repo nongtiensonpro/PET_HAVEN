@@ -2,7 +2,9 @@
 import {computed, ref} from 'vue';
 import ThuCungKhachHang from '../models/ThuCungKhachHang';
 import { useStore } from '~/stores/UserStores';
+import { useToast } from 'vue-toastification';
 
+const toast = useToast();
 const userInfo = computed(() => useStore);
 
 const props = defineProps<{
@@ -35,16 +37,26 @@ const validateForm = () => {
 
 const saveChanges = () => {
   if (validateForm()) {
-    thuCung.value = new ThuCungKhachHang(
-      props.thuCung.id,
-      ten.value,
-      cannang.value,
-      tuoi.value,
-      giong.value,
-      props.thuCung.idtaikhoan
-    );
-    console.log('Thú cưng đã được cập nhật:', thuCung.value);
-    useStore().updatePet(thuCung.value);
+    try {
+      thuCung.value = new ThuCungKhachHang(
+          props.thuCung.id,
+          ten.value,
+          cannang.value,
+          tuoi.value,
+          giong.value,
+          props.thuCung.idtaikhoan
+      );
+      console.log('Thú cưng đã được cập nhật:', thuCung.value);
+      useStore().updatePet(thuCung.value);
+      toast.success('Thú cưng đã được cập nhật thành công.');
+      const modalElement = document.getElementById('exampleModal1');
+      if (modalElement) {
+        const modalInstance = bootstrap.Modal.getInstance(modalElement);
+        modalInstance.hide();
+      }
+    }catch (error) {
+      toast.error('Lỗi khi cập nhật thú cưng. Vui lòng thử lại.');
+    }
   }
 };
 </script>

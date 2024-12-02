@@ -99,7 +99,6 @@ export const useDanhGiaStore = defineStore('danhGiaStore', {
                 }
             },
             async capNhatDanhGia(idDanhGia: String,moTa: String,idLichHen : Number, star: Number) {
-                console.log(star+'sao ne chang trai')
                 const token = localStorage.getItem('access_token');
                 try {
                     const requestBody = {

@@ -20,14 +20,14 @@
                     &#9733;
                   </span>
                 </div>
-                <div class="text-danger" v-if="errors.rating">{{ errors.rating }}</div>{{currentRating}}
+                <div class="text-danger" v-if="errors.rating">{{ errors.rating }}</div>
               </div>
               <div class="mb-3">
                 <label for="review" class="form-label">Nhận xét:</label>
                 <textarea v-model="currentReview" class="form-control" id="review" rows="3" :class="{ 'is-invalid': errors.review }"></textarea>
                 <div v-if="errors.review" class="invalid-feedback">{{ errors.review }}</div>
               </div>
-              <button type="submit" class="btn btn-primary">Cập nhật đánh giá</button>
+              <button type="submit" class="custom-button">Cập nhật đánh giá</button>
             </form>
           </div>
         </div>
@@ -42,6 +42,7 @@ import { useField, useForm } from 'vee-validate';
 import * as yup from 'yup';
 import { useToast } from 'vue-toastification';
 import { useDanhGiaStore } from '~/stores/DanhGiaStores';
+import Swal from "sweetalert2";
 
 const danhGiaStore = useDanhGiaStore();
 const toast = useToast();
@@ -94,11 +95,23 @@ const closeModal = () => {
   }
 };
 
-const submitForm = handleSubmit(async (values) => {
+const submitForm = handleSubmit(async () => {
   try {
-    await danhGiaStore.capNhatDanhGia(props.idDanhGia, currentReview.value, currentRating.value, props.idLichHen);
-    toast.success('Cập nhật đánh giá thành công!');
-    closeModal();
+    const result = await Swal.fire({
+      title: 'Xác nhận',
+      text: "Bạn có muốn cập nhật đánh giá không?",
+      icon: 'success',
+      showCancelButton: true,
+      confirmButtonColor: '#3085d6',
+      cancelButtonColor: '#d33',
+      confirmButtonText: 'Có',
+      cancelButtonText: 'Không'
+    });
+    if (result.isConfirmed) {
+      await danhGiaStore.capNhatDanhGia(props.idDanhGia, currentReview.value,  props.idLichHen,currentRating.value);
+      toast.success('Cập nhật đánh giá thành công!');
+      closeModal();
+    }
   } catch (error) {
     toast.error('Cập nhật đánh giá thất bại!');
   }

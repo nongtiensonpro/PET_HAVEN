@@ -116,6 +116,7 @@ import type {DanhGia} from "~/models/DanhGia";
 import type {Service} from "~/models/Service";
 import {useUserStore} from '~/stores/user';
 import { useToast } from 'vue-toastification';
+import Swal from "sweetalert2";
 
 const toast = useToast();
 const  userStore = useUserStore()
@@ -165,9 +166,21 @@ const updateReview = (updatedReview: { id: number; sosao: number; mota: string }
 
 async function anDanhGia(idDanhGia: number) {
   try {
-    await danhGiaStore.anDanhGia(idDanhGia);
-    danhGias.value = danhGias.value.filter(dg => dg.id !== idDanhGia);
-    toast.success('Đã ẩn bình luận thành công!', {})
+    const result = await Swal.fire({
+      title: 'Xác nhận',
+      text: "Bạn có muốn ẩn đánh giá không?",
+      icon: 'success',
+      showCancelButton: true,
+      confirmButtonColor: '#3085d6',
+      cancelButtonColor: '#d33',
+      confirmButtonText: 'Có',
+      cancelButtonText: 'Không'
+    });
+    if (result.isConfirmed) {
+      await danhGiaStore.anDanhGia(idDanhGia);
+      danhGias.value = danhGias.value.filter(dg => dg.id !== idDanhGia);
+      toast.success('Đã ẩn bình luận thành công!', {})
+    }
   } catch (error) {
     toast.error('L ẩn bình luận! Vui lòng thử lại.', {})
   }

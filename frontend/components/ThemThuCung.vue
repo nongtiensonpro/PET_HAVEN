@@ -4,7 +4,9 @@ import { useStore } from '~/stores/UserStores';
 import {useUserStore} from '~/stores/user';
 const userStoreNe = useUserStore();
 const userInfo = computed(() => userStoreNe.userInfo);
+import { useToast } from 'vue-toastification';
 
+const toast = useToast();
 const userStore = useStore();
 const petName = ref('');
 const petWeight = ref('');
@@ -46,19 +48,30 @@ function addPet() {
     return;
   }
 
-  const newPet = {
-    ten: petName.value,
-    cannang: petWeight.value,
-    giong: petBreed.value,
-    tuoi: petAge.value,
+  try {
+    const newPet = {
+      ten: petName.value,
+      cannang: petWeight.value,
+      giong: petBreed.value,
+      tuoi: petAge.value,
+      id: '', // Add appropriate id value
+      idtaikhoan: '' // Add appropriate idtaikhoan value
+    };
+    userStore.addPet(newPet);
 
-  };
-  userStore.addPet(newPet);
-
-  petName.value = '';
-  petWeight.value = '';
-  petBreed.value = '';
-  petAge.value = '';
+    petName.value = '';
+    petWeight.value = '';
+    petBreed.value = '';
+    petAge.value = '';
+    toast.success('Thêm thú cưng thành công');
+    const modalElement = document.getElementById('exampleModal');
+    if (modalElement) {
+      const modalInstance = bootstrap.Modal.getInstance(modalElement);
+      modalInstance.hide();
+    }
+  } catch (error) {
+    toast.error('Thêm thú cưng thất bại');
+  }
 }
 </script>
 
