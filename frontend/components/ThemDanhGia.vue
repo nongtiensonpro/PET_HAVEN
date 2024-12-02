@@ -1,10 +1,11 @@
 <script setup lang="ts">
+import { ref } from 'vue';
 import { useField, useForm } from 'vee-validate';
 import * as yup from 'yup';
 import { useDanhGiaStore } from "~/stores/DanhGiaStores";
-import {useToast} from "vue-toastification";
-const toast = useToast();
+import { useToast } from "vue-toastification";
 
+const toast = useToast();
 const DanhGiaStore = useDanhGiaStore();
 
 const props = defineProps({
@@ -25,7 +26,12 @@ const { handleSubmit, errors } = useForm({
 
 const moTa = useField<string>('moTa');
 const star = useField<number>('star');
+const rating = ref(0);
 
+const setRating = (value: number) => {
+  rating.value = value;
+  star.value.value = value;
+};
 
 const submitForm = handleSubmit(async (values) => {
   try {
@@ -40,7 +46,8 @@ const submitForm = handleSubmit(async (values) => {
     // Close the modal
     const modal = document.getElementById('exampleModal');
     if (modal) {
-      const bootstrapModal = bootstrap.Modal.getInstance(modal);
+      const modalElement = modal as HTMLElement;
+      const bootstrapModal = (window as any).bootstrap.Modal.getInstance(modalElement);
       bootstrapModal?.hide();
     }
 
@@ -51,10 +58,10 @@ const submitForm = handleSubmit(async (values) => {
   }
 });
 
-
 const resetForm = () => {
   moTa.value.value = '';
-  star.value.value = undefined;
+  star.value.value = 0;
+  rating.value = 0;
 };
 </script>
 
@@ -81,9 +88,12 @@ const resetForm = () => {
                 <div class="text-danger" v-if="errors.moTa">{{ errors.moTa }}</div>
               </div>
               <div class="mb-3">
-                <label for="star" class="form-label">Số sao (1-5)</label>
-                <input type="number" class="form-control" id="star" v-model="star.value.value" min="1" max="5">
-                <div class="text-danger" v-if="errors.star">{{ errors.star }}</div>
+                <label for="rating" class="form-label">Đánh giá (1-5 sao):</label>
+                <div class="star-rating">
+                  <span v-for="starValue in 5" :key="starValue" @click="setRating(starValue)" :class="{ 'active': starValue <= rating }">
+                    &#9733;
+                  </span>
+                </div>
               </div>
               <div class="modal-footer">
                 <button type="button" class="btn btn-secondary" data-bs-dismiss="modal" @click="resetForm">Đóng</button>
@@ -98,4 +108,13 @@ const resetForm = () => {
 </template>
 
 <style scoped>
+.star-rating span {
+  cursor: pointer;
+  font-size: 24px;
+  color: #ccc;
+}
+
+.star-rating span.active {
+  color: #ffd700;
+}
 </style>

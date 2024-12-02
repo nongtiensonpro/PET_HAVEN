@@ -52,25 +52,29 @@ export const useDanhGiaStore = defineStore('danhGiaStore', {
                 }
             },
 
-            async deleteDanhGia(danhGiaId: number) {
+            async anDanhGia(danhGiaId: number) {
                 const token = localStorage.getItem('access_token');
                 try {
-                    const response = await fetch(`http://localhost:8080/api/danh-gia/danh-gia-theo-dich-vu/1`, {
-                        method: 'DELETE',
+                    const requestBody = {
+                        id: danhGiaId
+                    };
+                    const response = await fetch(`http://localhost:8080/api/danh-gia/an-danh-gia`, {
+                        method: 'PUT',
                         headers: {
                             'Authorization': `Bearer ${token}`
-                        }
+                        },
+                        body: JSON.stringify(requestBody)
                     });
 
                     if (!response.ok) {
-                        throw new Error(`Failed to delete danh gia. Status: ${response.status}`);
+                        throw new Error(`Failed to ẩn danh gia. Status: ${response.status}`);
                     }
 
                     this.danhGias = this.danhGias.filter(danhGia => danhGia.id !== danhGiaId);
                     return {success: true};
                 } catch (error) {
-                    console.error('Error deleting danh gia:', error);
-                    return {success: false, message: 'Lỗi xóa đánh giá'};
+                    console.error('Error ẩn danh gia:', error);
+                    return {success: false, message: 'Lỗi ẩn đánh giá'};
                 }
             },
             async chitietdanhgiatheolichhen(idLich: String) {
@@ -91,20 +95,22 @@ export const useDanhGiaStore = defineStore('danhGiaStore', {
                     return danhGia;
                 } catch (error) {
                     console.error('Error deleting danh gia:', error);
-                    return {success: false, message: 'Lỗi xóa đánh giá'};
+                    return {success: false, message: 'Lỗi tìm đánh giá'};
                 }
             },
-            async capNhatDanhGia(moTa: String,idLichHen : Number, star: Number) {
+            async capNhatDanhGia(idDanhGia: String,moTa: String,idLichHen : Number, star: Number) {
+                console.log(star+'sao ne chang trai')
                 const token = localStorage.getItem('access_token');
                 try {
                     const requestBody = {
+                        idDanhGia: idDanhGia,
                         moTa: moTa,
                         idLichHen: idLichHen,
                         star: star
                     };
 
                     const response = await fetch(`http://localhost:8080/api/danh-gia/update`, {
-                        method: 'POST',
+                        method: 'PUT',
                         headers: {
                             'Content-Type': 'application/json',
                             'Authorization': `Bearer ${token}`

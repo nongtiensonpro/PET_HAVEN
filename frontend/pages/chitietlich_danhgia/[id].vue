@@ -10,9 +10,9 @@
                   <i class="fas fa-calendar-check me-2"></i>Chi tiết lịch hẹn
                   {{ thayDoiLichHenStore.lichHenDetails.id }}
                   <div :class="getTrangThaiClass(thayDoiLichHenStore.lichHenDetails.trangthai)">
-                    <span class="badge bg-success"> {{
-                        getTrangThaiText(thayDoiLichHenStore.lichHenDetails.trangthai)
-                      }}</span>
+                    <span class="badge bg-success">
+                      {{ getTrangThaiText(thayDoiLichHenStore.lichHenDetails.trangthai) }}
+                    </span>
                   </div>
                 </div>
                 <div class="card-body">
@@ -42,7 +42,7 @@
                                 Giờ : {{ thayDoiLichHenStore.getCaLichHen.thoigianca }}
                               </div>
                               <div class="col">
-                                Ngày : {{ new Date(thayDoiLichHenStore.getDate).toLocaleDateString() }}
+                                Ngày : {{ formatDate(thayDoiLichHenStore.getDate) }}
                               </div>
                             </div>
                           </div>
@@ -82,11 +82,6 @@
         <div class="card p-4">
           <h4 class="card-title mb-4">Đánh giá lịch hẹn của bạn</h4>
           <div v-if="chiTietDanhGia">
-            <CapNhatDanhGia
-                :idLichHen="thayDoiLichHenStore.lichHenDetails.id"
-                :initialRating="chiTietDanhGia.sosao"
-                :initialReview="chiTietDanhGia.mota"
-            />
             <div class="mb-3 p-3 border rounded">
               <div class="d-flex justify-content-between align-items-center mb-2">
                 <div>
@@ -96,19 +91,30 @@
                   <span v-for="n in Number(chiTietDanhGia.sosao)" :key="n" class="text-warning">
                     <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor"
                          class="bi bi-star-fill" viewBox="0 0 16 16">
-                  <path
-                      d="M3.612 15.443c-.386.198-.824-.149-.746-.592l.83-4.73L.173 6.765c-.329-.314-.158-.888.283-.95l4.898-.696L7.538.792c.197-.39.73-.39.927 0l2.184 4.327 4.898.696c.441.062.612.636.282.95l-3.522 3.356.83 4.73c.078.443-.36.79-.746.592L8 13.187l-4.389 2.256z"/>
-                </svg>
+                      <path d="M3.612 15.443c-.386.198-.824-.149-.746-.592l.83-4.73L.173 6.765c-.329-.314-.158-.888.283-.95l4.898-.696L7.538.792c.197-.39.73-.39.927 0l2.184 4.327 4.898.696c.441.062.612.636.282.95l-3.522 3.356.83 4.73c.078.443-.36.79-.746.592L8 13.187l-4.389 2.256z"/>
+                    </svg>
                   </span>
                 </div>
               </div>
               <p class="mb-1">{{ chiTietDanhGia.mota }}</p>
-              <small class="text-muted">{{ new Date(chiTietDanhGia.date).toLocaleDateString() }}</small>
+              <div class="row p-4">
+                <div class="col">
+                  {{ formatDate(chiTietDanhGia.date) }}
+                </div>
+                <div class="col">
+                  <CapNhatDanhGia
+                      :idDanhGia="String(chiTietDanhGia.id)"
+                      :idLichHen="String(thayDoiLichHenStore.lichHenDetails.id)"
+                      :initialRating="Number(chiTietDanhGia.sosao)"
+                      :initialReview="chiTietDanhGia.mota"
+                  />
+                </div>
+              </div>
             </div>
           </div>
-          <div v-else >
-            <ThemDanhGia :idLichHen="thayDoiLichHenStore.lichHenDetails.id" />
-            <p class="text-center">Chưa có đánh giá nào cho lịch hẹn này hãy thêm đánh giá !.</p>
+          <div v-else>
+            <ThemDanhGia :idLichHen="String(thayDoiLichHenStore.lichHenDetails.id)" />
+            <p class="text-center">Chưa có đánh giá nào cho lịch hẹn này hãy thêm đánh giá!</p>
           </div>
         </div>
       </div>
@@ -117,14 +123,14 @@
 </template>
 
 <script setup lang="ts">
-import {useRoute} from 'vue-router'
-import {ref, onMounted} from 'vue';
-import {useThayDoiLichHenStore} from '~/stores/ThayDoiLichHen'
-import {useDanhGiaStore} from '~/stores/DanhGiaStores';
-import ChiTietDanhGia from '~/models/ChiTietDanhGia';
-import {useToast} from "vue-toastification";
-const toast = useToast();
+import { useRoute } from 'vue-router'
+import { ref, onMounted } from 'vue';
+import { useThayDoiLichHenStore } from '~/stores/ThayDoiLichHen'
+import { useDanhGiaStore } from '~/stores/DanhGiaStores';
+import type { ChiTietDanhGia } from '~/models/ChiTietDanhGia';
+import { useToast } from "vue-toastification";
 
+const toast = useToast();
 
 const thayDoiLichHenStore = useThayDoiLichHenStore()
 const danhGiaStore = useDanhGiaStore()
@@ -141,7 +147,6 @@ onMounted(async () => {
 async function hienThiDanhGia(idLichHen: string) {
   const result = await danhGiaStore.chitietdanhgiatheolichhen(idLichHen);
   if ('success' in result) {
-    // Handle the case where the result is { success: boolean; message: string }
     console.log(result.message);
     chiTietDanhGia.value = null;
   } else {
@@ -149,11 +154,11 @@ async function hienThiDanhGia(idLichHen: string) {
   }
 }
 
-async function capNhatDanhGia(idLichHen: string, mota: string, sosao: number) {
+async function capNhatDanhGia(idLichHen: string, mota: string, sosao: number, idDanhGia: string) {
   try {
-    await danhGiaStore.capNhatDanhGia(idLichHen, mota, sosao);
+    await danhGiaStore.capNhatDanhGia(idLichHen, mota, sosao, idDanhGia);
     toast.success('Cập nhật đánh giá thành công!')
-  }catch (error) {
+  } catch (error) {
     toast.error('Cập nhật đánh giá thất bại!')
   }
 }
@@ -163,7 +168,11 @@ definePageMeta({
 })
 
 const formatCurrency = (value: number) => {
-  return new Intl.NumberFormat('vi-VN', {style: 'currency', currency: 'VND'}).format(value);
+  return new Intl.NumberFormat('vi-VN', { style: 'currency', currency: 'VND' }).format(value);
+};
+
+const formatDate = (date: string | number | Date) => {
+  return new Date(date).toLocaleDateString('vi-VN');
 };
 
 const getTrangThaiText = (trangthai: number) => {
@@ -194,5 +203,5 @@ const getTrangThaiClass = (trangthai: number) => {
 </script>
 
 <style scoped>
-
+/* Styles remain unchanged */
 </style>

@@ -5,18 +5,18 @@
         <div class="card-header">
           <div class="row">
             <div class="col">
-              <h2 class="mb-0">{{ service.tendichvu }} - {{ service.giatien.toLocaleString() }} USD</h2>
+              <h2 class="mb-0">{{ service.tendichvu }} - {{ formatCurrency(service.giatien) }} USD</h2>
             </div>
           </div>
         </div>
         <div class="card-body">
           <div class="row">
             <div class="col">
-              <div v-if="service.anh === null">
-                <img src="~/assets/image/cat1.jpg" class="card-img-top" alt="...">
+              <div v-if="!service.anh">
+                <img src="~/assets/image/cat1.jpg" class="card-img-top" alt="Default image">
               </div>
               <div v-else>
-                <img :src="service.anh" class="card-img-top" alt="...">
+                <img :src="service.anh" class="card-img-top" :alt="service.tendichvu">
               </div>
             </div>
             <div class="col">
@@ -35,26 +35,41 @@
       <div v-else class="text-danger p-4">{{ errorMessage }}</div>
     </div>
 
-
     <div class="mt-5">
       <h3 class="mb-4">Đánh giá và nhận xét</h3>
       <div v-if="danhGias.length > 0">
         <div v-for="danhGia in danhGias" :key="danhGia.id" class="card mb-3">
+
           <div class="card-body">
             <div class="d-flex justify-content-between align-items-center mb-3">
               <div>
                 <strong class="me-2">Đánh giá:</strong>
                 <span v-for="n in 5" :key="n" class="star-rating">
-              <i :class="n <= danhGia.sosao ? 'fas fa-star text-warning' : 'far fa-star text-muted'">
-                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor"
-                     class="bi bi-star-fill" viewBox="0 0 16 16">
-                  <path
-                      d="M3.612 15.443c-.386.198-.824-.149-.746-.592l.83-4.73L.173 6.765c-.329-.314-.158-.888.283-.95l4.898-.696L7.538.792c.197-.39.73-.39.927 0l2.184 4.327 4.898.696c.441.062.612.636.282.95l-3.522 3.356.83 4.73c.078.443-.36.79-.746.592L8 13.187l-4.389 2.256z"/>
-                </svg>
-              </i>
-            </span>
+                  <i :class="n <= danhGia.sosao ? 'fas fa-star text-warning' : 'far fa-star text-muted'">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor"
+                         class="bi bi-star-fill" viewBox="0 0 16 16">
+                      <path
+                          d="M3.612 15.443c-.386.198-.824-.149-.746-.592l.83-4.73L.173 6.765c-.329-.314-.158-.888.283-.95l4.898-.696L7.538.792c.197-.39.73-.39.927 0l2.184 4.327 4.898.696c.441.062.612.636.282.95l-3.522 3.356.83 4.73c.078.443-.36.79-.746.592L8 13.187l-4.389 2.256z"/>
+                    </svg>
+                  </i>
+                </span>
               </div>
               <small class="text-muted">{{ formatDate(danhGia.date) }}</small>
+              <div v-if="danhGia.idhoadon.idlichhen.emailNguoiDat === userInfo?.name">
+                <CapNhatDanhGia
+                    :key="danhGia.id"
+                    :idDanhGia="String(danhGia.id)"
+                    :idLichHen="String(danhGia.idhoadon.idlichhen.id)"
+                    :initialRating="Number(danhGia.sosao)"
+                    :initialReview="danhGia.mota"
+                    @update-review="updateReview"
+                />
+              </div>
+              <div v-if="Array.isArray(userInfo.role) && userInfo.role.includes('admin') || userInfo.role.includes('manager') || danhGia.idhoadon.idlichhen.emailNguoiDat === userInfo?.name">
+                <div @click="anDanhGia(danhGia.id)">
+                  Ẩn bình luận
+                </div>
+              </div>
             </div>
 
             <p class="card-text mb-3"><strong>Nội dung:</strong> {{ danhGia.mota }}</p>
@@ -88,22 +103,29 @@
       </div>
     </div>
   </div>
-  <a id="" class="custom-button p-4" href="/" role="button">Trở về trang chủ</a>
+  <a class="custom-button p-4" href="/" role="button">Trở về trang chủ</a>
 </template>
 
 <script setup lang="ts">
-import {ref, onMounted} from 'vue';
+import {ref, onMounted, computed} from 'vue';
 import {useServiceStore} from '~/stores/DichVuStores';
 import {useDanhGiaStore} from '~/stores/DanhGiaStores';
 import {useRoute} from 'vue-router';
-import type DanhGia from "~/models/DanhGia";
+import CapNhatDanhGia from '~/components/CapNhatDanhGia.vue';
+import type {DanhGia} from "~/models/DanhGia";
+import type {Service} from "~/models/Service";
+import {useUserStore} from '~/stores/user';
+import { useToast } from 'vue-toastification';
 
+const toast = useToast();
+const  userStore = useUserStore()
+const userInfo = computed(() => userStore.userInfo);
 const serviceStore = useServiceStore();
 const danhGiaStore = useDanhGiaStore();
 const route = useRoute();
-const service = ref(null);
+const service = ref<Service | null>(null);
 const errorMessage = ref('Có lỗi đã xảy ra vui lòng thử lại !');
-const danhGias = ref(<DanhGia []>[]);
+const danhGias = ref<DanhGia[]>([]);
 
 onMounted(async () => {
   await serviceStore.fetchServices();
@@ -119,10 +141,38 @@ onMounted(async () => {
   }
 });
 
-const formatDate = (dateString) => {
-  const options = {year: 'numeric', month: 'long', day: 'numeric', hour: '2-digit', minute: '2-digit'};
+const formatDate = (dateString: string): string => {
+  const options: Intl.DateTimeFormatOptions = {
+    year: 'numeric',
+    month: 'long',
+    day: 'numeric',
+    hour: '2-digit',
+    minute: '2-digit'
+  };
   return new Date(dateString).toLocaleDateString('vi-VN', options);
 };
+
+const formatCurrency = (value: number): string => {
+  return value.toLocaleString('vi-VN');
+};
+
+const updateReview = (updatedReview: { id: number; sosao: number; mota: string }) => {
+  const index = danhGias.value.findIndex(dg => dg.id === updatedReview.id);
+  if (index !== -1) {
+    danhGias.value[index] = {...danhGias.value[index], ...updatedReview};
+  }
+};
+
+async function anDanhGia(idDanhGia: number) {
+  try {
+    await danhGiaStore.anDanhGia(idDanhGia);
+    danhGias.value = danhGias.value.filter(dg => dg.id !== idDanhGia);
+    toast.success('Đã ẩn bình luận thành công!', {})
+  } catch (error) {
+    toast.error('L ẩn bình luận! Vui lòng thử lại.', {})
+  }
+}
+
 </script>
 
 <style scoped>
