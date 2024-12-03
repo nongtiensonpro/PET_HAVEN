@@ -10,167 +10,193 @@
       <div class="card-body">
         <table class="table">
           <thead>
-            <tr>
-              <th>ID Lịch Hẹn</th>
-              <th>Email KH</th>
-              <th>Tên Thú Cưng</th>
-              <th>Dịch Vụ</th>
-              <th>Thời gian</th>
-              <th>Ngày Hẹn</th>
-              <th>Số Tiền</th>
-              <th>Trạng Thái</th>
-              <th>Thao tác</th>
-            </tr>
+          <tr>
+            <th>ID Lịch Hẹn</th>
+            <th>Email KH</th>
+            <th>Tên Thú Cưng</th>
+            <th>Dịch Vụ</th>
+            <th>Thời gian</th>
+            <th>Ngày Hẹn</th>
+            <th>Số Tiền</th>
+            <th>Trạng Thái</th>
+            <th>Thao tác</th>
+          </tr>
           </thead>
           <tbody>
-            <tr v-for="hoaDon in hoaDonKhachHangs" :key="hoaDon.id">
-              <td>{{ hoaDon.idlichhen.id }}</td>
-              <td>{{ hoaDon.idlichhen.emailNguoiDat }}</td>
-              <td>{{ hoaDon.idlichhen.thucung.ten }}</td>
-              <td>{{ hoaDon.idlichhen.dichvu.tendichvu }}</td>
-              <td>{{ hoaDon.idlichhen.idcalichhen.thoigianca }}</td>
-              <td>{{ formatDate(hoaDon.date) }}</td>
-              <td>{{ formatCurrency(hoaDon.sotien) }}</td>
-              <td><span class="badge bg-success">{{ getTrangThai(hoaDon.trangthai) }}</span></td>
-              <td>
-                <div v-if="hoaDon.trangthai === 3 || hoaDon.trangthai === 4 || hoaDon.trangthai === 6">
-                  Đổi thời gian
-                </div>
-                <div class="nav-link" v-if="hoaDon.trangthai === 3 || hoaDon.trangthai === 4 || hoaDon.trangthai === 6">
-                  <button type="button" class="nav-link" data-bs-toggle="modal" data-bs-target="#exampleModal1">
-                    Thay đổi trạng thái
-                  </button>
-
-                  <!-- Modal -->
-                  <div class="modal fade" id="exampleModal1" tabindex="-1" aria-labelledby="exampleModalLabel1" aria-hidden="true">
-                    <div class="modal-dialog">
-                      <div class="modal-content">
-                        <div class="modal-header">
-                          <h1 class="modal-title fs-5" id="exampleModalLabel1">Thay đổi trạng thái</h1>
-                          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                        </div>
-                        <div class="modal-body">
-                          <div class="form-floating">
-                            <select class="form-select" id="floatingSelect" v-model="selectedTrangThai" :aria-label="'Trạng thái bây giờ là ' + getTrangThai(hoaDon.trangthai)">
-                              <option value="0">Thành công</option>
-                              <option value="1">Thất bại</option>
-                              <option value="2">Đã hủy</option>
-                              <option value="3">Chờ thanh toán</option>
-                              <option value="4">Chờ xác nhận</option>
-                              <option value="5">Rỗng</option>
-                              <option value="6">Thanh toán thành công</option>
-                            </select>
-                            <label for="floatingSelect">Trạng thái bây giờ là {{ getTrangThai(hoaDon.trangthai) }}</label>
-                          </div>
-                        </div>
-                        <div class="modal-footer">
-                          <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Đóng</button>
-                          <button type="button" class="btn btn-primary" @click="saveTrangThai(hoaDon.id, selectedTrangThai)">Lưu trạng thái</button>
-                        </div>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-                <button type="button" class="nav-link" data-bs-toggle="modal" data-bs-target="#exampleModal">
-                  Chi tiết
+          <tr v-for="hoaDon in hoaDonKhachHangs" :key="hoaDon.id">
+            <td>{{ hoaDon.idlichhen.id }}</td>
+            <td>{{ hoaDon.idlichhen.emailNguoiDat }}</td>
+            <td>{{ hoaDon.idlichhen.thucung.ten }}</td>
+            <td>{{ hoaDon.idlichhen.dichvu.tendichvu }}</td>
+            <td>{{ hoaDon.idlichhen.idcalichhen.thoigianca }}</td>
+            <td>{{ formatDate(hoaDon.date) }}</td>
+            <td>{{ formatCurrency(hoaDon.sotien) }}</td>
+            <td><span class="badge bg-success">{{ getTrangThai(hoaDon.trangthai) }}</span></td>
+            <td>
+              <div v-if="hoaDon.trangthai === 3 || hoaDon.trangthai === 4 || hoaDon.trangthai === 6">
+                <!-- Button trigger modal -->
+                <button type="button" class="nav-link" data-bs-toggle="modal" data-bs-target="#exampleModal2">
+                  Thay đổi lịch hẹn
                 </button>
-                <div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+                <div class="modal fade" id="exampleModal2" tabindex="-1" aria-labelledby="exampleModalLabel2" aria-hidden="true">
                   <div class="modal-dialog">
                     <div class="modal-content">
                       <div class="modal-header">
-                        <h1 class="modal-title fs-5" id="exampleModalLabel">Chi tiết hóa đơn</h1>
+                        <h1 class="modal-title fs-5" id="exampleModalLabel2">Thay đổi lịch hẹn</h1>
                         <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                       </div>
                       <div class="modal-body">
-                        <table class="table table-bordered">
-                          <tbody>
-                            <tr>
-                              <th>ID Hóa Đơn</th>
-                              <td>{{ hoaDon.id }}</td>
-                            </tr>
-                            <tr>
-                              <th>ID Lịch Hẹn</th>
-                              <td>{{ hoaDon.idlichhen.id }}</td>
-                            </tr>
-                            <tr>
-                              <th>ID Khách Hàng</th>
-                              <td>{{ hoaDon.idlichhen.idkhachhang }}</td>
-                            </tr>
-                            <tr>
-                              <th>Tên Thú Cưng</th>
-                              <td>{{ hoaDon.idlichhen.thucung.ten }}</td>
-                            </tr>
-                            <tr>
-                              <th>Cân Nặng Thú Cưng</th>
-                              <td>{{ hoaDon.idlichhen.thucung.cannang }} kg</td>
-                            </tr>
-                            <tr>
-                              <th>Tuổi Thú Cưng</th>
-                              <td>{{ hoaDon.idlichhen.thucung.tuoi }} năm</td>
-                            </tr>
-                            <tr>
-                              <th>Giống Thú Cưng</th>
-                              <td>{{ hoaDon.idlichhen.thucung.giong }}</td>
-                            </tr>
-                            <tr>
-                              <th>Dịch Vụ</th>
-                              <td>{{ hoaDon.idlichhen.dichvu.tendichvu }}</td>
-                            </tr>
-                            <tr>
-                              <th>Mô Tả Dịch Vụ</th>
-                              <td>{{ hoaDon.idlichhen.dichvu.mota }}</td>
-                            </tr>
-                            <tr>
-                              <th>Email Người Đặt</th>
-                              <td>{{ hoaDon.idlichhen.emailNguoiDat }}</td>
-                            </tr>
-                            <tr>
-                              <th>Ngày Hẹn</th>
-                              <td>{{ formatDate(hoaDon.idlichhen.date) }}</td>
-                            </tr>
-                            <tr>
-                              <th>Thời Gian Ca</th>
-                              <td>{{ hoaDon.idlichhen.idcalichhen.thoigianca }}</td>
-                            </tr>
-                            <tr>
-                              <th>Số Tiền</th>
-                              <td>{{ formatCurrency(hoaDon.sotien) }}</td>
-                            </tr>
-                            <tr>
-                              <th>Ngày Thanh Toán</th>
-                              <td>{{ formatDate(hoaDon.ngaythanhtoan) }}</td>
-                            </tr>
-                            <tr>
-                              <th>Phương Thức Thanh Toán</th>
-                              <td>{{ hoaDon.phuongthucthanhtoan }}</td>
-                            </tr>
-                            <tr>
-                              <th>Mã Giao Dịch</th>
-                              <td>{{ hoaDon.magiaodich }}</td>
-                            </tr>
-                            <tr>
-                              <th>Giảm Giá</th>
-                              <td>{{ hoaDon.idgiamgia ? hoaDon.idgiamgia.phantramgiam + '%' : 'Không có' }}</td>
-                            </tr>
-                            <tr>
-                              <th>Mô Tả Giảm Giá</th>
-                              <td>{{ hoaDon.idgiamgia ? hoaDon.idgiamgia.mota : 'Không có' }}</td>
-                            </tr>
-                            <tr>
-                              <th>Trạng Thái</th>
-                              <td>{{ getTrangThai(hoaDon.trangthai) }}</td>
-                            </tr>
-                          </tbody>
-                        </table>
+                        <CalendarAdmin :id="String(hoaDon.idlichhen)"/>
                       </div>
                       <div class="modal-footer">
-                        <button type="button" class="custom-button" data-bs-dismiss="modal">Close</button>
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                        <button type="button" class="btn btn-primary">Save changes</button>
                       </div>
                     </div>
                   </div>
                 </div>
-              </td>
-            </tr>
+              </div>
+              <div class="nav-link" v-if="hoaDon.trangthai === 3 || hoaDon.trangthai === 4 || hoaDon.trangthai === 6">
+                <button type="button" class="nav-link" data-bs-toggle="modal" data-bs-target="#exampleModal1">
+                  Thay đổi trạng thái
+                </button>
+
+                <!-- Modal -->
+                <div class="modal fade" id="exampleModal1" tabindex="-1" aria-labelledby="exampleModalLabel1"
+                     aria-hidden="true">
+                  <div class="modal-dialog">
+                    <div class="modal-content">
+                      <div class="modal-header">
+                        <h1 class="modal-title fs-5" id="exampleModalLabel1">Thay đổi trạng thái</h1>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                      </div>
+                      <div class="modal-body">
+                        <div class="form-floating">
+                          <select class="form-select" id="floatingSelect" v-model="selectedTrangThai"
+                                  :aria-label="'Trạng thái bây giờ là ' + getTrangThai(hoaDon.trangthai)">
+                            <option selected>Lựa chọn trạng thái</option>
+                            <option value="0" >Thành công</option>
+                            <option value="1" >Thất bại</option>
+                            <option value="2" >Đã hủy</option>
+                            <option value="3" >Chờ thanh toán</option>
+                            <option value="4" >Chờ xác nhận</option>
+                            <option value="5" >Rỗng</option>
+                            <option value="6">Thanh toán thành công</option>
+                          </select>
+                          <label for="floatingSelect">Trạng thái bây giờ là {{ getTrangThai(hoaDon.trangthai) }}</label>
+                        </div>
+                      </div>
+                      <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Đóng</button>
+                        <button type="button" class="btn btn-primary"
+                                @click="saveTrangThai(hoaDon.idlichhen.id, selectedTrangThai)">Lưu trạng thái
+                        </button>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <button type="button" class="nav-link" data-bs-toggle="modal" data-bs-target="#exampleModal">
+                Chi tiết
+              </button>
+              <div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel"
+                   aria-hidden="true">
+                <div class="modal-dialog">
+                  <div class="modal-content">
+                    <div class="modal-header">
+                      <h1 class="modal-title fs-5" id="exampleModalLabel">Chi tiết hóa đơn</h1>
+                      <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
+                    <div class="modal-body">
+                      <table class="table table-bordered">
+                        <tbody>
+                        <tr>
+                          <th>ID Hóa Đơn</th>
+                          <td>{{ hoaDon.id }}</td>
+                        </tr>
+                        <tr>
+                          <th>ID Lịch Hẹn</th>
+                          <td>{{ hoaDon.idlichhen.id }}</td>
+                        </tr>
+                        <tr>
+                          <th>ID Khách Hàng</th>
+                          <td>{{ hoaDon.idlichhen.idkhachhang }}</td>
+                        </tr>
+                        <tr>
+                          <th>Tên Thú Cưng</th>
+                          <td>{{ hoaDon.idlichhen.thucung.ten }}</td>
+                        </tr>
+                        <tr>
+                          <th>Cân Nặng Thú Cưng</th>
+                          <td>{{ hoaDon.idlichhen.thucung.cannang }} kg</td>
+                        </tr>
+                        <tr>
+                          <th>Tuổi Thú Cưng</th>
+                          <td>{{ hoaDon.idlichhen.thucung.tuoi }} năm</td>
+                        </tr>
+                        <tr>
+                          <th>Giống Thú Cưng</th>
+                          <td>{{ hoaDon.idlichhen.thucung.giong }}</td>
+                        </tr>
+                        <tr>
+                          <th>Dịch Vụ</th>
+                          <td>{{ hoaDon.idlichhen.dichvu.tendichvu }}</td>
+                        </tr>
+                        <tr>
+                          <th>Mô Tả Dịch Vụ</th>
+                          <td>{{ hoaDon.idlichhen.dichvu.mota }}</td>
+                        </tr>
+                        <tr>
+                          <th>Email Người Đặt</th>
+                          <td>{{ hoaDon.idlichhen.emailNguoiDat }}</td>
+                        </tr>
+                        <tr>
+                          <th>Ngày Hẹn</th>
+                          <td>{{ formatDate(hoaDon.idlichhen.date) }}</td>
+                        </tr>
+                        <tr>
+                          <th>Thời Gian Ca</th>
+                          <td>{{ hoaDon.idlichhen.idcalichhen.thoigianca }}</td>
+                        </tr>
+                        <tr>
+                          <th>Số Tiền</th>
+                          <td>{{ formatCurrency(hoaDon.sotien) }}</td>
+                        </tr>
+                        <tr>
+                          <th>Ngày Thanh Toán</th>
+                          <td>{{ formatDate(hoaDon.ngaythanhtoan) }}</td>
+                        </tr>
+                        <tr>
+                          <th>Phương Thức Thanh Toán</th>
+                          <td>{{ hoaDon.phuongthucthanhtoan }}</td>
+                        </tr>
+                        <tr>
+                          <th>Mã Giao Dịch</th>
+                          <td>{{ hoaDon.magiaodich }}</td>
+                        </tr>
+                        <tr>
+                          <th>Giảm Giá</th>
+                          <td>{{ hoaDon.idgiamgia ? hoaDon.idgiamgia.phantramgiam + '%' : 'Không có' }}</td>
+                        </tr>
+                        <tr>
+                          <th>Mô Tả Giảm Giá</th>
+                          <td>{{ hoaDon.idgiamgia ? hoaDon.idgiamgia.mota : 'Không có' }}</td>
+                        </tr>
+                        <tr>
+                          <th>Trạng Thái</th>
+                          <td>{{ getTrangThai(hoaDon.trangthai) }}</td>
+                        </tr>
+                        </tbody>
+                      </table>
+                    </div>
+                    <div class="modal-footer">
+                      <button type="button" class="custom-button" data-bs-dismiss="modal">Close</button>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </td>
+          </tr>
           </tbody>
         </table>
       </div>
@@ -179,11 +205,12 @@
 </template>
 
 <script setup lang="ts">
-import { onMounted, ref } from 'vue';
+import {onMounted, ref} from 'vue';
 import HoaDonKhachHang from '~/models/HoaDonKhachHang';
-import { useQuanLyLichHenAdminStore } from '~/stores/QuanLyLichHenAdmin';
+import {useQuanLyLichHenAdminStore} from '~/stores/QuanLyLichHenAdmin';
 import Swal from 'sweetalert2';
-import { useToast } from 'vue-toastification';
+import {useToast} from 'vue-toastification';
+import CalendarAdmin from "~/components/CalendarChangeAdmin.vue";
 
 const useQuanLyAdmin = useQuanLyLichHenAdminStore();
 const hoaDonKhachHangs = ref<HoaDonKhachHang[]>([]);
@@ -205,7 +232,7 @@ const formatDate = (dateString: string): string => {
 };
 
 const formatCurrency = (amount: number): string => {
-  return new Intl.NumberFormat('vi-VN', { style: 'currency', currency: 'VND' }).format(amount);
+  return new Intl.NumberFormat('vi-VN', {style: 'currency', currency: 'VND'}).format(amount);
 };
 
 const getTrangThai = (status: number): string => {
@@ -243,15 +270,15 @@ async function saveTrangThai(id: number, idTrangThai: number) {
   if (result.isConfirmed) {
     try {
       await useQuanLyAdmin.thayDoiTrangThai(id, idTrangThai);
-      toast.success('Thay đổi trạng thái thành công', { timeout: 3000 });
+      toast.success('Thay đổi trạng thái thành công', {timeout: 3000});
       fetchHoaDon(); // Refresh the data
     } catch (error) {
-      toast.error('Không thể thay đổi trạng thái. Vui lòng thử lại. ' + error, { timeout: 3000 });
+      toast.error('Không thể thay đổi trạng thái. Vui lòng thử lại. ' + error, {timeout: 3000});
     }
   }
 }
 
-async function doiNgayHen(ngayHen: String,idcalichhen :Number){
+async function doiNgayHen(ngayHen: String, idcalichhen: Number) {
   const result = await Swal.fire({
     title: 'Xác nhận',
     text: 'Bạn có muốn thay đổi ngày hẹn không?',
@@ -264,11 +291,11 @@ async function doiNgayHen(ngayHen: String,idcalichhen :Number){
   });
   if (result.isConfirmed) {
     try {
-      await useQuanLyAdmin.doiThoiGian(ngayHen,idcalichhen);
-      toast.success('Thay đổi ngày hẹn thành công', { timeout: 3000 });
+      await useQuanLyAdmin.doiThoiGian(ngayHen, idcalichhen);
+      toast.success('Thay đổi ngày hẹn thành công', {timeout: 3000});
       fetchHoaDon();
     } catch (error) {
-      toast.error('Không thể thay đổi ngày hẹn. Vui lòng thử lại. ' + error, { timeout: 3000 });
+      toast.error('Không thể thay đổi ngày hẹn. Vui lòng thử lại. ' + error, {timeout: 3000});
     }
   }
 }

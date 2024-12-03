@@ -31,6 +31,7 @@ export const useQuanLyLichHenAdminStore = defineStore('quanLyLichHenAdminStore',
             }
         },
         async thayDoiTrangThai(id: number, idTrangThai: number) {
+            console.log('id'+ id +'thay doi trang thai thanh'+ idTrangThai);
             const token = localStorage.getItem('access_token');
             try {
                 const response = await fetch(`http://localhost:8080/api/lich-hen/updateTrangThai/${id}/${idTrangThai}`, {
@@ -41,14 +42,11 @@ export const useQuanLyLichHenAdminStore = defineStore('quanLyLichHenAdminStore',
                     }
                 });
 
-
                 if (!response.ok) {
                     throw new Error(`Lỗi cập nhật trạng thái. Mã lỗi: ${response.status}`);
                 }
-
                 const updatedLichHen = await response.json();
                 console.log('Trạng thái lịch hẹn đã được cập nhật:', updatedLichHen);
-
                 return updatedLichHen;
             } catch (error) {
                 console.error('Lỗi khi cập nhật trạng thái lịch hẹn:', error);
@@ -71,6 +69,49 @@ export const useQuanLyLichHenAdminStore = defineStore('quanLyLichHenAdminStore',
                 console.log('Lich hen da duoc huy');
             } catch (error) {
                 console.error('Error huy lich hen:', error);
+                throw error;
+            }
+        },
+        async thayDoiLichHenAdmin(id: string, date: string, idCalichHen: string) {
+            const token = localStorage.getItem('access_token');
+            if (!token) {
+                console.error('No access token found');
+                throw new Error('Authentication required');
+            }
+
+            try {
+                const response = await fetch(`http://localhost:8080/api/dat-lich/update-time/${id}`, {
+                    method: 'PUT',
+                    headers: {
+                        'Authorization': `Bearer ${token}`,
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({
+                        date: date,
+                        idcalichhen: idCalichHen
+                    })
+                });
+
+                const contentType = response.headers.get("content-type");
+                if (contentType && contentType.indexOf("application/json") !== -1) {
+                    const data = await response.json();
+                    if (!response.ok) {
+                        console.error('Error response:', data);
+                        throw new Error(`Failed to change appointment. Status: ${response.status}` + `id=` +id  +`date=:`+ date +`idcalichhen=`+ idCalichHen);
+                    }
+                    console.log('Appointment changed successfully:', data);
+                    return data;
+                } else {
+                    const text = await response.text();
+                    if (!response.ok) {
+                        console.error('Error response:', text);
+                        throw new Error(`Failed to change appointment. Status: ${response.status}` + `id=` +id  +`date=:`+ date +`idcalichhen=`+ idCalichHen);
+                    }
+                    console.log('Appointment changed successfully:', text);
+                    return text;
+                }
+            } catch (error) {
+                console.error('Error changing appointment time:', error);
                 throw error;
             }
         }
