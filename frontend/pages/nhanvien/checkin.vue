@@ -140,7 +140,7 @@
                           </div>
                           <div class="modal-footer">
                             <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Đóng</button>
-                            <button type="button" class="btn btn-primary" @click="thanhToanHoaDon(hoaDon.idlichhen.id)">Thanh toán</button>
+                            <button type="button" v-if="hoaDon.idlichhen.trangthai === 3" class="btn btn-primary" @click="thanhToanHoaDon(hoaDon.idlichhen.id)">Thanh toán</button>
                           </div>
                         </div>
                       </div>
