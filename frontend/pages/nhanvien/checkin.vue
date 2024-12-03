@@ -187,7 +187,7 @@
                   <td>{{ hoaDon.idlichhen.dichvu.tendichvu }}</td>
                   <td>{{ formatDate(hoaDon.date) }}</td>
                   <td>{{ formatCurrency(hoaDon.sotien) }}</td>
-                  <td><span class="badge bg-success">{{ getTrangThai(hoaDon.trangthai) }}</span></td>
+                  <td><span class="badge bg-success">{{ getTrangThaiHoaDon(hoaDon.trangthai) }} </span></td>
                   <td>
 
                     <button @click="taiHoaDon(hoaDon.id)" class="btn btn-sm btn-outline-success">
@@ -239,19 +239,39 @@ const formatCurrency = (amount) => {
   return new Intl.NumberFormat('vi-VN', {style: 'currency', currency: 'VND'}).format(amount);
 };
 
-const getTrangThai = (status) => {
+const getTrangThai = (status: number): string => {
   switch (status) {
+    case 0:
+      return 'Thành công';
     case 1:
-      return 'Chờ thanh toán';
+      return 'Thất bại';
     case 2:
-      return 'Thành công'
+      return 'Đã hủy';
     case 3:
-      return 'Thất bại'
+      return 'Chờ thanh toán';
+    case 4:
+      return 'Chờ xác nhận';
+    case 5:
+      return 'Rỗng';
+    case 6:
+      return 'Thanh toán thành công';
     default:
       return 'Không xác định';
   }
 };
 
+const getTrangThaiHoaDon = (status: number): string => {
+  switch (status) {
+    case 1:
+      return 'Chờ thanh toán';
+    case 2:
+      return 'Thành công';
+    case 3:
+      return 'Thất bại';
+    default:
+      return 'Không xác định';
+  }
+};
 
 function taiHoaDon(id: string) {
   useQuanLyHoaDon.inHoaDon(id)
