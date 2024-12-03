@@ -83,9 +83,9 @@ public class LichHenController {
             return new ResponseEntity<>(HttpStatus.NOT_FOUND); // Trả về 404 nếu không tìm thấy lịch hẹn
         }
 
-        if (lichHenService.isCaTrungTrongNgay(datLaiLich.getDate(), datLaiLich.getIdcalichhen().getId())) {
-            return new ResponseEntity<>(HttpStatus.BAD_REQUEST); // Trả về lỗi nếu trùng ca
-        }
+//        if (lichHenService.isCaTrungTrongNgay(datLaiLich.getDate(), datLaiLich.getIdcalichhen().getId())) {
+//            return new ResponseEntity<>(HttpStatus.BAD_REQUEST); // Trả về lỗi nếu trùng ca
+//        }
 
         // Cập nhật trạng thái
         datLaiLich.setTrangthai(idTT);
