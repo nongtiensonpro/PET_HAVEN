@@ -8,13 +8,6 @@ public class updateCaDTO {
     private int id;
     @NotNull
     private String time;
-    @NotNull
-    private String name;
-
-    public @NotNull String getName() {
-        return name;
-    }
-
 
     public int getId() {
         return id;

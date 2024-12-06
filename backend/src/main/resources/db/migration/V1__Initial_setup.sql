@@ -46,7 +46,6 @@ CREATE TABLE ThuCung
 CREATE TABLE CaLichHen
 (
     ID          SERIAL PRIMARY KEY,
-    TenCa varchar(20),
     ThoiGianCa TIME NOT NULL,
     TrangThai   BOOLEAN
 );
@@ -141,16 +140,16 @@ VALUES ('Dog 1', 10.5, 2, 'Golden', 1, NULL),
        ('Dog 2', 8.3, 3, 'Bulldog', 2, NULL),
        ('Dog 3', 12.7, 4, 'Labrador', 3, NULL);
 
-INSERT INTO CaLichHen (TenCa, ThoiGianCa, TrangThai)
+INSERT INTO CaLichHen ( ThoiGianCa, TrangThai)
 VALUES
-    ('Ca 1', '07:00:00', TRUE),
-    ('Ca 2', '08:00:00', TRUE),
-    ('Ca 3', '09:00:00', TRUE),
-    ('Ca 4', '10:00:00', TRUE),
-    ('Ca 5', '11:00:00', TRUE),
-    ('Ca 6', '12:00:00', TRUE),
-    ('Ca 7', '13:00:00', TRUE),
-    ('Ca 8', '14:00:00', TRUE);
+    ( '07:00:00', TRUE),
+    ( '08:00:00', TRUE),
+    ( '09:00:00', TRUE),
+    ( '10:00:00', TRUE),
+    ('11:00:00', TRUE),
+    ('12:00:00', TRUE),
+    ('13:00:00', TRUE),
+    ('14:00:00', TRUE);
 
 -- Thêm dữ liệu vào bảng LichHen
 INSERT INTO LichHen (idKhachHang, idThuCung, idDichVu, Date, TrangThai , idCaLichHen,TrangThaiCa)

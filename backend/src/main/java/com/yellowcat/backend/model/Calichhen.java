@@ -24,12 +24,6 @@ public class Calichhen {
 
     @JsonProperty
     @NotNull
-    @Size(max = 20)
-    @Column(name = "tenca", length = 20)
-    private String tenca;
-
-    @JsonProperty
-    @NotNull
     @Column(name = "thoigianca", nullable = false)
     private LocalTime thoigianca;
 
@@ -44,14 +38,6 @@ public class Calichhen {
 
     public void setId(Integer id) {
         this.id = id;
-    }
-
-    public @Size(max = 20) String getTenca() {
-        return tenca;
-    }
-
-    public void setTenca(@Size(max = 20) String tenca) {
-        this.tenca = tenca;
     }
 
     public @NotNull LocalTime getThoigianca() {

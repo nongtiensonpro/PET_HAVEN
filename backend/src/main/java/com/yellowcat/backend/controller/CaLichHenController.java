@@ -47,7 +47,6 @@ public class CaLichHenController {
     @PostMapping("/add")
     public ResponseEntity<?> addOne(@Valid @RequestBody updateCaDTO dto){
         Calichhen calichhen = new Calichhen();
-        calichhen.setTenca(dto.getName());
         LocalTime time = LocalTime.parse(dto.getTime(), DateTimeFormatter.ofPattern("HH:mm"));
         calichhen.setThoigianca(time);
         calichhen.setTrangthai(true);
@@ -64,7 +63,6 @@ public class CaLichHenController {
         Calichhen calichhenUpdate = calichhenOptional.get();
         LocalTime time = LocalTime.parse(dto.getTime(), DateTimeFormatter.ofPattern("HH:mm"));
         calichhenUpdate.setThoigianca(time);
-        calichhenUpdate.setTenca(dto.getName());
         caLichHenService.addOrUpdate(calichhenUpdate);
         return ResponseEntity.ok().build();
     }
