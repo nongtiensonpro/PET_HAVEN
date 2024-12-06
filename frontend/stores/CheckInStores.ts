@@ -1,20 +1,14 @@
 import HoaDonKhachHang from "~/models/CaLichHenKhachDat";
-import type {Lichhen} from "~/models/LichSuDatLich";
-
-
 
 interface CheckInState {
     ListHoaDon: HoaDonKhachHang[];
     ListHoaDonDaThanhToan : HoaDonKhachHang[];
 }
 
-
-
 export const useCheckInStore = defineStore('checkInStore', {
     state: (): CheckInState => ({
         ListHoaDon: [],
         ListHoaDonDaThanhToan: [],
-
     }),
     actions: {
         async fetchHoaDon() {

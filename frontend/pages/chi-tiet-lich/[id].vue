@@ -129,7 +129,7 @@ definePageMeta({
 
 const formatCurrency = (value: number) => {
   console.log('Thông tin đầy đủ của thayDoiLichHenStore:', JSON.stringify(thayDoiLichHenStore, null, 2));
-  return new Intl.NumberFormat('vi-VN', {style: 'currency', currency: 'VND'}).format(value);
+  return new Intl.NumberFormat('vi-VN', {style: 'currency', currency: 'USD'}).format(value);
 };
 const getTrangThaiText = (trangthai: number) => {
   const trangThaiMap: Record<number, string> = {

@@ -169,7 +169,7 @@ async function confirmBooking() {
 
     const result = await Swal.fire({
       title: 'Xác nhận',
-      text: "Bạn có muốn thay đổi lịch hẹn không?",
+      text: "Bạn có muốn thay đổi lịch hẹn không? Bạn chỉ có thể đổi thời gian được 1 lần",
       icon: 'warning',
       showCancelButton: true,
       confirmButtonColor: '#3085d6',
@@ -182,8 +182,10 @@ async function confirmBooking() {
       try {
         await thayDoiLichHenStore(props.id, newDate, newCaLichHenId);
         toast.success('Đã thay đổi lịch hẹn thành công', { timeout: 3000 });
+        return navigateTo('/user/appointment');
       } catch (error) {
         toast.error('Không thể thay đổi lịch hẹn. Vui lòng thử lại. ' + error, { timeout: 3000 });
+
       }
     }
   } else {

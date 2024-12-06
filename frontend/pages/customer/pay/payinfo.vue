@@ -78,8 +78,8 @@ async function thanhToanOnline() {
     <div class="card no-border">
       <div class="col-12">
             <div class="text text-center">
-              <div>Chúc mừng bạn đã đặt lịch hẹn thành công </div><p>Một email đã gửi về hộp thư của bạn</p>
-              <p>Bạn có 20 phút để thay đổi và hủy lịch hẹn</p>
+              <div>Chúc mừng bạn đã đặt lịch hẹn thành công </div><p>Bạn có 20 phút để thanh toán và đổi hoặc hủy lịch</p>
+              <p>Sau 20 phút mà không thanh toán thì lịch này sẽ tự hủy</p>
             </div>
       </div>
       <div class="card-body">
@@ -94,17 +94,17 @@ async function thanhToanOnline() {
               </div>
             </div>
           </div>
-          <div class="col">
-            <div class="card no-border">
-              <button type="button" @click="thanhToanTaiQuay" class="custom-button">
-                    <img class="card-img-top" src="~/assets/image/tratienmat.png" alt="Trả tiền mặt">  
-              </button>
-              <div class="card-body">
-                <button type="button" @click="thanhToanTaiQuay" class="custom-button">
-                 Tiếp tục thanh toán tại quầy</button>
-              </div>
-            </div>
-          </div>
+<!--          <div class="col">-->
+<!--            <div class="card no-border">-->
+<!--              <button type="button" @click="thanhToanTaiQuay" class="custom-button">-->
+<!--                    <img class="card-img-top" src="~/assets/image/tratienmat.png" alt="Trả tiền mặt">  -->
+<!--              </button>-->
+<!--              <div class="card-body">-->
+<!--                <button type="button" @click="thanhToanTaiQuay" class="custom-button">-->
+<!--                 Tiếp tục thanh toán tại quầy</button>-->
+<!--              </div>-->
+<!--            </div>-->
+<!--          </div>-->
         </div>
       </div>
     </div>

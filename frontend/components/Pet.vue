@@ -4,7 +4,7 @@
           <div class="row mb-3">
             <div class="col-md-6">
               <div class="form-group">
-                <label for="pet-select" class="form-label">Chọn loại thú cưng</label>
+<!--                <label for="pet-select" class="form-label">Chọn loại thú cưng</label>-->
                 <select v-model="selectedPet" id="pet-select" class="form-select">
                   <option value="new">Thú cưng mới</option>
                   <option v-if="listThuCung?.length > 0" value="existing">Thú cưng hiện có</option>
@@ -41,7 +41,7 @@
           <div class="row mb-3">
             <div class="col-md-6">
               <div class="form-group">
-                <label for="pet-giong" class="form-label">Giống</label>
+                <label for="pet-giong" class="form-label">Giống Chó hoặc Mèo</label>
                 <input v-model="petForm.giong" type="text" id="pet-giong" class="form-control" :class="{ 'is-invalid': errors.giong }" placeholder="Nhập giống">
                 <div v-if="errors.giong" class="invalid-feedback">{{ errors.giong }}</div>
               </div>
@@ -55,10 +55,10 @@
             </div>
           </div>
           <div class="mb-3">
-            <div class="form-group">
-              <label for="pet-notes" class="form-label">Ghi chú</label>
-              <textarea v-model="petForm.ghichu" id="pet-notes" rows="3" class="form-control" placeholder="Nhập ghi chú"></textarea>
-            </div>
+<!--            <div class="form-group">-->
+<!--              <label for="pet-notes" class="form-label">Ghi chú</label>-->
+<!--              <textarea v-model="petForm.ghichu" id="pet-notes" rows="3" class="form-control" placeholder="Nhập ghi chú"></textarea>-->
+<!--            </div>-->
           </div>
           <div class="text-end">
             <button type="submit" class="btn btn-primary">Lưu thông tin</button>
@@ -91,7 +91,7 @@ const petForm = reactive({
   tuoi: '',
   giong: '',
   cannang: '',
-  ghichu: ''
+  // ghichu: ''
 });
 
 const errors = ref({});
@@ -137,7 +137,7 @@ const loadExistingPet = () => {
       petForm.tuoi = pet.tuoi;
       petForm.giong = pet.giong;
       petForm.cannang = pet.cannang;
-      petForm.ghichu = pet.ghichu || '';
+      // petForm.ghichu = pet.ghichu || '';
     }
   } else {
     petForm.id = null;

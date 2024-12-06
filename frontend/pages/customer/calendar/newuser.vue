@@ -47,9 +47,9 @@
                           <div class="col-12">
                             <strong>Thời gian : </strong>
                             <div class="row">
-                              <div class="col">
-                                Tên ca: {{ tempData.idlichhen.calichhen.tenca }}
-                              </div>
+<!--                              <div class="col">-->
+<!--                                Tên ca: {{ tempData.idlichhen.calichhen.tenca }}-->
+<!--                              </div>-->
                               <div class="col">
                                 Giờ : {{ tempData.idlichhen.calichhen.thoigianca }}
                               </div>

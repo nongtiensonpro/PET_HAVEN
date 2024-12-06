@@ -54,7 +54,7 @@ export const useCaLichHenStore = defineStore('useCalichhen', {
                     method: 'POST',
                     body: JSON.stringify({
                         'time': formattedTime,
-                        'name': caHen.tenca
+                        // 'name': caHen.tenca
                     })
                 });
 
@@ -157,7 +157,7 @@ export const useCaLichHenStore = defineStore('useCalichhen', {
                     body: JSON.stringify({
                         'id': caHen.id,
                         'time': formatTimeToHHMM(caHen.thoigianca),
-                        'name': caHen.tenca
+                        // 'name': caHen.tenca
                     })
                 });
                 if (!response.ok) {

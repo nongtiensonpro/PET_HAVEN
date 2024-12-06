@@ -14,7 +14,7 @@ onMounted(() => {
   }
 });
 const caLichHenStore = useCaLichHenStore();
-const tenca = ref("");
+// const tenca = ref("");
 const thoigianca = ref("");
 const trangthai = ref(false);
 
@@ -25,9 +25,11 @@ const themCaHen = async () => {
         const date = new Date();
         date.setHours(parseInt(hours), parseInt(minutes), 0, 0);
 
-        const newCaHen = new CaLichHen(0, tenca.value, date, trangthai.value);
+        const newCaHen = new CaLichHen(0,
+            // tenca.value,
+            date, trangthai.value);
         await caLichHenStore.themCaLichHen(newCaHen);
-        tenca.value = "";
+        // tenca.value = "";
         thoigianca.value = "";
         trangthai.value = false;
         toast.success('Thêm ca hẹn thành công');
@@ -57,10 +59,10 @@ const themCaHen = async () => {
                     </div>
                     <div class="modal-body">
                         <form @submit.prevent="themCaHen" class="form-container">
-                            <div class="form-group">
-                                <label for="tenca">Tên ca:</label>
-                                <input id="tenca" v-model="tenca" type="text" required class="form-input" />
-                            </div>
+<!--                            <div class="form-group">-->
+<!--                                <label for="tenca">Tên ca:</label>-->
+<!--                                <input id="tenca" v-model="tenca" type="text" required class="form-input" />-->
+<!--                            </div>-->
                             <div class="form-group">
                                 <label for="thoigianca">Thời gian ca:</label>
                                 <input id="thoigianca" v-model="thoigianca" type="time" required class="form-input" />

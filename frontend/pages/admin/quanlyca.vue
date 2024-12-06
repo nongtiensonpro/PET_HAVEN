@@ -110,7 +110,7 @@ function lammoi() {
       <thead>
         <tr>
           <th>ID</th>
-          <th>Tên ca</th>
+<!--          <th>Tên ca</th>-->
           <th>Thời gian ca</th>
           <th>Trạng thái</th>
           <th>Thao tác</th>
@@ -120,7 +120,7 @@ function lammoi() {
 
         <tr v-for="ca in caLichHens" :key="ca.id">
           <td>{{ ca.id }}</td>
-          <td>{{ ca.tenca }}</td>
+<!--          <td>{{ ca.tenca }}</td>-->
           <td>{{ ca.thoigianca }}</td>
           <td>
             <span :class="ca.trangthai ? 'active' : 'inactive'">
