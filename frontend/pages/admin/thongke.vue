@@ -80,20 +80,33 @@
 </template>
 
 <script setup lang="ts">
-import { ref, onMounted, watch, computed } from 'vue';
+import { ref, onMounted, watch, computed, onUnmounted } from 'vue';
 import { useThongKeStore } from '~/stores/ThongKeStores';
 import DatePicker from 'vue-datepicker-next';
-import {useToast} from 'vue-toastification';
-const toast = useToast();
+import { useToast } from 'vue-toastification';
 
+const toast = useToast();
 const store = useThongKeStore();
 const dateRange = ref<[string | null, string | null]>([null, null]);
 const statisticType = ref('day');
 const loading = ref(false);
 const error = ref<string | null>(null);
 
-
 const hasData = computed(() => store.thongKeItems.length > 0);
+
+// Sử dụng useAsyncData để tự động fetch dữ liệu khi trang được truy cập
+const { data: initialData, refresh } = await useAsyncData(
+  'thongKeData',
+  async () => {
+    const today = new Date();
+    const oneMonthAgo = new Date(today.getFullYear(), today.getMonth() - 1, today.getDate());
+    const formatDate = (date: Date) => date.toISOString().split('T')[0];
+    const startDate = formatDate(oneMonthAgo);
+    const endDate = formatDate(today);
+    dateRange.value = [startDate, endDate];
+    return await fetchDataInternal(startDate, endDate);
+  }
+);
 
 const updateDateRange = (dates: [string, string]) => {
   dateRange.value = dates;
@@ -105,29 +118,35 @@ const formatDisplayDate = (dateString: string) => {
   return date.toLocaleDateString('vi-VN', { day: '2-digit', month: '2-digit', year: 'numeric' });
 };
 
+const fetchDataInternal = async (startDate: string, endDate: string) => {
+  const fetchFunction = {
+    day: store.getUserThongKeTheoNgay,
+    month: store.getUserThongKeTheoThang,
+    year: store.getUserThongKeTheoNam
+  }[statisticType.value];
+
+  if (typeof fetchFunction !== 'function') {
+    throw new Error('Invalid statistic type');
+  }
+
+  await fetchFunction(startDate, endDate);
+  store.thongKeItems.sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime());
+  return store.thongKeItems;
+};
+
 const fetchData = async () => {
   if (!dateRange.value[0] || !dateRange.value[1]) {
-    alert('Vui lòng chọn ngày bắt đầu và ngày kết thúc.');
+    toast.error('Vui lòng chọn ngày bắt đầu và ngày kết thúc.');
     return;
   }
   loading.value = true;
   error.value = null;
   try {
     const [startDate, endDate] = dateRange.value;
-    const fetchFunction = {
-      day: store.getUserThongKeTheoNgay,
-      month: store.getUserThongKeTheoThang,
-      year: store.getUserThongKeTheoNam
-    }[statisticType.value];
-    if (typeof fetchFunction !== 'function') {
-      throw new Error('Invalid statistic type');
-    }
-    await fetchFunction(startDate, endDate);
-    store.thongKeItems.sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime());
-    toast.success('Thống kê dữ liệu thành công!');
+    await fetchDataInternal(startDate, endDate);
   } catch (err) {
-    toast.error('Thống kê dữ liệu thất bại!');
-    error.value = 'Có lỗi xảy ra khi tải dữ liệu.';
+    error.value = 'Có lỗi xảy ra khi lấy dữ liệu.';
+    console.error('Error in fetchData:', err);
   } finally {
     loading.value = false;
   }
@@ -139,20 +158,20 @@ watch(statisticType, () => {
   }
 });
 
-onMounted(async () => {
-  try {
-    const today = new Date();
-    const oneMonthAgo = new Date(today.getFullYear(), today.getMonth() - 1, today.getDate());
-    const formatDate = (date: Date) => date.toISOString().split('T')[0];
+let intervalId: NodeJS.Timeout;
 
-    dateRange.value = [formatDate(oneMonthAgo), formatDate(today)];
-    await fetchData();
-  } catch (err) {
-    console.error('Error in onMounted:', err);
-    error.value = 'Có lỗi xảy ra khi khởi tạo dữ liệu.';
-  }
+onMounted(() => {
+  intervalId = setInterval(() => {
+    refresh();
+  }, 60 * 1000); // 5 phút
+});
+
+onUnmounted(() => {
+  fetchData()
+  if (intervalId) clearInterval(intervalId);
 });
 </script>
+
 
 <style>
 @import 'vue-datepicker-next/index.css';

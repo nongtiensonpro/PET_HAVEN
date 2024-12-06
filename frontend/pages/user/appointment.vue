@@ -1,28 +1,39 @@
 <script setup lang="ts">
 import { useUserStore } from '~/stores/user'
 import { useQuanLyLichHenKhachHang } from '~/stores/QuanLyLichHenKhachHang'
-import { onMounted } from 'vue'
-import {useThayDoiLichHenStore } from '~/stores/ThayDoiLichHen'
-const {thayDoiLichHenStore,huyLichHen} = useThayDoiLichHenStore()
+import { onMounted, onUnmounted, ref, computed } from 'vue'
+
 const userStore = useUserStore()
 const lichHenStore = useQuanLyLichHenKhachHang()
 const isLoading = ref(false);
 const countdown = ref(10);
 const showOverlay = ref(false);
+const refreshInterval = ref(null);
+
 definePageMeta({
   middleware: ['auth']
 })
+
+const fetchData = async () => {
+  await lichHenStore.fetchAppointments();
+}
+
 onMounted(async () => {
-     await lichHenStore.fetchAppointments();
+  await fetchData();
+  refreshInterval.value = setInterval(fetchData,   60 * 1000);
 })
 
-function handleHuyLichHen(id: String) {
-  huyLichHen(id);
-}
+onUnmounted(() => {
+  // Xóa interval khi component bị hủy
+  if (refreshInterval.value) {
+    clearInterval(refreshInterval.value);
+  }
+})
 
 function thayDoiLichHen(id: String) {
   return navigateTo(`/chi-tiet-lich/${id}`);
 }
+
 function chiTietLichHen(id: String) {
   return navigateTo(`/chitietlich_danhgia/${id}`);
 }
@@ -107,22 +118,18 @@ const getTrangThaiClass = (trangthai: number) => {
       <div class="card-header bg-primary text-white py-3">
         <h4 class="mb-0">Quản lý lịch hẹn của {{ userStore.userInfo?.name }}</h4>
       </div>
-
       <div class="card-body">
-        <!-- Loading state -->
         <div v-if="lichHenStore.isLoading" class="text-center py-5">
           <div class="spinner-border text-primary" role="status">
             <span class="visually-hidden">Đang tải...</span>
           </div>
         </div>
 
-        <!-- Error state -->
         <div v-else-if="lichHenStore.error" class="alert alert-danger">
           {{ lichHenStore.error }}
           <button class="btn btn-link" @click="lichHenStore.clearError">Đóng</button>
         </div>
 
-        <!-- Data display -->
         <div v-else>
           <div class="table-responsive">
             <table class="table table-hover">
@@ -189,8 +196,6 @@ const getTrangThaiClass = (trangthai: number) => {
               </tbody>
             </table>
           </div>
-
-          <!-- Pagination -->
           <div class="d-flex justify-content-between align-items-center mt-3">
             <div>
               Hiển thị {{ lichHenStore.paginatedAppointments.length }} / {{ lichHenStore.appointments.length }} lịch hẹn
@@ -211,7 +216,6 @@ const getTrangThaiClass = (trangthai: number) => {
         </div>
       </div>
     </div>
-    <!-- Overlay and countdown -->
     <div v-if="showOverlay" class="overlay">
       <div class="overlay-content">
         <p>Đang chuyển hướng đến PayPal...</p>
@@ -230,18 +234,6 @@ const getTrangThaiClass = (trangthai: number) => {
 }
 .table td {
   vertical-align: middle;
-}
-
-.no-border {
-  border: none !important;
-  box-shadow: none !important;
-}
-
-.card-img-top {
-  width: 100%;
-  height: auto;
-  max-height: 350px;
-  object-fit: contain;
 }
 
 .overlay {

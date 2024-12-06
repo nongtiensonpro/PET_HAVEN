@@ -107,19 +107,19 @@
 </template>
 
 <script setup lang="ts">
-import {ref, onMounted, computed} from 'vue';
-import {useServiceStore} from '~/stores/DichVuStores';
-import {useDanhGiaStore} from '~/stores/DanhGiaStores';
-import {useRoute} from 'vue-router';
+import { ref, onMounted, computed, onUnmounted, watch } from 'vue';
+import { useServiceStore } from '~/stores/DichVuStores';
+import { useDanhGiaStore } from '~/stores/DanhGiaStores';
+import { useRoute } from 'vue-router';
 import CapNhatDanhGia from '~/components/CapNhatDanhGia.vue';
 import type DanhGia from "~/models/DanhGia";
 import type Service from "~/models/DichVu";
-import {useUserStore} from '~/stores/user';
+import { useUserStore } from '~/stores/user';
 import { useToast } from 'vue-toastification';
 import Swal from "sweetalert2";
 
 const toast = useToast();
-const  userStore = useUserStore()
+const userStore = useUserStore()
 const userInfo = computed(() => userStore.userInfo);
 const serviceStore = useServiceStore();
 const danhGiaStore = useDanhGiaStore();
@@ -127,10 +127,9 @@ const route = useRoute();
 const service = ref<Service | null>(null);
 const errorMessage = ref('Có lỗi đã xảy ra vui lòng thử lại !');
 const danhGias = ref<DanhGia[]>([]);
+const refreshInterval = ref<number | null>(null);
 
-onMounted(async () => {
-  await serviceStore.fetchServices();
-
+const fetchData = async () => {
   const serviceId = parseInt(route.params.id as string);
   service.value = serviceStore.services.find(s => s.id === serviceId) || null;
 
@@ -140,6 +139,24 @@ onMounted(async () => {
     await danhGiaStore.fetchDanhGiaByDichVu(serviceId);
     danhGias.value = danhGiaStore.danhGias;
   }
+};
+
+onMounted(async () => {
+  await serviceStore.fetchServices();
+  await fetchData();
+
+  refreshInterval.value = window.setInterval(fetchData, 5 * 60 * 1000);
+});
+
+onUnmounted(() => {
+
+  if (refreshInterval.value) {
+    clearInterval(refreshInterval.value);
+  }
+});
+
+watch(() => route.params.id, async () => {
+  await fetchData();
 });
 
 const formatDate = (dateString: string): string => {
@@ -182,10 +199,9 @@ async function anDanhGia(idDanhGia: number) {
       toast.success('Đã ẩn bình luận thành công!', {})
     }
   } catch (error) {
-    toast.error('L ẩn bình luận! Vui lòng thử lại.', {})
+    toast.error('Lỗi ẩn bình luận! Vui lòng thử lại.', {})
   }
 }
-
 </script>
 
 <style scoped>

@@ -20,8 +20,6 @@ function login1() {
 if (userInfo.value === null) {
   login1();
 }
-
-
 </script>
 
 <template>

@@ -206,29 +206,34 @@
 </template>
 
 <script setup lang="ts">
-import {useCheckInStore} from '~/stores/CheckInStores'
-import {ref, onMounted} from "vue";
-import {useQuanLyHoaDonStore} from '~/stores/QuanLyHoaDon';
+import { useCheckInStore } from '~/stores/CheckInStores'
+import { ref, onMounted, onUnmounted } from "vue";
+import { useQuanLyHoaDonStore } from '~/stores/QuanLyHoaDon';
 import Swal from 'sweetalert2';
-import {type Lichhen, Thucung} from "~/models/LichSuDatLich";
 import HoaDonKhachHang from "~/models/HoaDonKhachHang";
+
 const useQuanLyHoaDon = useQuanLyHoaDonStore();
 const checkInStore = useCheckInStore()
 
 const hoaDonList = ref<HoaDonKhachHang[]>([]);
 const hoaDonThanhToanList = ref([]);
 
+let refreshInterval: NodeJS.Timeout;
+
 const fetchHoaDon = async () => {
   await checkInStore.fetchHoaDon();
   hoaDonList.value = checkInStore.ListHoaDon;
-  console.log(hoaDonList.value);
 };
 
 const fetchHoaDonThanhToan = async () => {
   await checkInStore.fetchHoaDonDaThanhToan();
   hoaDonThanhToanList.value = checkInStore.ListHoaDonDaThanhToan;
+};
 
-}
+const refreshData = () => {
+  fetchHoaDon();
+  fetchHoaDonThanhToan();
+};
 
 const formatDate = (dateString) => {
   const date = new Date(dateString);
@@ -236,54 +241,40 @@ const formatDate = (dateString) => {
 };
 
 const formatCurrency = (amount) => {
-  return new Intl.NumberFormat('vi-VN', {style: 'currency', currency: 'VND'}).format(amount);
+  return new Intl.NumberFormat('vi-VN', { style: 'currency', currency: 'VND' }).format(amount);
 };
 
 const getTrangThai = (status: number): string => {
-  switch (status) {
-    case 0:
-      return 'Thành công';
-    case 1:
-      return 'Thất bại';
-    case 2:
-      return 'Đã hủy';
-    case 3:
-      return 'Chờ thanh toán';
-    case 4:
-      return 'Chờ xác nhận';
-    case 5:
-      return 'Rỗng';
-    case 6:
-      return 'Thanh toán thành công';
-    default:
-      return 'Không xác định';
-  }
+  const statusMap = {
+    0: 'Thành công',
+    1: 'Thất bại',
+    2: 'Đã hủy',
+    3: 'Chờ thanh toán',
+    4: 'Chờ xác nhận',
+    5: 'Rỗng',
+    6: 'Thanh toán thành công'
+  };
+  return statusMap[status] || 'Không xác định';
 };
 
 const getTrangThaiHoaDon = (status: number): string => {
-  switch (status) {
-    case 1:
-      return 'Chờ thanh toán';
-    case 2:
-      return 'Thành công';
-    case 3:
-      return 'Thất bại';
-    default:
-      return 'Không xác định';
-  }
+  const statusMap = {
+    1: 'Chờ thanh toán',
+    2: 'Thành công',
+    3: 'Thất bại'
+  };
+  return statusMap[status] || 'Không xác định';
 };
 
 function taiHoaDon(id: string) {
-  useQuanLyHoaDon.inHoaDon(id)
-  fetchHoaDon();
-  fetchHoaDonThanhToan();
-};
-
+  useQuanLyHoaDon.inHoaDon(id);
+  refreshData();
+}
 
 async function thanhToanHoaDon(id: string) {
   const result = await Swal.fire({
     title: 'Xác nhận',
-    text: "Bạn có chắc chắn có muốn thanh toán cho hóa đơn này ?",
+    text: "Bạn có chắc chắn muốn thanh toán cho hóa đơn này?",
     icon: 'warning',
     showCancelButton: true,
     confirmButtonColor: '#3085d6',
@@ -292,15 +283,19 @@ async function thanhToanHoaDon(id: string) {
     cancelButtonText: 'Không'
   });
   if (result.isConfirmed) {
-    checkInStore.checkIn(id);
-    fetchHoaDon();
-    fetchHoaDonThanhToan();
+    await checkInStore.checkIn(id);
+    refreshData();
   }
 }
 
 onMounted(() => {
-  fetchHoaDon();
-  fetchHoaDonThanhToan();
+  refreshData();
+  refreshInterval = setInterval(refreshData, 60 * 1000);
+});
+
+onUnmounted(() => {
+  // Xóa interval khi component bị hủy
+  if (refreshInterval) clearInterval(refreshInterval);
 });
 </script>
 

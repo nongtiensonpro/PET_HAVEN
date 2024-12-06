@@ -7,7 +7,6 @@ import {useToast} from 'vue-toastification';
 import InputField from '~/components/InputField.vue';
 import {useForm} from 'vee-validate';
 import * as yup from 'yup';
-import type DichVu from "~/models/DichVu";
 import UpdateDichVu from "~/components/UpdateDichVu.vue";
 
 definePageMeta({
@@ -304,7 +303,6 @@ const updateTTService = async (serviceId: String) => {
             </div>
             <div class="col">
               <update-dich-vu :service="service"/>
-<!--              MEOMEO-->
             </div>
           </div>
         </td>

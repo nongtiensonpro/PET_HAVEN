@@ -1,7 +1,7 @@
 <template>
     <div class="container">
         <h1>Quản lý hóa đơn</h1>
-        <button @click="fetchHoaDon" class="btn btn-sm btn-success m-4">Tải danh sách hóa đơn</button>
+        <button @click="refreshData" class="btn btn-sm btn-success m-4">Làm mới dữ liệu</button>
         <table class="table table-striped mt-3">
             <thead>
                 <tr>
@@ -30,35 +30,55 @@
 </template>
 
 <script setup lang="ts">
-import {onMounted, ref} from 'vue';
+import { ref, onMounted, onUnmounted } from 'vue';
 import { useQuanLyHoaDonStore } from '~/stores/QuanLyHoaDon';
-import UserModel from "~/models/User";
 import HoaDonKhachHang from "~/models/HoaDonKhachHang";
 
 const store = useQuanLyHoaDonStore();
 const hoaDonList = ref<HoaDonKhachHang[]>([]);
+
 definePageMeta({
   middleware: ['auth']
 })
+
 const fetchHoaDon = async () => {
     await store.fetchListHoaDon();
     hoaDonList.value = store.ListHoaDon;
 };
 
+
+const { data } = await useAsyncData('hoaDonList', () => store.fetchListHoaDon());
+
+watch(data, () => {
+    hoaDonList.value = store.ListHoaDon;
+});
+
+const refreshData = () => {
+    fetchHoaDon();
+};
+
+let intervalId: NodeJS.Timeout;
+
 onMounted(() => {
-  fetchHoaDon();
+    refreshData()
+    intervalId = setInterval(refreshData,  60 * 1000);
+});
+
+onUnmounted(() => {
+    if (intervalId) clearInterval(intervalId);
 });
 
 const formatDate = (dateString: string) => {
     const date = new Date(dateString);
     const day = String(date.getDate()).padStart(2, '0');
-    const month = String(date.getMonth() + 1).padStart(2, '0'); // Tháng bắt đầu từ 0
+    const month = String(date.getMonth() + 1).padStart(2, '0');
     const year = date.getFullYear();
     const hours = String(date.getHours()).padStart(2, '0');
     const minutes = String(date.getMinutes()).padStart(2, '0');
 
     return `${day}/${month}/${year} ${hours}:${minutes}`;
 };
+
 const getTrangThai = (trangthai: number) => {
     switch (trangthai) {
         case 1: return 'Chờ thanh toán';
@@ -67,10 +87,10 @@ const getTrangThai = (trangthai: number) => {
         default: return 'Không xác định';
     }
 };
+
 const viewHoaDon = (id: number) => {
     navigateTo(`/admin/chitiethoadon/${id}`);
 };
-
 </script>
 
 <style scoped>

@@ -8,7 +8,7 @@
       <tr>
         <th>ID</th>
         <th>Tên người dùng</th>
-        <th>Giới tính</th>
+<!--        <th>Giới tính</th>-->
         <th>Email</th>
         <th>Vai trò</th>
         <th>Thao tác</th>
@@ -18,7 +18,7 @@
       <tr v-for="user in User" :key="user.id">
         <td>{{ user.idtaikhoan }}</td>
         <td>{{ user.hoten }}</td>
-        <td>{{ user.gioitinh }}</td>
+<!--        <td>{{ user.gioitinh }}</td>-->
         <td>{{ user.email }}</td>
         <td>{{ user.role }}</td>
         <td>

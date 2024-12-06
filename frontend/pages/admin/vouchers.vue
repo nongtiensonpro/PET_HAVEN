@@ -3,7 +3,7 @@
     <h1 class="title mb-4">Quản lý Voucher</h1>
     <div class="row mb-4">
       <div class="col-md-6">
-        <add-voucher @added="fetchVouchers" />
+        <add-voucher @added="refresh" />
       </div>
       <div class="col-md-6 d-flex align-items-center justify-content-end">
         <button @click="refreshVouchers" class="btn btn-outline-primary">
@@ -25,7 +25,7 @@
           </tr>
         </thead>
         <tbody>
-          <tr v-for="voucher in vouchers" :key="voucher.id">
+          <tr v-for="voucher in voucherData" :key="voucher.id">
             <td>{{ voucher.id }}</td>
             <td>{{ voucher.mota }}</td>
             <td>
@@ -44,10 +44,10 @@
               <div class="d-flex">
                 <CapNhatVoucher
                   :voucher="voucher"
-                  @updated="fetchVouchers"
+                  @updated="refresh"
                 />
                 <button
-                    @click="updateTrangThaiVoucher(voucher.id)"
+                  @click="updateTrangThaiVoucher(voucher.id)"
                   type="button"
                   class="btn btn-sm ms-2"
                   :class="voucher.trangthai ? 'btn-danger' : 'btn-success'"
@@ -64,37 +64,39 @@
 </template>
 
 <script setup lang="ts">
-import { onMounted, ref } from 'vue';
+import { onMounted, onUnmounted } from 'vue';
 import { useVoucherStore } from '~/stores/VorchersStores';
 import AddVoucher from '~/components/AddVoucher.vue';
 import CapNhatVoucher from '~/components/CapNhatVoucher.vue';
 import type Voucher from "~/models/Voucher";
-import {useToast} from 'vue-toastification';
+import { useToast } from 'vue-toastification';
 import Swal from "sweetalert2";
 
 const toast = useToast();
-
 const voucherStore = useVoucherStore();
-const vouchers = ref<Voucher[]>([]);
+
+const { data: voucherData, refresh } = await useAsyncData<Voucher[]>(
+  'vouchers',
+  () => voucherStore.fetchVoucher()
+);
+
+let intervalId: NodeJS.Timeout;
 
 onMounted(() => {
-  fetchVouchers();
+  intervalId = setInterval(() => {
+    refresh();
+  }, 5 * 60 * 1000); // Refresh every 5 minutes
 });
 
-async function fetchVouchers() {
-  try {
-    await voucherStore.fetchVoucher();
-    vouchers.value = voucherStore.ListVoucher;
-  } catch (error) {
-    toast.error('Lấy vouchers thất bại!');
-  }
-}
+onUnmounted(() => {
+  if (intervalId) clearInterval(intervalId);
+});
 
-function refreshVouchers() {
+async function refreshVouchers() {
   try {
-    fetchVouchers();
+    await refresh();
     toast.success('Làm mới vouchers thành công!');
-  }catch (e) {
+  } catch (e) {
     toast.error('Làm mới vouchers thất bại!');
   }
 }
@@ -106,12 +108,11 @@ function formatDate(date: Date | string) {
   return date.toLocaleDateString('vi-VN');
 }
 
-
 async function updateTrangThaiVoucher(id: number) {
   const result = await Swal.fire({
     title: 'Xác nhận',
     text: "Bạn có muốn cập nhật trạng thái Voucher không?",
-    icon: 'success',
+    icon: 'warning',
     showCancelButton: true,
     confirmButtonColor: '#3085d6',
     cancelButtonColor: '#d33',
@@ -121,14 +122,13 @@ async function updateTrangThaiVoucher(id: number) {
   if (result.isConfirmed) {
     try {
       await voucherStore.updateTrangThaiVoucher(id);
-      await fetchVouchers();
+      await refresh();
       toast.success('Cập nhật trạng thái voucher thành công!');
     } catch (error) {
       toast.error('Cập nhật trạng thái voucher thất bại!');
     }
   }
 }
-
 </script>
 
 <style scoped>

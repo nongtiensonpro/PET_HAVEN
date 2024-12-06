@@ -1,51 +1,65 @@
 <script setup lang="ts">
-import { onMounted, ref } from "vue";
-import {useCaLichHenStore} from "~/stores/QuanLyCaLichHen"
+import { onMounted, ref, onUnmounted } from "vue";
+import { useCaLichHenStore } from "~/stores/QuanLyCaLichHen"
 import type NgayNghi from "~/models/NgayNghi";
 import type CaLichHen from "~/models/CaHen";
 import ThemCa from '~/components/ThemCa.vue'
-
-const caLichHenStore = useCaLichHenStore();
-const caLichHens = ref<CaLichHen[]>([]);
-
-const listNgayNghi = ref<NgayNghi[]>([]);
-
 import CapNhatCaHen from '~/components/CapNhatCaLichHen.vue'
 import CapNhatNgayNghi from "~/components/CapNhatNgayNghi.vue";
 import Swal from 'sweetalert2';
 import { useToast } from 'vue-toastification'
 
+const caLichHenStore = useCaLichHenStore();
+const caLichHens = ref<CaLichHen[]>([]);
+const listNgayNghi = ref<NgayNghi[]>([]);
 const toast = useToast();
-const fetchCaLichHens = async () => {
+
+// Sử dụng useAsyncData để tự động fetch dữ liệu khi trang được truy cập
+const { data: caLichHensData } = await useAsyncData('caLichHens', () => caLichHenStore.fethcCaLichHen());
+const { data: ngayNghiData } = await useAsyncData('ngayNghi', () => caLichHenStore.fetchNgayNghi());
+
+// Cập nhật dữ liệu khi có thay đổi
+watch(caLichHensData, (newData) => {
+  if (newData) caLichHens.value = newData;
+});
+
+watch(ngayNghiData, (newData) => {
+  if (newData && Array.isArray(newData)) {
+    listNgayNghi.value = newData;
+  } else {
+    listNgayNghi.value = [];
+  }
+});
+
+const fetchData = async () => {
   try {
     caLichHens.value = await caLichHenStore.fethcCaLichHen();
-  }catch (e) {
-    toast.error('Lấy dữ liệu ca lịch hẹn thất bại!')
-  }
-}
-
-
-const fetchNgayNghi = async () => {
-  try {
     const ngayNghiData = await caLichHenStore.fetchNgayNghi();
     if (Array.isArray(ngayNghiData)) {
       listNgayNghi.value = ngayNghiData;
     } else {
       listNgayNghi.value = [];
     }
-  }catch (e) {
-    toast.error('Lấy dữ liệu ngày nghỉ thất bại!')
+  } catch (e) {
+    toast.error('Lấy dữ liệu thất bại!');
   }
 }
+
+let intervalId: NodeJS.Timeout;
+
 onMounted(() => {
-  fetchCaLichHens()
-  fetchNgayNghi()
-})
+  fetchData()
+  intervalId = setInterval(fetchData, 60 * 1000);
+});
+
+onUnmounted(() => {
+  if (intervalId) clearInterval(intervalId);
+});
 
 async function capNhatTrangThai(ca: CaLichHen) {
   const result = await Swal.fire({
     title: 'Xác nhận',
-   text: `Bạn có chắc chắn ${ca.trangthai ? 'ẩn' : 'hiện'} ca "${ca.tenca}" chứ?`,
+    text: `Bạn có chắc chắn ${ca.trangthai ? 'ẩn' : 'hiện'} ca chứ?`,
     icon: 'warning',
     showCancelButton: true,
     confirmButtonColor: '#3085d6',
@@ -57,33 +71,25 @@ async function capNhatTrangThai(ca: CaLichHen) {
   if (result.isConfirmed) {
     try {
       await caLichHenStore.capNhatTrangThaiCa(ca);
-      await fetchCaLichHens();
-      setTimeout(() => {
-        fetchCaLichHens();
-      }, 100);
+      await fetchData();
       toast.success('Cập nhật ca lịch hẹn thành công!')
-    }catch (e) {
-      toast.success('Cập nhật ca lịch hẹn thất bại!')
-
+    } catch (e) {
+      toast.error('Cập nhật ca lịch hẹn thất bại!')
     }
   }
 }
 
 function capNhat(ca: CaLichHen) {
   caLichHenStore.capNhatCaLichHen(ca);
-  fetchCaLichHens();
+  fetchData();
 }
 
 function lammoi() {
-  try {
-    fetchCaLichHens();
-    fetchNgayNghi();
-  }catch (e) {
-    toast.error('Lấy danh sách ca lịch hẹn thất bại!')
-  }
+  fetchData();
 }
 
 </script>
+
 
 <template>
 
@@ -163,11 +169,6 @@ function lammoi() {
 </template>
 
 <style scoped>
-.ca-lich-hen-table {
-  width: 100%;
-  border-collapse: collapse;
-  margin-top: 20px;
-}
 
 .ca-lich-hen-table th, .ca-lich-hen-table td {
   border: 1px solid #ddd;
@@ -188,12 +189,4 @@ function lammoi() {
   background-color: #f5f5f5;
 }
 
-.active {
-  color: green;
-  font-weight: bold;
-}
-
-.inactive {
-  color: red;
-}
 </style>

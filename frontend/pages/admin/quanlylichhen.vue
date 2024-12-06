@@ -205,25 +205,36 @@
 </template>
 
 <script setup lang="ts">
-import {onMounted, ref} from 'vue';
+import { onMounted, ref, onUnmounted } from 'vue';
 import HoaDonKhachHang from '~/models/HoaDonKhachHang';
-import {useQuanLyLichHenAdminStore} from '~/stores/QuanLyLichHenAdmin';
+import { useQuanLyLichHenAdminStore } from '~/stores/QuanLyLichHenAdmin';
 import Swal from 'sweetalert2';
-import {useToast} from 'vue-toastification';
+import { useToast } from 'vue-toastification';
 import CalendarAdmin from "~/components/CalendarChangeAdmin.vue";
 
 const useQuanLyAdmin = useQuanLyLichHenAdminStore();
 const hoaDonKhachHangs = ref<HoaDonKhachHang[]>([]);
 const selectedTrangThai = ref<number>(0);
 const toast = useToast();
+let refreshInterval: NodeJS.Timeout;
 
 onMounted(() => {
   fetchHoaDon();
+  refreshInterval = setInterval(fetchHoaDon,  60 * 1000);
 });
 
-const fetchHoaDon = () => {
-  useQuanLyAdmin.fetchHoaDonKhachHangs();
-  hoaDonKhachHangs.value = useQuanLyAdmin.hoaDonKhachHangs;
+onUnmounted(() => {
+  if (refreshInterval) clearInterval(refreshInterval);
+});
+
+const fetchHoaDon = async () => {
+  try {
+    await useQuanLyAdmin.fetchHoaDonKhachHangs();
+    hoaDonKhachHangs.value = useQuanLyAdmin.hoaDonKhachHangs;
+  } catch (error) {
+    console.error('Lỗi khi tải dữ liệu:', error);
+    toast.error('Không thể tải dữ liệu. Vui lòng thử lại sau.');
+  }
 };
 
 const formatDate = (dateString: string): string => {
@@ -232,28 +243,20 @@ const formatDate = (dateString: string): string => {
 };
 
 const formatCurrency = (amount: number): string => {
-  return new Intl.NumberFormat('vi-VN', {style: 'currency', currency: 'VND'}).format(amount);
+  return new Intl.NumberFormat('vi-VN', { style: 'currency', currency: 'VND' }).format(amount);
 };
 
 const getTrangThai = (status: number): string => {
-  switch (status) {
-    case 0:
-      return 'Thành công';
-    case 1:
-      return 'Thất bại';
-    case 2:
-      return 'Đã hủy';
-    case 3:
-      return 'Chờ thanh toán';
-    case 4:
-      return 'Chờ xác nhận';
-    case 5:
-      return 'Rỗng';
-    case 6:
-      return 'Thanh toán thành công';
-    default:
-      return 'Không xác định';
-  }
+  const trangThaiMap: { [key: number]: string } = {
+    0: 'Thành công',
+    1: 'Thất bại',
+    2: 'Đã hủy',
+    3: 'Chờ thanh toán',
+    4: 'Chờ xác nhận',
+    5: 'Rỗng',
+    6: 'Thanh toán thành công'
+  };
+  return trangThaiMap[status] || 'Không xác định';
 };
 
 async function saveTrangThai(id: number, idTrangThai: number) {
@@ -270,15 +273,15 @@ async function saveTrangThai(id: number, idTrangThai: number) {
   if (result.isConfirmed) {
     try {
       await useQuanLyAdmin.thayDoiTrangThai(id, idTrangThai);
-      toast.success('Thay đổi trạng thái thành công', {timeout: 3000});
-      fetchHoaDon(); // Refresh the data
+      toast.success('Thay đổi trạng thái thành công', { timeout: 3000 });
+      await fetchHoaDon(); // Refresh the data
     } catch (error) {
-      toast.error('Không thể thay đổi trạng thái. Vui lòng thử lại. ' + error, {timeout: 3000});
+      toast.error(`Không thể thay đổi trạng thái. Vui lòng thử lại. ${error}`, { timeout: 3000 });
     }
   }
 }
 
-async function doiNgayHen(ngayHen: String, idcalichhen: Number) {
+async function doiNgayHen(ngayHen: string, idcalichhen: number) {
   const result = await Swal.fire({
     title: 'Xác nhận',
     text: 'Bạn có muốn thay đổi ngày hẹn không?',
@@ -292,17 +295,11 @@ async function doiNgayHen(ngayHen: String, idcalichhen: Number) {
   if (result.isConfirmed) {
     try {
       await useQuanLyAdmin.doiThoiGian(ngayHen, idcalichhen);
-      toast.success('Thay đổi ngày hẹn thành công', {timeout: 3000});
-      fetchHoaDon();
+      toast.success('Thay đổi ngày hẹn thành công', { timeout: 3000 });
+      await fetchHoaDon();
     } catch (error) {
-      toast.error('Không thể thay đổi ngày hẹn. Vui lòng thử lại. ' + error, {timeout: 3000});
+      toast.error(`Không thể thay đổi ngày hẹn. Vui lòng thử lại. ${error}`, { timeout: 3000 });
     }
   }
 }
 </script>
-
-<style scoped>
-.table th, .table td {
-  vertical-align: middle;
-}
-</style>

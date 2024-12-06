@@ -15,7 +15,8 @@
             <select id="time" v-model="selectedTime" class="form-select">
               <option value="" disabled>Chọn thời gian</option>
               <option v-for="lichhen in lichhens" :key="lichhen.id" :value="lichhen.id">
-                {{ lichhen.tenca }}: {{ lichhen.thoigianca }}
+<!--                {{ lichhen.tenca }}:-->
+                {{ lichhen.thoigianca }}
               </option>
             </select>
           </div>
