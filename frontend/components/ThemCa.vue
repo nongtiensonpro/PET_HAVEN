@@ -26,7 +26,6 @@ const themCaHen = async () => {
         date.setHours(parseInt(hours), parseInt(minutes), 0, 0);
 
         const newCaHen = new CaLichHen(0,
-            // tenca.value,
             date, trangthai.value);
         await caLichHenStore.themCaLichHen(newCaHen);
         // tenca.value = "";
