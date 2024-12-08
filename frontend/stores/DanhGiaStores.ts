@@ -21,7 +21,7 @@ export const useDanhGiaStore = defineStore('danhGiaStore', {
                 }
             },
 
-            async addDanhGia(moTa: String,idLichHen : Number, star: Number) {
+            async addDanhGia(moTa: String, idLichHen: Number, star: Number) {
                 const token = localStorage.getItem('access_token');
                 try {
                     const requestBody = {
@@ -51,27 +51,27 @@ export const useDanhGiaStore = defineStore('danhGiaStore', {
                     return {success: false, message: 'Lỗi thêm đánh giá'};
                 }
             },
-
             async anDanhGia(danhGiaId: number) {
                 const token = localStorage.getItem('access_token');
                 try {
-                    const requestBody = {
-                        id: danhGiaId
-                    };
                     const response = await fetch(`http://localhost:8080/api/danh-gia/an-danh-gia`, {
                         method: 'PUT',
                         headers: {
-                            'Authorization': `Bearer ${token}`
+                            'Authorization': `Bearer ${token}`,
+                            'Content-Type': 'application/json'
                         },
-                        body: JSON.stringify(requestBody)
+                        body: JSON.stringify(danhGiaId)  // Send the ID directly, not as an object
                     });
 
                     if (!response.ok) {
-                        throw new Error(`Failed to ẩn danh gia. Status: ${response.status}`);
+                        const errorMessage = `Failed to ẩn danh gia. Status: ${response.status}`;
+                        console.error(errorMessage);
+                        return {success: false, message: errorMessage};
                     }
 
+                    const updatedDanhGia = await response.json();
                     this.danhGias = this.danhGias.filter(danhGia => danhGia.id !== danhGiaId);
-                    return {success: true};
+                    return {success: true, data: updatedDanhGia};
                 } catch (error) {
                     console.error('Error ẩn danh gia:', error);
                     return {success: false, message: 'Lỗi ẩn đánh giá'};
@@ -98,7 +98,7 @@ export const useDanhGiaStore = defineStore('danhGiaStore', {
                     return {success: false, message: 'Lỗi tìm đánh giá'};
                 }
             },
-            async capNhatDanhGia(idDanhGia: Number,moTa: String,idLichHen : Number, star: Number) {
+            async capNhatDanhGia(idDanhGia: Number, moTa: String, idLichHen: Number, star: Number) {
                 const token = localStorage.getItem('access_token');
                 try {
                     const requestBody = {

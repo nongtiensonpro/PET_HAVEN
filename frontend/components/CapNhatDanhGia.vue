@@ -70,6 +70,7 @@ const setRating = (value: number) => {
   localDanhGia.value.sosao = value;
 };
 
+
 async function submitForm() {
   try {
     const result = await Swal.fire({
