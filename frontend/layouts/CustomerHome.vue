@@ -145,7 +145,7 @@
                     </div>
                     <div v-else>
                       <NuxtLink class="nav-link" :to="`/services/${service.id}`" aria-current="page">
-                        <div style="font-size: medium;">{{ service.tendichvu }}</div>
+                        <div v-if="service.hien && service.trangthai" style="font-size: medium;">{{ service.tendichvu }}</div>
                       </NuxtLink>
                     </div>
                   </li>
