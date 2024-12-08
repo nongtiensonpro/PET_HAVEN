@@ -120,21 +120,21 @@ function lammoi() {
         </tr>
       </thead>
       <tbody>
-
         <tr v-for="ca in caLichHens" :key="ca.id">
-          <td>{{ ca.id }}</td>
-          <td>{{ ca.thoigianca }}</td>
-          <td>
-            <span :class="ca.trangthai ? 'active' : 'inactive'">
-              {{ ca.trangthai ? 'Hoạt động' : 'Không hoạt động' }}
-            </span>
-          </td>
-          <td>
-            <button type="button" @click="capNhatTrangThai(ca)" class="btn btn-sm btn-outline-warning m-1">{{ca.trangthai?'Ẩn ca':'Hiện ca'}}</button>
-            <CapNhatCaHen :ca="ca" @cap-nhat="capNhat">
-            </CapNhatCaHen>
-          </td>
-        </tr>
+  <td>{{ ca.id }}</td>
+  <td>{{ ca.thoigianca }}</td>
+  <td>
+    <span :class="ca.trangthai ? 'active' : 'inactive'">
+      {{ ca.trangthai ? 'Hoạt động' : 'Không hoạt động' }}
+    </span>
+  </td>
+  <td>
+    <button type="button" @click="capNhatTrangThai(ca)" class="btn btn-sm btn-outline-warning m-1">
+      {{ca.trangthai ? 'Ẩn ca' : 'Hiện ca'}}
+    </button>
+    <CapNhatCaHen :ca="ca" @cap-nhat="capNhat" />
+  </td>
+</tr>
       </tbody>
     </table>
   </div>
