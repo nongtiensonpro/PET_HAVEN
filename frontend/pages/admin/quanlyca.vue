@@ -14,11 +14,9 @@ const caLichHens = ref<CaLichHen[]>([]);
 const listNgayNghi = ref<NgayNghi[]>([]);
 const toast = useToast();
 
-// Sử dụng useAsyncData để tự động fetch dữ liệu khi trang được truy cập
 const { data: caLichHensData } = await useAsyncData('caLichHens', () => caLichHenStore.fethcCaLichHen());
 const { data: ngayNghiData } = await useAsyncData('ngayNghi', () => caLichHenStore.fetchNgayNghi());
 
-// Cập nhật dữ liệu khi có thay đổi
 watch(caLichHensData, (newData) => {
   if (newData) caLichHens.value = newData;
 });
@@ -116,7 +114,6 @@ function lammoi() {
       <thead>
         <tr>
           <th>ID</th>
-<!--          <th>Tên ca</th>-->
           <th>Thời gian ca</th>
           <th>Trạng thái</th>
           <th>Thao tác</th>
@@ -126,7 +123,6 @@ function lammoi() {
 
         <tr v-for="ca in caLichHens" :key="ca.id">
           <td>{{ ca.id }}</td>
-<!--          <td>{{ ca.tenca }}</td>-->
           <td>{{ ca.thoigianca }}</td>
           <td>
             <span :class="ca.trangthai ? 'active' : 'inactive'">

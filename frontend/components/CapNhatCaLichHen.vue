@@ -50,18 +50,10 @@ async function capNhatCa(ca :CaLichHens) {
         </div>
         <div class="modal-body">
           <form @submit.prevent="capNhatCa(ca)">
-<!--            <div class="mb-3">-->
-<!--              <label for="tenca" class="form-label">Tên ca</label>-->
-<!--              <input type="text" class="form-control" id="tenca" v-model="ca.tenca" required>-->
-<!--            </div>-->
             <div class="mb-3">
               <label for="thoigianca" class="form-label">Thời gian ca</label>
               <input type="time" class="form-control" id="thoigianca" v-model="ca.thoigianca" required>
             </div>
-<!--            <div class="mb-3 form-check">-->
-<!--              <input type="checkbox" class="form-check-input" id="trangthai" v-model="ca.trangthai">-->
-<!--              <label class="form-check-label" for="trangthai">Trạng thái</label>-->
-<!--            </div>-->
             <div class="modal-footer">
               <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Đóng</button>
               <button type="submit" class="btn btn-primary" data-bs-dismiss="modal">Lưu thay đổi</button>
