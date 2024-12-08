@@ -1,35 +1,44 @@
 <template>
-  <div class="mb-3 rounded">
-    <button type="button" class="nav-link" data-bs-toggle="modal" data-bs-target="#updateReviewModal">
-      Cập nhật đánh giá
-    </button>
+  <button type="button" class="btn btn-sm btn-outline-warning m-1" data-bs-toggle="modal" :data-bs-target="`#updateReviewModal${danhGia.id}`">
+    Cập nhật đánh giá
+  </button>
 
-    <div class="modal fade" id="updateReviewModal" tabindex="-1" aria-labelledby="updateReviewModalLabel" aria-hidden="true">
-      <div class="modal-dialog">
-        <div class="modal-content">
-          <div class="modal-header">
-            <h5 class="modal-title" id="updateReviewModalLabel">Cập nhật đánh giá</h5>
-            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-          </div>
-          <div class="modal-body">
-            <form @submit.prevent="submitForm">
-              <div class="mb-3">
-                <label for="rating" class="form-label">Đánh giá (1-5 sao):</label>
-                <div class="star-rating">
-                  <span v-for="star in 5" :key="star" @click="setRating(star)" :class="{ 'active': star <= currentRating }">
-                    &#9733;
-                  </span>
-                </div>
-                <div class="text-danger" v-if="errors.rating">{{ errors.rating }}</div>
+  <div class="modal fade" :id="`updateReviewModal${danhGia.id}`" tabindex="-1" :aria-labelledby="`updateReviewModalLabel${danhGia.id}`" aria-hidden="true">
+    <div class="modal-dialog">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" :id="`updateReviewModalLabel${danhGia.id}`">Cập nhật đánh giá</h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+        <div class="modal-body">
+          <form @submit.prevent="submitForm">
+            <div class="mb-3">
+              <label for="rating" class="form-label">Đánh giá (1-5 sao):</label>
+              <div class="star-rating">
+                <span
+                  v-for="star in 5"
+                  :key="star"
+                  @click="setRating(star)"
+                  :class="{ 'active': star <= localDanhGia.sosao }"
+                >
+                  &#9733;
+                </span>
               </div>
-              <div class="mb-3">
-                <label for="review" class="form-label">Nhận xét:</label>
-                <textarea v-model="currentReview" class="form-control" id="review" rows="3" :class="{ 'is-invalid': errors.review }"></textarea>
-                <div v-if="errors.review" class="invalid-feedback">{{ errors.review }}</div>
-              </div>
-              <button type="submit" class="custom-button">Cập nhật đánh giá</button>
-            </form>
-          </div>
+            </div>
+            <div class="mb-3">
+              <label for="review" class="form-label">Nhận xét:</label>
+              <textarea
+                v-model="localDanhGia.mota"
+                class="form-control"
+                id="review"
+                rows="3"
+              ></textarea>
+            </div>
+            <div class="modal-footer">
+              <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Đóng</button>
+              <button type="submit" class="btn btn-primary" data-bs-dismiss="modal">Lưu thay đổi</button>
+            </div>
+          </form>
         </div>
       </div>
     </div>
@@ -38,84 +47,58 @@
 
 <script setup lang="ts">
 import { ref, watch } from 'vue';
-import { useField, useForm } from 'vee-validate';
-import * as yup from 'yup';
 import { useToast } from 'vue-toastification';
 import { useDanhGiaStore } from '~/stores/DanhGiaStores';
-import Swal from "sweetalert2";
-
-const danhGiaStore = useDanhGiaStore();
-const toast = useToast();
+import Swal from 'sweetalert2';
+import type DanhGiaS from "~/models/DanhGia";
 
 const props = defineProps<{
-  idDanhGia: string;
-  idLichHen: string;
-  initialRating: number;
-  initialReview: string;
+  danhGia: DanhGiaS
 }>();
 
-const emit = defineEmits(['submit']);
+const emit = defineEmits(['cap-nhat']);
+const toast = useToast();
+const danhGiaStore = useDanhGiaStore();
 
-const schema = yup.object({
-  review: yup.string().required('Vui lòng nhập nhận xét').min(3, 'Nhận xét phải có ít nhất 3 ký tự'),
-  rating: yup.number().required('Vui lòng chọn số sao').min(1, 'Vui lòng chọn ít nhất 1 sao').max(5, 'Tối đa 5 sao'),
-});
+const localDanhGia = ref<DanhGiaS>({ ...props.danhGia });
 
-const { handleSubmit, errors, setFieldValue } = useForm({
-  validationSchema: schema,
-  initialValues: {
-    review: props.initialReview,
-    rating: props.initialRating,
-  },
-});
-
-const currentReview = ref(props.initialReview);
-const currentRating = ref(props.initialRating);
-
-watch(() => props.initialReview, (newValue) => {
-  currentReview.value = newValue;
-});
-
-watch(() => props.initialRating, (newValue) => {
-  currentRating.value = newValue;
-});
+watch(() => props.danhGia, (newDanhGia) => {
+  localDanhGia.value = { ...newDanhGia };
+}, { deep: true });
 
 const setRating = (value: number) => {
-  currentRating.value = value;
-  setFieldValue('rating', value);
+  localDanhGia.value.sosao = value;
 };
 
-const closeModal = () => {
-  const modal = document.getElementById('updateReviewModal');
-  if (modal) {
-    const bootstrapModal = (window as any).bootstrap.Modal.getInstance(modal);
-    if (bootstrapModal) {
-      bootstrapModal.hide();
-    }
-  }
-};
-
-const submitForm = handleSubmit(async () => {
+async function submitForm() {
   try {
     const result = await Swal.fire({
       title: 'Xác nhận',
       text: "Bạn có muốn cập nhật đánh giá không?",
-      icon: 'success',
+      icon: 'question',
       showCancelButton: true,
       confirmButtonColor: '#3085d6',
       cancelButtonColor: '#d33',
       confirmButtonText: 'Có',
       cancelButtonText: 'Không'
     });
+
     if (result.isConfirmed) {
-      await danhGiaStore.capNhatDanhGia(props.idDanhGia, currentReview.value,  props.idLichHen,currentRating.value);
+      await danhGiaStore.capNhatDanhGia(
+        localDanhGia.value.id,
+        localDanhGia.value.mota,
+        Number(localDanhGia.value.idhoadon.idlichhen.id),
+        localDanhGia.value.sosao
+      );
+      emit('cap-nhat');
       toast.success('Cập nhật đánh giá thành công!');
-      closeModal();
+
+      return navigateTo('/services/'+props.danhGia.idhoadon.idlichhen.dichvu.id);
     }
   } catch (error) {
     toast.error('Cập nhật đánh giá thất bại!');
   }
-});
+}
 </script>
 
 <style scoped>

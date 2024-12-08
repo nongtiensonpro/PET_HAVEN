@@ -53,6 +53,7 @@ const submitForm = handleSubmit(async (values) => {
 
     // Reset the form
     resetForm();
+    return navigateTo('/chitietlich_danhgia/'+ props.idLichHen);
   } catch (error) {
     toast.error('Đã xảy ra lỗi khi thêm đánh giá');
   }

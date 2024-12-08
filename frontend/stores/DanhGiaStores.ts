@@ -98,7 +98,7 @@ export const useDanhGiaStore = defineStore('danhGiaStore', {
                     return {success: false, message: 'Lỗi tìm đánh giá'};
                 }
             },
-            async capNhatDanhGia(idDanhGia: String,moTa: String,idLichHen : Number, star: Number) {
+            async capNhatDanhGia(idDanhGia: Number,moTa: String,idLichHen : Number, star: Number) {
                 const token = localStorage.getItem('access_token');
                 try {
                     const requestBody = {
