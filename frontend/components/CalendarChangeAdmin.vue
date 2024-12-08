@@ -15,7 +15,7 @@
             <select id="time" v-model="selectedTime" class="form-select">
               <option value="" disabled>Chọn thời gian</option>
               <option v-for="lichhen in lichhens" :key="lichhen.id" :value="lichhen.id">
-                {{ lichhen.tenca }}: {{ lichhen.thoigianca }}
+                 {{ lichhen.thoigianca }}
               </option>
             </select>
           </div>
@@ -71,7 +71,7 @@ const lichhens = computed((): CaHen[] => datLichStore.CaLichHen)
 const isFormValid = computed(() => {
   return selectedDate.value &&  selectedTime.value
 })
-function formatDate(date) {
+function formatDate(date: Date): string {
   const year = date.getFullYear();
   const month = String(date.getMonth() + 1).padStart(2, '0');
   const day = String(date.getDate()).padStart(2, '0');
@@ -80,7 +80,7 @@ function formatDate(date) {
 onMounted(() => {
   const today = new Date();
   const formattedDate = formatDate(today);
-  fetchCaHen(formattedDate);
+  fetchCaHen(new Date(formattedDate));
   handleDateClick({ dateStr: formattedDate });
 })
 
@@ -97,7 +97,6 @@ const calendarOptions = computed(() => ({
     right: 'dayGridWeek,today'
   },
   events: events.value,
-  eventClick: handleEventClick,
   dateClick: handleDateClick,
   locale: viLocale,
   buttonText: {
@@ -126,9 +125,6 @@ const calendarOptions = computed(() => ({
   nowIndicator: true
 }))
 
-function handleEventClick(info) {
-
-}
 const events = ref([
   {
     title: 'Chọn',
@@ -137,10 +133,10 @@ const events = ref([
     allDay: true
   }
 ])
-function handleDateClick(info) {
-  selectedDate.value = new Date(info.dateStr)
-  datLichStore.updateDatLichInfo(info.dateStr)
-  events.value = [{ title: 'Chọn', start: info.dateStr, color: '#3788d8' }]
+function handleDateClick(info: { dateStr: string }) {
+  selectedDate.value = new Date(info.dateStr);
+  datLichStore.updateDatLichInfo(new Date(info.dateStr));
+  events.value = [{ title: 'Chọn', start: new Date(info.dateStr), color: '#3788d8', allDay: true }];
 }
 
 async function confirmBooking() {
@@ -168,7 +164,7 @@ async function confirmBooking() {
 
     if (result.isConfirmed) {
       try {
-        await quanLyAdmin.thayDoiLichHenAdmin(props.id, newDate, newCaLichHenId);
+        await quanLyAdmin.thayDoiLichHenAdmin(props.id, newDate, String(newCaLichHenId));
         toast.success('Đã thay đổi lịch hẹn thành công', { timeout: 3000 });
       } catch (error) {
         toast.error('Không thể thay đổi lịch hẹn. Vui lòng thử lại. ' + error, { timeout: 3000 });
