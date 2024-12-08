@@ -151,6 +151,18 @@ const updateTTService = async (serviceId: String) => {
     toast.error('Dịch vụ đã được cập nhật thất bại!');
   }
 };
+
+const updateTTHienService = async (serviceId: String) => {
+  try {
+    await serviceStore.updateTTHien(serviceId);
+    notificationStore.addNotification("Dịch vụ đã được cập nhật thành công!", user.userInfo.name);
+    toast.success('Dịch vụ đã được cập nhật thành công!');
+    await serviceStore.fetchServices();
+  } catch (error) {
+    notificationStore.addNotification("Dịch vụ đã được cập nhật thất bại!", user.userInfo.name);
+    toast.error('Dịch vụ đã được cập nhật thất bại!');
+  }
+};
 </script>
 
 <template>
@@ -288,16 +300,25 @@ const updateTTService = async (serviceId: String) => {
         <td>
           <div  class="row">
             <div class="col">
-              <button type="button" class="nav-link" @click="deleteService(service.id)" data-bs-dismiss="modal">Xóa
+              <button type="button" class="nav-link  btn fixed-size" @click="deleteService(service.id)" data-bs-dismiss="modal">Xóa
               </button>
             </div>
             <div class="col">
-              <button type="button" class="nav-link" @click="updateTTService(service.id)" data-bs-dismiss="modal">
+              <button type="button" class="nav-link  btn fixed-size" @click="updateTTService(service.id)" data-bs-dismiss="modal" :class="service.trangthai ? 'btn-danger' : 'btn-success'" >
                 <span v-if="service.trangthai">
                   Ẩn dịch vụ
                 </span>
                 <span v-else>
                   Hiện dịch vụ
+                </span>
+              </button>
+
+              <button type="button" class="nav-link  btn fixed-size" @click="updateTTHienService(service.id)" data-bs-dismiss="modal" :class="service.hien ? 'btn-danger' : 'btn-success'" >
+                <span v-if="service.hien">
+                  Ẩn khỏi màn hình chính
+                </span>
+                <span v-else>
+                  Hiện ở màn hình chính
                 </span>
               </button>
             </div>
@@ -313,5 +334,32 @@ const updateTTService = async (serviceId: String) => {
 </template>
 
 <style scoped>
+.fixed-size {
+  width: 15%; /* Chiều rộng chiếm 15% của vùng chứa */
+  min-width: 100px; /* Đảm bảo nút không nhỏ hơn 100px */
+  max-width: 200px; /* Giới hạn chiều rộng tối đa */
+  height: 2.5rem; /* Chiều cao linh hoạt theo font-size (2.5 rem = 40px nếu font-size gốc là 16px) */
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  font-size: 1rem; /* Đặt kích thước chữ theo tỉ lệ */
+  padding: 0.5rem; /* Tạo khoảng trống bên trong nút */
+  box-sizing: border-box; /* Đảm bảo padding không làm tăng kích thước nút */
+}
+
+.btn-danger {
+  background-color: #dc3545; /* Màu đỏ */
+  color: white;
+}
+
+.btn-success {
+  background-color: #28a745; /* Màu xanh */
+  color: white;
+}
+
+.nav-link {
+  margin: 0.5rem; /* Khoảng cách giữa các nút */
+}
 
 </style>

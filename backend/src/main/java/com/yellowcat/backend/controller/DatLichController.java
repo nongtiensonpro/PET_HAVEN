@@ -228,16 +228,13 @@ public class DatLichController {
             Lichhen lichDoi = lichhenDoiOptional.get();
             lichDoi.setEmailNguoiDat(lichhen.getEmailNguoiDat());
             lichDoi.setIdkhachhang(lichhen.getIdkhachhang());
-            if (lichhen.getTrangthai() == 4) {
-                lichDoi.setTrangthai(3); // Đặt trạng thái là "Chờ thanh toán"
-            }else {
-                lichDoi.setTrangthai(lichhen.getTrangthai());
-            }
+            lichDoi.setTrangthai(lichhen.getTrangthai());
             lichDoi.setThoigianthaydoi(LocalDateTime.now());
             lichDoi.setThucung(lichhen.getThucung());
             lichDoi.setDichvu(lichhen.getDichvu());
             lichDoi.setTrangthaica(true);
             lichDoi.setSolanthaydoi(lichhen.getSolanthaydoi());
+            lichDoi.setSolannhacnho(lichhen.getSolannhacnho());
             lichHenService.addOrUpdate(lichDoi);
 
 //            Cập nhập lại hóa đơn chờ
@@ -259,6 +256,7 @@ public class DatLichController {
             lichhenNew.setDate(lichhen.getDate());
             lichhenNew.setTrangthaica(true);
             lichhenNew.setSolanthaydoi(lichhen.getSolanthaydoi());
+            lichhenNew.setSolannhacnho(lichhen.getSolannhacnho());
             lichHenService.addOrUpdate(lichhenNew);
 
             lichhen.setTrangthai(5);
@@ -269,7 +267,7 @@ public class DatLichController {
             }else {
                 return ResponseEntity.ok("Lỗi ca");
             }
-            lichHenService.cancelScheduleChange();
+            lichHenService.updateScheduleId(id,lichDoi.getId());
             lichHenService.addOrUpdate(lichhen);
             return new ResponseEntity<>(lichDoi, HttpStatus.OK);
         }

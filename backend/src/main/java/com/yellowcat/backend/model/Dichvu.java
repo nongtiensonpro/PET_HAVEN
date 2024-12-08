@@ -39,6 +39,19 @@ public class Dichvu {
     @Column(name = "trangthai", nullable = false)
     private Boolean trangthai = false;
 
+    @JsonProperty
+    @NotNull
+    @Column(name = "hien", nullable = false)
+    private Boolean hien = false;
+
+    public Boolean getHien() {
+        return hien;
+    }
+
+    public void setHien(Boolean hien) {
+        this.hien = hien;
+    }
+
     public Boolean getTrangthai() {
         return trangthai;
     }

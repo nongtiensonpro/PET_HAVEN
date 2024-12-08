@@ -5,10 +5,12 @@ import com.cloudinary.Cloudinary;
 import com.yellowcat.backend.model.Dichvu;
 import com.yellowcat.backend.service.CloudinaryService;
 import com.yellowcat.backend.service.DichVuService;
+import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -36,7 +38,7 @@ public class DichVuController {
 
     @RequestMapping("/all")
     public Page<Dichvu> getAllDichVu(@RequestParam(defaultValue = "0") int page) {
-        Pageable pageable = PageRequest.of(page, 10); // 10 items per page
+        Pageable pageable = PageRequest.of(page, 10,Sort.by(Sort.Direction.DESC, "id")); // 10 items per page
         return dichVuService.getAllDichVu(pageable);
     }
 
@@ -46,13 +48,13 @@ public class DichVuController {
         return fileName != null && !fileName.contains("..") && fileName.matches("[a-zA-Z0-9._-]+");
     }
 
-    @PreAuthorize("hasAnyRole('admin', 'manager')")
+    @PreAuthorize("hasAnyRole('admin')")
     @PostMapping("/add")
     public ResponseEntity<?> createDichVu(
-            @RequestParam("tenDichVu") String tenDichVu,
-            @RequestParam("moTa") String moTa,
-            @RequestParam("giaTien") Float giaTien,
-            @RequestParam("trangThai") Boolean trangThai,
+            @Valid @RequestParam("tenDichVu") String tenDichVu,
+            @Valid @RequestParam("moTa") String moTa,
+            @Valid @RequestParam("giaTien") Float giaTien,
+            @Valid @RequestParam("trangThai") Boolean trangThai,
             @RequestParam(value = "file", required = false) MultipartFile file) {
 
         try {
@@ -90,7 +92,7 @@ public class DichVuController {
             dichvu.setGiatien(giaTien);
             dichvu.setTrangthai(trangThai);
             dichvu.setAnh(imageUrl);
-
+            dichvu.setHien(false);
             // Lưu DichVu vào database
             dichVuService.addOrUpdateDichVu(dichvu);
 
@@ -108,12 +110,12 @@ public class DichVuController {
 
 
 
-    @PreAuthorize("hasAnyRole('admin', 'manager')")
+    @PreAuthorize("hasAnyRole('admin')")
     @PutMapping("/update/{id}")
     public ResponseEntity<?> updateone(
-            @RequestParam("tenDichVu") String tenDichVu,
-            @RequestParam("moTa") String moTa,
-            @RequestParam("giaTien") Float giaTien,
+            @Valid @RequestParam("tenDichVu") String tenDichVu,
+            @Valid @RequestParam("moTa") String moTa,
+            @Valid @RequestParam("giaTien") Float giaTien,
             @RequestParam(value = "file", required = false) MultipartFile file,
             @PathVariable int id) {
 
@@ -171,7 +173,7 @@ public class DichVuController {
 
 
 
-    @PreAuthorize("hasAnyRole('admin', 'manager')")
+    @PreAuthorize("hasAnyRole('admin')")
     @DeleteMapping("/delete/{id}")
     public ResponseEntity<String> delete(@PathVariable int id) {
         dichVuService.deleteDichVu(id);
@@ -186,7 +188,7 @@ public class DichVuController {
         return ResponseEntity.ok(dichvus);
     }
 
-    @PreAuthorize("hasAnyRole('admin', 'manager')")
+    @PreAuthorize("hasAnyRole('admin')")
     @PutMapping("/update-trang-thai/{id}")
     public ResponseEntity<Dichvu> updateTrangThai(@PathVariable Integer id) {
         Optional<Dichvu> dichvu1 = dichVuService.findById(id);
@@ -195,6 +197,23 @@ public class DichVuController {
             dichvu.setTrangthai(false);
         }else {
             dichvu.setTrangthai(true);
+        }
+        dichVuService.addOrUpdateDichVu(dichvu);
+        return ResponseEntity.ok(dichvu);
+    }
+
+    @PreAuthorize("hasAnyRole('admin')")
+    @PutMapping("/update-hien/{id}")
+    public ResponseEntity<Dichvu> updateAnHienManHinh(@PathVariable Integer id) {
+        Optional<Dichvu> dichvu1 = dichVuService.findById(id);
+        if (!dichvu1.isPresent()) {
+            return ResponseEntity.notFound().build();
+        }
+        Dichvu dichvu = dichvu1.get();
+        if (dichvu.getHien()){
+            dichvu.setHien(false);
+        }else {
+            dichvu.setHien(true);
         }
         dichVuService.addOrUpdateDichVu(dichvu);
         return ResponseEntity.ok(dichvu);

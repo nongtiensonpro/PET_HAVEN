@@ -29,7 +29,8 @@ CREATE TABLE DichVu
     MoTa      TEXT         NOT NULL,
     Anh       TEXT,
     GiaTien   INT          NOT NULL,
-    TrangThai   BOOLEAN NOT NULL
+    TrangThai   BOOLEAN NOT NULL,
+    Hien        BOOLEAN NOT NULL
 );
 
 CREATE TABLE ThuCung
@@ -129,10 +130,10 @@ VALUES
        (15, '2024-12-01 00:00:00', '2024-12-31 23:59:59', 'Giảm giá tháng 12', TRUE);
 
 -- Thêm dữ liệu vào bảng DichVu
-INSERT INTO DichVu (TenDichVu, MoTa, Anh, GiaTien,trangthai)
-VALUES ('Dịch vụ 1', 'Mô tả dịch vụ 1', NULL, 100000,true),
-       ('Dịch vụ 2', 'Mô tả dịch vụ 2', NULL, 150000,true),
-       ('Dịch vụ 3', 'Mô tả dịch vụ 3', NULL, 200000,true);
+INSERT INTO DichVu (TenDichVu, MoTa, Anh, GiaTien,trangthai,Hien)
+VALUES ('Dịch vụ 1', 'Mô tả dịch vụ 1', NULL, 100000,true,true),
+       ('Dịch vụ 2', 'Mô tả dịch vụ 2', NULL, 150000,true,true),
+       ('Dịch vụ 3', 'Mô tả dịch vụ 3', NULL, 200000,true,true);
 
 -- Thêm dữ liệu vào bảng ThuCung
 INSERT INTO ThuCung (Ten, CanNang, Tuoi, Giong, IDTaiKhoan, Image)
