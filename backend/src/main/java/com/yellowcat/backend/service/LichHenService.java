@@ -29,6 +29,7 @@ import java.time.LocalTime;
 import java.util.List;
 import java.util.Optional;
 import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.atomic.AtomicBoolean;
 
 
@@ -177,18 +178,35 @@ public class LichHenService {
         isCancelled.set(true);  // Đặt flag hủy thành true
     }
 
+    private ConcurrentHashMap<Integer, Integer> scheduleMap = new ConcurrentHashMap<>();
+
+    public void updateScheduleId(Integer oldId, Integer newId) {
+        scheduleMap.putIfAbsent(oldId, oldId);
+        if (scheduleMap.containsKey(oldId)) {
+            scheduleMap.put(oldId, newId);
+            System.out.println(scheduleMap);
+        }
+
+
+    }
     // Sau 20p tự động đổi trạng thái thành hủy
     @PersistenceContext
     private EntityManager entityManager;
 
     @Async
+
     public CompletableFuture<ResponseEntity<String>> scheduleTrangThaiChange(Integer lichhenId) {
+        scheduleMap.putIfAbsent(lichhenId, lichhenId);
+        Integer currentId;
         try {
             if (isCancelled.get()) {
                 System.out.println("Tiến trình bị hủy.");
                 return CompletableFuture.completedFuture(ResponseEntity.ok().build()); // Nếu tiến trình bị hủy thì kết thúc
             }
-            Thread.sleep(2 * 60 * 1000);
+            Thread.sleep(60 * 1000);
+            // Lấy ID mới từ Map nếu có
+            currentId = scheduleMap.getOrDefault(lichhenId, lichhenId);
+            System.out.println(currentId);
         } catch (InterruptedException e) {
             Thread.currentThread().interrupt();
             return CompletableFuture.completedFuture(ResponseEntity.badRequest().build()); // Ngừng xử lý nếu bị gián đoạn
@@ -197,16 +215,15 @@ public class LichHenService {
         // Xóa cache Hibernate để chắc chắn lấy dữ liệu từ DB
         entityManager.clear();
 
-        Optional<Lichhen> lichhenOptional = lichhenRepository.findById(lichhenId);
+        Optional<Lichhen> lichhenOptional = lichhenRepository.findById(currentId);
         if (!lichhenOptional.isPresent()) {
             return CompletableFuture.completedFuture(ResponseEntity.notFound().build());
         }
         Lichhen lichhen1 = lichhenOptional.get();
-
+        System.out.println(lichhen1.getTrangthai());
         if (lichhen1.getTrangthai() == 4) {
 
-            Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-            String idUser = authentication.getName();
+
             Optional<Hoadon> hoadonOptional = hoaDonService.finHoadonByIdLich(lichhen1.getId());
             Optional<Lichhen> lichhenOptional1 = lichhenRepository.findById(lichhen1.getId());
             if (!lichhenOptional1.isPresent()) {
@@ -214,49 +231,42 @@ public class LichHenService {
             }
             Lichhen lichhen = lichhenOptional1.get();
 
-            // Check xem có phải chủ lịch không
-            if (!lichhen.getIdkhachhang().equalsIgnoreCase(idUser)) {
-                return CompletableFuture.completedFuture(ResponseEntity.notFound().build());
+            // Tạo bản ghi lưu lại lịch sử đặt với trạng thái hủy
+            lichhen.setSolanthaydoi(lichhen.getSolanthaydoi() + 1);
+
+            Lichhen lichhenNew = new Lichhen();
+            lichhenNew.setSolanthaydoi(lichhen.getSolanthaydoi());
+            lichhenNew.setEmailNguoiDat(lichhen.getEmailNguoiDat());
+            lichhenNew.setIdkhachhang(lichhen.getIdkhachhang());
+            lichhenNew.setTrangthai(2); // Đặt trạng thái là "Đã hủy"
+            lichhenNew.setIdcalichhen(lichhen.getIdcalichhen());
+            lichhenNew.setThoigianhuy(LocalDateTime.now());
+            lichhenNew.setThucung(lichhen.getThucung());
+            lichhenNew.setDichvu(lichhen.getDichvu());
+            lichhenNew.setDate(lichhen.getDate());
+            lichhenNew.setTrangthaica(true);
+            lichhenRepository.save(lichhenNew);
+
+            // Hủy hóa đơn chờ
+            Hoadon hoadonNew = hoadonOptional.get();
+            hoaDonService.deleteHoadonById(hoadonNew.getId());
+
+            // Cập nhật lịch gốc với trạng thái đã hủy
+            lichhen.setIdkhachhang("demo");
+            lichhen.setTrangthai(5);
+            lichhen.setEmailNguoiDat("default-email@example.com");
+            if (lichhen.getTrangthaica()) {
+                lichhen.setTrangthaica(false);
+            } else {
+                return CompletableFuture.completedFuture(ResponseEntity.badRequest().build());
             }
-
-
-                // Tạo bản ghi lưu lại lịch sử đặt với trạng thái hủy
-                lichhen.setSolanthaydoi(lichhen.getSolanthaydoi() + 1);
-
-                Lichhen lichhenNew = new Lichhen();
-                lichhenNew.setSolanthaydoi(lichhen.getSolanthaydoi());
-                lichhenNew.setEmailNguoiDat(lichhen.getEmailNguoiDat());
-                lichhenNew.setIdkhachhang(lichhen.getIdkhachhang());
-                lichhenNew.setTrangthai(2); // Đặt trạng thái là "Đã hủy"
-                lichhenNew.setIdcalichhen(lichhen.getIdcalichhen());
-                lichhenNew.setThoigianhuy(LocalDateTime.now());
-                lichhenNew.setThucung(lichhen.getThucung());
-                lichhenNew.setDichvu(lichhen.getDichvu());
-                lichhenNew.setDate(lichhen.getDate());
-                lichhenNew.setTrangthaica(true);
-                lichhenRepository.save(lichhenNew);
-
-                // Hủy hóa đơn chờ
-                Hoadon hoadonNew = hoadonOptional.get();
-                hoaDonService.deleteHoadonById(hoadonNew.getId());
-
-                // Cập nhật lịch gốc với trạng thái đã hủy
-                lichhen.setIdkhachhang("demo");
-                lichhen.setTrangthai(5);
-                lichhen.setEmailNguoiDat("default-email@example.com");
-                if (lichhen.getTrangthaica()) {
-                    lichhen.setTrangthaica(false);
-                } else {
-                    return CompletableFuture.completedFuture(ResponseEntity.badRequest().build());
-                }
-                lichhenRepository.save(lichhen);
-                cancelScheduleChange();
-                return CompletableFuture.completedFuture(ResponseEntity.ok("Lịch hẹn đã được hủy thành công."));
-            }
+            lichhenRepository.save(lichhen);
+            cancelScheduleChange();
+            return CompletableFuture.completedFuture(ResponseEntity.ok("Lịch hẹn đã được hủy thành công."));
+        }
 
         return CompletableFuture.completedFuture(ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Lịch hẹn không thể hủy vì trạng thái không hợp lệ."));
     }
-
 
     @Scheduled(fixedRate = 60000)  // Mỗi phút
     public void checkAppointments() {
@@ -265,11 +275,11 @@ public class LichHenService {
 
         // Truy vấn các ca lịch hẹn trong cùng ngày và với giờ cụ thể
         List<Lichhen> lichhens = lichhenRepository.findByDate(currentDate);
-
         for (Lichhen lichhen : lichhens) {
             LocalTime appointmentTime = lichhen.getIdcalichhen().getThoigianca();
 
             // Tính toán sự chênh lệch giữa thời gian hiện tại và thời gian ca lịch hẹn
+
             Duration duration = Duration.between(currentTime, appointmentTime);
 
             //gửi thông báo

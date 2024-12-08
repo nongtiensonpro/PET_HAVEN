@@ -48,7 +48,7 @@ onMounted(() => {
 });
 
 const services = computed((): DichVu[] => {
-  return serviceStore.services.filter((service: DichVu) => service.trangthai);
+  return serviceStore.services.filter((service: DichVu) => service.trangthai && service.hien);
 });
 const totalPages = computed(() => Math.ceil(services.value.length / itemsPerPage));
 
