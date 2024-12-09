@@ -19,7 +19,8 @@
           <section class="info-section">
             <h3 class="section-title">Thông tin hóa đơn</h3>
             <p><strong>Ngày đặt:</strong> {{ formatDate(hoaDon.date) }}</p>
-            <p><strong>Số tiền:</strong> {{ hoaDon.sotien }} VND</p>
+            <p><strong>Số tiền đầu:</strong> {{ hoaDon.sotienbandau }} USD</p>
+            <p><strong>Số tiền cuối:</strong> {{ hoaDon.sotien }} USD</p>
             <p><strong>Ngày thanh toán:</strong> {{ formatDate(hoaDon.ngaythanhtoan) }}</p>
             <p><strong>Phương thức thanh toán:</strong> {{ hoaDon.phuongthucthanhtoan }}</p>
             <p><strong>Trạng thái:</strong> {{ getTrangThai(hoaDon.trangthai) }}</p>

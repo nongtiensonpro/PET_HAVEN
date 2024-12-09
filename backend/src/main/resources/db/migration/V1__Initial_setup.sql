@@ -75,7 +75,8 @@ CREATE TABLE LichHen
 -- 4 : chờ xác nhận
 -- 5 : Rỗng
 -- 6 : Thanh toán thành công
-
+-- 7 : Đã hoàn tiền
+-- 8 : Chờ sử dụng
 
 CREATE TABLE HoaDon
 (
@@ -83,6 +84,7 @@ CREATE TABLE HoaDon
     MaGiaoDich          VARCHAR(255) Not null UNIQUE ,
     idLichHen           INT REFERENCES LichHen (ID),
     Date                TIMESTAMP,
+    SoTienBanDau    DECIMAL(10, 2) NOT NULL,
     SoTien              DECIMAL(10, 2) NOT NULL,
     NgayThanhToan       TIMESTAMP,
     PhuongThucThanhToan VARCHAR(50),
@@ -159,10 +161,10 @@ VALUES (1, 1, 1, '2024-10-02 ', 1 , 1,TRUE),
        (3, 3, 3, '2024-10-04 ', 3 , 3,TRUE);
 
 -- Thêm dữ liệu vào bảng HoaDon
-INSERT INTO HoaDon (idLichHen, Date, SoTien, NgayThanhToan, PhuongThucThanhToan, TrangThai,MaGiaoDich,idGiamGia)
-VALUES (1, '2024-10-02 10:00:00', 90000, '2024-10-02 11:00:00', 'Offline', 1,'1',2),
-       (2, '2024-10-03 14:00:00', 120000, '2024-10-03 15:00:00', 'Online', 2,'2',2),
-       (3, '2024-10-04 09:00:00', 170000, '2024-10-04 10:00:00', 'Online', 3,'3',2);
+INSERT INTO HoaDon (idLichHen, Date,SoTienBanDau, SoTien, NgayThanhToan, PhuongThucThanhToan, TrangThai,MaGiaoDich,idGiamGia)
+VALUES (1, '2024-10-02 10:00:00',90000, 90000, '2024-10-02 11:00:00', 'Offline', 1,'1',2),
+       (2, '2024-10-03 14:00:00',90000, 120000, '2024-10-03 15:00:00', 'Online', 2,'2',2),
+       (3, '2024-10-04 09:00:00',90000, 170000, '2024-10-04 10:00:00', 'Online', 3,'3',2);
 
 -- Thêm dữ liệu vào bảng DanhGia
 INSERT INTO DanhGia (idTaiKhoan, SoSao, MoTa, Date, TrangThai,idHoaDon)
