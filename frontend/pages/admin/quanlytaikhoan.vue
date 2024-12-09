@@ -1,7 +1,11 @@
 <template>
   <div class="container">
-    <div>
-      <button type="button" @click="lamMoi()" class="btn btn-sm btn-success m-4">Làm mới bảng</button>
+    <div class="d-flex justify-content-between align-items-center mb-3">
+      <button type="button" @click="lamMoi()" class="btn btn-sm btn-success">Làm mới bảng</button>
+      <div class="d-flex">
+        <input v-model="searchTerm" type="text" class="form-control me-2" placeholder="Tìm kiếm...">
+        <button @click="search" class="btn btn-primary">Tìm kiếm</button>
+      </div>
     </div>
     <table class="table">
       <thead>
@@ -22,7 +26,7 @@
         <td>
           <button class="btn btn-sm btn-outline-warning m-1" @click="editUser(user.idtaikhoan)">Edit</button>
           <button class="btn btn-sm btn-outline-danger m-1" @click="deleteUser(user.idtaikhoan)">Chặn</button>
-          <button class="btn btn-sm btn-outline-danger m-1" @click="chitietUser(user.idtaikhoan)">Chi tiết</button>
+          <button class="btn btn-sm btn-outline-info m-1" @click="chitietUser(user.idtaikhoan)">Chi tiết</button>
         </td>
       </tr>
       </tbody>
@@ -39,13 +43,15 @@
 
 <script setup lang="ts">
 import { useStore } from '~/stores/UserStores';
-import { onMounted, ref, computed } from "vue";
+import { onMounted, ref, computed, watch } from "vue";
 import UserModel from '~/models/User';
 import { useToast } from 'vue-toastification'
 
 const User = ref<UserModel[]>([]);
+const filteredUsers = ref<UserModel[]>([]);
 const toast = useToast();
 const userStore = useStore();
+const searchTerm = ref('');
 
 // Pagination
 const currentPage = ref(1);
@@ -54,11 +60,11 @@ const itemsPerPage = 5;
 const paginatedUsers = computed(() => {
   const start = (currentPage.value - 1) * itemsPerPage;
   const end = start + itemsPerPage;
-  return User.value.slice(start, end);
+  return filteredUsers.value.slice(start, end);
 });
 
 const totalPages = computed(() => {
-  return Math.ceil(User.value.length / itemsPerPage);
+  return Math.ceil(filteredUsers.value.length / itemsPerPage);
 });
 
 const nextPage = () => {
@@ -77,6 +83,7 @@ const loadUsers = async () => {
   try {
     const fetchedUsers = await userStore.fetchUsers();
     User.value = fetchedUsers.valueOf();
+    filteredUsers.value = User.value;
   } catch (error) {
     toast.error('Làm mới tài khoản thất bại')
   }
@@ -88,8 +95,23 @@ onMounted(() => {
 
 function lamMoi() {
   loadUsers();
-  currentPage.value = 1; // Reset to first page after refreshing
+  currentPage.value = 1;
+  searchTerm.value = '';
 }
+
+const search = () => {
+  if (searchTerm.value) {
+    filteredUsers.value = User.value.filter(user =>
+      user.idtaikhoan.toString().includes(searchTerm.value) ||
+      user.hoten.toLowerCase().includes(searchTerm.value.toLowerCase()) ||
+      user.email.toLowerCase().includes(searchTerm.value.toLowerCase()) ||
+      user.role.toLowerCase().includes(searchTerm.value.toLowerCase())
+    );
+  } else {
+    filteredUsers.value = User.value;
+  }
+  currentPage.value = 1;
+};
 
 const editUser = (id: string) => {
   toast.success('Chức năng đang phát triển : ' + id, {});
@@ -102,8 +124,16 @@ const deleteUser = (id: string) => {
 const chitietUser = (id: string) => {
   toast.success('Chức năng đang phát triển : ' + id, {});
 }
+
+// Add a watch for searchTerm to trigger search on input change
+watch(searchTerm, () => {
+  search();
+});
 </script>
 
 <style scoped>
-
+.table {
+  width: 100%;
+  margin-top: 20px;
+}
 </style>

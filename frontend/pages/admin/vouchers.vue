@@ -2,10 +2,24 @@
   <div class="voucher-list container mt-5">
     <h1 class="title mb-4">Quản lý Voucher</h1>
     <div class="row mb-4">
-      <div class="col-md-6">
+      <div class="col-md-4">
         <add-voucher @added="refresh" />
       </div>
-      <div class="col-md-6 d-flex align-items-center justify-content-end">
+      <div class="col-md-4">
+        <div class="input-group">
+          <input
+            v-model="searchTerm"
+            type="text"
+            class="form-control"
+            placeholder="Tìm kiếm voucher..."
+            @input="handleSearch"
+          >
+          <button class="btn btn-outline-secondary" type="button" @click="handleSearch">
+            <i class="fas fa-search"></i>
+          </button>
+        </div>
+      </div>
+      <div class="col-md-4 d-flex align-items-center justify-content-end">
         <button @click="refreshVouchers" class="btn btn-outline-primary">
           <i class="fas fa-sync-alt mr-2"></i> Làm mới
         </button>
@@ -70,7 +84,7 @@
 </template>
 
 <script setup lang="ts">
-import { onMounted, onUnmounted, ref, computed } from 'vue';
+import { onMounted, onUnmounted, ref, computed, watch } from 'vue';
 import { useVoucherStore } from '~/stores/VorchersStores';
 import AddVoucher from '~/components/AddVoucher.vue';
 import CapNhatVoucher from '~/components/CapNhatVoucher.vue';
@@ -86,6 +100,10 @@ const { data: voucherData, refresh } = await useAsyncData<Voucher[]>(
   () => voucherStore.fetchVoucher()
 );
 
+// Search functionality
+const searchTerm = ref('');
+const filteredVouchers = ref<Voucher[]>([]);
+
 // Pagination
 const itemsPerPage = 5;
 const currentPage = ref(1);
@@ -93,11 +111,11 @@ const currentPage = ref(1);
 const paginatedVouchers = computed(() => {
   const start = (currentPage.value - 1) * itemsPerPage;
   const end = start + itemsPerPage;
-  return voucherData.value?.slice(start, end) || [];
+  return filteredVouchers.value.slice(start, end);
 });
 
 const totalPages = computed(() => {
-  return Math.ceil((voucherData.value?.length || 0) / itemsPerPage);
+  return Math.ceil(filteredVouchers.value.length / itemsPerPage);
 });
 
 const prevPage = () => {
@@ -114,6 +132,7 @@ onMounted(() => {
   intervalId = setInterval(() => {
     refresh();
   }, 5 * 60 * 1000); // Refresh every 5 minutes
+  handleSearch(); // Initial search to populate filteredVouchers
 });
 
 onUnmounted(() => {
@@ -124,6 +143,7 @@ async function refreshVouchers() {
   try {
     await refresh();
     currentPage.value = 1; // Reset to first page after refresh
+    handleSearch(); // Re-apply search after refresh
     toast.success('Làm mới vouchers thành công!');
   } catch (e) {
     toast.error('Làm mới vouchers thất bại!');
@@ -152,12 +172,33 @@ async function updateTrangThaiVoucher(id: number) {
     try {
       await voucherStore.updateTrangThaiVoucher(id);
       await refresh();
+      handleSearch(); // Re-apply search after update
       toast.success('Cập nhật trạng thái voucher thành công!');
     } catch (error) {
       toast.error('Cập nhật trạng thái voucher thất bại!');
     }
   }
 }
+
+function handleSearch() {
+  if (!voucherData.value) return;
+
+  filteredVouchers.value = voucherData.value.filter(voucher =>
+    voucher.id.toString().includes(searchTerm.value) ||
+    voucher.mota.toLowerCase().includes(searchTerm.value.toLowerCase()) ||
+    voucher.phantramgiam.toString().includes(searchTerm.value) ||
+    formatDate(voucher.ngaybatdau).includes(searchTerm.value) ||
+    formatDate(voucher.ngayketthuc).includes(searchTerm.value) ||
+    (voucher.trangthai ? 'hoạt động' : 'không hoạt động').includes(searchTerm.value.toLowerCase())
+  );
+  currentPage.value = 1; // Reset to first page after search
+}
+
+// Watch for changes in voucherData and searchTerm
+watch([voucherData, searchTerm], () => {
+  handleSearch();
+}, { immediate: true });
+
 </script>
 
 <style scoped>

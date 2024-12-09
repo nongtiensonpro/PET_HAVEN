@@ -8,6 +8,15 @@
         </button>
       </div>
       <div class="card-body">
+        <div class="mb-3">
+          <input
+              v-model="searchQuery"
+              @input="handleSearch"
+              type="text"
+              class="form-control"
+              placeholder="Tìm kiếm theo email, tên thú cưng hoặc dịch vụ..."
+          >
+        </div>
         <table class="table">
           <thead>
           <tr>
@@ -227,31 +236,42 @@ import CalendarAdmin from "~/components/CalendarChangeAdmin.vue";
 
 const useQuanLyAdmin = useQuanLyLichHenAdminStore();
 const hoaDonKhachHangs = ref<HoaDonKhachHang[]>([]);
+const filteredHoaDon = ref<HoaDonKhachHang[]>([]);
 const selectedTrangThai = ref<number>(0);
 const toast = useToast();
 let refreshInterval: NodeJS.Timeout;
 const itemsPerPage = 5;
 const currentPage = ref(1);
+const searchQuery = ref('');
+
 onMounted(() => {
   fetchHoaDon();
   refreshInterval = setInterval(fetchHoaDon,  60 * 1000);
 });
 
-const totalPages = computed(() => Math.ceil(hoaDonKhachHangs.value.length / itemsPerPage));
+const totalPages = computed(() => Math.ceil(filteredHoaDon.value.length / itemsPerPage));
 
 const paginatedHoaDon = computed(() => {
   const start = (currentPage.value - 1) * itemsPerPage;
   const end = start + itemsPerPage;
-  return hoaDonKhachHangs.value.slice(start, end);
+  return filteredHoaDon.value.slice(start, end);
 });
 
+const handleSearch = () => {
+  filteredHoaDon.value = hoaDonKhachHangs.value.filter(hoaDon =>
+      hoaDon.idlichhen.emailNguoiDat.toLowerCase().includes(searchQuery.value.toLowerCase()) ||
+      hoaDon.idlichhen.thucung.ten.toLowerCase().includes(searchQuery.value.toLowerCase()) ||
+      hoaDon.idlichhen.dichvu.tendichvu.toLowerCase().includes(searchQuery.value.toLowerCase())
+  );
+  currentPage.value = 1;
+};
 
-// Function to change page
 const changePage = (page: number) => {
   if (page >= 1 && page <= totalPages.value) {
     currentPage.value = page;
   }
 };
+
 onUnmounted(() => {
   if (refreshInterval) clearInterval(refreshInterval);
 });
@@ -260,6 +280,7 @@ const fetchHoaDon = async () => {
   try {
     await useQuanLyAdmin.fetchHoaDonKhachHangs();
     hoaDonKhachHangs.value = useQuanLyAdmin.hoaDonKhachHangs;
+    filteredHoaDon.value = hoaDonKhachHangs.value;
   } catch (error) {
     console.error('Lỗi khi tải dữ liệu:', error);
     toast.error('Không thể tải dữ liệu. Vui lòng thử lại sau.');
