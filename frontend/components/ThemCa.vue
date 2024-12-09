@@ -1,6 +1,5 @@
 <script setup lang="ts">
 import { ref } from "vue";
-// import { useCaLichHenStore } from "~/stores/QuanLyCaLichHen";
 import  CaLichHen from "~/models/CaHen";
 import { Modal } from 'bootstrap';
 import {useToast} from 'vue-toastification';

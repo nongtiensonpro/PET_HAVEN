@@ -92,7 +92,6 @@
 </template>
 
 <script setup lang="ts">
-import { defineProps, defineEmits } from 'vue';
 import { useVoucherStore } from '~/stores/VorchersStores';
 import Voucher from '~/models/Voucher';
 import {useToast} from 'vue-toastification';

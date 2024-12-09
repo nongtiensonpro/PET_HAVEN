@@ -99,10 +99,6 @@ async function submitVoucher() {
   border-bottom: none;
 }
 
-.modal-footer {
-  border-top: none;
-}
-
 .form-control:focus {
   border-color: #80bdff;
   box-shadow: 0 0 0 0.2rem rgba(0, 123, 255, 0.25);

@@ -15,7 +15,6 @@
             <select id="time" v-model="selectedTime" class="form-select">
               <option value="" disabled>Chọn thời gian</option>
               <option v-for="lichhen in lichhens" :key="lichhen.id" :value="lichhen.id">
-<!--                {{ lichhen.tenca }}:-->
                 {{ lichhen.thoigianca }}
               </option>
             </select>
@@ -46,7 +45,6 @@ import { useDatLichStore } from '~/stores/DatLichStores'
 import { useMauKhachDatDichVu } from '~/stores/MauKhachDatDichVu'
 import { useThayDoiLichHenStore } from '~/stores/ThayDoiLichHen'
 import Swal from 'sweetalert2';
-import DichVuKhachDat from "~/models/DichVuKhachDat";
 
 
 const props = defineProps({
