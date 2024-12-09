@@ -32,7 +32,7 @@ function startCountdown() {
 async function thanhToanOnline() {
   const result = await Swal.fire({
     title: 'Xác nhận',
-    text: "Bạn có chắc chắn có muốn thanh toán chứ, sau khi thanh toán sẽ không được hủy lịch?",
+    text: "Bạn có chắc chắn có muốn thanh toán chứ ?",
     icon: 'warning',
     showCancelButton: true,
     confirmButtonColor: '#3085d6',

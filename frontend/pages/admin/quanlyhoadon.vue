@@ -14,7 +14,7 @@
                 </tr>
             </thead>
             <tbody>
-                <tr v-for="hoaDon in hoaDonList" :key="hoaDon.id">
+                <tr v-for="hoaDon in paginatedHoaDonList" :key="hoaDon.id">
                     <td>{{ hoaDon.idlichhen.id }}</td>
                     <td>{{ formatDate(hoaDon.date) }}</td>
                     <td>{{ hoaDon.phuongthucthanhtoan }}</td>
@@ -26,16 +26,23 @@
                 </tr>
             </tbody>
         </table>
+        <div class="pagination">
+            <button @click="prevPage" :disabled="currentPage === 1" class="btn btn-secondary">Trước</button>
+            <span>Trang {{ currentPage }} / {{ totalPages }}</span>
+            <button @click="nextPage" :disabled="currentPage === totalPages" class="btn btn-secondary">Sau</button>
+        </div>
     </div>
 </template>
 
 <script setup lang="ts">
-import { ref, onMounted, onUnmounted } from 'vue';
+import { ref, onMounted, onUnmounted, computed } from 'vue';
 import { useQuanLyHoaDonStore } from '~/stores/QuanLyHoaDon';
 import HoaDonKhachHang from "~/models/HoaDonKhachHang";
 
 const store = useQuanLyHoaDonStore();
 const hoaDonList = ref<HoaDonKhachHang[]>([]);
+const currentPage = ref(1);
+const itemsPerPage = 5;
 
 definePageMeta({
   middleware: ['auth']
@@ -46,7 +53,6 @@ const fetchHoaDon = async () => {
     hoaDonList.value = store.ListHoaDon;
 };
 
-
 const { data } = await useAsyncData('hoaDonList', () => store.fetchListHoaDon());
 
 watch(data, () => {
@@ -55,6 +61,7 @@ watch(data, () => {
 
 const refreshData = () => {
     fetchHoaDon();
+    currentPage.value = 1;
 };
 
 let intervalId: NodeJS.Timeout;
@@ -91,11 +98,40 @@ const getTrangThai = (trangthai: number) => {
 const viewHoaDon = (id: number) => {
     navigateTo(`/admin/chitiethoadon/${id}`);
 };
+
+const paginatedHoaDonList = computed(() => {
+    const start = (currentPage.value - 1) * itemsPerPage;
+    const end = start + itemsPerPage;
+    return hoaDonList.value.slice(start, end);
+});
+
+const totalPages = computed(() => Math.ceil(hoaDonList.value.length / itemsPerPage));
+
+const nextPage = () => {
+    if (currentPage.value < totalPages.value) {
+        currentPage.value++;
+    }
+};
+
+const prevPage = () => {
+    if (currentPage.value > 1) {
+        currentPage.value--;
+    }
+};
 </script>
 
 <style scoped>
 .table {
     width: 100%;
     margin-top: 20px;
+}
+.pagination {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin-top: 20px;
+}
+.pagination button {
+    margin: 0 10px;
 }
 </style>

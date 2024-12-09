@@ -23,7 +23,7 @@
           </tr>
           </thead>
           <tbody>
-          <tr v-for="hoaDon in hoaDonKhachHangs" :key="hoaDon.id">
+          <tr v-for="hoaDon in paginatedHoaDon" :key="hoaDon.id">
             <td>{{ hoaDon.idlichhen.id }}</td>
             <td>{{ hoaDon.idlichhen.emailNguoiDat }}</td>
             <td>{{ hoaDon.idlichhen.thucung.ten }}</td>
@@ -199,13 +199,26 @@
           </tr>
           </tbody>
         </table>
+        <nav aria-label="Page navigation">
+          <ul class="pagination justify-content-center">
+            <li class="page-item" :class="{ disabled: currentPage === 1 }">
+              <a class="page-link" href="#" @click.prevent="changePage(currentPage - 1)">Previous</a>
+            </li>
+            <li v-for="page in totalPages" :key="page" class="page-item" :class="{ active: currentPage === page }">
+              <a class="page-link" href="#" @click.prevent="changePage(page)">{{ page }}</a>
+            </li>
+            <li class="page-item" :class="{ disabled: currentPage === totalPages }">
+              <a class="page-link" href="#" @click.prevent="changePage(currentPage + 1)">Next</a>
+            </li>
+          </ul>
+        </nav>
       </div>
     </div>
   </div>
 </template>
 
 <script setup lang="ts">
-import { onMounted, ref, onUnmounted } from 'vue';
+import { onMounted, ref, onUnmounted, computed } from 'vue';
 import HoaDonKhachHang from '~/models/HoaDonKhachHang';
 import { useQuanLyLichHenAdminStore } from '~/stores/QuanLyLichHenAdmin';
 import Swal from 'sweetalert2';
@@ -217,12 +230,28 @@ const hoaDonKhachHangs = ref<HoaDonKhachHang[]>([]);
 const selectedTrangThai = ref<number>(0);
 const toast = useToast();
 let refreshInterval: NodeJS.Timeout;
-
+const itemsPerPage = 5;
+const currentPage = ref(1);
 onMounted(() => {
   fetchHoaDon();
   refreshInterval = setInterval(fetchHoaDon,  60 * 1000);
 });
 
+const totalPages = computed(() => Math.ceil(hoaDonKhachHangs.value.length / itemsPerPage));
+
+const paginatedHoaDon = computed(() => {
+  const start = (currentPage.value - 1) * itemsPerPage;
+  const end = start + itemsPerPage;
+  return hoaDonKhachHangs.value.slice(start, end);
+});
+
+
+// Function to change page
+const changePage = (page: number) => {
+  if (page >= 1 && page <= totalPages.value) {
+    currentPage.value = page;
+  }
+};
 onUnmounted(() => {
   if (refreshInterval) clearInterval(refreshInterval);
 });

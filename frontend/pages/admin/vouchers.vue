@@ -25,7 +25,7 @@
           </tr>
         </thead>
         <tbody>
-          <tr v-for="voucher in voucherData" :key="voucher.id">
+          <tr v-for="voucher in paginatedVouchers" :key="voucher.id">
             <td>{{ voucher.id }}</td>
             <td>{{ voucher.mota }}</td>
             <td>
@@ -60,11 +60,17 @@
         </tbody>
       </table>
     </div>
+    <!-- Pagination -->
+    <div class="d-flex justify-content-between align-items-center mt-3">
+      <button @click="prevPage" :disabled="currentPage === 1" class="btn btn-sm btn-secondary">Trước</button>
+      <span>Trang {{ currentPage }} / {{ totalPages }}</span>
+      <button @click="nextPage" :disabled="currentPage === totalPages" class="btn btn-sm btn-secondary">Sau</button>
+    </div>
   </div>
 </template>
 
 <script setup lang="ts">
-import { onMounted, onUnmounted } from 'vue';
+import { onMounted, onUnmounted, ref, computed } from 'vue';
 import { useVoucherStore } from '~/stores/VorchersStores';
 import AddVoucher from '~/components/AddVoucher.vue';
 import CapNhatVoucher from '~/components/CapNhatVoucher.vue';
@@ -79,6 +85,28 @@ const { data: voucherData, refresh } = await useAsyncData<Voucher[]>(
   'vouchers',
   () => voucherStore.fetchVoucher()
 );
+
+// Pagination
+const itemsPerPage = 5;
+const currentPage = ref(1);
+
+const paginatedVouchers = computed(() => {
+  const start = (currentPage.value - 1) * itemsPerPage;
+  const end = start + itemsPerPage;
+  return voucherData.value?.slice(start, end) || [];
+});
+
+const totalPages = computed(() => {
+  return Math.ceil((voucherData.value?.length || 0) / itemsPerPage);
+});
+
+const prevPage = () => {
+  if (currentPage.value > 1) currentPage.value--;
+};
+
+const nextPage = () => {
+  if (currentPage.value < totalPages.value) currentPage.value++;
+};
 
 let intervalId: NodeJS.Timeout;
 
@@ -95,6 +123,7 @@ onUnmounted(() => {
 async function refreshVouchers() {
   try {
     await refresh();
+    currentPage.value = 1; // Reset to first page after refresh
     toast.success('Làm mới vouchers thành công!');
   } catch (e) {
     toast.error('Làm mới vouchers thất bại!');
