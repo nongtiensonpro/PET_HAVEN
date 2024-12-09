@@ -2,6 +2,7 @@ package com.yellowcat.backend.PAY;
 
 import com.paypal.api.payments.Links;
 import com.paypal.api.payments.Payment;
+import com.paypal.api.payments.Sale;
 import com.paypal.base.rest.PayPalRESTException;
 import com.yellowcat.backend.model.Hoadon;
 import com.yellowcat.backend.model.Lichhen;
@@ -72,7 +73,8 @@ public class PayPalController {
         try {
             // Thực hiện thanh toán
             Payment payment = payPalService.executePayment(paymentId, payerId);
-
+            Sale sale = new Sale();
+            sale.setId(payment.getTransactions().get(0).getRelatedResources().get(0).getSale().getId());
             // Kiểm tra nếu thanh toán thành công
             if (payment != null && payment.getState().equals("approved")) {
                 System.out.println("hello");
@@ -85,7 +87,7 @@ public class PayPalController {
                     // Cập nhật trạng thái của hóa đơn thành "đã thanh toán"
                     hoadon.setTrangthai(2);
                     hoadon.setPhuongthucthanhtoan("Online");
-                    hoadon.setMagiaodich(payment.getId());
+                    hoadon.setMagiaodich(sale.getId());
                     hoadon.setNgaythanhtoan(LocalDateTime.now());
                     hoaDonService.addOrUpdate(hoadon);
                     // Trả về phản hồi thành công
@@ -95,7 +97,7 @@ public class PayPalController {
 //                    Gửi hóa đơn khi thanh toán thành công
                     // Tạo file PDF hóa đơn
                     String thoiGian = hoadon.getIdlichhen().getDate().toString()+ ' ' + hoadon.getIdlichhen().getIdcalichhen().getThoigianca();
-                    byte[] pdfBytes = pdfExportService.generateInvoice(hoadon.getNgaythanhtoan().toString(),hoadon.getMagiaodich(),hoadon.getPhuongthucthanhtoan(),hoadon.getIdlichhen().getDichvu().getTendichvu(),hoadon.getSotien(),thoiGian);
+                    byte[] pdfBytes = pdfExportService.generateInvoice(hoadon.getNgaythanhtoan().toString(),hoadon.getMagiaodich(),hoadon.getPhuongthucthanhtoan(),hoadon.getIdlichhen().getDichvu().getTendichvu(),hoadon.getSotienbandau(),hoadon.getSotien(),thoiGian);
 
                     hoaDonService.sendHoaDonSauThanhToan(lichhen,pdfBytes);
 

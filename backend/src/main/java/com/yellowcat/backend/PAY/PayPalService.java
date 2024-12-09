@@ -69,4 +69,21 @@ public class PayPalService {
 
         return payment.execute(apiContext,execution);
     }
+
+    public Refund refundPayment(String saleId, Double refundAmount, String currency) throws PayPalRESTException {
+        Sale sale = new Sale();
+        sale.setId(saleId);
+
+        // Tạo đối tượng RefundRequest
+        RefundRequest refundRequest = new RefundRequest();
+        if (refundAmount != null) { // Nếu cần refund một phần
+            Amount amount = new Amount();
+            amount.setCurrency(currency);
+            amount.setTotal(String.format("%.2f", refundAmount));
+            refundRequest.setAmount(amount);
+        }
+
+        // Gọi API PayPal để refund
+        return sale.refund(apiContext, refundRequest);
+    }
 }

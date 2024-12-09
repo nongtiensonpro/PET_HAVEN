@@ -92,7 +92,9 @@ const getTrangThaiText = (trangthai: number) => {
     3: 'Chờ thanh toán',
     4: 'Chờ xác nhận',
     5: 'Rỗng',
-    6: 'Thanh toán thành công'
+    6: 'Thanh toán thành công',
+    7: 'Đã hoàn tiền',
+    8: 'Chờ sử dụng'
   }
   return trangThaiMap[trangthai] || 'Không xác định'
 }
@@ -106,7 +108,9 @@ const getTrangThaiClass = (trangthai: number) => {
     3: 'text-info',
     4: 'text-warning',
     5: 'text-secondary',
-    6: 'text-success'
+    6: 'text-success',
+    7: 'text-success',
+    8: 'text-warning'
   }
   return classMap[trangthai] || ''
 }

@@ -1,7 +1,10 @@
 package com.yellowcat.backend.controller;
 
+import com.paypal.api.payments.Refund;
+import com.paypal.base.rest.PayPalRESTException;
 import com.yellowcat.backend.DTO.DatLichDTO;
 import com.yellowcat.backend.DTO.DoiLichDTO;
+import com.yellowcat.backend.PAY.PayPalService;
 import com.yellowcat.backend.model.*;
 import com.yellowcat.backend.service.*;
 import jakarta.persistence.EntityManager;
@@ -45,6 +48,9 @@ public class DatLichController {
 
     @Autowired
     private NgayNghiService ngayNghiService;
+
+    @Autowired
+    private PayPalService payPalService;
 
     @GetMapping("/dat-lich-info")
     public ResponseEntity<Map<String, Object>> getDatLichInfo(@RequestParam("ngay") LocalDate ngay) {
@@ -129,6 +135,7 @@ public class DatLichController {
         hoadon.setPhuongthucthanhtoan("Offline");
         hoadon.setTrangthai(1);
         Double SoTien = hoaDonService.TinhGiaTien(datLichDTO.getIdDichVu(),hoadon);
+        hoadon.setSotienbandau(Double.valueOf(lichhen.getDichvu().getGiatien()));
         hoadon.setSotien(SoTien);
         hoadon.setMagiaodich(hoaDonService.MaGiaoDichRandom());
         hoaDonService.addOrUpdate(hoadon);
@@ -144,21 +151,24 @@ public class DatLichController {
 
     @Transactional
     @PutMapping("/huy-lich/{id}")
-    public ResponseEntity<?> huyLichHen(@PathVariable Integer id) {
+    public ResponseEntity<?> huyLichHen(@PathVariable Integer id) throws PayPalRESTException {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         String idUser = authentication.getName();
         Optional<Hoadon> hoadonOptional = hoaDonService.finHoadonByIdLich(id);
         Lichhen lichhen = lichHenService.findById(id);
+        Map<String, String> response = new HashMap<>();
         if (lichhen == null) {
+            System.out.println(1);
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Lịch hẹn không tồn tại.");
         }
 
         // Check xem có phải chủ lịch không
         if (!lichhen.getIdkhachhang().equalsIgnoreCase(idUser)) {
+            System.out.println(1);
             return ResponseEntity.status(HttpStatus.FORBIDDEN).body("Bạn không phải là chủ lịch hẹn này.");
         }
 
-        if (lichhen.getTrangthai() == 4) {
+        if (lichhen.getTrangthai() == 4 || lichhen.getTrangthai() == 6) {
             // Tạo bản ghi lưu lại lịch sử đặt với trạng thái hủy
             lichhen.setSolanthaydoi(lichhen.getSolanthaydoi()+1);
 
@@ -175,9 +185,28 @@ public class DatLichController {
             lichhenNew.setTrangthaica(true);
             lichHenService.addOrUpdate(lichhenNew);
 
-//           Hủy hóa đơn chờ
-            Hoadon hoadonNew = hoadonOptional.get();
-            hoaDonService.deleteHoadonById(hoadonNew.getId());
+//            Hoàn tiền
+            if (hoadonOptional.isPresent()) {
+                Hoadon hoadon = hoadonOptional.get();
+                if (lichhen.getTrangthai() == 6) { // Đã thanh toán
+                    System.out.println(hoadon.getMagiaodich());
+                    Refund refund = payPalService.refundPayment(hoadon.getMagiaodich(), hoadon.getSotien(), "USD");
+                    System.out.println(refund);
+                    if ("completed".equals(refund.getState())) {
+                        hoadon.setTrangthai(3); // Trạng thái: thất bại
+                        hoaDonService.addOrUpdate(hoadon);
+                        lichhenNew.setTrangthai(7); // Trạng thái: Đã hoàn tiền
+                        lichHenService.addOrUpdate(lichhenNew);
+                    } else {
+                        return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                                .body("Hoàn tiền thất bại: " + refund.getReason());
+                    }
+                }
+            }
+
+            //           Hủy hóa đơn chờ
+//            Hoadon hoadonNew = hoadonOptional.get();
+//            hoaDonService.deleteHoadonById(hoadonNew.getId());
 
             // Cập nhật lịch gốc với trạng thái đã hủy
             lichhen.setIdkhachhang("demo");
@@ -190,9 +219,11 @@ public class DatLichController {
             }
             lichHenService.addOrUpdate(lichhen);
             lichHenService.cancelScheduleChange();
-            return ResponseEntity.ok("Lịch hẹn đã được hủy thành công.");
+            response.put("message", "Lịch hẹn đã được hủy thành công.");
+            return ResponseEntity.ok(response);
         }
-        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Lịch hẹn không thể hủy vì trạng thái không hợp lệ.");
+        response.put("message", "Lịch hẹn hủy không thành công.");
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(response);
     }
 
     @Transactional

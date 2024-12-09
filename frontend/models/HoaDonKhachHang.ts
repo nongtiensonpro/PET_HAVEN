@@ -50,6 +50,7 @@ interface Transaction {
     id: number;
     idlichhen: Idlichhen;
     date: string;
+    sotiendau : number;
     sotien: number;
     ngaythanhtoan: string | null;
     phuongthucthanhtoan: string;
@@ -63,6 +64,7 @@ class TransactionEntity {
     id: number;
     idlichhen: Idlichhen;
     date: string;
+    sotienbandau : number;
     sotien: number;
     ngaythanhtoan: string | null;
     phuongthucthanhtoan: string;
@@ -75,6 +77,7 @@ class TransactionEntity {
         this.id = data.id;
         this.idlichhen = data.idlichhen;
         this.date = data.date;
+        this.sotienbandau = data.sotienbandau;
         this.sotien = data.sotien;
         this.ngaythanhtoan = data.ngaythanhtoan;
         this.phuongthucthanhtoan = data.phuongthucthanhtoan;
@@ -89,6 +92,7 @@ class TransactionEntity {
             id: this.id,
             idlichhen: this.idlichhen,
             date: this.date,
+            sotienbandau: this.sotienbandau,
             sotien: this.sotien,
             ngaythanhtoan: this.ngaythanhtoan,
             phuongthucthanhtoan: this.phuongthucthanhtoan,

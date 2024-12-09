@@ -21,7 +21,7 @@ import java.io.ByteArrayOutputStream;
 public class PdfExportService {
 
 
-    public byte[] generateInvoice(String NgayThanhToan, String MaHoaDon, String PhuongThucThanhToan, String DichVu, double SoTien, String ThoiGian) {
+    public byte[] generateInvoice(String NgayThanhToan, String MaHoaDon, String PhuongThucThanhToan, String DichVu, double SoTienBanDau, double SoTien, String ThoiGian) {
         try (ByteArrayOutputStream outputStream = new ByteArrayOutputStream()) {
             PdfWriter writer = new PdfWriter(outputStream);
             com.itextpdf.kernel.pdf.PdfDocument pdfDoc = new com.itextpdf.kernel.pdf.PdfDocument(writer);
@@ -49,7 +49,8 @@ public class PdfExportService {
             addTableRowWithBorder(table, "Số đơn đặt hàng", MaHoaDon, vietnameseFont);
             addTableRowWithBorder(table, "Phương thức thanh toán", PhuongThucThanhToan, vietnameseFont);
             addTableRowWithBorder(table, "Dịch vụ", DichVu, vietnameseFont);
-            addTableRowWithBorder(table, "Số tiền", String.valueOf(SoTien), vietnameseFont);
+            addTableRowWithBorder(table, "Số tiền đầu", String.valueOf(SoTienBanDau), vietnameseFont);
+            addTableRowWithBorder(table, "Số tiền cuối", String.valueOf(SoTien), vietnameseFont);
             addTableRowWithBorder(table, "Thời gian", ThoiGian, vietnameseFont);
 
             // Thêm bảng vào document
