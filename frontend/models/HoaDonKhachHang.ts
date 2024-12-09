@@ -77,7 +77,7 @@ class TransactionEntity {
         this.id = data.id;
         this.idlichhen = data.idlichhen;
         this.date = data.date;
-        this.sotienbandau = data.sotienbandau;
+        this.sotienbandau = data.sotiendau;
         this.sotien = data.sotien;
         this.ngaythanhtoan = data.ngaythanhtoan;
         this.phuongthucthanhtoan = data.phuongthucthanhtoan;
