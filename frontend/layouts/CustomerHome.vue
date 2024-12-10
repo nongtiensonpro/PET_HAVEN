@@ -290,7 +290,7 @@
 
 <script setup lang="ts">
 import { useServiceStore } from '~/stores/DichVuStores';
-import { computed, ref, onMounted } from 'vue';
+import { computed, ref, onMounted ,onUnmounted} from 'vue';
 import DichVu from '~/models/DichVu';
 import logoImage from '@/image/LogoPetHaven.png';
 import { useI18n } from 'vue-i18n';
@@ -298,7 +298,7 @@ import { useUserStore } from '~/stores/user';
 import { useNotificationStore } from '~/stores/useNotificationStore';
 import { useToast } from 'vue-toastification';
 import { useRoute, useRouter } from 'vue-router';
-
+let refreshInterval: number | null = null;
 const toast = useToast();
 const route = useRoute();
 const router = useRouter();
@@ -322,8 +322,30 @@ const handleRemoveNotification = (index: number) => {
 
 const { t, locale } = useI18n();
 const serviceStore = useServiceStore();
+
 const services = computed((): DichVu[] => {
+  if (!serviceStore.services || serviceStore.services.length === 0) {
+    // Nếu services là null hoặc rỗng, thực hiện làm mới
+    refreshServices();
+    return [];
+  }
   return serviceStore.services.filter((service: DichVu) => service.trangthai);
+});
+
+const refreshServices = async () => {
+  try {
+    await serviceStore.fetchServices();
+  } catch (error) {
+    console.error('Không thể làm mới danh sách dịch vụ:', error);
+    // Có thể thêm thông báo lỗi cho người dùng ở đây
+  }
+};
+
+// Thêm một watcher để theo dõi sự thay đổi của services
+watch(() => serviceStore.services, (newServices) => {
+  if (!newServices || newServices.length === 0) {
+    refreshServices();
+  }
 });
 
 const userStore = useUserStore();
@@ -335,8 +357,6 @@ const currentLanguage = ref(locale.value);
 
 const logo = computed(() => t('logo'));
 const slogan = computed(() => t('slogan'));
-const searchPlaceholder = computed(() => t('searchPlaceholder'));
-const searchButton = computed(() => t('searchButton'));
 const home = computed(() => t('home'));
 const switchToEnglish = computed(() => t('switchToEnglish'));
 const switchToVietnamese = computed(() => t('switchToVietnamese'));
@@ -358,6 +378,38 @@ const changeLanguage = () => {
 };
 
 const viewRole = ref(0);
+
+const refreshUserInfo = async () => {
+  const accessToken = localStorage.getItem('access_token');
+  if (accessToken) {
+    await fetchUserInfo(accessToken);
+  }
+};
+
+
+onMounted(() => {
+  const code = route.query.code as string;
+
+  if (code) {
+    console.log('Authorization code:', code);
+    exchangeAuthorizationCodeForToken(code);
+  } else {
+    const accessToken = localStorage.getItem('access_token');
+    if (accessToken) {
+      fetchUserInfo(accessToken);
+    }
+  }
+
+  // Set up the interval to refresh user info every 5 minutes
+  refreshInterval = window.setInterval(refreshUserInfo, 5 * 60 * 1000);
+});
+
+onUnmounted(() => {
+  // Clear the interval when the component is unmounted
+  if (refreshInterval !== null) {
+    clearInterval(refreshInterval);
+  }
+});
 
 if (process.client) {
   const storedViewRole = localStorage.getItem('viewRole');
@@ -395,6 +447,7 @@ const logout1 = () => {
   const clientId = 'PetHaven';
   const redirectUri = encodeURIComponent('http://localhost:3000/');
   window.location.href = `${logoutUrl}?client_id=${clientId}&post_logout_redirect_uri=${redirectUri}`;
+  localStorage.setItem('viewRole', '0');
   logout();
 };
 
@@ -437,6 +490,7 @@ const exchangeAuthorizationCodeForToken = async (code: string) => {
       userStore.setLoggedIn(true);
     }
   } catch (error) {
+    localStorage.setItem('viewRole', '0');
     console.error('Error fetching token:', error);
   }
 };
@@ -478,6 +532,7 @@ const refreshAccessToken = async () => {
     console.log('New access token:', data.access_token);
     return data.access_token;
   } catch (error) {
+    localStorage.setItem('viewRole', '0');
     console.error('Error refreshing token:', error);
     return null;
   }
@@ -501,6 +556,7 @@ const fetchUserInfo = async (accessToken: string) => {
         return fetchUserInfo(newAccessToken);
       } else {
         console.error('Unable to refresh access token');
+        userStore.setLoggedIn(false);
         return;
       }
     }
@@ -508,6 +564,7 @@ const fetchUserInfo = async (accessToken: string) => {
     if (!response.ok) {
       const errorData = await response.json();
       console.error(`Error fetching user info: ${errorData.error_description}`);
+      return;
     }
 
     const userInfoData = await response.json();
@@ -520,15 +577,20 @@ const fetchUserInfo = async (accessToken: string) => {
       listThuCung: userInfoData.listThuCung || ''
     });
 
+    userStore.setLoggedIn(true);
+
     if (userInfoData.username) {
-      toast.success('Đăng nhập thành công!');
+      console.log('User info refreshed successfully');
     }
   } catch (error) {
+    localStorage.setItem('viewRole', '0');
     console.error('Error fetching user info:', error);
+    userStore.setLoggedIn(false);
   }
 };
 
 const logout = () => {
+  localStorage.setItem('viewRole', '0');
   userStore.clearUserInfo();
   localStorage.clear();
 };

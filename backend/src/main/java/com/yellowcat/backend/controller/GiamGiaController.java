@@ -16,7 +16,7 @@ import java.util.List;
 import java.util.Optional;
 
 @RestController
-@PreAuthorize("hasRole('admin')")
+//@PreAuthorize("hasRole('admin')")
 @RequestMapping("/api/giam-gia")
 public class GiamGiaController {
     @Autowired

@@ -1,4 +1,3 @@
-import {defineStore} from 'pinia'
 import Voucher from '~/models/Voucher'
 
 interface VorchersState {

@@ -42,7 +42,6 @@ import { useToast } from 'vue-toastification'
 import DichVu from "~/models/DichVu"
 import CaHen from "~/models/CaHen"
 import { useDatLichStore } from '~/stores/DatLichStores'
-import { useMauKhachDatDichVu } from '~/stores/MauKhachDatDichVu'
 import { useThayDoiLichHenStore } from '~/stores/ThayDoiLichHen'
 import Swal from 'sweetalert2';
 
@@ -54,8 +53,6 @@ const props = defineProps({
   }
 })
 
-const { saveTempData, getTempData, clearTempData } = useMauKhachDatDichVu()
-
 const {thayDoiLichHenStore,huyLichHen} = useThayDoiLichHenStore()
 
 const datLichStore = useDatLichStore()
@@ -66,7 +63,6 @@ const endDate = new Date(today)
 endDate.setDate(today.getDate() + 6)
 
 const selectedDate = ref(new Date())
-const selectedService = ref('')
 const selectedTime = ref('')
 
 const formattedSelectedDate = computed(() => {
@@ -75,7 +71,6 @@ const formattedSelectedDate = computed(() => {
 
 const fetchCaHen = datLichStore.fetchCaHen
 
-const services = computed((): DichVu[] => datLichStore.DichVu)
 const lichhens = computed((): CaHen[] => datLichStore.CaLichHen)
 
 

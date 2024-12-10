@@ -20,7 +20,7 @@
               </div>
               <div class="mb-3">
                 <label for="phantramgiamgia" class="form-label">Giảm giá (%):</label>
-                <input type="number" class="form-control" id="phantramgiamgia" v-model="voucher.phantramgiamgia" required min="1" max="100">
+                <input type="number" class="form-control" id="phantramgiamgia" v-model="voucher.phantramgiam" required min="1" max="100">
                 <div class="invalid-feedback" v-if="errors.phantramgiamgia">{{ errors.phantramgiamgia }}</div>
               </div>
               <div class="mb-3">
@@ -50,19 +50,20 @@ import { ref } from 'vue';
 import { useVoucherStore } from '~/stores/VorchersStores';
 import Voucher from '~/models/Voucher';
 import {useToast} from 'vue-toastification';
+import bootstrap from "~/plugins/bootstrap";
 
 const toast = useToast();
 const voucherStore = useVoucherStore();
 const voucher = ref(new Voucher(0, 0, new Date(), new Date(), '', true));
-const errors = ref({});
+const errors = ref<{ [key: string]: string }>({});
 
 function validate() {
   errors.value = {};
   if (!voucher.value.mota) {
     errors.value.mota = 'Mô tả là bắt buộc.';
   }
-  if (voucher.value.phantramgiamgia < 1 || voucher.value.phantramgiamgia > 100) {
-    errors.value.phantramgiamgia = 'Giảm giá phải từ 1 đến 100.';
+  if (voucher.value.phantramgiam < 1 || voucher.value.phantramgiam > 100) {
+    errors.value.phantramgiam = 'Giảm giá phải từ 1 đến 100.';
   }
   if (!voucher.value.ngaybatdau) {
     errors.value.ngaybatdau = 'Ngày bắt đầu là bắt buộc.';
