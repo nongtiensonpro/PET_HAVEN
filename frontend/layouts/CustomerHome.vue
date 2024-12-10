@@ -288,297 +288,264 @@
   </NuxtLayout>
 </template>
 
-<script lang="ts">
+<script setup lang="ts">
 import { useServiceStore } from '~/stores/DichVuStores';
-import { computed, ref } from 'vue';
+import { computed, ref, onMounted } from 'vue';
 import DichVu from '~/models/DichVu';
 import logoImage from '@/image/LogoPetHaven.png';
 import { useI18n } from 'vue-i18n';
 import { useUserStore } from '~/stores/user';
 import { useNotificationStore } from '~/stores/useNotificationStore';
 import { useToast } from 'vue-toastification';
+import { useRoute, useRouter } from 'vue-router';
 
 const toast = useToast();
-export default {
-  mounted() {
-    const code = this.$route.query.code;
+const route = useRoute();
+const router = useRouter();
 
-    if (code) {
-      console.log('Authorization code:', code);
-      this.exchangeAuthorizationCodeForToken(code);
-    } else {
-      const accessToken = localStorage.getItem('access_token');
-      if (accessToken) {
-        this.fetchUserInfo(accessToken);
-      }
-    }
-  },
-  setup() {
-    const notificationStore = useNotificationStore();
-    const { addNotification, removeNotification } = notificationStore;
+const notificationStore = useNotificationStore();
+const { addNotification, removeNotification } = notificationStore;
 
-    const notifications = notificationStore.notifications;
+const notifications = computed(() => notificationStore.notifications);
 
-    const removeAllNotifications = () => {
-      notificationStore.removeAllNotifications();
-    };
+const removeAllNotifications = () => {
+  notificationStore.removeAllNotifications();
+};
 
-    const handleAddNotification = (message: String, type: String) => {
-      addNotification(message, type);
-    };
+const handleAddNotification = (message: string, type: string) => {
+  addNotification(message, type);
+};
 
-    const handleRemoveNotification = (index: number) => {
-      removeNotification(index);
-    };
-    const { t, locale } = useI18n();
-    const serviceStore = useServiceStore();
-    const services = computed((): DichVu[] => {
-      return serviceStore.services.filter((service: DichVu) => service.trangthai);
-    });
+const handleRemoveNotification = (index: number) => {
+  removeNotification(index);
+};
 
-    const userStore = useUserStore();
+const { t, locale } = useI18n();
+const serviceStore = useServiceStore();
+const services = computed((): DichVu[] => {
+  return serviceStore.services.filter((service: DichVu) => service.trangthai);
+});
 
-    const userInfo = computed(() => userStore.userInfo);
-    const isLoggedIn = computed(() => userStore.isLoggedIn);
+const userStore = useUserStore();
 
-    const currentLanguage = ref(locale.value);
+const userInfo = computed(() => userStore.userInfo);
+const isLoggedIn = computed(() => userStore.isLoggedIn);
 
-    const logo = computed(() => t('logo'));
-    const slogan = computed(() => t('slogan'));
-    const searchPlaceholder = computed(() => t('searchPlaceholder'));
-    const searchButton = computed(() => t('searchButton'));
-    const home = computed(() => t('home'));
-    const switchToEnglish = computed(() => t('switchToEnglish'));
-    const switchToVietnamese = computed(() => t('switchToVietnamese'));
-    const aboutUs = computed(() => t('aboutUs'));
-    const introductionText = computed(() => t('introductionText'));
-    const moreInfo = computed(() => t('moreInfo'));
-    const servicesTitle = computed(() => t('services'));
-    const contact = computed(() => t('contact'));
-    const phone = computed(() => t('phone'));
-    const email = computed(() => t('email'));
-    const facebook = computed(() => t('facebook'));
-    const footerCopyright = computed(() => t('footerCopyright'));
-    const serviceNotAvailable = computed(() => t('serviceNotAvailable'));
-    const login = computed(() => t('login'));
+const currentLanguage = ref(locale.value);
 
+const logo = computed(() => t('logo'));
+const slogan = computed(() => t('slogan'));
+const searchPlaceholder = computed(() => t('searchPlaceholder'));
+const searchButton = computed(() => t('searchButton'));
+const home = computed(() => t('home'));
+const switchToEnglish = computed(() => t('switchToEnglish'));
+const switchToVietnamese = computed(() => t('switchToVietnamese'));
+const aboutUs = computed(() => t('aboutUs'));
+const introductionText = computed(() => t('introductionText'));
+const moreInfo = computed(() => t('moreInfo'));
+const servicesTitle = computed(() => t('services'));
+const contact = computed(() => t('contact'));
+const phone = computed(() => t('phone'));
+const email = computed(() => t('email'));
+const facebook = computed(() => t('facebook'));
+const footerCopyright = computed(() => t('footerCopyright'));
+const serviceNotAvailable = computed(() => t('serviceNotAvailable'));
+const login = computed(() => t('login'));
 
-    const changeLanguage = () => {
-      currentLanguage.value = currentLanguage.value === 'vi' ? 'en' : 'vi';
-      locale.value = currentLanguage.value;
-    };
+const changeLanguage = () => {
+  currentLanguage.value = currentLanguage.value === 'vi' ? 'en' : 'vi';
+  locale.value = currentLanguage.value;
+};
 
+const viewRole = ref(0);
 
-    const viewRole = ref(0);
+if (process.client) {
+  const storedViewRole = localStorage.getItem('viewRole');
+  if (storedViewRole !== null) {
+    viewRole.value = parseInt(storedViewRole, 10);
+  } else {
     localStorage.setItem('viewRole', '0');
-    if (process.client) {
-      const storedViewRole = localStorage.getItem('viewRole');
-      if (storedViewRole !== null) {
-        viewRole.value = parseInt(storedViewRole, 10);
-      } else {
-        localStorage.setItem('viewRole', '0');
-      }
+  }
+}
+
+const changeRole = () => {
+  if (process.client) {
+    if (viewRole.value === 0) {
+      viewRole.value = 1;
+      localStorage.setItem('viewRole', '1');
+      addNotification('Đã chuyển sang giao diện Nhân viên', 'system');
+      toast.success('Đã chuyển sang giao diện Nhân viên');
+      return navigateTo('/admin/adminhome');
+    } else {
+      viewRole.value = 0;
+      localStorage.setItem('viewRole', '0');
+      addNotification('Đã chuyển sang giao diện Khách hàng', 'system');
+      toast.success('Đã chuyển sang giao diện Khách hàng')
+      return navigateTo('/');
     }
-
-    const changeRole = () => {
-      if (process.client) {
-        if (viewRole.value === 0) {
-          viewRole.value = 1;
-          localStorage.setItem('viewRole', '1');
-          addNotification('Đã chuyển sang giao diện Nhân viên', 'system');
-          toast.success('Đã chuyển sang giao diện Nhân viên');
-          return navigateTo('/admin/adminhome');
-        } else {
-          viewRole.value = 0;
-          localStorage.setItem('viewRole', '0');
-          addNotification('Đã chuyển sang giao diện Khách hàng', 'system');
-          toast.success('Đã chuyển sang giao diện Khách hàng')
-          return navigateTo('/');
-        }
-      }
-    };
-
-
-    return {
-      services,
-      logo,
-      slogan,
-      logoImage,
-      searchPlaceholder,
-      searchButton,
-      home,
-      switchToEnglish,
-      switchToVietnamese,
-      aboutUs,
-      introductionText,
-      moreInfo,
-      servicesTitle,
-      contact,
-      phone,
-      email,
-      facebook,
-      footerCopyright,
-      serviceNotAvailable,
-      changeLanguage,
-      currentLanguage,
-      login,
-      userInfo,
-      isLoggedIn,
-      viewRole,
-      notifications,
-      handleRemoveNotification,
-      changeRole,
-      removeAllNotifications
-    };
-  },
-  methods: {
-    login1() {
-      window.location.href = 'http://localhost:8080/oauth2/authorization/keycloak'
-    },
-    logout1() {
-      const logoutUrl = `http://localhost:9082/realms/spring/protocol/openid-connect/logout`;
-      const clientId = 'PetHaven'; // Client ID của bạn
-      const redirectUri = encodeURIComponent('http://localhost:3000/');
-      window.location.href = `${logoutUrl}?client_id=${clientId}&post_logout_redirect_uri=${redirectUri}`;
-      this.logout()
-    },
-    async exchangeAuthorizationCodeForToken(code: string) {
-      const url = 'http://localhost:9082/realms/spring/protocol/openid-connect/token';
-
-      const params = new URLSearchParams({
-        grant_type: 'authorization_code',
-        code: code,
-        client_id: 'PetHaven',
-        client_secret: 'GuFIaAADNfBUpuahqxLvMPWzqt6g8fRL',
-        redirect_uri: 'http://localhost:3000'
-      });
-
-      try {
-        const response = await fetch(url, {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/x-www-form-urlencoded',
-          },
-          body: params.toString()
-        });
-
-        if (!response.ok) {
-          const errorData = await response.json();
-          console.error('Error exchanging authorization code for token:', errorData.error_description);
-        }
-
-        const data = await response.json();
-        if (data.error) {
-          console.error('Error fetching token:', data.error_description);
-        } else {
-          localStorage.setItem('access_token', data.access_token);
-          localStorage.setItem('refresh_token', data.refresh_token);
-          console.log('Access token:', data.access_token);
-          this.$router.push('/'); // Chuyển hướng về trang chủ
-          await this.fetchUserInfo(data.access_token);
-          console.log("Lấy thông tin tài khoản sau khi lấy token", data.access_token);
-
-          this.isLoggedIn = true;
-        }
-      } catch (error) {
-        console.error('Error fetching token:', error);
-      }
-    },
-    async refreshAccessToken() {
-      const refreshToken = localStorage.getItem('refresh_token');
-      if (!refreshToken) {
-        console.error('No refresh token available');
-        this.isLoggedIn = false;
-        return;
-      }
-
-      const url = 'http://localhost:9082/realms/spring/protocol/openid-connect/token';
-
-      const params = new URLSearchParams({
-        grant_type: 'refresh_token',
-        refresh_token: refreshToken,
-        client_id: 'PetHaven',
-        client_secret: 'GuFIaAADNfBUpuahqxLvMPWzqt6g8fRL',
-      });
-
-      try {
-        const response = await fetch(url, {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/x-www-form-urlencoded',
-          },
-          body: params.toString()
-        });
-
-        if (!response.ok) {
-          const errorData = await response.json();
-          console.error(`Error refreshing token: ${errorData.error_description}`);
-        }
-
-        const data = await response.json();
-        localStorage.setItem('access_token', data.access_token);
-        localStorage.setItem('refresh_token', data.refresh_token);
-        console.log('New access token:', data.access_token);
-        return data.access_token;
-      } catch (error) {
-        console.error('Error refreshing token:', error);
-        return null;
-      }
-    },
-    async fetchUserInfo(accessToken: string) {
-      const url = 'http://localhost:8080/api/user';
-      const userStore = useUserStore();
-      try {
-        const response = await fetch(url, {
-          method: 'GET',
-          headers: {
-            'Authorization': `Bearer ${accessToken}`,
-            'Content-Type': 'application/json'
-          }
-        });
-
-        if (response.status === 401) {
-          console.log('Access token expired, refreshing token...');
-          const newAccessToken = await this.refreshAccessToken();
-          if (newAccessToken) {
-            return this.fetchUserInfo(newAccessToken);
-          } else {
-            console.error('Unable to refresh access token');
-            return;
-          }
-        }
-
-        if (!response.ok) {
-          const errorData = await response.json();
-          console.error(`Error fetching user info: ${errorData.error_description}`);
-        }
-
-        const userInfoData = await response.json();
-        console.log('User Info:', userInfoData);
-
-        const roles = userInfoData.roles || [];
-        userStore.setUserInfo({
-          name: userInfoData.username || '',
-          role: roles || '',
-          listThuCung: userInfoData.listThuCung || ''
-        });
-
-        if (userInfoData.username) {
-          toast.success('Đăng nhập thành công!');
-        }
-      } catch (error) {
-        console.error('Error fetching user info:', error);
-      }
-    }
-    ,
-    logout() {
-      const userStore = useUserStore();
-      userStore.clearUserInfo();
-      localStorage.clear();
-    },
-
   }
 };
+
+const login1 = () => {
+  window.location.href = 'http://localhost:8080/oauth2/authorization/keycloak'
+};
+
+const logout1 = () => {
+  const logoutUrl = `http://localhost:9082/realms/spring/protocol/openid-connect/logout`;
+  const clientId = 'PetHaven';
+  const redirectUri = encodeURIComponent('http://localhost:3000/');
+  window.location.href = `${logoutUrl}?client_id=${clientId}&post_logout_redirect_uri=${redirectUri}`;
+  logout();
+};
+
+const exchangeAuthorizationCodeForToken = async (code: string) => {
+  const url = 'http://localhost:9082/realms/spring/protocol/openid-connect/token';
+
+  const params = new URLSearchParams({
+    grant_type: 'authorization_code',
+    code: code,
+    client_id: 'PetHaven',
+    client_secret: 'GuFIaAADNfBUpuahqxLvMPWzqt6g8fRL',
+    redirect_uri: 'http://localhost:3000'
+  });
+
+  try {
+    const response = await fetch(url, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/x-www-form-urlencoded',
+      },
+      body: params.toString()
+    });
+
+    if (!response.ok) {
+      const errorData = await response.json();
+      console.error('Error exchanging authorization code for token:', errorData.error_description);
+    }
+
+    const data = await response.json();
+    if (data.error) {
+      console.error('Error fetching token:', data.error_description);
+    } else {
+      localStorage.setItem('access_token', data.access_token);
+      localStorage.setItem('refresh_token', data.refresh_token);
+      console.log('Access token:', data.access_token);
+      router.push('/');
+      await fetchUserInfo(data.access_token);
+      console.log("Lấy thông tin tài khoản sau khi lấy token", data.access_token);
+
+      userStore.setLoggedIn(true);
+    }
+  } catch (error) {
+    console.error('Error fetching token:', error);
+  }
+};
+
+const refreshAccessToken = async () => {
+  const refreshToken = localStorage.getItem('refresh_token');
+  if (!refreshToken) {
+    console.error('No refresh token available');
+    userStore.setLoggedIn(false);
+    return;
+  }
+
+  const url = 'http://localhost:9082/realms/spring/protocol/openid-connect/token';
+
+  const params = new URLSearchParams({
+    grant_type: 'refresh_token',
+    refresh_token: refreshToken,
+    client_id: 'PetHaven',
+    client_secret: 'GuFIaAADNfBUpuahqxLvMPWzqt6g8fRL',
+  });
+
+  try {
+    const response = await fetch(url, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/x-www-form-urlencoded',
+      },
+      body: params.toString()
+    });
+
+    if (!response.ok) {
+      const errorData = await response.json();
+      console.error(`Error refreshing token: ${errorData.error_description}`);
+    }
+
+    const data = await response.json();
+    localStorage.setItem('access_token', data.access_token);
+    localStorage.setItem('refresh_token', data.refresh_token);
+    console.log('New access token:', data.access_token);
+    return data.access_token;
+  } catch (error) {
+    console.error('Error refreshing token:', error);
+    return null;
+  }
+};
+
+const fetchUserInfo = async (accessToken: string) => {
+  const url = 'http://localhost:8080/api/user';
+  try {
+    const response = await fetch(url, {
+      method: 'GET',
+      headers: {
+        'Authorization': `Bearer ${accessToken}`,
+        'Content-Type': 'application/json'
+      }
+    });
+
+    if (response.status === 401) {
+      console.log('Access token expired, refreshing token...');
+      const newAccessToken = await refreshAccessToken();
+      if (newAccessToken) {
+        return fetchUserInfo(newAccessToken);
+      } else {
+        console.error('Unable to refresh access token');
+        return;
+      }
+    }
+
+    if (!response.ok) {
+      const errorData = await response.json();
+      console.error(`Error fetching user info: ${errorData.error_description}`);
+    }
+
+    const userInfoData = await response.json();
+    console.log('User Info:', userInfoData);
+
+    const roles = userInfoData.roles || [];
+    userStore.setUserInfo({
+      name: userInfoData.username || '',
+      role: roles || '',
+      listThuCung: userInfoData.listThuCung || ''
+    });
+
+    if (userInfoData.username) {
+      toast.success('Đăng nhập thành công!');
+    }
+  } catch (error) {
+    console.error('Error fetching user info:', error);
+  }
+};
+
+const logout = () => {
+  userStore.clearUserInfo();
+  localStorage.clear();
+};
+
+onMounted(() => {
+  const code = route.query.code as string;
+
+  if (code) {
+    console.log('Authorization code:', code);
+    exchangeAuthorizationCodeForToken(code);
+  } else {
+    const accessToken = localStorage.getItem('access_token');
+    if (accessToken) {
+      fetchUserInfo(accessToken);
+    }
+  }
+});
 </script>
 
 <style scoped>
