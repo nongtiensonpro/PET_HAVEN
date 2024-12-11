@@ -8,6 +8,15 @@
         </button>
       </div>
       <div class="card-body">
+        <div class="mb-3">
+          <input
+              v-model="searchQuery"
+              @input="handleSearch"
+              type="text"
+              class="form-control"
+              placeholder="Tìm kiếm theo email, tên thú cưng hoặc dịch vụ..."
+          >
+        </div>
         <table class="table">
           <thead>
           <tr>
@@ -23,7 +32,7 @@
           </tr>
           </thead>
           <tbody>
-          <tr v-for="hoaDon in hoaDonKhachHangs" :key="hoaDon.id">
+          <tr v-for="hoaDon in paginatedHoaDon" :key="hoaDon.id">
             <td>{{ hoaDon.idlichhen.id }}</td>
             <td>{{ hoaDon.idlichhen.emailNguoiDat }}</td>
             <td>{{ hoaDon.idlichhen.thucung.ten }}</td>
@@ -199,13 +208,26 @@
           </tr>
           </tbody>
         </table>
+        <nav aria-label="Page navigation">
+          <ul class="pagination justify-content-center">
+            <li class="page-item" :class="{ disabled: currentPage === 1 }">
+              <a class="page-link" href="#" @click.prevent="changePage(currentPage - 1)">Previous</a>
+            </li>
+            <li v-for="page in totalPages" :key="page" class="page-item" :class="{ active: currentPage === page }">
+              <a class="page-link" href="#" @click.prevent="changePage(page)">{{ page }}</a>
+            </li>
+            <li class="page-item" :class="{ disabled: currentPage === totalPages }">
+              <a class="page-link" href="#" @click.prevent="changePage(currentPage + 1)">Next</a>
+            </li>
+          </ul>
+        </nav>
       </div>
     </div>
   </div>
 </template>
 
 <script setup lang="ts">
-import { onMounted, ref, onUnmounted } from 'vue';
+import { onMounted, ref, onUnmounted, computed } from 'vue';
 import HoaDonKhachHang from '~/models/HoaDonKhachHang';
 import { useQuanLyLichHenAdminStore } from '~/stores/QuanLyLichHenAdmin';
 import Swal from 'sweetalert2';
@@ -214,14 +236,41 @@ import CalendarAdmin from "~/components/CalendarChangeAdmin.vue";
 
 const useQuanLyAdmin = useQuanLyLichHenAdminStore();
 const hoaDonKhachHangs = ref<HoaDonKhachHang[]>([]);
+const filteredHoaDon = ref<HoaDonKhachHang[]>([]);
 const selectedTrangThai = ref<number>(0);
 const toast = useToast();
 let refreshInterval: NodeJS.Timeout;
+const itemsPerPage = 5;
+const currentPage = ref(1);
+const searchQuery = ref('');
 
 onMounted(() => {
   fetchHoaDon();
   refreshInterval = setInterval(fetchHoaDon,  60 * 1000);
 });
+
+const totalPages = computed(() => Math.ceil(filteredHoaDon.value.length / itemsPerPage));
+
+const paginatedHoaDon = computed(() => {
+  const start = (currentPage.value - 1) * itemsPerPage;
+  const end = start + itemsPerPage;
+  return filteredHoaDon.value.slice(start, end);
+});
+
+const handleSearch = () => {
+  filteredHoaDon.value = hoaDonKhachHangs.value.filter(hoaDon =>
+      hoaDon.idlichhen.emailNguoiDat.toLowerCase().includes(searchQuery.value.toLowerCase()) ||
+      hoaDon.idlichhen.thucung.ten.toLowerCase().includes(searchQuery.value.toLowerCase()) ||
+      hoaDon.idlichhen.dichvu.tendichvu.toLowerCase().includes(searchQuery.value.toLowerCase())
+  );
+  currentPage.value = 1;
+};
+
+const changePage = (page: number) => {
+  if (page >= 1 && page <= totalPages.value) {
+    currentPage.value = page;
+  }
+};
 
 onUnmounted(() => {
   if (refreshInterval) clearInterval(refreshInterval);
@@ -231,6 +280,7 @@ const fetchHoaDon = async () => {
   try {
     await useQuanLyAdmin.fetchHoaDonKhachHangs();
     hoaDonKhachHangs.value = useQuanLyAdmin.hoaDonKhachHangs;
+    filteredHoaDon.value = hoaDonKhachHangs.value;
   } catch (error) {
     console.error('Lỗi khi tải dữ liệu:', error);
     toast.error('Không thể tải dữ liệu. Vui lòng thử lại sau.');

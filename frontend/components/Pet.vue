@@ -2,9 +2,11 @@
   <div class="container py-5">
         <form @submit.prevent="saveData">
           <div class="row mb-3">
+            <label for="pet-select" class="form-label" v-if="listThuCung?.length > 0">Lựa chọn thú cưng đã lưu hoặc thêm thú cưng mới</label>
+            <label for="pet-select" class="form-label" v-else>Hãy nhập thông tin thú cưng đầu tiên của bạn</label>
             <div class="col-md-6">
               <div class="form-group">
-<!--                <label for="pet-select" class="form-label">Chọn loại thú cưng</label>-->
+                <label for="pet-select" class="form-label">Thông tin thú cưng đã được lưu {{listThuCung?.length}}</label>
                 <select v-model="selectedPet" id="pet-select" class="form-select">
                   <option value="new">Thú cưng mới</option>
                   <option v-if="listThuCung?.length > 0" value="existing">Thú cưng hiện có</option>
@@ -25,14 +27,28 @@
           <div class="row mb-3">
             <div class="col-md-6">
               <div class="form-group">
-                <label for="pet-ten" class="form-label">Tên thú cưng</label>
+                <div class="row">
+                  <div class="col-8">
+                    <label for="pet-ten" class="form-label">Tên thú cưng</label>
+                  </div>
+                  <div class="col-4">
+                    <TenThuCungLaGi/>
+                  </div>
+                </div>
                 <input v-model="petForm.ten" type="text" id="pet-ten" class="form-control" :class="{ 'is-invalid': errors.ten }" placeholder="Nhập tên thú cưng">
                 <div v-if="errors.ten" class="invalid-feedback">{{ errors.ten }}</div>
               </div>
             </div>
             <div class="col-md-6">
               <div class="form-group">
-                <label for="pet-tuoi" class="form-label">Tuổi</label>
+                <div class="row">
+                  <div class="col-8">
+                    <label for="pet-tuoi" class="form-label">Tuổi</label>
+                  </div>
+                  <div class="col-4">
+                    <ThongTinVeTuoi/>
+                  </div>
+                </div>
                 <input v-model="petForm.tuoi" type="number" id="pet-tuoi" class="form-control" :class="{ 'is-invalid': errors.tuoi }" placeholder="Nhập tuổi">
                 <div v-if="errors.tuoi" class="invalid-feedback">{{ errors.tuoi }}</div>
               </div>
@@ -41,14 +57,29 @@
           <div class="row mb-3">
             <div class="col-md-6">
               <div class="form-group">
-                <label for="pet-giong" class="form-label">Giống Chó hoặc Mèo</label>
+                <div class="row">
+                  <div class="col-8">
+                    <label for="pet-giong" class="form-label">Giống Chó hay Mèo</label>
+                  </div>
+                  <div class="col-4">
+                    <ThongTinVeGiongCho/>
+                  </div>
+                </div>
                 <input v-model="petForm.giong" type="text" id="pet-giong" class="form-control" :class="{ 'is-invalid': errors.giong }" placeholder="Nhập giống">
                 <div v-if="errors.giong" class="invalid-feedback">{{ errors.giong }}</div>
               </div>
             </div>
             <div class="col-md-6">
               <div class="form-group">
-                <label for="pet-cannang" class="form-label">Cân nặng (kg)</label>
+                <div class="row">
+                  <div class="col-8">
+                    <label for="pet-cannang" class="form-label">Cân nặng (kg)</label>
+                  </div>
+                  <div class="col-4">
+                    <CanNangChoMeo/>
+                  </div>
+                </div>
+
                 <input v-model="petForm.cannang" type="number" id="pet-cannang" class="form-control" :class="{ 'is-invalid': errors.cannang }" placeholder="Nhập cân nặng">
                 <div v-if="errors.cannang" class="invalid-feedback">{{ errors.cannang }}</div>
               </div>
@@ -72,6 +103,7 @@ import { ref, reactive, computed, watch } from 'vue';
 import { useMauKhachDatDichVu } from '~/stores/MauKhachDatDichVu';
 import { useDatLichStore } from '~/stores/DatLichStores'
 import ThuCungKhachHang from "~/models/ThuCungKhachHang";
+import ThongTinVeTuoi from "~/components/ThongTinVeTuoi.vue";
 
 const datLichStore = useDatLichStore()
 const { saveTempData, getTempData ,updateDataAfterBooking} = useMauKhachDatDichVu();

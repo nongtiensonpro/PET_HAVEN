@@ -15,7 +15,6 @@
             <select id="time" v-model="selectedTime" class="form-select">
               <option value="" disabled>Chọn thời gian</option>
               <option v-for="lichhen in lichhens" :key="lichhen.id" :value="lichhen.id">
-<!--                {{ lichhen.tenca }}:-->
                 {{ lichhen.thoigianca }}
               </option>
             </select>
@@ -43,10 +42,8 @@ import { useToast } from 'vue-toastification'
 import DichVu from "~/models/DichVu"
 import CaHen from "~/models/CaHen"
 import { useDatLichStore } from '~/stores/DatLichStores'
-import { useMauKhachDatDichVu } from '~/stores/MauKhachDatDichVu'
 import { useThayDoiLichHenStore } from '~/stores/ThayDoiLichHen'
 import Swal from 'sweetalert2';
-import DichVuKhachDat from "~/models/DichVuKhachDat";
 
 
 const props = defineProps({
@@ -55,8 +52,6 @@ const props = defineProps({
     required: true
   }
 })
-
-const { saveTempData, getTempData, clearTempData } = useMauKhachDatDichVu()
 
 const {thayDoiLichHenStore,huyLichHen} = useThayDoiLichHenStore()
 
@@ -68,7 +63,6 @@ const endDate = new Date(today)
 endDate.setDate(today.getDate() + 6)
 
 const selectedDate = ref(new Date())
-const selectedService = ref('')
 const selectedTime = ref('')
 
 const formattedSelectedDate = computed(() => {
@@ -77,7 +71,6 @@ const formattedSelectedDate = computed(() => {
 
 const fetchCaHen = datLichStore.fetchCaHen
 
-const services = computed((): DichVu[] => datLichStore.DichVu)
 const lichhens = computed((): CaHen[] => datLichStore.CaLichHen)
 
 

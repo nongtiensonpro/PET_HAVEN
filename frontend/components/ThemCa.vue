@@ -1,6 +1,5 @@
 <script setup lang="ts">
 import { ref } from "vue";
-// import { useCaLichHenStore } from "~/stores/QuanLyCaLichHen";
 import  CaLichHen from "~/models/CaHen";
 import { Modal } from 'bootstrap';
 import {useToast} from 'vue-toastification';
@@ -26,7 +25,6 @@ const themCaHen = async () => {
         date.setHours(parseInt(hours), parseInt(minutes), 0, 0);
 
         const newCaHen = new CaLichHen(0,
-            // tenca.value,
             date, trangthai.value);
         await caLichHenStore.themCaLichHen(newCaHen);
         // tenca.value = "";

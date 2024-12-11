@@ -57,15 +57,11 @@
               <small class="text-muted">{{ formatDate(danhGia.date) }}</small>
               <div v-if="danhGia.idhoadon.idlichhen.emailNguoiDat === userInfo?.name">
                 <CapNhatDanhGia
-                    :key="danhGia.id"
-                    :idDanhGia="String(danhGia.id)"
-                    :idLichHen="String(danhGia.idhoadon.idlichhen.id)"
-                    :initialRating="Number(danhGia.sosao)"
-                    :initialReview="danhGia.mota"
-                    @update-review="updateReview"
+                    :danhGia="danhGia"
                 />
               </div>
-              <div v-if="Array.isArray(userInfo.role) && userInfo.role.includes('admin') || userInfo.role.includes('manager') || danhGia.idhoadon.idlichhen.emailNguoiDat === userInfo?.name">
+              <div
+                  v-if="Array.isArray(userInfo.role) && userInfo.role.includes('admin') || userInfo.role.includes('manager') || danhGia.idhoadon.idlichhen.emailNguoiDat === userInfo?.name">
                 <div @click="anDanhGia(danhGia.id)">
                   Ẩn bình luận
                 </div>
@@ -107,16 +103,17 @@
 </template>
 
 <script setup lang="ts">
-import { ref, onMounted, computed, onUnmounted, watch } from 'vue';
-import { useServiceStore } from '~/stores/DichVuStores';
-import { useDanhGiaStore } from '~/stores/DanhGiaStores';
-import { useRoute } from 'vue-router';
+import {ref, onMounted, computed, onUnmounted, watch} from 'vue';
+import {useServiceStore} from '~/stores/DichVuStores';
+import {useDanhGiaStore} from '~/stores/DanhGiaStores';
+import {useRoute} from 'vue-router';
 import CapNhatDanhGia from '~/components/CapNhatDanhGia.vue';
 import type DanhGia from "~/models/DanhGia";
 import type Service from "~/models/DichVu";
-import { useUserStore } from '~/stores/user';
-import { useToast } from 'vue-toastification';
+import {useUserStore} from '~/stores/user';
+import {useToast} from 'vue-toastification';
 import Swal from "sweetalert2";
+import CapNhatCaHen from "~/components/CapNhatCaLichHen.vue";
 
 const toast = useToast();
 const userStore = useUserStore()
@@ -197,6 +194,7 @@ async function anDanhGia(idDanhGia: number) {
       await danhGiaStore.anDanhGia(idDanhGia);
       danhGias.value = danhGias.value.filter(dg => dg.id !== idDanhGia);
       toast.success('Đã ẩn bình luận thành công!', {})
+      await fetchData();
     }
   } catch (error) {
     toast.error('Lỗi ẩn bình luận! Vui lòng thử lại.', {})

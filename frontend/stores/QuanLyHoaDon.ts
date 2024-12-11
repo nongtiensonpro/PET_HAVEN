@@ -6,7 +6,7 @@ interface QuanLyHoaDonState {
 
 export const useQuanLyHoaDonStore = defineStore('quanLyHoaDonStore', {
     state: (): QuanLyHoaDonState => ({
-        ListHoaDon: [],
+        ListHoaDon: [] as HoaDonKhachHang[],
     }),
     actions: {
         async fetchListHoaDon() {

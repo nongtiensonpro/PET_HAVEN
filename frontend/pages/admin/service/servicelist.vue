@@ -13,6 +13,35 @@ definePageMeta({
   middleware: ['auth']
 })
 
+// Add these new refs for pagination
+const currentPage = ref(1);
+const itemsPerPage = 5;
+
+// Compute paginated services
+const paginatedServices = computed(() => {
+  const start = (currentPage.value - 1) * itemsPerPage;
+  const end = start + itemsPerPage;
+  return serviceStore.services.slice(start, end);
+});
+
+// Compute total pages
+const totalPages = computed(() => {
+  return Math.ceil(serviceStore.services.length / itemsPerPage);
+});
+
+// Methods for pagination
+const nextPage = () => {
+  if (currentPage.value < totalPages.value) {
+    currentPage.value++;
+  }
+};
+
+const prevPage = () => {
+  if (currentPage.value > 1) {
+    currentPage.value--;
+  }
+};
+
 const toast = useToast();
 const serviceStore = useServiceStore();
 const notificationStore = useNotificationStore();
@@ -330,6 +359,12 @@ const updateTTHienService = async (serviceId: String) => {
       </tr>
       </tbody>
     </table>
+    <div class="pagination d-flex justify-content-center align-items-center mt-3">
+      <button @click="prevPage" :disabled="currentPage === 1" class="btn btn-secondary me-2">Trước</button>
+      <span>Trang {{ currentPage }} / {{ totalPages }}</span>
+      <button @click="nextPage" :disabled="currentPage === totalPages" class="btn btn-secondary ms-2">Sau</button>
+    </div>
+
   </div>
 </template>
 
@@ -360,6 +395,9 @@ const updateTTHienService = async (serviceId: String) => {
 
 .nav-link {
   margin: 0.5rem; /* Khoảng cách giữa các nút */
+}
+.pagination button {
+  min-width: 80px;
 }
 
 </style>

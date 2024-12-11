@@ -26,7 +26,7 @@
                 </tr>
                 </thead>
                 <tbody>
-                <tr v-for="hoaDon in hoaDonList" :key="hoaDon.id">
+                <tr v-for="hoaDon in paginatedHoaDonList" :key="hoaDon.id">
                   <td>{{ hoaDon.idlichhen.idcalichhen.thoigianca }}</td>
                   <td>{{ hoaDon.idlichhen.id }}</td>
                   <td>{{ hoaDon.idlichhen.emailNguoiDat }}</td>
@@ -149,6 +149,19 @@
                 </tr>
                 </tbody>
               </table>
+              <nav aria-label="Page navigation">
+                <ul class="pagination justify-content-center">
+                  <li class="page-item" :class="{ disabled: currentPage1 === 1 }">
+                    <a class="page-link" href="#" @click.prevent="changePage(currentPage1 - 1, 1)">Trước</a>
+                  </li>
+                  <li v-for="page in totalPages1" :key="page" class="page-item" :class="{ active: currentPage1 === page }">
+                    <a class="page-link" href="#" @click.prevent="changePage(page, 1)">{{ page }}</a>
+                  </li>
+                  <li class="page-item" :class="{ disabled: currentPage1 === totalPages1 }">
+                    <a class="page-link" href="#" @click.prevent="changePage(currentPage1 + 1, 1)">Sau</a>
+                  </li>
+                </ul>
+              </nav>
             </div>
           </div>
         </div>
@@ -179,7 +192,7 @@
                 </tr>
                 </thead>
                 <tbody>
-                <tr v-for="hoaDon in hoaDonThanhToanList" :key="hoaDon.id">
+                <tr v-for="hoaDon in paginatedHoaDonThanhToanList" :key="hoaDon.id">
                   <td>{{ hoaDon.id }}</td>
                   <td>{{ hoaDon.idlichhen.id }}</td>
                   <td>{{ hoaDon.idlichhen.emailNguoiDat }}</td>
@@ -197,6 +210,19 @@
                 </tr>
                 </tbody>
               </table>
+              <nav aria-label="Page navigation">
+                <ul class="pagination justify-content-center">
+                  <li class="page-item" :class="{ disabled: currentPage2 === 1 }">
+                    <a class="page-link" href="#" @click.prevent="changePage(currentPage2 - 1, 2)">Trước</a>
+                  </li>
+                  <li v-for="page in totalPages2" :key="page" class="page-item" :class="{ active: currentPage2 === page }">
+                    <a class="page-link" href="#" @click.prevent="changePage(page, 2)">{{ page }}</a>
+                  </li>
+                  <li class="page-item" :class="{ disabled: currentPage2 === totalPages2 }">
+                    <a class="page-link" href="#" @click.prevent="changePage(currentPage2 + 1, 2)">Sau</a>
+                  </li>
+                </ul>
+              </nav>
             </div>
           </div>
         </div>
@@ -216,7 +242,33 @@ const useQuanLyHoaDon = useQuanLyHoaDonStore();
 const checkInStore = useCheckInStore()
 
 const hoaDonList = ref<HoaDonKhachHang[]>([]);
-const hoaDonThanhToanList = ref([]);
+const hoaDonThanhToanList = ref<HoaDonKhachHang[]>([]);
+
+const itemsPerPage = 5;
+const currentPage1 = ref(1);
+const currentPage2 = ref(1);
+
+const paginatedHoaDonList = computed(() => {
+  const start = (currentPage1.value - 1) * itemsPerPage;
+  return hoaDonList.value.slice(start, start + itemsPerPage);
+});
+
+const paginatedHoaDonThanhToanList = computed(() => {
+  const start = (currentPage2.value - 1) * itemsPerPage;
+  return hoaDonThanhToanList.value.slice(start, start + itemsPerPage);
+});
+
+const totalPages1 = computed(() => Math.ceil(hoaDonList.value.length / itemsPerPage));
+const totalPages2 = computed(() => Math.ceil(hoaDonThanhToanList.value.length / itemsPerPage));
+
+const changePage = (newPage: number, tableNumber: number) => {
+  if (tableNumber === 1) {
+    currentPage1.value = newPage;
+  } else {
+    currentPage2.value = newPage;
+  }
+};
+
 
 let refreshInterval: NodeJS.Timeout;
 
@@ -294,7 +346,6 @@ onMounted(() => {
 });
 
 onUnmounted(() => {
-  // Xóa interval khi component bị hủy
   if (refreshInterval) clearInterval(refreshInterval);
 });
 </script>

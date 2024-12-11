@@ -36,9 +36,6 @@
                             <strong>Thời gian : </strong>
                             <div class="row">
                               <div class="col">
-                                Tên ca: {{ thayDoiLichHenStore.getCaLichHen.tenca }}
-                              </div>
-                              <div class="col">
                                 Giờ : {{ thayDoiLichHenStore.getCaLichHen.thoigianca }}
                               </div>
                               <div class="col">
@@ -103,10 +100,7 @@
                 </div>
                 <div class="col">
                   <CapNhatDanhGia
-                      :idDanhGia="String(chiTietDanhGia.id)"
-                      :idLichHen="String(thayDoiLichHenStore.lichHenDetails.id)"
-                      :initialRating="Number(chiTietDanhGia.sosao)"
-                      :initialReview="chiTietDanhGia.mota"
+                      :danhGia="convertToDanhGia(chiTietDanhGia)"
                   />
                 </div>
               </div>
@@ -129,13 +123,14 @@ import { useThayDoiLichHenStore } from '~/stores/ThayDoiLichHen'
 import { useDanhGiaStore } from '~/stores/DanhGiaStores';
 import type { ChiTietDanhGia } from '~/models/ChiTietDanhGia';
 import { useToast } from "vue-toastification";
+import CapNhatDanhGia from "~/components/CapNhatDanhGia.vue";
 
 const toast = useToast();
 
 const thayDoiLichHenStore = useThayDoiLichHenStore()
 const danhGiaStore = useDanhGiaStore()
 const chiTietDanhGia = ref<ChiTietDanhGia | null>(null);
-
+import type  DanhGia  from '~/models/DanhGia';
 const route = useRoute()
 const id = Array.isArray(route.params.id) ? route.params.id[0] : route.params.id;
 
@@ -143,7 +138,15 @@ onMounted(async () => {
   await thayDoiLichHenStore.fetchLichHenDetails(Number(id))
   await hienThiDanhGia(id)
 })
-
+const convertToDanhGia = (chiTietDanhGia: ChiTietDanhGia | null): DanhGia | null => {
+  if (!chiTietDanhGia) return null;
+  return {
+    ...chiTietDanhGia,
+    toJSON() {
+      return { ...this };
+    }
+  };
+};
 async function hienThiDanhGia(idLichHen: string) {
   const result = await danhGiaStore.chitietdanhgiatheolichhen(idLichHen);
   if ('success' in result) {

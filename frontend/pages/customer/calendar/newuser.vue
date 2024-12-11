@@ -65,7 +65,7 @@
                       <h5 class="text-muted mb-3"><i class="fas fa-paw text-primary me-2"></i>Thông tin thú cưng</h5>
                       <div class="row">
                         <div class="col-md-6 mb-2">
-                          <p class="mb-0"><strong>Tên:</strong> {{ tempData.thucung.ten }}</p>
+                          <p class="mb-0"><strong>Tên: </strong> {{ tempData.thucung.ten }}</p>
                         </div>
                         <div class="col-md-6 mb-2">
                           <p class="mb-0"><strong>Tuổi:</strong> {{ tempData.thucung.tuoi }}</p>
