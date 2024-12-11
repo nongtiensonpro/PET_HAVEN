@@ -72,7 +72,7 @@
     line-height: normal;
 }
 .custom-button {
-    background-color: transparent;
+    background-color: rgba(246, 246, 234, 0.62);
     border: 1px solid #400D01;
     color: #400D01;
     padding: 15px 32px;
@@ -115,12 +115,28 @@
     color: #f6f6ea !important;
 }
 
-html, body{
-    min-height: 100% !important;
+html, body {
+    min-height: 100vh !important;
     min-width: 100% !important;
-    background: #F2F0D8 !important;
+    background-image: url('./image/AnhNen.jpg') !important;
+    background-size: cover !important;
+    background-position: center center !important;
+    background-repeat: no-repeat !important;
+    background-attachment: fixed !important;
     color: #400D01 !important;
     font-family: 'Baloo 2', sans-serif !important;
+}
+
+/* Thêm một lớp overlay để làm cho văn bản dễ đọc hơn */
+body::before {
+    content: "";
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgb(242, 240, 216) !important;
+    z-index: -1;
 }
 
 .card {

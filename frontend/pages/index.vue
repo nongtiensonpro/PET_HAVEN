@@ -30,12 +30,9 @@
         <button @click="nextPage" :disabled="currentPage === totalPages">Trang sau</button>
       </div>
 
-      <div v-if="vouchers">
+      <div>
         <h2 class="text text-center ">Chương trình khuyến mãi</h2>
         <VoucherDisplay :vouchers="vouchers" />
-      </div>
-      <div v-else>
-        <h2 class="text text-center fs-3">Hãy đăng nhập để lấy thông tin khuyến mãi</h2>
       </div>
     </div>
   </div>

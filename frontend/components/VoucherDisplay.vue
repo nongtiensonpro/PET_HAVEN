@@ -1,6 +1,6 @@
 <template>
   <div class="voucher-carousel">
-    <div class="carousel-container">
+    <div v-if="vouchers.length > 0" class="carousel-container">
       <div class="carousel-track" :style="{ transform: `translateX(${-currentIndex * 100}%)` }">
         <div v-for="voucher in vouchers" :key="voucher.id" class="voucher-item">
           <div class="voucher">
@@ -15,17 +15,27 @@
         </div>
       </div>
     </div>
+    <div v-else class="login-message">
+      <div class="message-content">
+        <i class="fas fa-lock"></i>
+        <h3>Đăng nhập để xem voucher</h3>
+        <p>Bạn cần đăng nhập để xem các voucher khuyến mãi đặc biệt.</p>
+        <button @click="navigateToLogin" class="custom-button">Đăng nhập ngay</button>
+      </div>
+    </div>
   </div>
 </template>
 
 <script setup lang="ts">
 import { ref, onMounted, onUnmounted } from 'vue';
+import { useRouter } from 'vue-router';
 import Voucher from '~/models/Voucher';
 
 const props = defineProps<{
   vouchers: Voucher[]
 }>();
 
+const router = useRouter();
 const currentIndex = ref(0);
 const intervalId = ref<number | null>(null);
 
@@ -35,9 +45,15 @@ const formatDate = (dateString: string) => {
 };
 
 const startCarousel = () => {
-  intervalId.value = window.setInterval(() => {
-    currentIndex.value = (currentIndex.value + 1) % props.vouchers.length;
-  }, 3000);
+  if (props.vouchers.length > 0) {
+    intervalId.value = window.setInterval(() => {
+      currentIndex.value = (currentIndex.value + 1) % props.vouchers.length;
+    }, 3000);
+  }
+};
+
+const navigateToLogin = () => {
+    window.location.href = 'http://localhost:8080/oauth2/authorization/keycloak'
 };
 
 onMounted(() => {
@@ -56,6 +72,10 @@ onUnmounted(() => {
   overflow: hidden;
   position: relative;
   padding: 20px 0;
+  min-height: 200px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
 
 .carousel-container {
@@ -103,24 +123,46 @@ h3 {
   color: #666;
 }
 
-.pet-icons {
-  position: absolute;
-  bottom: 10px;
-  left: 0;
-  width: 100%;
-  display: flex;
-  justify-content: space-around;
-  font-size: 24px;
-  color: #666;
-  animation: bounce 2s infinite;
+.login-message {
+  text-align: center;
+  padding: 20px;
+  background-color: #f8f9fa;
+  border-radius: 10px;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
 }
 
-@keyframes bounce {
-  0%, 100% {
-    transform: translateY(0);
-  }
-  50% {
-    transform: translateY(-10px);
-  }
+.message-content {
+  max-width: 300px;
+  margin: 0 auto;
+}
+
+.login-message i {
+  font-size: 3em;
+  color: #e74c3c;
+  margin-bottom: 15px;
+}
+
+.login-message h3 {
+  color: #333;
+  margin-bottom: 10px;
+}
+
+.login-message p {
+  color: #666;
+  margin-bottom: 20px;
+}
+
+.login-button {
+  background-color: #e74c3c;
+  color: white;
+  border: none;
+  padding: 10px 20px;
+  border-radius: 5px;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+}
+
+.login-button:hover {
+  background-color: #c0392b;
 }
 </style>
