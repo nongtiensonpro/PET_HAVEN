@@ -1,7 +1,7 @@
 import DichVu from '../models/DichVu';
 import CaHen from '../models/CaHen';
 import ThuCungKhachHang from "~/models/ThuCungKhachHang";
-import { useMauKhachDatDichVu } from '~/stores/MauKhachDatDichVu';
+import {useMauKhachDatDichVu} from '~/stores/MauKhachDatDichVu';
 
 interface DatLichState {
     DichVu: DichVu[];
@@ -68,26 +68,27 @@ export const useDatLichStore = defineStore('datLichStore', {
         },
 
         async xacNhanDatLich() {
-            const { getTempData, updateDataAfterBooking } = useMauKhachDatDichVu();
+            const {getTempData, updateDataAfterBooking} = useMauKhachDatDichVu();
             const token = localStorage.getItem('access_token');
             const dichVuVaThuCungKhachHangDat = getTempData();
-
-            if (!dichVuVaThuCungKhachHangDat || !dichVuVaThuCungKhachHangDat.idcalichhen) {
+            if (!dichVuVaThuCungKhachHangDat || !dichVuVaThuCungKhachHangDat.idlichhen) {
                 console.error('Không có dữ liệu đặt lịch tạm thời hoặc dữ liệu không hợp lệ');
                 return;
             }
-
             try {
-                console.log('Dữ liệu trước khi gửi:', dichVuVaThuCungKhachHangDat);
-
                 let formattedDate: string;
                 try {
-                    formattedDate = formatDate(dichVuVaThuCungKhachHangDat.date);
+                    formattedDate = formatDate(dichVuVaThuCungKhachHangDat.idlichhen.date);
                 } catch (error) {
                     console.error('Lỗi khi định dạng ngày:', error);
                     throw new Error('Ngày đặt lịch không hợp lệ');
                 }
-
+                // console.log('Request Body trước khi gửi BE nè :', JSON.stringify({
+                //     idThuCung: dichVuVaThuCungKhachHangDat.thucung,
+                //     date: formattedDate,
+                //     idcalichhen: dichVuVaThuCungKhachHangDat.idlichhen.calichhen,
+                //     idDichVu: dichVuVaThuCungKhachHangDat.idlichhen.dichvu
+                // }));
                 const response = await fetch('http://localhost:8080/api/dat-lich/xac-nhan-dat', {
                     method: 'PUT',
                     headers: {
@@ -97,8 +98,8 @@ export const useDatLichStore = defineStore('datLichStore', {
                     body: JSON.stringify({
                         idThuCung: dichVuVaThuCungKhachHangDat.thucung,
                         date: formattedDate,
-                        idcalichhen: dichVuVaThuCungKhachHangDat.idcalichhen,
-                        idDichVu: dichVuVaThuCungKhachHangDat.dichvu.id
+                        idcalichhen: dichVuVaThuCungKhachHangDat.idlichhen.calichhen.id,
+                        idDichVu: dichVuVaThuCungKhachHangDat.idlichhen.dichvu.id
                     })
                 });
 
