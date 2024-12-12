@@ -41,9 +41,8 @@ public class LichHenController {
 
     @PreAuthorize("hasRole('admin')")
     @GetMapping("/all")
-    public Page<Lichhen> getAllLichHen(@RequestParam(defaultValue = "0") int page) {
-        Pageable pageable = PageRequest.of(page, 10); // 10 items per page
-        return lichHenService.getAllPageLichHen(pageable);
+    public List<Lichhen> getAllLichHen(@RequestParam(defaultValue = "0") int page) {
+        return lichHenService.getAllPageLichHen();
     }
 
     @PreAuthorize("hasRole('user')")
@@ -90,10 +89,12 @@ public class LichHenController {
 //        if (lichHenService.isCaTrungTrongNgay(datLaiLich.getDate(), datLaiLich.getIdcalichhen().getId())) {
 //            return new ResponseEntity<>(HttpStatus.BAD_REQUEST); // Trả về lỗi nếu trùng ca
 //        }
-        if (idTT == 1){
+        if (idTT == 1 || idTT == 2){
             Hoadon hoadon = hoadonOptional.get();
-            hoadon.setTrangthai(3);
-            hoaDonService.addOrUpdate(hoadon);
+            if (hoadon != null){
+                hoadon.setTrangthai(3);
+                hoaDonService.addOrUpdate(hoadon);
+            }
         }
 
         // Cập nhật trạng thái
@@ -110,30 +111,29 @@ public class LichHenController {
         Lichhen lichhenNew = new Lichhen();
         Optional<Hoadon> hoadonOptional = hoaDonService.finHoadonByIdLich(id);
         if (lichhen == null) {
+            System.out.println(1);
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Lịch hẹn không tồn tại.");
         }
 
-        if (lichhen != null && lichhen.getTrangthai() == 4) {
 //          Thay đổi thời gian và ca lịch
             Optional<Lichhen> lichhenDoiOptional = lichHenService.getLichHenByDateandCa(doiLichDTO.getDate(),Integer.parseInt(doiLichDTO.getIdcalichhen()));
             if (!lichhenDoiOptional.isPresent()) {
+                System.out.println(2);
                 return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Lịch lỗi.");
             }
 
             Lichhen lichDoi = lichhenDoiOptional.get();
             lichDoi.setEmailNguoiDat(lichhen.getEmailNguoiDat());
             lichDoi.setIdkhachhang(lichhen.getIdkhachhang());
-            lichDoi.setTrangthai(3); // Đặt trạng thái là "Chờ thanh toán"
+            lichDoi.setTrangthai(lichhen.getTrangthai()); // Đặt trạng thái là "Chờ thanh toán"
             lichDoi.setThoigianthaydoi(LocalDateTime.now());
             lichDoi.setThucung(lichhen.getThucung());
             lichDoi.setDichvu(lichhen.getDichvu());
             lichDoi.setTrangthaica(true);
             lichDoi.setSolanthaydoi(lichhen.getSolanthaydoi());
-            lichHenService.addOrUpdate(lichDoi);
 
             Hoadon hoadon = hoadonOptional.get();
             hoadon.setIdlichhen(lichDoi);
-            hoaDonService.addOrUpdate(hoadon);
 
 //            Cập nhập số lần thay đổi
             lichhen.setSolanthaydoi(lichhen.getSolanthaydoi()+1);
@@ -149,8 +149,9 @@ public class LichHenController {
             lichhenNew.setDate(lichhen.getDate());
             lichhenNew.setTrangthaica(true);
             lichhenNew.setSolanthaydoi(lichhen.getSolanthaydoi());
-            lichHenService.addOrUpdate(lichhenNew);
 
+
+            lichhen.setIdkhachhang("demo");
             lichhen.setTrangthai(5);
             lichhen.setEmailNguoiDat("default-email@example.com");
             if (lichhen.getTrangthaica()){
@@ -158,10 +159,11 @@ public class LichHenController {
             }else {
                 return ResponseEntity.ok("Lỗi ca");
             }
+            hoaDonService.addOrUpdate(hoadon);
+            lichHenService.addOrUpdate(lichDoi);
+            lichHenService.addOrUpdate(lichhenNew);
             lichHenService.addOrUpdate(lichhen);
             return ResponseEntity.ok("Thời gian của lịch hẹn đã được cập nhật.");
-        }
-        return new ResponseEntity<>(HttpStatus.NOT_FOUND);
     }
 
     @GetMapping("/findById/{id}")
@@ -206,10 +208,10 @@ public class LichHenController {
             }
 
             // Tạo file PDF hóa đơn
-            String thoiGian = hoadon.getIdlichhen().getDate().toString()+ ' ' + hoadon.getIdlichhen().getIdcalichhen().getThoigianca();
-            byte[] pdfBytes = pdfExportService.generateInvoice(hoadon.getNgaythanhtoan().toString(),hoadon.getMagiaodich(),hoadon.getPhuongthucthanhtoan(),hoadon.getIdlichhen().getDichvu().getTendichvu(),hoadon.getSotienbandau(),hoadon.getSotien(),thoiGian);
-
-            hoaDonService.sendHoaDonSauThanhToan(lichhen,pdfBytes);
+//            String thoiGian = hoadon.getIdlichhen().getDate().toString()+ ' ' + hoadon.getIdlichhen().getIdcalichhen().getThoigianca();
+//            byte[] pdfBytes = pdfExportService.generateInvoice(hoadon.getNgaythanhtoan().toString(),hoadon.getMagiaodich(),hoadon.getPhuongthucthanhtoan(),hoadon.getIdlichhen().getDichvu().getTendichvu(),hoadon.getSotienbandau(),hoadon.getSotien(),thoiGian);
+//
+//            hoaDonService.sendHoaDonSauThanhToan(lichhen,pdfBytes);
 
             return new ResponseEntity<>(HttpStatus.CREATED);
         }

@@ -1,7 +1,8 @@
 import HoaDonKhachHang from "~/models/HoaDonKhachHang";
+import {Lichhen} from "~/models/LichSuDatLich";
 
 interface QuanLyLichHenAdminState {
-    hoaDonKhachHangs: HoaDonKhachHang[];
+    hoaDonKhachHangs: Lichhen[];
 }
 
 export const useQuanLyLichHenAdminStore = defineStore('quanLyLichHenAdminStore', {
@@ -12,7 +13,7 @@ export const useQuanLyLichHenAdminStore = defineStore('quanLyLichHenAdminStore',
         async fetchHoaDonKhachHangs() {
             const token = localStorage.getItem('access_token');
             try {
-                const response = await fetch('http://localhost:8080/api/hoa-don/all', {
+                const response = await fetch('http://localhost:8080/api/lich-hen/all', {
                     method: 'GET',
                     headers: {
                         'Authorization': `Bearer ${token}`,
@@ -23,7 +24,7 @@ export const useQuanLyLichHenAdminStore = defineStore('quanLyLichHenAdminStore',
                     return;
                 }
                 const data = await response.json();
-                console.log('Hoa don:', data);
+                console.log('lich hen', data);
                 this.hoaDonKhachHangs = data;
                 return data;
             } catch (error) {
@@ -80,7 +81,7 @@ export const useQuanLyLichHenAdminStore = defineStore('quanLyLichHenAdminStore',
             }
 
             try {
-                const response = await fetch(`http://localhost:8080/api/dat-lich/update-time/${id}`, {
+                const response = await fetch(`http://localhost:8080/api/lich-hen/update-time/${id}`, {
                     method: 'PUT',
                     headers: {
                         'Authorization': `Bearer ${token}`,

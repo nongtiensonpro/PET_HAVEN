@@ -66,6 +66,10 @@ public class HoaDonService {
 
     public Optional<Hoadon> finHoadonByIdLich(Integer id){return hoadonRepository.findByIdlichhen_Id(id);}
 
+    public List<Hoadon> getList(){
+        return hoadonRepository.findByIdlichhen_TrangthaiAndTrangthaiAndDate(8,2,LocalDate.now());
+    }
+
     public  Optional<Hoadon> findHoaDonOnline(String idPayPal)
     {return hoadonRepository.findByMagiaodich(idPayPal);}
 
@@ -91,7 +95,9 @@ public class HoaDonService {
         try {
             // Nội dung email
             String subject = "Hóa đơn thanh toán";
-            String body = "Cảm ơn bạn đã đặt lịch của chúng tôi. Vui lòng xem hóa đơn đính kèm.";
+            String body = "Cảm ơn bạn đã đặt lịch của chúng tôi. Vui lòng xem hóa đơn đính kèm." +
+                    "Nếu gặp bất kì vấn đề gì vui lòng liên hệ fanpage hoặc sdt: 0906194201" +
+                    "Nếu trong hôm nay bạn không liên hệ với chúng tôi, lịch của bạn sẽ bị hủy và được hoàn 80% giá trị hóa đơn";
 
             emailService.sendEmailWithHoaDon(
                     lichhen.getEmailNguoiDat(),  // Địa chỉ email người nhận

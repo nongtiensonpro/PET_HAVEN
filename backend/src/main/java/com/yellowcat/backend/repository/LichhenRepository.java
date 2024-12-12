@@ -34,6 +34,8 @@ public interface LichhenRepository extends JpaRepository<Lichhen, Integer> {
 
     List<Lichhen> findByIdcalichhen_IdAndDateAfter(int idcalichhen_Id, LocalDate date);
 
+    List<Lichhen> findByTrangthaicaTrue();
+
     @Modifying
     @Transactional
     @Query("UPDATE Lichhen l Set l.trangthaica = true WHERE l.date =:ngay")
