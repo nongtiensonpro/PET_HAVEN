@@ -79,13 +79,22 @@ public class LichHenController {
 
         // Tìm lịch hẹn
         Lichhen datLaiLich = lichHenService.findById(id);
+        Optional<Hoadon> hoadonOptional = hoaDonService.finHoadonByIdLich(id);
         if (datLaiLich == null) {
             return new ResponseEntity<>(HttpStatus.NOT_FOUND); // Trả về 404 nếu không tìm thấy lịch hẹn
+        }
+        if (!hoadonOptional.isPresent()) {
+            return ResponseEntity.notFound().build();
         }
 
 //        if (lichHenService.isCaTrungTrongNgay(datLaiLich.getDate(), datLaiLich.getIdcalichhen().getId())) {
 //            return new ResponseEntity<>(HttpStatus.BAD_REQUEST); // Trả về lỗi nếu trùng ca
 //        }
+        if (idTT == 1){
+            Hoadon hoadon = hoadonOptional.get();
+            hoadon.setTrangthai(3);
+            hoaDonService.addOrUpdate(hoadon);
+        }
 
         // Cập nhật trạng thái
         datLaiLich.setTrangthai(idTT);
