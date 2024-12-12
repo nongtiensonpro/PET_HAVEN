@@ -70,6 +70,11 @@
                     </button>
                   </div>
                   <div class="col-12 p-4">
+                    <button type="button" class="custom-button">
+                      <nuxt-link class="nav-link" :to="`/chat`">Chat</nuxt-link>
+                    </button>
+                  </div>
+                  <div class="col-12 p-4">
                     <button type="button" class="custom-button" @click="logout1">
                       Đăng xuất
                     </button>
