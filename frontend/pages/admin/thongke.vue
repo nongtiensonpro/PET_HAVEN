@@ -8,21 +8,21 @@
             <div class="col">
               <label class="block text-sm font-medium text-gray-700 mb-2">Chọn khoảng thời gian:</label>
               <date-picker
-                  v-model="dateRange"
-                  range
-                  @change="updateDateRange"
-                  value-type="format"
-                  format="YYYY-MM-DD"
-                  :placeholder="['Ngày bắt đầu', 'Ngày kết thúc']"
-                  class="w-full border rounded-md p-2 focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                v-model="dateRange"
+                range
+                @change="updateDateRange"
+                value-type="format"
+                format="YYYY-MM-DD"
+                :placeholder="['Ngày bắt đầu', 'Ngày kết thúc']"
+                class="w-full border rounded-md p-2 focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
               />
             </div>
             <div class="col">
               <label for="statisticType" class="block text-sm font-medium text-gray-700 mb-2">Loại thống kê:</label>
               <select
-                  v-model="statisticType"
-                  id="statisticType"
-                  class="w-full border rounded-md p-2 focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                v-model="statisticType"
+                id="statisticType"
+                class="w-full border rounded-md p-2 focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
               >
                 <option value="day">Theo Ngày</option>
                 <option value="month">Theo Tháng</option>
@@ -53,19 +53,25 @@
           </div>
           <div v-else-if="hasData" class="mt-8">
             <h3 class="text-xl font-semibold mb-4 text-gray-800">Dữ liệu thống kê:</h3>
+
+            <!-- ECharts Component -->
+            <div class="bg-white shadow-lg rounded-lg overflow-hidden p-4 mb-8">
+              <v-chart class="chart" :option="chartOption" autoresize />
+            </div>
+
             <div class="bg-white shadow-lg rounded-lg overflow-hidden">
               <table class="min-w-full divide-y divide-gray-200 m-4 p-4">
                 <thead class="bg-gray-50">
-                <tr>
-                  <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Ngày</th>
-                  <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Số tiền</th>
-                </tr>
+                  <tr>
+                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Ngày</th>
+                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Số tiền</th>
+                  </tr>
                 </thead>
                 <tbody class="bg-white divide-y divide-gray-200">
-               <tr v-for="(item, index) in store.thongKeItems" :key="index" class="hover:bg-gray-50 transition-colors duration-200">
-               <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">{{ formatDisplayDate(item.date.toString()) }}</td>
-                  <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">{{ item.amount }} USD</td>
-                </tr>
+                  <tr v-for="(item, index) in store.thongKeItems" :key="index" class="hover:bg-gray-50 transition-colors duration-200">
+                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">{{ formatDisplayDate(item.date.toString()) }}</td>
+                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">{{ item.amount }} USD</td>
+                  </tr>
                 </tbody>
               </table>
             </div>
@@ -84,6 +90,14 @@ import { ref, onMounted, watch, computed, onUnmounted } from 'vue';
 import { useThongKeStore } from '~/stores/ThongKeStores';
 import DatePicker from 'vue-datepicker-next';
 import { useToast } from 'vue-toastification';
+import VChart from 'vue-echarts';
+import { use } from 'echarts/core';
+import { CanvasRenderer } from 'echarts/renderers';
+import { LineChart } from 'echarts/charts';
+import { GridComponent, TooltipComponent, LegendComponent } from 'echarts/components';
+
+// Register ECharts components
+use([CanvasRenderer, LineChart, GridComponent, TooltipComponent, LegendComponent]);
 
 const toast = useToast();
 const store = useThongKeStore();
@@ -94,7 +108,35 @@ const error = ref<string | null>(null);
 
 const hasData = computed(() => store.thongKeItems.length > 0);
 
-// Sử dụng useAsyncData để tự động fetch dữ liệu khi trang được truy cập
+const chartOption = computed(() => ({
+  tooltip: {
+    trigger: 'axis',
+    formatter: function(params) {
+      const date = formatDisplayDate(params[0].name);
+      const value = params[0].value;
+      return `${date}: ${value} USD`;
+    }
+  },
+  xAxis: {
+    type: 'category',
+    data: store.thongKeItems.map(item => item.date),
+    axisLabel: {
+      formatter: function(value) {
+        return formatDisplayDate(value);
+      }
+    }
+  },
+  yAxis: {
+    type: 'value',
+    name: 'Số tiền (USD)'
+  },
+  series: [{
+    data: store.thongKeItems.map(item => item.amount),
+    type: 'line',
+    smooth: true
+  }]
+}));
+
 const { data: initialData, refresh } = await useAsyncData(
   'thongKeData',
   async () => {
@@ -130,7 +172,7 @@ const fetchDataInternal = async (startDate: string, endDate: string) => {
   }
 
   await fetchFunction(startDate, endDate);
-  store.thongKeItems.sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime());
+  store.thongKeItems.sort((a, b) => new Date(a.date).getTime() - new Date(b.date).getTime());
   return store.thongKeItems;
 };
 
@@ -167,12 +209,19 @@ onMounted(() => {
 });
 
 onUnmounted(() => {
-  fetchData()
+  fetchData();
   if (intervalId) clearInterval(intervalId);
 });
 </script>
 
-
 <style>
 @import 'vue-datepicker-next/index.css';
+
+.chart {
+  height: 400px;
+}
+
+.custom-button {
+  @apply bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded;
+}
 </style>
