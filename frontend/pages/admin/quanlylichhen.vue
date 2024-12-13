@@ -26,28 +26,28 @@
             <th>Dịch Vụ</th>
             <th>Thời gian</th>
             <th>Ngày Hẹn</th>
-            <th>Số Tiền</th>
             <th>Trạng Thái</th>
             <th>Thao tác</th>
           </tr>
           </thead>
           <tbody>
-          <tr v-for="hoaDon in paginatedHoaDon" :key="hoaDon.id">
-            <td>{{ hoaDon.idlichhen.id }}</td>
-            <td>{{ hoaDon.idlichhen.emailNguoiDat }}</td>
-            <td>{{ hoaDon.idlichhen.thucung.ten }}</td>
-            <td>{{ hoaDon.idlichhen.dichvu.tendichvu }}</td>
-            <td>{{ hoaDon.idlichhen.idcalichhen.thoigianca }}</td>
-            <td>{{ formatDate(hoaDon.date) }}</td>
-            <td>{{ formatCurrency(hoaDon.sotien) }}</td>
-            <td><span class="badge bg-success">{{ getTrangThai(hoaDon.trangthai) }}</span></td>
+          <tr v-for="lichhen in paginatedHoaDon" :key="lichhen.id">
+            <td>{{ lichhen.id }}</td>
+            <td>{{ lichhen.emailNguoiDat }}</td>
+            <td>{{ lichhen.thucung.ten }}</td>
+            <td>{{ lichhen.dichvu.tendichvu }}</td>
+            <td>{{ lichhen.idcalichhen.thoigianca }}</td>
+            <td>{{ formatDate(lichhen.date) }}</td>
+            <td><span class="badge bg-success">{{ getTrangThai(lichhen.trangthai) }}</span></td>
             <td>
-              <div v-if="hoaDon.trangthai === 3 || hoaDon.trangthai === 4 || hoaDon.trangthai === 6">
+              <div v-if="lichhen.trangthai === 3 || lichhen.trangthai === 4 || lichhen.trangthai === 6">
                 <!-- Button trigger modal -->
-                <button type="button" class="nav-link" data-bs-toggle="modal" data-bs-target="#exampleModal2">
-                  Thay đổi lịch hẹn
+                <button type="button" class="nav-link" data-bs-toggle="modal" data-bs-target="#exampleModal2"
+                        @click="selectLichHen(lichhen)">
+
+                  Thay đổi thời gian lịch hẹn
                 </button>
-                <div class="modal fade" id="exampleModal2" tabindex="-1" aria-labelledby="exampleModalLabel2" aria-hidden="true">
+                <div class="modal fade" id="exampleModal2" tabindex="-1" aria-labelledby="exampleModalLabel2" >
                   <div class="modal-dialog">
                     <div class="modal-content">
                       <div class="modal-header">
@@ -55,7 +55,7 @@
                         <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                       </div>
                       <div class="modal-body">
-                        <CalendarAdmin :id="String(hoaDon.idlichhen)"/>
+                        <CalendarAdmin :id="String(selectedLichHen?.id)"/>
                       </div>
                       <div class="modal-footer">
                         <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
@@ -65,14 +65,14 @@
                   </div>
                 </div>
               </div>
-              <div class="nav-link" v-if="hoaDon.trangthai === 3 || hoaDon.trangthai === 4 || hoaDon.trangthai === 6">
-                <button type="button" class="nav-link" data-bs-toggle="modal" data-bs-target="#exampleModal1">
+              <div class="nav-link" >
+                <button type="button" class="nav-link" data-bs-toggle="modal" data-bs-target="#exampleModal1" @click="selectLichHen(lichhen)">
                   Thay đổi trạng thái
                 </button>
 
                 <!-- Modal -->
                 <div class="modal fade" id="exampleModal1" tabindex="-1" aria-labelledby="exampleModalLabel1"
-                     aria-hidden="true">
+                     >
                   <div class="modal-dialog">
                     <div class="modal-content">
                       <div class="modal-header">
@@ -82,8 +82,9 @@
                       <div class="modal-body">
                         <div class="form-floating">
                           <select class="form-select" id="floatingSelect" v-model="selectedTrangThai"
-                                  :aria-label="'Trạng thái bây giờ là ' + getTrangThai(hoaDon.trangthai)">
+                                  :aria-label="'Trạng thái bây giờ là ' + getTrangThai(selectedLichHen?.trangthai)">
                             <option selected>Lựa chọn trạng thái</option>
+                            <option>{{selectedLichHen?.id}}</option>
                             <option value="0" >Thành công</option>
                             <option value="1" >Thất bại</option>
                             <option value="2" >Đã hủy</option>
@@ -92,108 +93,85 @@
                             <option value="5" >Rỗng</option>
                             <option value="6">Thanh toán thành công</option>
                           </select>
-                          <label for="floatingSelect">Trạng thái bây giờ là {{ getTrangThai(hoaDon.trangthai) }}</label>
+                          <label for="floatingSelect">Trạng thái bây giờ là {{ getTrangThai(selectedLichHen?.trangthai) }}</label>
                         </div>
                       </div>
                       <div class="modal-footer">
                         <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Đóng</button>
                         <button type="button" class="btn btn-primary"
-                                @click="saveTrangThai(hoaDon.idlichhen.id, selectedTrangThai)">Lưu trạng thái
+                                @click="saveTrangThai(selectedLichHen?.id, selectedTrangThai)">Lưu trạng thái
                         </button>
                       </div>
                     </div>
                   </div>
                 </div>
               </div>
-              <button type="button" class="nav-link" data-bs-toggle="modal" data-bs-target="#exampleModal">
+              <button
+                  type="button"
+                  class="nav-link"
+                  data-bs-toggle="modal"
+                  data-bs-target="#exampleModal"
+                  @click="selectLichHen(lichhen)">
                 Chi tiết
               </button>
               <div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel"
-                   aria-hidden="true">
+                   >
                 <div class="modal-dialog">
                   <div class="modal-content">
                     <div class="modal-header">
-                      <h1 class="modal-title fs-5" id="exampleModalLabel">Chi tiết hóa đơn</h1>
+                      <h1 class="modal-title fs-5" id="exampleModalLabel">Chi tiết lịch hẹn</h1>
                       <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                     </div>
                     <div class="modal-body">
                       <table class="table table-bordered">
                         <tbody>
                         <tr>
-                          <th>ID Hóa Đơn</th>
-                          <td>{{ hoaDon.id }}</td>
-                        </tr>
-                        <tr>
                           <th>ID Lịch Hẹn</th>
-                          <td>{{ hoaDon.idlichhen.id }}</td>
+                          <td>{{ selectedLichHen?.id }}</td>
                         </tr>
                         <tr>
                           <th>ID Khách Hàng</th>
-                          <td>{{ hoaDon.idlichhen.idkhachhang }}</td>
+                          <td>{{ selectedLichHen?.idkhachhang }}</td>
                         </tr>
                         <tr>
                           <th>Tên Thú Cưng</th>
-                          <td>{{ hoaDon.idlichhen.thucung.ten }}</td>
+                          <td>{{ selectedLichHen?.thucung.ten }}</td>
                         </tr>
                         <tr>
                           <th>Cân Nặng Thú Cưng</th>
-                          <td>{{ hoaDon.idlichhen.thucung.cannang }} kg</td>
+                          <td>{{ selectedLichHen?.thucung.cannang }} kg</td>
                         </tr>
                         <tr>
                           <th>Tuổi Thú Cưng</th>
-                          <td>{{ hoaDon.idlichhen.thucung.tuoi }} năm</td>
+                          <td>{{ selectedLichHen?.thucung.tuoi }} năm</td>
                         </tr>
                         <tr>
                           <th>Giống Thú Cưng</th>
-                          <td>{{ hoaDon.idlichhen.thucung.giong }}</td>
+                          <td>{{ selectedLichHen?.thucung.giong }}</td>
                         </tr>
                         <tr>
                           <th>Dịch Vụ</th>
-                          <td>{{ hoaDon.idlichhen.dichvu.tendichvu }}</td>
+                          <td>{{ selectedLichHen?.dichvu.tendichvu }}</td>
                         </tr>
                         <tr>
                           <th>Mô Tả Dịch Vụ</th>
-                          <td>{{ hoaDon.idlichhen.dichvu.mota }}</td>
+                          <td>{{ selectedLichHen?.dichvu.mota }}</td>
                         </tr>
                         <tr>
                           <th>Email Người Đặt</th>
-                          <td>{{ hoaDon.idlichhen.emailNguoiDat }}</td>
+                          <td>{{ selectedLichHen?.emailNguoiDat }}</td>
                         </tr>
                         <tr>
                           <th>Ngày Hẹn</th>
-                          <td>{{ formatDate(hoaDon.idlichhen.date) }}</td>
+                          <td>{{ formatDate(selectedLichHen?.date) }}</td>
                         </tr>
                         <tr>
                           <th>Thời Gian Ca</th>
-                          <td>{{ hoaDon.idlichhen.idcalichhen.thoigianca }}</td>
-                        </tr>
-                        <tr>
-                          <th>Số Tiền</th>
-                          <td>{{ formatCurrency(hoaDon.sotien) }}</td>
-                        </tr>
-                        <tr>
-                          <th>Ngày Thanh Toán</th>
-                          <td>{{ formatDate(hoaDon.ngaythanhtoan) }}</td>
-                        </tr>
-                        <tr>
-                          <th>Phương Thức Thanh Toán</th>
-                          <td>{{ hoaDon.phuongthucthanhtoan }}</td>
-                        </tr>
-                        <tr>
-                          <th>Mã Giao Dịch</th>
-                          <td>{{ hoaDon.magiaodich }}</td>
-                        </tr>
-                        <tr>
-                          <th>Giảm Giá</th>
-                          <td>{{ hoaDon.idgiamgia ? hoaDon.idgiamgia.phantramgiam + '%' : 'Không có' }}</td>
-                        </tr>
-                        <tr>
-                          <th>Mô Tả Giảm Giá</th>
-                          <td>{{ hoaDon.idgiamgia ? hoaDon.idgiamgia.mota : 'Không có' }}</td>
+                          <td>{{ selectedLichHen?.idcalichhen.thoigianca }}</td>
                         </tr>
                         <tr>
                           <th>Trạng Thái</th>
-                          <td>{{ getTrangThai(hoaDon.trangthai) }}</td>
+                          <td>{{ getTrangThai(selectedLichHen?.trangthai) }}</td>
                         </tr>
                         </tbody>
                       </table>
@@ -233,16 +211,22 @@ import { useQuanLyLichHenAdminStore } from '~/stores/QuanLyLichHenAdmin';
 import Swal from 'sweetalert2';
 import { useToast } from 'vue-toastification';
 import CalendarAdmin from "~/components/CalendarChangeAdmin.vue";
+import type {Lichhen} from "~/models/LichSuDatLich";
 
 const useQuanLyAdmin = useQuanLyLichHenAdminStore();
-const hoaDonKhachHangs = ref<HoaDonKhachHang[]>([]);
-const filteredHoaDon = ref<HoaDonKhachHang[]>([]);
+const lichhen = ref<Lichhen[]>([]);
+const filteredHoaDon = ref<Lichhen[]>([]);
 const selectedTrangThai = ref<number>(0);
 const toast = useToast();
 let refreshInterval: NodeJS.Timeout;
 const itemsPerPage = 5;
 const currentPage = ref(1);
 const searchQuery = ref('');
+const selectedLichHen = ref<Lichhen | null>(null); // Lịch hẹn được chọn
+
+function selectLichHen(lichHenItem: Lichhen) {
+  selectedLichHen.value = lichHenItem; // Cập nhật thông tin lịch hẹn được chọn
+}
 
 onMounted(() => {
   fetchHoaDon();
@@ -258,10 +242,10 @@ const paginatedHoaDon = computed(() => {
 });
 
 const handleSearch = () => {
-  filteredHoaDon.value = hoaDonKhachHangs.value.filter(hoaDon =>
-      hoaDon.idlichhen.emailNguoiDat.toLowerCase().includes(searchQuery.value.toLowerCase()) ||
-      hoaDon.idlichhen.thucung.ten.toLowerCase().includes(searchQuery.value.toLowerCase()) ||
-      hoaDon.idlichhen.dichvu.tendichvu.toLowerCase().includes(searchQuery.value.toLowerCase())
+  filteredHoaDon.value = lichhen.value.filter(hoaDon =>
+      hoaDon.emailNguoiDat.toLowerCase().includes(searchQuery.value.toLowerCase()) ||
+      hoaDon.thucung.ten.toLowerCase().includes(searchQuery.value.toLowerCase()) ||
+      hoaDon.dichvu.tendichvu.toLowerCase().includes(searchQuery.value.toLowerCase())
   );
   currentPage.value = 1;
 };
@@ -279,8 +263,8 @@ onUnmounted(() => {
 const fetchHoaDon = async () => {
   try {
     await useQuanLyAdmin.fetchHoaDonKhachHangs();
-    hoaDonKhachHangs.value = useQuanLyAdmin.hoaDonKhachHangs;
-    filteredHoaDon.value = hoaDonKhachHangs.value;
+    lichhen.value = useQuanLyAdmin.hoaDonKhachHangs;
+    filteredHoaDon.value = lichhen.value;
   } catch (error) {
     console.error('Lỗi khi tải dữ liệu:', error);
     toast.error('Không thể tải dữ liệu. Vui lòng thử lại sau.');
@@ -304,7 +288,9 @@ const getTrangThai = (status: number): string => {
     3: 'Chờ thanh toán',
     4: 'Chờ xác nhận',
     5: 'Rỗng',
-    6: 'Thanh toán thành công'
+    6: 'Thanh toán thành công',
+    7: 'Đã hoàn tiền',
+    8: 'Chờ sử dụng'
   };
   return trangThaiMap[status] || 'Không xác định';
 };
@@ -352,4 +338,6 @@ async function doiNgayHen(ngayHen: string, idcalichhen: number) {
     }
   }
 }
+
+
 </script>

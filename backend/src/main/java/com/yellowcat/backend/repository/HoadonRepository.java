@@ -24,6 +24,8 @@ public interface HoadonRepository extends JpaRepository<Hoadon, Integer> {
 
     Optional<Hoadon> findByMagiaodich(String idPayMent);
 
+    List<Hoadon> findByIdlichhen_TrangthaiAndTrangthaiAndDate(int TrangthaiLich, int Trangthai,LocalDate date);
+
 
 //    ________________Thống kê______________________
 // Thống kê theo ngày

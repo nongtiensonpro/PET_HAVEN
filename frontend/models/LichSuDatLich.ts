@@ -11,6 +11,8 @@ export class Lichhen {
     date: string; // LocalDate trong Java là string trong TypeScript
     trangthai: number;
     idcalichhen: CaLichHen;
+    thoigianhuy : string;
+    thoigianthaydoi : string;
 
     constructor(
         id: number,
@@ -20,7 +22,9 @@ export class Lichhen {
         emailNguoiDat: string,
         date: string,
         trangthai: number,
-        idcalichhen: CaLichHen
+        idcalichhen: CaLichHen,
+        thoigianhuy : string,
+        thoigianthaydoi : string
     ) {
         this.id = id;
         this.idkhachhang = idkhachhang;
@@ -30,6 +34,8 @@ export class Lichhen {
         this.date = date;
         this.trangthai = trangthai;
         this.idcalichhen = idcalichhen;
+        this.thoigianhuy = thoigianhuy;
+        this.thoigianthaydoi = thoigianthaydoi;
     }
 }
 

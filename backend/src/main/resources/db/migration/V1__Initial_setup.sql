@@ -133,9 +133,9 @@ VALUES
 
 -- Thêm dữ liệu vào bảng DichVu
 INSERT INTO DichVu (TenDichVu, MoTa, Anh, GiaTien,trangthai,Hien)
-VALUES ('Dịch vụ 1', 'Mô tả dịch vụ 1', NULL, 100000,true,true),
-       ('Dịch vụ 2', 'Mô tả dịch vụ 2', NULL, 150000,true,true),
-       ('Dịch vụ 3', 'Mô tả dịch vụ 3', NULL, 200000,true,true);
+VALUES ('Dịch vụ 1', 'Mô tả dịch vụ 1', NULL, 10,true,true),
+       ('Dịch vụ 2', 'Mô tả dịch vụ 2', NULL, 15,true,true),
+       ('Dịch vụ 3', 'Mô tả dịch vụ 3', NULL, 20,true,true);
 
 -- Thêm dữ liệu vào bảng ThuCung
 INSERT INTO ThuCung (Ten, CanNang, Tuoi, Giong, IDTaiKhoan, Image)

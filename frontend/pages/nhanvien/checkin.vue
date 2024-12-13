@@ -326,7 +326,7 @@ function taiHoaDon(id: string) {
 async function thanhToanHoaDon(id: string) {
   const result = await Swal.fire({
     title: 'Xác nhận',
-    text: "Bạn có chắc chắn muốn thanh toán cho hóa đơn này?",
+    text: "Bạn có chắc chắn muốn Checkin cho lịch này chứ?",
     icon: 'warning',
     showCancelButton: true,
     confirmButtonColor: '#3085d6',
