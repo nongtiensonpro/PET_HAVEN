@@ -3,7 +3,7 @@
     Cập nhật đánh giá
   </button>
 
-  <div class="modal fade" :id="`updateReviewModal${danhGia.id}`" tabindex="-1" :aria-labelledby="`updateReviewModalLabel${danhGia.id}`" aria-hidden="true">
+  <div class="modal fade" :id="`updateReviewModal${danhGia.id}`" tabindex="-1" :aria-labelledby="`updateReviewModalLabel${danhGia.id}`" >
     <div class="modal-dialog">
       <div class="modal-content">
         <div class="modal-header">

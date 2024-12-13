@@ -51,7 +51,7 @@ const lifespanFactors = [
     </svg>
   </button>
 
-  <div class="modal fade" id="petAgeModalGiong" tabindex="-1" aria-labelledby="petAgeModalLabelGiong" aria-hidden="true">
+  <div class="modal fade" id="petAgeModalGiong" tabindex="-1" aria-labelledby="petAgeModalLabelGiong" >
     <div class="modal-dialog modal-lg">
       <div class="modal-content">
         <div class="modal-header">

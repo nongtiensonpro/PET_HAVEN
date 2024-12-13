@@ -47,7 +47,7 @@ async function capNhatCa() {
     Cập nhật
   </button>
 
-  <div class="modal fade" :id="`exampleModal${localCa.id}`" tabindex="-1" :aria-labelledby="`exampleModal${localCa.id}`" aria-hidden="true">
+  <div class="modal fade" :id="`exampleModal${localCa.id}`" tabindex="-1" :aria-labelledby="`exampleModal${localCa.id}`">
     <div class="modal-dialog">
       <div class="modal-content">
         <div class="modal-header">

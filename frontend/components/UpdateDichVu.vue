@@ -105,7 +105,7 @@ const handleError = (message: string, error?: any) => {
     </button>
     <div class="modal fade" :id="'modal' + updatedService.id" tabindex="-1"
          :aria-labelledby="'modalLabel' + updatedService.id"
-         aria-hidden="true">
+         >
       <div class="modal-dialog">
         <div class="modal-content">
           <div class="modal-header">
