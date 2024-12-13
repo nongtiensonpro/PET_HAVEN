@@ -201,6 +201,7 @@ async function huyLichHenNe() {
   try {
     await huyLichHen(props.id);
     toast.success('Đã hủy lịch hẹn thành công', {timeout: 3000});
+    return navigateTo('/user/appointment');
   } catch (error) {
     toast.error('Không thể hủy lịch hẹn. Vui lòng thử lại. ' + error, {timeout: 3000});
   }}

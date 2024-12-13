@@ -3,6 +3,7 @@ import {ref, computed} from 'vue';
 import {useMauKhachDatDichVu} from "~/stores/MauKhachDatDichVu";
 import Swal from 'sweetalert2';
 
+const {getTempData} = useMauKhachDatDichVu()
 const token = localStorage.getItem('access_token');
 const isLoading = ref(false);
 const countdown = ref(10);
@@ -28,6 +29,10 @@ function startCountdown() {
       showOverlay.value = false;
     }
   }, 1000);
+}
+const dichVuVaThuCungKhachHangDat = getTempData();
+async function thanhThayDoiLich() {
+  return navigateTo('/chi-tiet-lich/' + dichVuVaThuCungKhachHangDat?.id);
 }
 
 async function thanhToanOnline() {
@@ -90,11 +95,20 @@ async function thanhToanOnline() {
             <div class="col-md-6">
               <div class="card mb-4">
                 <div class="card-body">
-                  <h5 class="card-title">Thanh toán với PayPal</h5>
+                  <h5 class="card-title text-center">Thanh toán với PayPal</h5>
                   <img src="~/assets/image/PayPal-logo.png" alt="PayPal logo" class="img-fluid mb-3">
-                  <button @click="thanhToanOnline" class="btn btn-primary btn-lg btn-block">
-                    Thanh toán ngay
-                  </button>
+                  <div class="row">
+                    <div class="col">
+                      <button @click="thanhToanOnline" class="custom-button">
+                        Thanh toán ngay
+                      </button>
+                    </div>
+                    <div class="col">
+                      <button @click="thanhThayDoiLich" class="custom-button">
+                        Hủy hoặc thay đổi thời gian
+                      </button>
+                    </div>
+               </div>
                 </div>
               </div>
             </div>
