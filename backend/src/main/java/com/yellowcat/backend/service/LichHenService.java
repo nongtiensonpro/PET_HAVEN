@@ -296,7 +296,7 @@ public class LichHenService {
             Duration duration = Duration.between(currentTime, appointmentTime);
 
             //gửi thông báo
-            if (duration.toMinutes() <= 60 && duration.toMinutes() > 0 && lichhen.getSolannhacnho() < 1 && !lichhen.getEmailNguoiDat().equalsIgnoreCase("default-email@example.com")) {
+            if (duration.toMinutes() <= 60 && duration.toMinutes() > 0 && lichhen.getThoigianhuy() == null && lichhen.getSolannhacnho() < 1 && !lichhen.getEmailNguoiDat().equalsIgnoreCase("default-email@example.com")) {
                 sendEmailNhacNho(lichhen, String.valueOf(duration.toMinutes()));
                 lichhen.setSolannhacnho(lichhen.getSolannhacnho() + 1);
                 lichhenRepository.save(lichhen);
@@ -308,11 +308,11 @@ public class LichHenService {
     public void sendEmailNhacNho(Lichhen lichhen, String gio) {
         try {
             String message = "Chào bạn,\n\n"
-                    + "Cảm ơn bạn đã đặt lịch."
+                    + "Cảm ơn bạn đã đặt lịch.\n\n"
                     + "Còn" + gio + " phút nữa là đến lịch hẹn của bạn "
                     + "Xin hãy sắp xếp thời gian , lịch hẹn của bạn sẽ bắt đầu lúc: " + lichhen.getDate() + ' ' + lichhen.getIdcalichhen().getThoigianca()
-                    +   "Nếu gặp bất kì vấn đề gì vui lòng liên hệ fanpage hoặc sdt: 0906194201" +
-                            "Nếu trong hôm nay bạn không liên hệ với chúng tôi, lịch của bạn sẽ bị hủy và được hoàn 80% giá trị hóa đơn";
+                    +   "\n\n Nếu gặp bất kì vấn đề gì vui lòng liên hệ fanpage hoặc sdt: 0906194201 \n\n" +
+                            "Nếu trong hôm nay bạn không liên hệ với chúng tôi, lịch của bạn sẽ bị hủy và được hoàn 80% giá trị hóa đơn nếu đã thanh toán";
 
             emailService.sendEmail(lichhen.getEmailNguoiDat(), "Nhắc nhở lịch hẹn", message);
             System.out.println("Email nhắc nhở đã được gửi thành công.");
