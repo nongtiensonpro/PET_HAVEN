@@ -137,7 +137,7 @@
           <div class="card-body">
             <h4 class="card-title">Bạn có muốn xác nhận đặt lịch</h4>
             <button
-                class="btn btn-secondary"
+                class="custom-button"
                 @click="payAtCounter"
                 :disabled="isLoading"
             >

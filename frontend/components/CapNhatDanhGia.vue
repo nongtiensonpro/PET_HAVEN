@@ -35,8 +35,8 @@
               ></textarea>
             </div>
             <div class="modal-footer">
-              <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Đóng</button>
-              <button type="submit" class="btn btn-primary" data-bs-dismiss="modal">Lưu thay đổi</button>
+              <button type="button" class="custom-button" data-bs-dismiss="modal">Đóng</button>
+              <button type="submit" class="custom-button" data-bs-dismiss="modal">Lưu thay đổi</button>
             </div>
           </form>
         </div>

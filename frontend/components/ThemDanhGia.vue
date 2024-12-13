@@ -69,7 +69,7 @@ const resetForm = () => {
 <template>
   <div class="container">
     <!-- Button trigger modal -->
-    <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#exampleModal">
+    <button type="button" class="custom-button" data-bs-toggle="modal" data-bs-target="#exampleModal">
       Thêm đánh giá
     </button>
 
@@ -97,8 +97,8 @@ const resetForm = () => {
                 </div>
               </div>
               <div class="modal-footer">
-                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal" @click="resetForm">Đóng</button>
-                <button type="submit" class="btn btn-primary">Lưu đánh giá</button>
+                <button type="button" class="custom-button" data-bs-dismiss="modal" @click="resetForm">Đóng</button>
+                <button type="submit" class="custom-button">Lưu đánh giá</button>
               </div>
             </form>
           </div>

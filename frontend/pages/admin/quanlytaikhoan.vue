@@ -1,10 +1,16 @@
 <template>
   <div class="container">
     <div class="d-flex justify-content-between align-items-center mb-3">
-      <button type="button" @click="lamMoi()" class="btn btn-sm btn-success">Làm mới bảng</button>
-      <div class="d-flex">
-        <input v-model="searchTerm" type="text" class="form-control me-2" placeholder="Tìm kiếm...">
-        <button @click="search" class="btn btn-primary">Tìm kiếm</button>
+      <div class="row">
+        <div class="col">
+          <button type="button" @click="lamMoi()" class="custom-button">Làm mới bảng</button>
+        </div>
+        <div class="col">
+          <input v-model="searchTerm" type="text" class="custom-button" placeholder="Tìm kiếm...">
+        </div>
+        <div class="col">
+          <button @click="search" class="custom-button">Tìm kiếm</button>
+        </div>
       </div>
     </div>
     <table class="table">
@@ -33,10 +39,18 @@
     </table>
 
     <!-- Pagination controls -->
-    <div class="d-flex justify-content-between align-items-center mt-3">
-      <button @click="prevPage" :disabled="currentPage === 1" class="btn btn-sm btn-secondary">Trước</button>
-      <span>Trang {{ currentPage }} / {{ totalPages }}</span>
-      <button @click="nextPage" :disabled="currentPage === totalPages" class="btn btn-sm btn-secondary">Sau</button>
+    <div class="pagination d-flex justify-content-center align-items-center mt-3">
+      <div class="row">
+        <div class="col">
+          <button @click="prevPage" :disabled="currentPage === 1" class="custom-button">Trước</button>
+        </div>
+        <div class="col">
+          <span class="text fs-5">Trang {{ currentPage }} / {{ totalPages }}</span>
+        </div>
+        <div class="col">
+          <button @click="nextPage" :disabled="currentPage === totalPages" class="custom-button">Sau</button>
+        </div>
+      </div>
     </div>
   </div>
 </template>
@@ -102,10 +116,10 @@ function lamMoi() {
 const search = () => {
   if (searchTerm.value) {
     filteredUsers.value = User.value.filter(user =>
-      user.idtaikhoan.toString().includes(searchTerm.value) ||
-      user.hoten.toLowerCase().includes(searchTerm.value.toLowerCase()) ||
-      user.email.toLowerCase().includes(searchTerm.value.toLowerCase()) ||
-      user.role.toLowerCase().includes(searchTerm.value.toLowerCase())
+        user.idtaikhoan.toString().includes(searchTerm.value) ||
+        (user.hoten?.toLowerCase() || '').includes(searchTerm.value.toLowerCase()) ||
+        (user.email?.toLowerCase() || '').includes(searchTerm.value.toLowerCase()) ||
+        (user.role?.toLowerCase() || '').includes(searchTerm.value.toLowerCase())
     );
   } else {
     filteredUsers.value = User.value;
@@ -125,15 +139,11 @@ const chitietUser = (id: string) => {
   toast.success('Chức năng đang phát triển : ' + id, {});
 }
 
-// Add a watch for searchTerm to trigger search on input change
 watch(searchTerm, () => {
   search();
 });
 </script>
 
 <style scoped>
-.table {
-  width: 100%;
-  margin-top: 20px;
-}
+
 </style>

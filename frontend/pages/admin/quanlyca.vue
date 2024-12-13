@@ -119,7 +119,7 @@ function lammoi() {
           <CapNhatNgayNghi />
         </div>
         <div class="col-3">
-          <button type="button" @click="lammoi()" class="btn btn-sm btn-success">Làm mới</button>
+          <button type="button" @click="lammoi()" class="custom-button">Làm mới</button>
         </div>
       </div>
     </div>
@@ -154,10 +154,21 @@ function lammoi() {
         </tbody>
       </table>
       <!-- Pagination for Ca Lich Hen -->
-      <div class="d-flex justify-content-between align-items-center mt-3">
-        <button @click="currentPageCaLichHen--" :disabled="currentPageCaLichHen === 1" class="btn btn-sm btn-secondary">Trước</button>
-        <span>Trang {{ currentPageCaLichHen }} / {{ totalPagesCaLichHen }}</span>
-        <button @click="currentPageCaLichHen++" :disabled="currentPageCaLichHen === totalPagesCaLichHen" class="btn btn-sm btn-secondary">Sau</button>
+      <div class="pagination d-flex justify-content-center align-items-center mt-3">
+        <div class="row">
+          <div class="col">
+            <button @click="currentPageCaLichHen--" :disabled="currentPageCaLichHen === 1" class="custom-button">Trước</button>
+          </div>
+          <div class="col">
+            <span class="text fs-5">Trang {{ currentPageCaLichHen }} / {{ totalPagesCaLichHen }}</span>
+          </div>
+          <div class="col">
+            <button @click="currentPageCaLichHen++" :disabled="currentPageCaLichHen === totalPagesCaLichHen" class="custom-button">Sau</button>
+          </div>
+        </div>
+
+
+
       </div>
     </div>
     <div class="col container">
@@ -182,10 +193,18 @@ function lammoi() {
         </tbody>
       </table>
       <!-- Pagination for Ngay Nghi -->
-      <div class="d-flex justify-content-between align-items-center mt-3">
-        <button @click="currentPageNgayNghi--" :disabled="currentPageNgayNghi === 1" class="btn btn-sm btn-secondary">Trước</button>
-        <span>Trang {{ currentPageNgayNghi }} / {{ totalPagesNgayNghi }}</span>
-        <button @click="currentPageNgayNghi++" :disabled="currentPageNgayNghi === totalPagesNgayNghi" class="btn btn-sm btn-secondary">Sau</button>
+      <div class="pagination d-flex justify-content-center align-items-center mt-3">
+        <div class="row">
+          <div class="col">
+            <button @click="currentPageNgayNghi--" :disabled="currentPageNgayNghi === 1" class="custom-button">Trước</button>
+          </div>
+          <div class="col">
+            <span class="text fs-5">Trang {{ currentPageNgayNghi }} / {{ totalPagesNgayNghi }}</span>
+          </div>
+          <div class="col">
+            <button @click="currentPageNgayNghi++" :disabled="currentPageNgayNghi === totalPagesNgayNghi" class="custom-button">Sau</button>
+          </div>
+        </div>
       </div>
     </div>
   </div>

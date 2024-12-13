@@ -1,14 +1,14 @@
 <template>
   <div>
-    <button type="button" class="btn btn-sm btn-success" data-bs-toggle="modal" data-bs-target="#addVoucherModal">
+    <button type="button" class="custom-button" data-bs-toggle="modal" data-bs-target="#addVoucherModal">
       <i class="fas fa-plus-circle me-2"></i>Thêm Voucher
     </button>
 
     <div class="modal fade" id="addVoucherModal" tabindex="-1" aria-labelledby="addVoucherModalLabel">
       <div class="modal-dialog modal-dialog-centered">
         <div class="modal-content">
-          <div class="modal-header bg-primary text-white">
-            <h5 class="modal-title" id="addVoucherModalLabel">Thêm Voucher Mới</h5>
+          <div class="modal-header text-white">
+            <h5 class="modal-title text fs-4" id="addVoucherModalLabel">Thêm Voucher Mới</h5>
             <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
           </div>
           <div class="modal-body">
@@ -34,8 +34,8 @@
                 <div class="invalid-feedback" v-if="errors.ngayketthuc">{{ errors.ngayketthuc }}</div>
               </div>
               <div class="d-flex justify-content-end">
-                <button type="button" class="btn btn-secondary me-2" data-bs-dismiss="modal">Hủy</button>
-                <button type="submit" class="btn btn-primary">Thêm Voucher</button>
+                <button type="button" class="custom-button" data-bs-dismiss="modal">Hủy</button>
+                <button type="submit" class="custom-button">Thêm Voucher</button>
               </div>
             </form>
           </div>
@@ -96,30 +96,5 @@ async function submitVoucher() {
 </script>
 
 <style scoped>
-.modal-header {
-  border-bottom: none;
-}
 
-.form-control:focus {
-  border-color: #80bdff;
-  box-shadow: 0 0 0 0.2rem rgba(0, 123, 255, 0.25);
-}
-
-.btn-primary {
-  background-color: #007bff;
-  border-color: #007bff;
-}
-
-.btn-primary:hover {
-  background-color: #0056b3;
-  border-color: #0056b3;
-}
-
-.invalid-feedback {
-  display: block;
-  width: 100%;
-  margin-top: 0.25rem;
-  font-size: 80%;
-  color: #dc3545;
-}
 </style>

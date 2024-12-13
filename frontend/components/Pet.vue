@@ -92,7 +92,7 @@
 <!--            </div>-->
           </div>
           <div class="text-end">
-            <button type="submit" class="btn btn-primary">Lưu thông tin</button>
+            <button type="submit" class="custom-button">Lưu thông tin</button>
           </div>
         </form>
       </div>

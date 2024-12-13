@@ -20,10 +20,10 @@
             </select>
           </div>
         </div>
-        <button @click="confirmBooking" class="btn btn-primary mt-3" :disabled="!isFormValid">
+        <button @click="confirmBooking" class="custom-button" :disabled="!isFormValid">
           Xác nhận thay đổi lịch hẹn
         </button>
-        <button @click="huyLichHenNe"  class="btn btn-primary mt-3">
+        <button @click="huyLichHenNe"  class="custom-button">
           Hủy lịch hẹn
         </button>
       </div>

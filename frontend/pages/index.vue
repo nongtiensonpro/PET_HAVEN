@@ -24,12 +24,19 @@
          </div>
        </div>
      </div>
-      <div class="pagination align-content-center">
-        <button @click="prevPage" :disabled="currentPage === 1">Trang trước</button>
-        <span>Trang {{ currentPage }} trên {{ totalPages }}</span>
-        <button @click="nextPage" :disabled="currentPage === totalPages">Trang sau</button>
+      <div class="pagination d-flex justify-content-center align-items-center mt-3">
+        <div class="row">
+          <div class="col">
+            <button @click="prevPage" :disabled="currentPage === 1" class="custom-button">Trang trước</button>
+          </div>
+          <div class="col">
+            <span class="text fs-4">Trang {{ currentPage }} trên {{ totalPages }}</span>
+          </div>
+          <div class="col">
+            <button @click="nextPage" :disabled="currentPage === totalPages" class="custom-button">Trang sau</button>
+          </div>
+        </div>
       </div>
-
       <div>
         <h2 class="text text-center ">Chương trình khuyến mãi</h2>
         <VoucherDisplay :vouchers="vouchers" />

@@ -100,7 +100,7 @@ const handleError = (message: string, error?: any) => {
 
 <template>
   <div>
-    <button type="button" class="nav-link" data-bs-toggle="modal" :data-bs-target="'#modal' + updatedService.id">
+    <button type="button" class="btn btn-sm btn-outline-success m-1" data-bs-toggle="modal" :data-bs-target="'#modal' + updatedService.id">
       Chi tiết
     </button>
     <div class="modal fade" :id="'modal' + updatedService.id" tabindex="-1"
@@ -147,11 +147,11 @@ const handleError = (message: string, error?: any) => {
             </form>
           </div>
           <div class="modal-footer">
-            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Đóng</button>
-            <button type="submit" class="btn btn-primary" @click="saveService">
+            <button type="button" class="custom-button" data-bs-dismiss="modal">Đóng</button>
+            <button type="submit" class="custom-button" @click="saveService">
               Lưu thay đổi
             </button>
-            <button type="button" class="btn btn-warning" @click="updateTTService">
+            <button type="button" class="custom-button" @click="updateTTService">
               {{ isActive ? 'Ẩn dịch vụ' : 'Hiện dịch vụ' }}
             </button>
           </div>
@@ -162,11 +162,5 @@ const handleError = (message: string, error?: any) => {
 </template>
 
 <style scoped>
-.form-group {
-  margin-bottom: 1rem;
-}
-.text-danger {
-  color: #dc3545;
-  font-size: 0.875em;
-}
+
 </style>

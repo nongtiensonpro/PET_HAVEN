@@ -34,7 +34,7 @@
 
             <div class="row">
               <div class="col-12">
-                <button @click="confirmBooking" class="btn btn-primary mt-3" :disabled="!isFormValid">
+                <button @click="confirmBooking" class="custom-button" :disabled="!isFormValid">
                   Tiếp tục
                 </button>
               </div>

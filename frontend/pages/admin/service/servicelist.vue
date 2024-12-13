@@ -202,7 +202,7 @@ const updateTTHienService = async (serviceId: String) => {
           <div class="form-group">
             <div class="row">
               <div class="col-8">
-                <input type="text" class="form-control" name="" id="" style="min-height: 100%" aria-describedby="helpId" placeholder="Tìm kiếm ?"
+                <input type="text" class="custom-button" name="" id="" style="min-width: 100% !important;" aria-describedby="helpId" placeholder="Tìm kiếm ?"
                        v-model="name">
               </div>
               <div class="col-2">
@@ -224,11 +224,9 @@ const updateTTHienService = async (serviceId: String) => {
           </div>
         </div>
         <div class="col-2">
-          <!-- Button trigger modal -->
           <button type="button" class="custom-button" data-bs-toggle="modal" data-bs-target="#modal">
             Thêm dịch vụ
           </button>
-          <!-- Modal -->
           <div class="modal fade" id="modal" tabindex="-1" aria-labelledby="modalLabel" >
             <div class="modal-dialog">
               <div class="modal-content">
@@ -288,7 +286,7 @@ const updateTTHienService = async (serviceId: String) => {
                         />
                       </div>
                     </div>
-                    <div class="p-4">
+                    <div class="p-12 p-1">
                       <div class="row">
                         <div class="col">
                           <button type="button" class="custom-button" data-bs-dismiss="modal">Đóng</button>
@@ -329,11 +327,11 @@ const updateTTHienService = async (serviceId: String) => {
         <td>
           <div  class="row">
             <div class="col">
-              <button type="button" class="nav-link  btn fixed-size" @click="deleteService(service.id)" data-bs-dismiss="modal">Xóa
+              <button type="button" class="btn btn-sm btn-outline-danger" @click="deleteService(service.id)" data-bs-dismiss="modal">Xóa
               </button>
             </div>
             <div class="col">
-              <button type="button" class="nav-link  btn fixed-size" @click="updateTTService(service.id)" data-bs-dismiss="modal" :class="service.trangthai ? 'btn-danger' : 'btn-success'" >
+              <button type="button" class="btn btn-sm btn-outline-warning" @click="updateTTService(service.id)" data-bs-dismiss="modal"  >
                 <span v-if="service.trangthai">
                   Ẩn dịch vụ
                 </span>
@@ -341,8 +339,9 @@ const updateTTHienService = async (serviceId: String) => {
                   Hiện dịch vụ
                 </span>
               </button>
-
-              <button type="button" class="nav-link  btn fixed-size" @click="updateTTHienService(service.id)" data-bs-dismiss="modal" :class="service.hien ? 'btn-danger' : 'btn-success'" >
+            </div>
+            <div class="col">
+              <button type="button" class="btn btn-sm btn-outline-secondary" @click="updateTTHienService(service.id)" data-bs-dismiss="modal" >
                 <span v-if="service.hien">
                   Ẩn khỏi màn hình chính
                 </span>
@@ -360,44 +359,25 @@ const updateTTHienService = async (serviceId: String) => {
       </tbody>
     </table>
     <div class="pagination d-flex justify-content-center align-items-center mt-3">
-      <button @click="prevPage" :disabled="currentPage === 1" class="btn btn-secondary me-2">Trước</button>
-      <span>Trang {{ currentPage }} / {{ totalPages }}</span>
-      <button @click="nextPage" :disabled="currentPage === totalPages" class="btn btn-secondary ms-2">Sau</button>
+      <div class="row">
+        <div class="col">
+          <button @click="prevPage" :disabled="currentPage === 1" class="custom-button">Trước</button>
+        </div>
+        <div class="col">
+          <span class="text fs-5">Trang {{ currentPage }} / {{ totalPages }}</span>
+        </div>
+        <div class="col">
+          <button @click="nextPage" :disabled="currentPage === totalPages" class="custom-button">Sau</button>
+        </div>
+      </div>
+
+
+
     </div>
 
   </div>
 </template>
 
 <style scoped>
-.fixed-size {
-  width: 15%; /* Chiều rộng chiếm 15% của vùng chứa */
-  min-width: 100px; /* Đảm bảo nút không nhỏ hơn 100px */
-  max-width: 200px; /* Giới hạn chiều rộng tối đa */
-  height: 2.5rem; /* Chiều cao linh hoạt theo font-size (2.5 rem = 40px nếu font-size gốc là 16px) */
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  text-align: center;
-  font-size: 1rem; /* Đặt kích thước chữ theo tỉ lệ */
-  padding: 0.5rem; /* Tạo khoảng trống bên trong nút */
-  box-sizing: border-box; /* Đảm bảo padding không làm tăng kích thước nút */
-}
-
-.btn-danger {
-  background-color: #dc3545; /* Màu đỏ */
-  color: white;
-}
-
-.btn-success {
-  background-color: #28a745; /* Màu xanh */
-  color: white;
-}
-
-.nav-link {
-  margin: 0.5rem; /* Khoảng cách giữa các nút */
-}
-.pagination button {
-  min-width: 80px;
-}
 
 </style>

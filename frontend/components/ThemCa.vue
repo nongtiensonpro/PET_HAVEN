@@ -43,7 +43,7 @@ const themCaHen = async () => {
 <template>
     <div class="container">
         <!-- Button trigger modal -->
-        <button type="button" class="btn btn-sm btn-warning m-1" data-bs-toggle="modal" data-bs-target="#exampleModal">
+        <button type="button" class="custom-button" data-bs-toggle="modal" data-bs-target="#exampleModal">
             Thêm Ca Hẹn
         </button>
 
@@ -69,11 +69,11 @@ const themCaHen = async () => {
 <!--                                <label for="trangthai">Trạng thái:</label>-->
 <!--                                <input id="trangthai" type="checkbox" v-model="trangthai" class="form-checkbox" />-->
 <!--                            </div>-->
-                            <button type="submit" class="form-button">Thêm</button>
+                            <button type="submit" class="custom-button">Thêm</button>
                         </form>
                     </div>
                     <div class="modal-footer">
-                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Đóng</button>
+                        <button type="button" class="custom-button" data-bs-dismiss="modal">Đóng</button>
                     </div>
                 </div>
             </div>

@@ -1,7 +1,7 @@
 <template>
   <button
     type="button"
-    class="btn btn-sm btn-success"
+    class="btn btn-sm btn-outline-success m-1"
     :class="additionalClass"
     data-bs-toggle="modal"
     :data-bs-target="'#updateVoucherModal' + voucher.id"
@@ -17,8 +17,8 @@
   >
     <div class="modal-dialog modal-dialog-centered">
       <div class="modal-content">
-        <div class="modal-header bg-primary text-white">
-          <h5 class="modal-title" :id="'updateVoucherModalLabel' + voucher.id">
+        <div class="modal-header text-white">
+          <h5 class="modal-title text fs-4" :id="'updateVoucherModalLabel' + voucher.id">
             Cập nhật Voucher
           </h5>
           <button

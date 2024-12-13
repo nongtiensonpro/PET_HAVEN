@@ -43,7 +43,7 @@ async function capNhatCa() {
 </script>
 
 <template>
-  <button type="button" class="btn btn-sm btn-outline-warning m-1" data-bs-toggle="modal" :data-bs-target="`#exampleModal${localCa.id}`">
+  <button type="button" class="btn btn-sm btn-outline-success m-1" data-bs-toggle="modal" :data-bs-target="`#exampleModal${localCa.id}`">
     Cập nhật
   </button>
 

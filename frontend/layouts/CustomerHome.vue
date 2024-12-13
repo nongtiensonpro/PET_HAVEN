@@ -2,37 +2,40 @@
   <NuxtLayout>
     <div class="container p-4">
       <div class="row d-flex align-items-center">
-        <!-- Logo và slogan -->
-
-        <div class="col col-md-4 d-flex align-items-center p-1">
-          <img :src="logoImage" class="img-fluid rounded-top me-2" alt="">
+        <!-- Logo và tiêu đề -->
+        <div class="col-md-4 d-flex align-items-center p-1">
+          <img :src="logoImage" class="img-fluid rounded-top me-2" alt="Logo">
           <div>
             <p class="m-0 text-logo">{{ logo }}</p>
             <p class="m-0 text-logo">{{ slogan }}</p>
           </div>
         </div>
-        <!-- Thanh tìm kiếm và nút -->
-        <div class="col col-md-8 d-flex align-items-center justify-content-end">
-          <nav class="navbar bg-body-tertiary flex-grow-1 me-2">
-            <TimKiem/>
+
+        <!-- Thanh tìm kiếm, nút đăng nhập và ngôn ngữ -->
+        <div class="col-md-8 d-flex align-items-center justify-content-end">
+          <!-- Thanh tìm kiếm -->
+          <nav class="navbar bg-body-tertiary flex-grow-1 me-2 " style="flex-basis: 50%;">
+            <TimKiem />
           </nav>
-          <div v-if="!isLoggedIn">
-            <button type="button" class="custom-button" style="min-width: 60px " @click="login1">
-              {{ login }}
-            </button>
-          </div>
-          <div v-else>
-            <button class="custom-button" style="min-width: 150px" type="button" data-bs-toggle="offcanvas"
-              data-bs-target="#offcanvasWithBothOptions" aria-controls="offcanvasWithBothOptions">
-              Tài khoản
-            </button>
-            <div class="offcanvas offcanvas-start" data-bs-scroll="true" tabindex="-1" id="offcanvasWithBothOptions"
-              aria-labelledby="offcanvasWithBothOptionsLabel">
-              <div class="offcanvas-header">
-                <h5 class="offcanvas-title" id="offcanvasWithBothOptionsLabel">
-                  <div
-                    v-if="Array.isArray(userInfo.role) && userInfo.role.includes('admin') || userInfo.role.includes('manager')">
-                    <div class="p-4 text fs-4">
+
+          <!-- Nút đăng nhập và quản lý tài khoản -->
+          <div>
+            <div v-if="!isLoggedIn">
+              <button type="button" class="custom-button btn-equal" @click="login1">
+                {{ login }}
+              </button>
+            </div>
+
+            <div v-else>
+              <button class="custom-button btn-equal" type="button" data-bs-toggle="offcanvas" data-bs-target="#offcanvasWithBothOptions" aria-controls="offcanvasWithBothOptions">
+                Tài khoản
+              </button>
+
+              <!-- Offcanvas quản lý tài khoản -->
+              <div class="offcanvas offcanvas-start" data-bs-scroll="true" tabindex="-1" id="offcanvasWithBothOptions" aria-labelledby="offcanvasWithBothOptionsLabel">
+                <div class="offcanvas-header">
+                  <h5 class="offcanvas-title" id="offcanvasWithBothOptionsLabel">
+                    <template v-if="Array.isArray(userInfo.role)">
                       <div v-if="userInfo.role.includes('admin')">
                         Chào mừng Admin {{ userInfo?.name }}
                       </div>
@@ -42,73 +45,77 @@
                       <div v-else>
                         Chào mừng chủ nhân {{ userInfo?.name }} !
                       </div>
+                    </template>
+                  </h5>
+                  <button type="button" class="btn-close" data-bs-dismiss="offcanvas" aria-label="Close"></button>
+                </div>
+
+                <div class="offcanvas-body">
+                  <div class="row">
+                    <template v-if="Array.isArray(userInfo.role) && (userInfo.role.includes('admin') || userInfo.role.includes('manager'))">
+                      <div class="col-12 p-4">
+                        <button type="button" class="custom-button btn-menu" @click="changeRole">
+                          Khách hàng/ Nhân Viên
+                        </button>
+                      </div>
+                    </template>
+
+                    <div class="col-12 p-4">
+                      <nuxt-link class="nav-link" :to="`/user/infouser`">
+                        <button type="button" class="custom-button btn-menu">
+                          Thông tin tài khoản
+                        </button>
+                      </nuxt-link>
                     </div>
-                  </div>
-                </h5>
-                <button type="button" class="btn-close" data-bs-dismiss="offcanvas" aria-label="Close"></button>
-              </div>
-              <div class="offcanvas-body">
 
+                    <div class="col-12 p-4">
+                      <nuxt-link class="nav-link" :to="`/user/appointment`">
+                        <button type="button" class="custom-button btn-menu">
+                          Quản lý lịch hẹn
+                        </button>
+                      </nuxt-link>
+                    </div>
 
-                <div class="row">
-                  <div class="col-12">
-                    <div
-                      v-if="Array.isArray(userInfo.role) && userInfo.role.includes('admin') || userInfo.role.includes('manager')">
-                      <button type="button" class="custom-button" @click="changeRole">
-                        Khách hàng/ Nhân Viên
+                    <div class="col-12 p-4">
+                      <nuxt-link class="nav-link" :to="`/chat`">
+                        <button type="button" class="custom-button btn-menu">
+                          Chat
+                        </button>
+                      </nuxt-link>
+                    </div>
+
+                    <div class="col-12 p-4">
+                      <button type="button" class="custom-button btn-menu" @click="logout1">
+                        Đăng xuất
                       </button>
                     </div>
                   </div>
-                  <div class="col-12 p-4">
-                    <button type="button" class="custom-button">
-                      <nuxt-link class="nav-link" :to="`/user/infouser`">Thông tin tài khoản</nuxt-link>
-                    </button>
-                  </div>
-                  <div class="col-12 p-4">
-                    <button type="button" class="custom-button">
-                      <nuxt-link class="nav-link" :to="`/user/appointment`">Quản lý lịch hẹn</nuxt-link>
-                    </button>
-                  </div>
-                  <div class="col-12 p-4">
-                    <button type="button" class="custom-button">
-                      <nuxt-link class="nav-link" :to="`/chat`">Chat</nuxt-link>
-                    </button>
-                  </div>
-                  <div class="col-12 p-4">
-                    <button type="button" class="custom-button" @click="logout1">
-                      Đăng xuất
-                    </button>
-                  </div>
                 </div>
-
-                <br>
-
               </div>
             </div>
           </div>
-          <button type="button" style="max-width: 30px; text-align: center" class="custom-button m-2"
-            @click="changeLanguage">
+
+          <!-- Nút thay đổi ngôn ngữ -->
+          <button type="button" class="custom-button btn-equal m-2 text-center" @click="changeLanguage">
             {{ currentLanguage === 'vi' ? switchToEnglish : switchToVietnamese }}
           </button>
+
+          <!-- Nút thông báo -->
           <div class="dropdown">
-            <!-- Nút dropdown kết hợp với badge thông báo -->
-            <button class="custom-button dropdown-toggle position-relative" style="min-width: 100px" type="button"
-              data-bs-toggle="dropdown" aria-expanded="false">
-              <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-bell-fill"
-                viewBox="0 0 16 16">
-                <path
-                  d="M8 16a2 2 0 0 0 2-2H6a2 2 0 0 0 2 2m.995-14.901a1 1 0 1 0-1.99 0A5 5 0 0 0 3 6c0 1.098-.5 6-2 7h14c-1.5-1-2-5.902-2-7 0-2.42-1.72-4.44-4.005-4.901" />
+            <button class="custom-button btn-equal dropdown-toggle position-relative" type="button" data-bs-toggle="dropdown" aria-expanded="false">
+              <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-bell-fill" viewBox="0 0 16 16">
+                <path d="M8 16a2 2 0 0 0 2-2H6a2 2 0 0 0 2 2m.995-14.901a1 1 0 1 0-1.99 0A5 5 0 0 0 3 6c0 1.098-.5 6-2 7h14c-1.5-1-2-5.902-2-7 0-2.42-1.72-4.44-4.005-4.901" />
               </svg>
 
               <!-- Badge hiển thị số lượng thông báo -->
               <span class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger">
-                <span class="badge-pill">{{ notifications.length }}</span>
-              </span>
-              <span class="visually-hidden">unread messages</span>
+          {{ notifications.length }}
+        </span>
             </button>
-            <!-- Danh sách dropdown -->
+
+            <!-- Danh sách dropdown thông báo -->
             <ul class="dropdown-menu p-4 m-4">
-              <li v-if="notifications.length == 0">
+              <li v-if="notifications.length === 0">
                 Không có thông báo nào !
               </li>
               <li v-else>
@@ -118,10 +125,9 @@
               </li>
               <li v-for="notification in notifications" :key="notification.id">
                 <a>{{ notification.type }}</a>
-                <a class="dropdown-item" href="#">
+                <a class="dropdown-item">
                   {{ notification.message }}
-                  <button @click="handleRemoveNotification(notification.id - 1)"
-                    class="btn btn-link p-0 m-0 text-danger">
+                  <button @click="handleRemoveNotification(notification.id - 1)" class="btn btn-link p-0 m-0 text-danger">
                     X
                   </button>
                 </a>
@@ -131,6 +137,8 @@
           </div>
         </div>
       </div>
+
+
 
       <!-- Navbar -->
       <div class="container">
@@ -616,5 +624,13 @@ onMounted(() => {
 </script>
 
 <style scoped>
+.btn-menu {
+  min-width: 300px !important;
+  text-align: left;
+  padding-left: 20px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
 
 </style>

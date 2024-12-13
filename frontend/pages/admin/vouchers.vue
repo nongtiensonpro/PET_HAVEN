@@ -2,26 +2,24 @@
   <div class="voucher-list container mt-5">
     <h1 class="title mb-4">Quản lý Voucher</h1>
     <div class="row mb-4">
-      <div class="col-md-4">
+      <div class="col">
         <add-voucher @added="refresh" />
       </div>
-      <div class="col-md-4">
-        <div class="input-group">
+      <div class="col">
           <input
             v-model="searchTerm"
             type="text"
-            class="form-control"
+            class="custom-button"
             placeholder="Tìm kiếm voucher..."
             @input="handleSearch"
           >
-          <button class="btn btn-outline-secondary" type="button" @click="handleSearch">
-            <i class="fas fa-search"></i>
-          </button>
-        </div>
+        <button class="custom-button" type="button" @click="handleSearch">
+          Tìm kiếm
+        </button>
       </div>
-      <div class="col-md-4 d-flex align-items-center justify-content-end">
-        <button @click="refreshVouchers" class="btn btn-outline-primary">
-          <i class="fas fa-sync-alt mr-2"></i> Làm mới
+      <div class="col">
+        <button @click="refreshVouchers" class="custom-button">
+          Làm mới
         </button>
       </div>
     </div>
@@ -63,8 +61,8 @@
                 <button
                   @click="updateTrangThaiVoucher(voucher.id)"
                   type="button"
-                  class="btn btn-sm ms-2"
-                  :class="voucher.trangthai ? 'btn-danger' : 'btn-success'"
+                  class="btn btn-sm  m-1"
+                  :class="voucher.trangthai ? 'btn-outline-danger' : 'btn-outline-success'"
                 >
                   {{ voucher.trangthai ? 'Hủy' : 'Kích hoạt' }}
                 </button>
@@ -75,10 +73,21 @@
       </table>
     </div>
     <!-- Pagination -->
-    <div class="d-flex justify-content-between align-items-center mt-3">
-      <button @click="prevPage" :disabled="currentPage === 1" class="btn btn-sm btn-secondary">Trước</button>
-      <span>Trang {{ currentPage }} / {{ totalPages }}</span>
-      <button @click="nextPage" :disabled="currentPage === totalPages" class="btn btn-sm btn-secondary">Sau</button>
+    <div class="pagination d-flex justify-content-center align-items-center mt-3">
+      <div class="row">
+        <div class="col">
+          <button @click="prevPage" :disabled="currentPage === 1" class="custom-button">Trước</button>
+        </div>
+        <div class="col">
+          <span class="text fs-5">Trang {{ currentPage }} / {{ totalPages }}</span>
+        </div>
+        <div class="col">
+          <button @click="nextPage" :disabled="currentPage === totalPages" class="custom-button">Sau</button>
+        </div>
+      </div>
+
+
+
     </div>
   </div>
 </template>
@@ -202,27 +211,5 @@ watch([voucherData, searchTerm], () => {
 </script>
 
 <style scoped>
-.voucher-list {
-  background-color: #f8f9fa;
-  border-radius: 8px;
-  padding: 20px;
-  box-shadow: 0 0 10px rgba(0,0,0,0.1);
-}
 
-.title {
-  color: #343a40;
-  font-weight: bold;
-}
-
-.table {
-  background-color: white;
-}
-
-.table th {
-  font-weight: 600;
-}
-
-.badge {
-  font-size: 0.9em;
-}
 </style>

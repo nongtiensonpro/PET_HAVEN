@@ -39,7 +39,7 @@ async function themNgayNghi() {
 </script>
 
 <template>
-  <button type="button" class="btn btn-sm btn-warning m-1" data-bs-toggle="modal" data-bs-target="#capNhatNgayNghiModal">
+  <button type="button" class="custom-button" data-bs-toggle="modal" data-bs-target="#capNhatNgayNghiModal">
     Cập nhật ngày nghỉ
   </button>
 
@@ -60,7 +60,7 @@ async function themNgayNghi() {
           </form>
         </div>
         <div class="modal-footer">
-          <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Đóng</button>
+          <button type="button" class="custom-button" data-bs-dismiss="modal">Đóng</button>
         </div>
       </div>
     </div>
