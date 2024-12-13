@@ -14,7 +14,6 @@
     :id="'updateVoucherModal' + voucher.id"
     tabindex="-1"
     :aria-labelledby="'updateVoucherModalLabel' + voucher.id"
-    aria-hidden="true"
   >
     <div class="modal-dialog modal-dialog-centered">
       <div class="modal-content">

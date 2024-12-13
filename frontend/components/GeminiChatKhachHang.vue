@@ -6,6 +6,7 @@ const aiStore = useAIStore()
 const userInput = ref('')
 const chatHistory = ref([])
 const isLoading = ref(false)
+const isThinking = ref(false)
 
 const sendMessageToAI = async () => {
   if (!userInput.value.trim()) return
@@ -14,15 +15,20 @@ const sendMessageToAI = async () => {
   chatHistory.value.push({ role: 'user', content: userMessage })
   userInput.value = ''
   isLoading.value = true
+  isThinking.value = true
 
   try {
+    chatHistory.value.push({ role: 'thinking', content: 'Thưa cậu chủ em đang suy nghĩ' })
     const response = await aiStore.sendMessage(userMessage)
+    chatHistory.value.pop() // Remove the thinking message
     chatHistory.value.push({ role: 'ai', content: response })
   } catch (error) {
     console.error("Error sending message to AI:", error)
+    chatHistory.value.pop() // Remove the thinking message
     chatHistory.value.push({ role: 'system', content: 'Xin lỗi, có lỗi xảy ra khi xử lý yêu cầu của bạn.' })
   } finally {
     isLoading.value = false
+    isThinking.value = false
   }
 }
 </script>
@@ -33,6 +39,9 @@ const sendMessageToAI = async () => {
       <div v-for="(message, index) in chatHistory" :key="index" class="message-wrapper">
         <div :class="['message', message.role]">
           {{ message.content }}
+          <span v-if="message.role === 'thinking'" class="thinking-icons">
+            🤔💭🧠
+          </span>
         </div>
       </div>
     </div>
@@ -47,6 +56,9 @@ const sendMessageToAI = async () => {
         {{ isLoading ? 'Đang gửi...' : 'Gửi' }}
       </button>
     </div>
+  </div>
+  <div class="text-center p-4 text fs-6">
+    ChatBot có thể mắc lỗi. Hãy kiểm tra các thông tin quan trọng.
   </div>
 </template>
 
@@ -122,5 +134,16 @@ button {
 button:disabled {
   background-color: #cccccc;
   cursor: not-allowed;
+}
+
+.thinking {
+  background-color: #fff3cd;
+  margin-right: auto;
+  font-style: italic;
+}
+
+.thinking-icons {
+  margin-left: 5px;
+  font-size: 1.2em;
 }
 </style>

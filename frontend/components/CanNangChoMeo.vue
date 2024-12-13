@@ -8,7 +8,7 @@
   </button>
 
   <!-- Modal -->
-  <div class="modal fade" id="exampleModalCanNangNe" tabindex="-1" aria-labelledby="exampleModalLabelCanNangNe" aria-hidden="true">
+  <div class="modal fade" id="exampleModalCanNangNe" tabindex="-1" aria-labelledby="exampleModalLabelCanNangNe">
     <div class="modal-dialog">
       <div class="modal-content">
         <div class="modal-header">

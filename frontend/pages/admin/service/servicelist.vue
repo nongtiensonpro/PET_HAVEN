@@ -229,7 +229,7 @@ const updateTTHienService = async (serviceId: String) => {
             Thêm dịch vụ
           </button>
           <!-- Modal -->
-          <div class="modal fade" id="modal" tabindex="-1" aria-labelledby="modalLabel" aria-hidden="true">
+          <div class="modal fade" id="modal" tabindex="-1" aria-labelledby="modalLabel" >
             <div class="modal-dialog">
               <div class="modal-content">
                 <div class="modal-header">

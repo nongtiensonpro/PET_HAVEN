@@ -43,7 +43,7 @@ async function themNgayNghi() {
     Cập nhật ngày nghỉ
   </button>
 
-  <div class="modal fade" id="capNhatNgayNghiModal" tabindex="-1" aria-labelledby="capNhatNgayNghiModalLabel" aria-hidden="true">
+  <div class="modal fade" id="capNhatNgayNghiModal" tabindex="-1" aria-labelledby="capNhatNgayNghiModalLabel" >
     <div class="modal-dialog">
       <div class="modal-content">
         <div class="modal-header">
