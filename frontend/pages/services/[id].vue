@@ -38,8 +38,10 @@
     <div class="mt-5">
       <h3 class="mb-4">Đánh giá và nhận xét</h3>
       <div v-if="danhGias.length > 0">
+        <div style="padding-bottom: 10px">
+          <TongHopBinhLuanGemini :danhGias="danhGias" />
+        </div>
         <div v-for="danhGia in danhGias" :key="danhGia.id" class="card mb-3">
-
           <div class="card-body">
             <div class="d-flex justify-content-between align-items-center mb-3">
               <div>
