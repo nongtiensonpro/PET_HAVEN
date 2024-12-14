@@ -71,7 +71,7 @@ export const useAIStore = defineStore('ai', () => {
             Vai trò: ${user.value?.roles?.join(', ')}
             Thú cưng:
             ${user.value?.listThuCung?.map((pet, index) =>
-                `  ${index + 1}. Tên: ${pet.ten}, Loại: ${pet.loai}, Giống: ${pet.giong}, Tuổi: ${pet.tuoi} Cân nặng: ${pet.cannang}` 
+                `  ${index + 1}. Tên thú cưng: ${pet.ten}, Loại thú cưng: ${pet.loai}, Giống thú cưng: ${pet.giong}, Tuổi thú cưng: ${pet.tuoi} , Cân nặng thú cưng: ${pet.cannang}` 
             ).join('\n') || 'Không có thông tin về thú cưng'}
             
             Đây là lịch sử lịch hẹn của khách hàng:

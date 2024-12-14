@@ -109,7 +109,7 @@ function lammoi() {
 async function huyNgayNghi(ngayNghi: NgayNghi) {
   const result = await Swal.fire({
     title: 'Xác nhận',
-    text: `Bạn có chắc chắn hủy ngày nghỉ ${ngayNghi.ngaynghi} không ?`,
+    text: `Bạn có chắc chắn ${ngayNghi.trangthai?'Hủy':'Kích hoạt'} ngày nghỉ ${ngayNghi.ngaynghi} không ?`,
     icon: 'warning',
     showCancelButton: true,
     confirmButtonColor: '#3085d6',
@@ -121,9 +121,9 @@ async function huyNgayNghi(ngayNghi: NgayNghi) {
     try {
       await caLichHenStore.huyNgayNghi(ngayNghi);
       await fetchData();
-      toast.success('Hủy ngày nghỉ thành công!')
+      toast.success('Thay đổi trạng thái ngày nghỉ thành công!')
     } catch (e) {
-      toast.error('Hủy ngày nghỉ thất bại!')
+      toast.error('Thay đổi trạng thái  ngày nghỉ thất bại!')
     }
   }
 }
@@ -209,7 +209,7 @@ async function huyNgayNghi(ngayNghi: NgayNghi) {
             <td>{{ ngay.ngaynghi }}</td>
             <td>{{ ngay.trangthai ? 'Hoạt động' : 'Không hoạt động' }}</td>
             <td>
-              <button type="button" class="btn btn-sm btn-outline-warning m-1" @click="huyNgayNghi(ngay)">Hủy ngày nghỉ</button>
+              <button type="button" class="btn btn-sm btn-outline-warning m-1" @click="huyNgayNghi(ngay)">{{ngay.trangthai?'Hủy':'Kích hoạt'}}</button>
             </td>
           </tr>
         </tbody>

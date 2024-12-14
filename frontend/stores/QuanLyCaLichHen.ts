@@ -197,12 +197,26 @@ export const useCaLichHenStore = defineStore('useCalichhen', {
                 throw error; // Re-throw the error for the caller to handle
             }
         },
-        async huyNgayNghi(ngayNghi : NgayNghi){
+        async huyNgayNghi(ngayNghi: NgayNghi) {
+            const idNgayNghi = ngayNghi.id;
             const token = localStorage.getItem('access_token');
             try {
-                const resonse = await fetch('http://localhost:8080/api/ngay-nghi/meo')
-            }catch (e){
-                console.error("Loi khi hủy ngày nghỉ:", e);
+                const response = await fetch(`http://localhost:8080/api/ngay-nghi/doi-trang-thai-nghi?idNgayNghi=${idNgayNghi}`, {
+                    method: 'GET',
+                    headers: {
+                        'Authorization': `Bearer ${token}`,
+                    }
+                });
+
+                if (!response.ok) {
+                    throw new Error(`HTTP error! status: ${response.status}`);
+                }
+
+                const data = await response.json();
+                console.log("Ngày nghỉ đã được hủy:", data);
+                return data;
+            } catch (e) {
+                console.error("Lỗi khi hủy ngày nghỉ:", e);
                 throw e;
             }
         },
