@@ -13,7 +13,7 @@ import java.util.Optional;
 
 public interface HoadonRepository extends JpaRepository<Hoadon, Integer> {
 
-    List<Hoadon> findByDate(LocalDate date);
+    List<Hoadon> findByIdlichhen_Date(LocalDate date);
 
     @Query("SELECT h FROM Hoadon h WHERE h.nguoithanhtoan = :email " +
             "AND h.phuongthucthanhtoan = 'Offline' " +
@@ -26,7 +26,7 @@ public interface HoadonRepository extends JpaRepository<Hoadon, Integer> {
 
     List<Hoadon> findByIdlichhen_TrangthaiAndTrangthaiAndDate(int TrangthaiLich, int Trangthai,LocalDate date);
 
-
+    List<Hoadon> findByIdlichhen_TrangthaicaAndIdlichhen_Idkhachhang(boolean tt,String idKhach);
 //    ________________Thống kê______________________
 // Thống kê theo ngày
     @Query("SELECT FUNCTION('DATE', h.date) AS ngay, SUM(h.sotien) AS doanhthu " +
