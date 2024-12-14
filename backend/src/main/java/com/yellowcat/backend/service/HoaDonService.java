@@ -2,6 +2,7 @@ package com.yellowcat.backend.service;
 
 import com.yellowcat.backend.DTO.ThongKeResponDTO;
 import com.yellowcat.backend.DTO.ThongKeTimeDTO;
+import com.yellowcat.backend.model.Dichvu;
 import com.yellowcat.backend.model.Giamgia;
 import com.yellowcat.backend.model.Hoadon;
 import com.yellowcat.backend.model.Lichhen;
@@ -11,6 +12,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.ByteArrayResource;
 import org.springframework.mail.javamail.MimeMessageHelper;
 import org.springframework.scheduling.annotation.Async;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
 import java.security.SecureRandom;
@@ -40,22 +43,40 @@ public class HoaDonService {
     public void addOrUpdate(Hoadon hoadon){hoadonRepository.save(hoadon);}
 
     public Double TinhGiaTien(Integer idDichVu,Hoadon hoadon){
-        float giaDichVu = dichVuService.findById(idDichVu).get().getGiatien();
+        float giaDichVu = dichVuService.findById(idDichVu)
+                .map(Dichvu::getGiatien)
+                .orElseThrow(() -> new IllegalArgumentException("Dịch vụ không tồn tại"));
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
 
         Optional<Giamgia> maxGiamGia = giamGiaService.findGiamGiaTheoNgayHienTai()
                 .stream()
                 .max(Comparator.comparing(Giamgia::getPhantramgiam));
         float phanTramGiam =0;
+        phanTramGiam = Math.max(0, Math.min(phanTramGiam, 100));
+
+        String id = authentication.getName();
+        List<Hoadon> hoadonList = hoadonRepository.findByIdlichhen_TrangthaicaAndIdlichhen_Idkhachhang(true,id);
+
         if (maxGiamGia.isPresent()) {
-            phanTramGiam = maxGiamGia.get().getPhantramgiam();
-            hoadon.setIdgiamgia(maxGiamGia.get()); // Gán giảm giá lớn nhất vào hóa đơn
+            if(!hoadonList.isEmpty()){
+                for(Hoadon hoadon1 : hoadonList){
+//                    Check xem đã dùng voucher chưa ???
+                    if (hoadon1.getIdgiamgia() != null && hoadon1.getIdgiamgia().getId().equals(maxGiamGia.get().getId()) ){
+                        phanTramGiam =0;
+                        break;
+                    }else {
+                        phanTramGiam = maxGiamGia.get().getPhantramgiam();
+                        hoadon.setIdgiamgia(maxGiamGia.get()); // Gán giảm giá lớn nhất vào hóa đơn
+                    }
+                }
+            }
         }
         Double giaTien = (double) (giaDichVu - giaDichVu*phanTramGiam/100);
         return giaTien;
     }
     public List<Hoadon> getAllHoaDonChuaThanhToan(){
         System.out.println(LocalDate.now());
-        return hoadonRepository.findByDate(LocalDate.now());
+        return hoadonRepository.findByIdlichhen_Date(LocalDate.now());
     }
 
     public List<Hoadon> getALl(){return hoadonRepository.findAll();}

@@ -32,7 +32,7 @@
                   <td>{{ hoaDon.idlichhen.emailNguoiDat }}</td>
                   <td>{{ hoaDon.idlichhen.thucung.ten }}</td>
                   <td>{{ hoaDon.idlichhen.dichvu.tendichvu }}</td>
-                  <td>{{ formatDate(hoaDon.date) }}</td>
+                  <td>{{ formatDate(hoaDon.idlichhen.date) }}</td>
                   <td>{{ formatCurrency(hoaDon.sotien) }}</td>
                   <td><span class="badge bg-warning">{{ getTrangThai(hoaDon.idlichhen.trangthai) }}</span></td>
                   <td>
