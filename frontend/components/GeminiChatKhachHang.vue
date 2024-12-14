@@ -45,14 +45,14 @@ const sendMessageToAI = async () => {
         </div>
       </div>
     </div>
-    <div class="input-container">
-      <input
+    <div class="input-container row p-3">
+      <input class="col-10"
         v-model="userInput"
         @keyup.enter="sendMessageToAI"
         placeholder="Nhập tin nhắn của bạn..."
         :disabled="isLoading"
       />
-      <button @click="sendMessageToAI" :disabled="isLoading">
+      <button @click="sendMessageToAI" :disabled="isLoading" class="custom-button col-2">
         {{ isLoading ? 'Đang gửi...' : 'Gửi' }}
       </button>
     </div>
@@ -66,7 +66,7 @@ const sendMessageToAI = async () => {
 .chat-container {
   display: flex;
   flex-direction: column;
-  height: 400px;
+  height: 500px;
   border: 1px solid #ccc;
   border-radius: 8px;
   overflow: hidden;
@@ -85,11 +85,13 @@ const sendMessageToAI = async () => {
   margin-bottom: 10px;
   width: 100%;
 }
-
 .message {
   padding: 8px;
   border-radius: 8px;
   max-width: 70%;
+  word-wrap: break-word;
+  white-space: pre-wrap;
+  overflow-wrap: break-word;
 }
 
 .user {
@@ -108,11 +110,7 @@ const sendMessageToAI = async () => {
   margin-right: auto;
 }
 
-.input-container {
-  display: flex;
-  padding: 10px;
-  background-color: #f8f8f8;
-}
+
 
 input {
   flex-grow: 1;
@@ -121,15 +119,6 @@ input {
   border-radius: 4px;
 }
 
-button {
-  margin-left: 10px;
-  padding: 8px 16px;
-  background-color: #4CAF50;
-  color: white;
-  border: none;
-  border-radius: 4px;
-  cursor: pointer;
-}
 
 button:disabled {
   background-color: #cccccc;

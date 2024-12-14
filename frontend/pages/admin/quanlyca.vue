@@ -106,6 +106,28 @@ function lammoi() {
   fetchData();
 }
 
+async function huyNgayNghi(ngayNghi: NgayNghi) {
+  const result = await Swal.fire({
+    title: 'Xác nhận',
+    text: `Bạn có chắc chắn hủy ngày nghỉ ${ngayNghi.ngay} từ ${ngayNghi.thoigianbatdau} đến ${ngayNghi.thoigianketthuc}?`,
+    icon: 'warning',
+    showCancelButton: true,
+    confirmButtonColor: '#3085d6',
+    cancelButtonColor: '#d33',
+    confirmButtonText: 'Có',
+    cancelButtonText: 'Không'
+  });
+  if (result.isConfirmed) {
+    try {
+      await caLichHenStore.huyNgayNghi(ngayNghi);
+      await fetchData();
+      toast.success('Hủy ngày nghỉ thành công!')
+    } catch (e) {
+      toast.error('Hủy ngày nghỉ thất bại!')
+    }
+  }
+}
+
 </script>
 
 <template>
@@ -187,7 +209,7 @@ function lammoi() {
             <td>{{ ngay.ngaynghi }}</td>
             <td>{{ ngay.trangthai ? 'Hoạt động' : 'Không hoạt động' }}</td>
             <td>
-              <button type="button" class="btn btn-sm btn-outline-warning m-1">Hủy ngày nghỉ</button>
+              <button type="button" class="btn btn-sm btn-outline-warning m-1" @click="huyNgayNghi(ngay)">Hủy ngày nghỉ</button>
             </td>
           </tr>
         </tbody>

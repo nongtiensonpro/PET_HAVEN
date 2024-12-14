@@ -197,6 +197,15 @@ export const useCaLichHenStore = defineStore('useCalichhen', {
                 throw error; // Re-throw the error for the caller to handle
             }
         },
+        async huyNgayNghi(ngayNghi : NgayNghi){
+            const token = localStorage.getItem('access_token');
+            try {
+                const resonse = await fetch('http://localhost:8080/api/ngay-nghi/meo')
+            }catch (e){
+                console.error("Loi khi hủy ngày nghỉ:", e);
+                throw e;
+            }
+        },
         async fetchNgayNghi() {
             const token = localStorage.getItem('access_token');
             try {
