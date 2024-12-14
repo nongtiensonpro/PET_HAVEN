@@ -26,8 +26,10 @@ public class NgayNghiService {
     }
 
     public Optional<Ngaynghi> getNgaynghi(LocalDate date) {
-        return ngaynghiRepository.findByNgaynghi(date);
+        return ngaynghiRepository.findByNgaynghiAndAndTrangthai(date,true);
     }
+
+    public Optional<Ngaynghi> getNgaynghibyid(int id) {return ngaynghiRepository.findById(id);}
 
     public List<Ngaynghi> getAllNgaynghi() {
         return ngaynghiRepository.findAll();

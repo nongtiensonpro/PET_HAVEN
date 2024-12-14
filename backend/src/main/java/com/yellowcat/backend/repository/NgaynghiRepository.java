@@ -10,7 +10,7 @@ import java.util.List;
 import java.util.Optional;
 
 public interface NgaynghiRepository extends JpaRepository<Ngaynghi, Integer> {
-    Optional<Ngaynghi> findByNgaynghi(LocalDate date);
+    Optional<Ngaynghi> findByNgaynghiAndAndTrangthai(LocalDate date,boolean tt);
 
     List<Ngaynghi> findByTrangthaiTrue();
 
