@@ -1,12 +1,18 @@
 <script setup lang="ts">
-import { ref } from 'vue'
+import {onUnmounted, ref} from 'vue'
 import { useAIStore } from '~/stores/Gemini'
+import {useQuanLyLichHenKhachHang} from "~/stores/QuanLyLichHenKhachHang";
 
+const lichHenStore = useQuanLyLichHenKhachHang();
 const aiStore = useAIStore()
 const userInput = ref('')
 const chatHistory = ref([])
 const isLoading = ref(false)
 const isThinking = ref(false)
+
+onUnmounted(() => {
+  lichHenStore.fetchAppointments();
+})
 
 const sendMessageToAI = async () => {
   if (!userInput.value.trim()) return

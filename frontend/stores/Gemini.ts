@@ -1,13 +1,28 @@
-import {GoogleGenerativeAI} from '@google/generative-ai';
-import {useServiceStore} from '~/stores/DichVuStores';
-import {useVoucherStore} from '~/stores/VorchersStores';
-import {computed, ref} from 'vue';
+import { GoogleGenerativeAI } from '@google/generative-ai';
+import { useServiceStore } from '~/stores/DichVuStores';
+import { useVoucherStore } from '~/stores/VorchersStores';
+import { useUserStore } from '~/stores/user';
+import {computed, onMounted, onUnmounted, ref} from 'vue';
+import { useQuanLyLichHenKhachHang } from '~/stores/QuanLyLichHenKhachHang';
+import type { BookingData } from './MauKhachDatDichVu';
 
 export const useAIStore = defineStore('ai', () => {
     const serviceStore = useServiceStore();
     const voucherStore = useVoucherStore();
+    const userStore = useUserStore();
+    const lichHenStore = useQuanLyLichHenKhachHang();
+    const refreshInterval = ref(null);
 
     const apiKey = 'AIzaSyAngio9lHhhKrSYBeh_RBYxnQvkflv8CXQ';
+    const genAI = new GoogleGenerativeAI(apiKey);
+    const model = genAI.getGenerativeModel({ model: 'gemini-2.0-flash-exp' });
+
+    const generationConfig = {
+        temperature: 1,
+        topK: 1,
+        topP: 1,
+        maxOutputTokens: 2048,
+    };
 
     const services = computed(() =>
         serviceStore.services.filter(service => service.trangthai && service.hien)
@@ -17,25 +32,21 @@ export const useAIStore = defineStore('ai', () => {
         voucherStore.ListVoucher.filter(voucher => voucher.trangthai)
     );
 
-    const genAI = new GoogleGenerativeAI(apiKey);
-    const model = genAI.getGenerativeModel({model: 'gemini-2.0-flash-exp'});
-
-    const generationConfig = {
-        temperature: 0.7,
-        topK: 1,
-        topP: 1,
-        maxOutputTokens: 2048,
-    };
+    const user = computed(() => userStore.userInfo);
 
     const getServiceInfo = () =>
-        services.value.map(({id, ten, mota, gia}) => ({id, ten, mota, gia}));
+        services.value.map(({ id, ten, mota, gia }) => ({ id, ten, mota, gia }));
 
     const getVoucherInfo = () =>
-        vouchers.value.map(({id, phantramgiam, ngaybatdau, ngayketthuc, mota, trangthai}) =>
-            ({id, phantramgiam, ngaybatdau, ngayketthuc, mota, trangthai}));
-    const serviceInfo = getServiceInfo();
-    const voucherInfo = getVoucherInfo();
-        const context = `Bạn là nhân viên chăm sóc khách hàng cho cửa hàng thú cưng PetHaven. Hãy tuân thủ các quy tắc sau:
+        vouchers.value.map(({ id, phantramgiam, ngaybatdau, ngayketthuc, mota, trangthai }) =>
+            ({ id, phantramgiam, ngaybatdau, ngayketthuc, mota, trangthai }));
+
+
+    const context = computed(() => {
+        const serviceInfo = getServiceInfo();
+        const voucherInfo = getVoucherInfo();
+        return `
+            Bạn là nhân viên chăm sóc khách hàng cho cửa hàng thú cưng PetHaven. Hãy tuân thủ các quy tắc sau:
 
             1. Trả lời mọi câu hỏi liên quan đến thú cưng, chăm sóc thú cưng, và hoạt động của cửa hàng PetHaven.
             2. Khi được hỏi về dịch vụ hoặc khuyến mãi cụ thể, chỉ trả lời dựa trên thông tin có trong danh sách dưới đây.
@@ -47,16 +58,46 @@ export const useAIStore = defineStore('ai', () => {
             
             Dịch vụ tại cửa hàng hiện có:
             ${serviceInfo.map(service =>
-            `- (Tên dịch vụ: ${service.ten}): (Mô tả dịch vụ: ${service.mota}) (Giá dịch vụ: ${service.gia})`
-        ).join('\n')}
+                `- (Tên dịch vụ: ${service.ten}): (Mô tả dịch vụ: ${service.mota}) (Giá dịch vụ: ${service.gia})`
+            ).join('\n')}
             
             Chương trình khuyến mãi tại cửa hàng hiện có:
             ${voucherInfo.map(voucher =>
-            `- Giảm ${voucher.phantramgiam}%: ${voucher.mota} (Từ ${voucher.ngaybatdau} đến ${voucher.ngayketthuc})`
-        ).join('\n')}
+                `- Giảm ${voucher.phantramgiam}%: ${voucher.mota} (Từ ${voucher.ngaybatdau} đến ${voucher.ngayketthuc})`
+            ).join('\n')}
+        
+            Thông tin khách hàng đang đưa ra câu hỏi:
+            Tên: ${user.value?.name}
+            Vai trò: ${user.value?.roles?.join(', ')}
+            Thú cưng:
+            ${user.value?.listThuCung?.map((pet, index) =>
+                `  ${index + 1}. Tên: ${pet.ten}, Loại: ${pet.loai}, Giống: ${pet.giong}, Tuổi: ${pet.tuoi}`
+            ).join('\n') || 'Không có thông tin về thú cưng'}
+            
+            Đây là lịch sử lịch hẹn của khách hàng:
+            ${lichHenStore.appointments.value?.length > 0 ?
+                lichHenStore.appointments.value.map((appointment: BookingData, index: number) => `
+                    ${index + 1}. Lịch hẹn:
+                        - Thời gian: ${new Date(appointment.date).toLocaleString()} ${appointment.idcalichhen.thoigianca}
+                        - Dịch vụ: ${appointment.dichvu.tendichvu}
+                        - Mô tả dịch vụ: ${appointment.dichvu.mota}
+                        - Giá tiền: ${appointment.dichvu.giatien.toLocaleString()} VND
+                        - Trạng thái: ${
+                            appointment.trangthai === 1 ? 'Đang chờ' :
+                            appointment.trangthai === 2 ? 'Đã xác nhận' :
+                            appointment.trangthai === 3 ? 'Đã hoàn thành' :
+                            appointment.trangthai === 4 ? 'Đã hủy' : 'Không xác định'
+                        }
+                        - Thú cưng: ${appointment.thucung.ten} (${appointment.thucung.giong}, ${appointment.thucung.tuoi} tuổi, ${appointment.thucung.cannang}kg)
+                        ${appointment.thoigianthaydoi ? `- Thời gian thay đổi: ${new Date(appointment.thoigianthaydoi).toLocaleString()}` : ''}
+                        ${appointment.thoigianhuy ? `- Thời gian hủy: ${new Date(appointment.thoigianhuy).toLocaleString()}` : ''}
+                        - Số lần thay đổi: ${appointment.solanthaydoi}
+                    `).join('\n')
+                : 'Không có lịch sử lịch hẹn.'
+            }
             
             Hãy trả lời câu hỏi của khách hàng một cách linh hoạt, thân thiện và hữu ích nhất có thể.
-             Chó 🐕
+            Chó 🐕
                 🐶 🐕 🐕‍🦺 🦮 🐩 🐾 🦴 🐕‍🦺 🐩 🦮
                 🐶 🐕 🐕‍🦺 🦴 🐾 🐩 🦮 🐕 🐾 🦴
                 🐶 🐕 🐩 🦮 🐾 🐕‍🦺 🦴 🐶 🐩 🐕‍🦺
@@ -65,23 +106,22 @@ export const useAIStore = defineStore('ai', () => {
                 🐱 🐈 🐈‍⬛ 🐾 🐱 🐈 🐾 🐱 🐈‍⬛ 🐾
                 🐱 🐈 🐾 🐱 🐈‍⬛ 🐾 🐱 🐈 🐈‍⬛ 🐾
                 🐱 🐈 🐾 🐱 🐈‍⬛ 🐾 🐱 🐈 🐾 🐱.`;
+    });
 
     const chatHistory = ref([
         {
             role: "user",
-            parts: [{text: context}],
+            parts: [{ text: context.value }],
         },
         {
             role: "model",
-            parts: [{text: "Xin chào! Tôi là nhân viên chăm sóc khách hàng của PetHaven 🐾. Tôi rất vui được hỗ trợ bạn về các dịch vụ và chương trình khuyến mãi của chúng tôi. Hãy hỏi tôi bất cứ điều gì, tôi sẽ trả lời một cách thân thiện và dễ thương nhất có thể! 🐶🐱"}],
+            parts: [{ text: "Xin chào! Tôi là nhân viên chăm sóc khách hàng của PetHaven 🐾. Tôi rất vui được hỗ trợ bạn về các dịch vụ và chương trình khuyến mãi của chúng tôi. Hãy hỏi tôi bất cứ điều gì, tôi sẽ trả lời một cách thân thiện và dễ thương nhất có thể! 🐶🐱" }],
         },
     ]);
 
-
-    const sendMessage = async (prompt) => {
+    const sendMessage = async (prompt: string) => {
         try {
-
-            chatHistory.value.push({role: "user", parts: [{text: context + "\n\n" + prompt}]});
+            chatHistory.value.push({ role: "user", parts: [{ text: context.value + "\n\n" + prompt }] });
 
             const chatSession = model.startChat({
                 generationConfig,
@@ -91,7 +131,7 @@ export const useAIStore = defineStore('ai', () => {
             const result = await chatSession.sendMessage(prompt);
             const responseText = result.response.text();
 
-            chatHistory.value.push({role: "model", parts: [{text: responseText}]});
+            chatHistory.value.push({ role: "model", parts: [{ text: responseText }] });
 
             return responseText;
         } catch (error) {
@@ -100,5 +140,14 @@ export const useAIStore = defineStore('ai', () => {
         }
     };
 
-    return {sendMessage, chatHistory};
+    const fetchData = async () => {
+        await lichHenStore.fetchAppointments();
+    };
+
+    onMounted(async () => {
+        await fetchData();
+        refreshInterval.value = setInterval(fetchData, 60 * 1000);
+    });
+
+    return { sendMessage, chatHistory };
 });

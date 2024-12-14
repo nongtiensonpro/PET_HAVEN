@@ -109,7 +109,7 @@ function lammoi() {
 async function huyNgayNghi(ngayNghi: NgayNghi) {
   const result = await Swal.fire({
     title: 'Xác nhận',
-    text: `Bạn có chắc chắn hủy ngày nghỉ ${ngayNghi.ngay} từ ${ngayNghi.thoigianbatdau} đến ${ngayNghi.thoigianketthuc}?`,
+    text: `Bạn có chắc chắn hủy ngày nghỉ ${ngayNghi.ngaynghi} không ?`,
     icon: 'warning',
     showCancelButton: true,
     confirmButtonColor: '#3085d6',
