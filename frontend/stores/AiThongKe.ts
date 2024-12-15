@@ -56,7 +56,7 @@ export const useAIStore = defineStore('ai', () => {
             
             Thống kê dịch vụ:
             ${serviceInfo.map(service =>
-            `- ${service.ten}: Giá ${service.gia} VND`
+            `- ${service.ten}: Giá ${service.gia} USD`
         ).join('\n')}
             
             Thống kê khuyến mãi:
@@ -87,7 +87,7 @@ export const useAIStore = defineStore('ai', () => {
                     .filter(a => a.trangthai === 3)
                     .reduce((sum, a) => sum + a.dichvu.giatien, 0)
                     .toLocaleString()
-            } VND`
+            } USD`
             : 'Chưa có dữ liệu lịch hẹn.'}
 
             Hãy phân tích dữ liệu trên và đưa ra các nhận xét, xu hướng, và đề xuất để cải thiện hiệu suất kinh doanh của PetHaven.
