@@ -2,6 +2,7 @@
   <div class="container">
     <div v-if="services.length === 0">Dịch vụ không khả dụng, vui lòng thử lại sau!</div>
     <div v-else>
+      <LoiChaoKhiDangNhap/>
      <h2 class="text text-center ">Dịch vụ của chúng tôi</h2>
      <div class="container">
 

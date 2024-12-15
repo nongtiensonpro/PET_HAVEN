@@ -1,7 +1,9 @@
 <template>
   <div class="container my-5">
     <div class="card">
+
       <div v-if="service">
+       <LoiChaoKhiKhachHangXemDichVu :service="service" />
         <div class="card-header">
           <div class="row">
             <div class="col">

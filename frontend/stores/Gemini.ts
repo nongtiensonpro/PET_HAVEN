@@ -119,6 +119,22 @@ export const useAIStore = defineStore('ai', () => {
         },
     ]);
 
+    const saveChatHistoryToSessionStorage = () => {
+        sessionStorage.setItem('chatHistory', JSON.stringify(chatHistory.value));
+    };
+
+    const loadChatHistoryFromSessionStorage = () => {
+        const savedHistory = sessionStorage.getItem('chatHistory');
+        if (savedHistory) {
+            chatHistory.value = JSON.parse(savedHistory);
+        }
+    };
+
+    loadChatHistoryFromSessionStorage();
+
+
+    watch(chatHistory, saveChatHistoryToSessionStorage, { deep: true });
+
     const sendMessage = async (prompt: string) => {
         try {
             chatHistory.value.push({ role: "user", parts: [{ text: context.value + "\n\n" + prompt }] });
@@ -132,6 +148,8 @@ export const useAIStore = defineStore('ai', () => {
             const responseText = result.response.text();
 
             chatHistory.value.push({ role: "model", parts: [{ text: responseText }] });
+
+            saveChatHistoryToSessionStorage();
 
             return responseText;
         } catch (error) {
