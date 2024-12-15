@@ -22,7 +22,7 @@ watch(() => props.ca, (newCa) => {
 async function capNhatCa() {
   const result = await Swal.fire({
     title: 'Xác nhận',
-    text: `Bạn có chắc chắn cập nhật ca chứ?`,
+    text: `Bạn có chắc chắn cập nhật thời gian chứ?`,
     icon: 'warning',
     showCancelButton: true,
     confirmButtonColor: '#3085d6',
@@ -51,18 +51,24 @@ async function capNhatCa() {
     <div class="modal-dialog">
       <div class="modal-content">
         <div class="modal-header">
-          <h1 class="modal-title fs-5" id="exampleModalLabel">Cập nhật ca lịch hẹn</h1>
+          <h1 class="modal-title fs-5" id="exampleModalLabel">Cập nhật thời gian hẹn</h1>
           <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
         </div>
         <div class="modal-body">
           <form @submit.prevent="capNhatCa">
             <div class="mb-3">
-              <label for="thoigianca" class="form-label">Thời gian ca</label>
+              <label for="thoigianca" class="form-label">Thời gian hẹn</label>
               <input type="time" class="form-control" id="thoigianca" v-model="localCa.thoigianca" required>
             </div>
             <div class="modal-footer">
-              <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Đóng</button>
-              <button type="submit" class="btn btn-primary" data-bs-dismiss="modal">Lưu thay đổi</button>
+              <div class="row">
+                <div class="col">
+                  <button type="button" class="custom-button" data-bs-dismiss="modal">Đóng</button>
+                </div>
+                <div class="col">
+                  <button type="submit" class="custom-button" data-bs-dismiss="modal">Lưu thay đổi</button>
+                </div>
+              </div>
             </div>
           </form>
         </div>

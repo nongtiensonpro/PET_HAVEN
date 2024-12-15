@@ -44,7 +44,7 @@ const themCaHen = async () => {
     <div class="container">
         <!-- Button trigger modal -->
         <button type="button" class="custom-button" data-bs-toggle="modal" data-bs-target="#exampleModal">
-            Thêm Ca Hẹn
+            Thêm thời gian
         </button>
 
         <!-- Modal -->

@@ -200,7 +200,7 @@
                     <NuxtLink class="nav-link" :to="`/admin/quanlytaikhoan`">Quản lý tài khoản</NuxtLink>
                   </li>
                   <li class="nav-item" v-if="userInfo?.role && userInfo.role.includes('admin')">
-                    <NuxtLink class="nav-link" :to="`/admin/quanlyca`">Quản lý ca</NuxtLink>
+                    <NuxtLink class="nav-link" :to="`/admin/quanlyca`">Quản lý thời gian</NuxtLink>
                   </li>
                   <li class="nav-item" v-if="userInfo?.role && userInfo.role.includes('admin')">
                     <NuxtLink class="nav-link" :to="`/admin/thongke`">Thống kê</NuxtLink>

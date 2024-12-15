@@ -77,7 +77,7 @@ onUnmounted(() => {
 async function capNhatTrangThai(ca: CaLichHen) {
   const result = await Swal.fire({
     title: 'Xác nhận',
-    text: `Bạn có chắc chắn ${ca.trangthai ? 'ẩn' : 'hiện'} ca chứ?`,
+    text: `Bạn có chắc chắn ${ca.trangthai ? 'ẩn' : 'hiện'} ${ca.thoigianca} thời gian chứ?`,
     icon: 'warning',
     showCancelButton: true,
     confirmButtonColor: '#3085d6',
@@ -152,7 +152,7 @@ async function huyNgayNghi(ngayNghi: NgayNghi) {
         <thead>
           <tr>
             <th>ID</th>
-            <th>Thời gian ca</th>
+            <th>Thời gian</th>
             <th>Trạng thái</th>
             <th>Thao tác</th>
           </tr>
