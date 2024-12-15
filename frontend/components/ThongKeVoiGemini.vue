@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { onMounted, ref, onUnmounted } from 'vue';
 import { useQuanLyLichHenAdminStore } from '~/stores/QuanLyLichHenAdmin';
-import { useAIStore } from '~/stores/Gemini';
+import { useAIStore } from '~/stores/AiThongKe';
 import type { Lichhen } from "~/models/LichSuDatLich";
 
 const useQuanLyAdmin = useQuanLyLichHenAdminStore();
@@ -73,7 +73,7 @@ const sendMessageToAI = async () => {
 </script>
 
 <template>
-  <div class="container">
+  <div class="container p-4">
     <h2 class="mb-4">Thống kê với AI</h2>
     <div class="chat-container">
       <div class="chat-history">
