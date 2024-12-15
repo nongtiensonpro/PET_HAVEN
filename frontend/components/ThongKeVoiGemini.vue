@@ -26,7 +26,7 @@ const getInitialSummary = async () => {
 
   try {
     const dataForAnalysis = JSON.stringify(lichhen.value);
-    const prompt = `Analyze the following appointment data and provide a brief summary of key statistics: ${dataForAnalysis}`;
+    const prompt = `Phân tích dữ liệu cuộc hẹn sau đây và cung cấp bản tóm tắt ngắn gọn về các số liệu thống kê chính: ${dataForAnalysis}`;
 
     const response = await aiStore.sendMessage(prompt);
     chatHistory.value.pop(); // Remove the thinking message
@@ -56,13 +56,13 @@ const sendMessageToAI = async () => {
 
     // Prepare the data for AI analysis
     const dataForAnalysis = JSON.stringify(lichhen.value);
-    const prompt = `Analyze the following appointment data and provide statistics: ${dataForAnalysis}\n\nUser question: ${userMessage}`;
+    const prompt = `Phân tích dữ liệu cuộc hẹn sau đây và cung cấp số liệu thống kê: ${dataForAnalysis}\n\nUser question: ${userMessage}`;
 
     const response = await aiStore.sendMessage(prompt);
     chatHistory.value.pop(); // Remove the thinking message
     chatHistory.value.push({ role: 'ai', content: response });
   } catch (error) {
-    console.error("Error sending message to AI:", error);
+    console.error("Xin lỗi, có lỗi xảy ra khi xử lý yêu cầu của bạn:", error);
     chatHistory.value.pop(); // Remove the thinking message
     chatHistory.value.push({ role: 'system', content: 'Xin lỗi, có lỗi xảy ra khi xử lý yêu cầu của bạn.' });
   } finally {
