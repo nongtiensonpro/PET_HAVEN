@@ -197,6 +197,9 @@ const updateTTHienService = async (serviceId: String) => {
 <template>
   <div class="container p-4">
     <div class="container">
+      <div class="text fs-1">
+        Tổng quan dịch vụ
+      </div>
       <div class="row p-4">
         <div class="col-10">
           <div class="form-group">
@@ -322,7 +325,7 @@ const updateTTHienService = async (serviceId: String) => {
       <tr v-for="(service, index) in serviceStore.services" :key="service.id">
         <th class="text-center" scope="row">{{ index + 1 }}</th>
         <td class="text-center">{{ service.tendichvu }}</td>
-        <td class="text-center">{{ service.giatien.toLocaleString() }} VND</td>
+        <td class="text-center">{{ service.giatien.toLocaleString() }} USD</td>
         <td class="text-center">{{ service.trangthai == true ? 'Hoạt động' : 'Không hoạt động' }}</td>
         <td>
           <div  class="row">

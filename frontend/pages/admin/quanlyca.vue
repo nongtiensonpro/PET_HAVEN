@@ -132,6 +132,9 @@ async function huyNgayNghi(ngayNghi: NgayNghi) {
 
 <template>
   <div class="">
+    <div class="text fs-1">
+      Quản lý thời gian
+    </div>
     <div class="card-body">
       <div class="row">
         <div class="col-2">
