@@ -56,22 +56,27 @@ export const useAIThongKeStore = defineStore('ai', () => {
             
             Thống kê dịch vụ:
             ${serviceInfo.map(service =>
-            `- ${service.ten}: Giá ${service.gia} USD`
+            `-Tên dịch vụ :  ${service.ten}: Giá dịch vụ ${service.gia} USD`
         ).join('\n')}
             
             Thống kê khuyến mãi:
             ${voucherInfo.map(voucher =>
-            `- Giảm ${voucher.phantramgiam}%: ${voucher.mota} (Từ ${voucher.ngaybatdau} đến ${voucher.ngayketthuc})`
+            `- Giảm ${voucher.phantramgiam}% phần trăm : ${voucher.mota} (Từ ngày ${voucher.ngaybatdau} đến ngày ${voucher.ngayketthuc})`
         ).join('\n')}
         
             Thống kê lịch hẹn:
             Tổng số lịch hẹn: ${lichHenStore.appointments.value?.length || 0}
             ${lichHenStore.appointments.value?.length > 0 ?
-            `Phân loại theo trạng thái:
-            - Đang chờ: ${lichHenStore.appointments.value.filter(a => a.trangthai === 1).length}
-            - Đã xác nhận: ${lichHenStore.appointments.value.filter(a => a.trangthai === 2).length}
-            - Đã hoàn thành: ${lichHenStore.appointments.value.filter(a => a.trangthai === 3).length}
-            - Đã hủy: ${lichHenStore.appointments.value.filter(a => a.trangthai === 4).length}
+            `Phân loại theo trạng thái lịch hẹn:
+            - Thành công: ${lichHenStore.appointments.value.filter(a => a.trangthai === 0).length}
+            - Thất bại: ${lichHenStore.appointments.value.filter(a => a.trangthai === 1).length}
+            - Đã hủy: ${lichHenStore.appointments.value.filter(a => a.trangthai === 2).length}
+            - Chờ thanh toán: ${lichHenStore.appointments.value.filter(a => a.trangthai === 3).length}
+            - Chờ xác nhận: ${lichHenStore.appointments.value.filter(a => a.trangthai === 4).length}
+            - Rỗng: ${lichHenStore.appointments.value.filter(a => a.trangthai === 5).length}
+            - Thanh toán thành công: ${lichHenStore.appointments.value.filter(a => a.trangthai === 6).length}
+            - Đã hoàn tiền: ${lichHenStore.appointments.value.filter(a => a.trangthai === 7).length}
+            - Chờ sử dụng: ${lichHenStore.appointments.value.filter(a => a.trangthai === 8).length}
 
             Dịch vụ được đặt nhiều nhất: ${(() => {
                 const serviceCounts = lichHenStore.appointments.value.reduce((acc, appointment) => {

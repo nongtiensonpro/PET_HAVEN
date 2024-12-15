@@ -296,7 +296,7 @@ const formatDate = (dateString: string): string => {
 };
 
 const formatCurrency = (amount: number): string => {
-  return new Intl.NumberFormat('vi-VN', {style: 'currency', currency: 'VND'}).format(amount);
+  return new Intl.NumberFormat('vi-VN', {style: 'currency', currency: 'USD'}).format(amount);
 };
 
 const getTrangThai = (status: number): string => {
