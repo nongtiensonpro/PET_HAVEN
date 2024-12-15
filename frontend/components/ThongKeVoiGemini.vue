@@ -5,7 +5,7 @@ import { useAIThongKeStore } from '~/stores/AiThongKe';
 import type { Lichhen } from "~/models/LichSuDatLich";
 
 const useQuanLyAdmin = useQuanLyLichHenAdminStore();
-const aiStore = useAIStore();
+const aiStore = useAIThongKeStore();
 
 const lichhen = ref<Lichhen[]>([]);
 const userInput = ref('');
