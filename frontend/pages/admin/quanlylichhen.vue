@@ -249,7 +249,7 @@ function selectLichHen(lichHenItem: Lichhen) {
 
 onMounted(() => {
   fetchHoaDon();
-  refreshInterval = setInterval(fetchHoaDon, 60 * 1000);
+  refreshInterval = setInterval(fetchHoaDon, 5*60 * 1000);
 });
 
 const totalPages = computed(() => Math.ceil(filteredHoaDon.value.length / itemsPerPage));
