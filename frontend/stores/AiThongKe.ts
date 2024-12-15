@@ -2,10 +2,10 @@ import { GoogleGenerativeAI } from '@google/generative-ai';
 import { useServiceStore } from '~/stores/DichVuStores';
 import { useVoucherStore } from '~/stores/VorchersStores';
 import { useUserStore } from '~/stores/user';
-import { computed, onMounted, ref } from 'vue';
+import { computed, onMounted, ref, watch } from 'vue';
 import { useQuanLyLichHenKhachHang } from '~/stores/QuanLyLichHenKhachHang';
 
-export const useAIStore = defineStore('ai', () => {
+export const useAIThongKeStore = defineStore('ai', () => {
     const serviceStore = useServiceStore();
     const voucherStore = useVoucherStore();
     const userStore = useUserStore();
@@ -94,16 +94,29 @@ export const useAIStore = defineStore('ai', () => {
         `;
     });
 
-    const chatHistory = ref([
-        {
-            role: "user",
-            parts: [{ text: context.value }],
-        },
-        {
-            role: "model",
-            parts: [{ text: "Xin chào! Tôi là nhân viên tôi sẽ giúp bạn thống kê! 🐶🐱" }],
-        },
-    ]);
+    const chatHistory = ref([]);
+
+    const loadChatHistory = () => {
+        const storedHistory = sessionStorage.getItem('aiChatHistory');
+        if (storedHistory) {
+            chatHistory.value = JSON.parse(storedHistory);
+        } else {
+            chatHistory.value = [
+                {
+                    role: "user",
+                    parts: [{ text: context.value }],
+                },
+                {
+                    role: "model",
+                    parts: [{ text: "Xin chào! Tôi là nhân viên tôi sẽ giúp bạn thống kê! 🐶🐱" }],
+                },
+            ];
+        }
+    };
+
+    watch(chatHistory, (newHistory) => {
+        sessionStorage.setItem('aiChatHistory', JSON.stringify(newHistory));
+    }, { deep: true });
 
     const sendMessage = async (prompt: string) => {
         try {
@@ -131,6 +144,7 @@ export const useAIStore = defineStore('ai', () => {
     };
 
     onMounted(async () => {
+        loadChatHistory();
         await fetchData();
         refreshInterval.value = setInterval(fetchData, 60 * 1000);
     });

@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { onMounted, ref, onUnmounted } from 'vue';
 import { useQuanLyLichHenAdminStore } from '~/stores/QuanLyLichHenAdmin';
-import { useAIStore } from '~/stores/AiThongKe';
+import { useAIThongKeStore } from '~/stores/AiThongKe';
 import type { Lichhen } from "~/models/LichSuDatLich";
 
 const useQuanLyAdmin = useQuanLyLichHenAdminStore();
