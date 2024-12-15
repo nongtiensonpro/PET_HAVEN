@@ -102,7 +102,7 @@ public class CaLichHenController {
         ngayNghiService.addOrUpdate(ngaynghi);
 
         // Cập nhật trạng thái ca làm việc
-        lichHenService.ThemNgayNghi(ngay.getDate());
+//        lichHenService.ThemNgayNghi(ngay.getDate());
 
         return ResponseEntity.ok(Map.of(
                 "message", "Ngày nghỉ đã được cập nhật thành công.",
