@@ -75,11 +75,11 @@
                 </tbody>
               </table>
             </div>
-            <ThongKeVoiGemini/>
           </div>
           <div v-else class="mt-8 text-center">
             <p class="text-gray-600">Không có dữ liệu để hiển thị.</p>
           </div>
+          <ThongKeVoiGemini/>
         </div>
       </div>
     </div>
