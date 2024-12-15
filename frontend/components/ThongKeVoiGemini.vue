@@ -22,7 +22,7 @@ const loadData = async () => {
 const getInitialSummary = async () => {
   isLoading.value = true;
   isThinking.value = true;
-  chatHistory.value.push({ role: 'thinking', content: 'Đang tạo tóm tắt ban đầu...' });
+  chatHistory.value.push({ role: 'thinking', content: 'Đang phân tích yêu cầu...' });
 
   try {
     const dataForAnalysis = JSON.stringify(lichhen.value);
@@ -177,14 +177,6 @@ input {
   border-radius: 4px;
 }
 
-.custom-button {
-  padding: 8px 16px;
-  background-color: #007bff;
-  color: white;
-  border: none;
-  border-radius: 4px;
-  cursor: pointer;
-}
 
 .custom-button:disabled {
   background-color: #cccccc;
