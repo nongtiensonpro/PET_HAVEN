@@ -75,6 +75,7 @@
                 </tbody>
               </table>
             </div>
+            <ThongKeVoiGemini/>
           </div>
           <div v-else class="mt-8 text-center">
             <p class="text-gray-600">Không có dữ liệu để hiển thị.</p>
@@ -95,6 +96,7 @@ import { use } from 'echarts/core';
 import { CanvasRenderer } from 'echarts/renderers';
 import { LineChart } from 'echarts/charts';
 import { GridComponent, TooltipComponent, LegendComponent } from 'echarts/components';
+import ThongKeVoiGemini from "~/components/ThongKeVoiGemini.vue";
 
 // Register ECharts components
 use([CanvasRenderer, LineChart, GridComponent, TooltipComponent, LegendComponent]);
