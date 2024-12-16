@@ -64,11 +64,11 @@ public class HoaDonService {
                     if (hoadon1.getIdgiamgia() != null && hoadon1.getIdgiamgia().getId().equals(maxGiamGia.get().getId())){
                         phanTramGiam =0;
                         break;
-                    }else {
-                        phanTramGiam = maxGiamGia.get().getPhantramgiam();
-                        hoadon.setIdgiamgia(maxGiamGia.get()); // Gán giảm giá lớn nhất vào hóa đơn
                     }
                 }
+            }else {
+                phanTramGiam = maxGiamGia.get().getPhantramgiam();
+                hoadon.setIdgiamgia(maxGiamGia.get()); // Gán giảm giá lớn nhất vào hóa đơn
             }
         }
         Double giaTien = (double) (giaDichVu - giaDichVu*phanTramGiam/100);
@@ -85,7 +85,10 @@ public class HoaDonService {
 
     public List<Hoadon> LichSuThanhToanHoaDonTheoTaiKhoan(String email){return hoadonRepository.findByNguoithanhtoanAndPhuongthucthanhtoan(email,LocalDate.now());}
 
-    public Optional<Hoadon> finHoadonByIdLich(Integer id){return hoadonRepository.findByIdlichhen_Id(id);}
+    public Optional<Hoadon> finHoadonByIdLich(Integer id){return hoadonRepository.findByIdlichhen_IdAndTrangthai(id,1);}
+
+    public Optional<Hoadon> finHoadonByIdLich2(Integer id,Integer tt){return hoadonRepository.findByIdlichhen_IdAndTrangthai(id,tt);}
+
 
     public List<Hoadon> getList(){
         return hoadonRepository.findByIdlichhen_TrangthaiAndTrangthaiAndDate(8,2,LocalDate.now());

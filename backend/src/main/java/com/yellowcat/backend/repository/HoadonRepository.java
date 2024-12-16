@@ -20,7 +20,10 @@ public interface HoadonRepository extends JpaRepository<Hoadon, Integer> {
             "AND h.date = :date ")
     List<Hoadon> findByNguoithanhtoanAndPhuongthucthanhtoan(@Param("email") String email
     , @Param("date") LocalDate date);
+    Optional<Hoadon> findByIdlichhen_IdAndTrangthai(Integer idlichhen,int tt);
+
     Optional<Hoadon> findByIdlichhen_Id(Integer idlichhen);
+
 
     Optional<Hoadon> findByMagiaodich(String idPayMent);
 
