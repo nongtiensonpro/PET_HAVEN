@@ -193,6 +193,7 @@ public class LichHenService {
     public void updateScheduleId(Integer oldId, Integer newId) {
         scheduleMap.putIfAbsent(oldId, oldId);
         if (scheduleMap.containsKey(oldId)) {
+            scheduleMap.clear();
             scheduleMap.put(oldId, newId);
             System.out.println(scheduleMap);
         }
@@ -206,14 +207,14 @@ public class LichHenService {
 
     @Async
     public CompletableFuture<ResponseEntity<String>> scheduleTrangThaiChange(Integer lichhenId) {
-        scheduleMap.putIfAbsent(lichhenId, lichhenId);
+//        scheduleMap.putIfAbsent(lichhenId, lichhenId);
         Integer currentId;
         try {
             if (isCancelled.get()) {
                 System.out.println("Tiến trình bị hủy.");
                 return CompletableFuture.completedFuture(ResponseEntity.ok().build()); // Nếu tiến trình bị hủy thì kết thúc
             }
-            Thread.sleep( 20 * 60 * 1000);
+            Thread.sleep( 40 * 1000);
             // Lấy ID mới từ Map nếu có
             currentId = scheduleMap.getOrDefault(lichhenId, lichhenId);
             System.out.println(currentId);

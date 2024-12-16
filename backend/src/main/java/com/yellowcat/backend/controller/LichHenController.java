@@ -45,10 +45,9 @@ public class LichHenController {
         return lichHenService.getAllPageLichHen();
     }
 
-    @PreAuthorize("hasRole('user')")
     @GetMapping("/findByIdUser")
     public Page<Lichhen> findByIdUser(@RequestParam(defaultValue = "0") int page) {
-        Pageable pageable = PageRequest.of(page, 10); // 10 items per page
+        Pageable pageable = PageRequest.of(page, 100); // 10 items per page
 
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         String idUser = authentication.getName(); // Đây là idUser

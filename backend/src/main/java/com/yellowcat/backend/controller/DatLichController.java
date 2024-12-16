@@ -146,6 +146,8 @@ public class DatLichController {
 
         lichHenService.scheduleTrangThaiChange(createLich.getId());
 
+        lichHenService.updateScheduleId(lichhen.getId(), lichhen.getId());
+
         return new ResponseEntity<>(createLich, HttpStatus.CREATED);
     }
 
