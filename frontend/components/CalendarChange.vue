@@ -163,7 +163,7 @@ async function confirmBooking() {
 
     const result = await Swal.fire({
       title: 'Xác nhận',
-      text: "Bạn có muốn thay đổi lịch hẹn không? Bạn chỉ có thể đổi thời gian được 1 lần",
+      text: "Bạn có muốn thay đổi lịch hẹn không?",
       icon: 'warning',
       showCancelButton: true,
       confirmButtonColor: '#3085d6',

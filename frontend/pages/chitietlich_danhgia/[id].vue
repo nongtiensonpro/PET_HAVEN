@@ -75,7 +75,7 @@
           </div>
         </div>
       </div>
-      <div class="col-lg-6 mb-4" v-if="thayDoiLichHenStore.lichHenDetails">
+      <div class="col-lg-6 mb-4" v-if="thayDoiLichHenStore.lichHenDetails &&thayDoiLichHenStore.lichHenDetails.trangthai ===0" >
         <div class="card p-4">
           <h4 class="card-title mb-4">Đánh giá lịch hẹn của bạn</h4>
           <div v-if="chiTietDanhGia">
