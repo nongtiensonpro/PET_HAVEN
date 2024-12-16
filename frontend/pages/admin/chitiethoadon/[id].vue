@@ -64,7 +64,7 @@
             <p><strong>Trạng thái ca:</strong> {{ hoaDon.idlichhen.idcalichhen.trangthai ? 'Hoạt động' : 'Không hoạt động' }}</p>
           </section>
 
-          <section class="info-section">
+          <section class="info-section" v-if="hoaDon.idgiamgia.trangthai">
             <h3 class="section-title">Thông tin giảm giá</h3>
             <p><strong>Phần trăm giảm:</strong> {{ hoaDon.idgiamgia.phantramgiam }}%</p>
             <p><strong>Ngày bắt đầu:</strong> {{ formatDate(hoaDon.idgiamgia.ngaybatdau) }}</p>
