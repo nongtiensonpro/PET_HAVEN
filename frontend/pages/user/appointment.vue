@@ -88,7 +88,7 @@ function thanhToan(id: String) {
 const getTrangThaiText = (trangthai: number) => {
   const trangThaiMap: Record<number, string> = {
     0: 'Thành công',
-    1: 'Thất bại',
+    1: 'Đã đổi',
     2: 'Đã hủy',
     3: 'Chờ thanh toán',
     4: 'Chờ xác nhận',

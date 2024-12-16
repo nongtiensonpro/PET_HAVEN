@@ -181,12 +181,14 @@ const formatDate = (date: string | number | Date) => {
 const getTrangThaiText = (trangthai: number) => {
   const trangThaiMap: Record<number, string> = {
     0: 'Thành công',
-    1: 'Thất bại',
+    1: 'Đã đổi',
     2: 'Đã hủy',
     3: 'Chờ thanh toán',
     4: 'Chờ xác nhận',
     5: 'Rỗng',
-    6: 'Thanh toán thành công'
+    6: 'Thanh toán thành công',
+    7: 'Đã hoàn tiền',
+    8: 'Chờ sử dụng'
   }
   return trangThaiMap[trangthai] || 'Không xác định'
 }
@@ -199,7 +201,9 @@ const getTrangThaiClass = (trangthai: number) => {
     3: 'text-info',
     4: 'text-warning',
     5: 'text-secondary',
-    6: 'text-success'
+    6: 'text-success',
+    7: 'text-secondary',
+    8: 'text-success'
   }
   return classMap[trangthai] || ''
 }
