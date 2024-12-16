@@ -13,7 +13,7 @@ export const useAIThongKeStore = defineStore('ai', () => {
     const lichHenStore = useQuanLyLichHenKhachHang();
     const refreshInterval = ref(null);
 
-    const apiKey = 'AIzaSyAngio9lHhhKrSYBeh_RBYxnQvkflv8CXQ';
+    const apiKey = 'AIzaSyBIYJJNMbe-QBA2Z1uihw_iqywxtmei9jo';
     const genAI = new GoogleGenerativeAI(apiKey);
     const model = genAI.getGenerativeModel({model: 'gemini-2.0-exp-flash'});
 
@@ -139,7 +139,7 @@ export const useAIThongKeStore = defineStore('ai', () => {
     onMounted(async () => {
         loadChatHistory();
         await fetchData();
+        console.log("Dữ liệu AI sẽ nhận:", context.value);
     });
-
     return {sendMessage, chatHistory};
 });
