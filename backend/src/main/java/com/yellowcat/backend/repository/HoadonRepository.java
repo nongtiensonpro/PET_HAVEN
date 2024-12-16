@@ -26,7 +26,7 @@ public interface HoadonRepository extends JpaRepository<Hoadon, Integer> {
 
     List<Hoadon> findByIdlichhen_TrangthaiAndTrangthaiAndDate(int TrangthaiLich, int Trangthai,LocalDate date);
 
-    List<Hoadon> findByIdlichhen_TrangthaicaAndIdlichhen_Idkhachhang(boolean tt,String idKhach);
+    List<Hoadon> findByIdlichhen_TrangthaicaAndIdlichhen_IdkhachhangAndTrangthai(boolean tt,String idKhach,int ttHD);
 //    ________________Thống kê______________________
 // Thống kê theo ngày
     @Query("SELECT FUNCTION('DATE', h.date) AS ngay, SUM(h.sotien) AS doanhthu " +

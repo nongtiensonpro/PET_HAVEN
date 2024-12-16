@@ -55,13 +55,13 @@ public class HoaDonService {
         phanTramGiam = Math.max(0, Math.min(phanTramGiam, 100));
 
         String id = authentication.getName();
-        List<Hoadon> hoadonList = hoadonRepository.findByIdlichhen_TrangthaicaAndIdlichhen_Idkhachhang(true,id);
+        List<Hoadon> hoadonList = hoadonRepository.findByIdlichhen_TrangthaicaAndIdlichhen_IdkhachhangAndTrangthai(true,id,2);
 
         if (maxGiamGia.isPresent()) {
             if(!hoadonList.isEmpty()){
                 for(Hoadon hoadon1 : hoadonList){
 //                    Check xem đã dùng voucher chưa ???
-                    if (hoadon1.getIdgiamgia() != null && hoadon1.getIdgiamgia().getId().equals(maxGiamGia.get().getId()) ){
+                    if (hoadon1.getIdgiamgia() != null && hoadon1.getIdgiamgia().getId().equals(maxGiamGia.get().getId())){
                         phanTramGiam =0;
                         break;
                     }else {
