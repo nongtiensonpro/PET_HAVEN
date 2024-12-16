@@ -1,8 +1,6 @@
 package com.yellowcat.backend.repository;
 
 import com.yellowcat.backend.model.Hoadon;
-import com.yellowcat.backend.model.Lichhen;
-import jakarta.transaction.Transactional;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
@@ -29,7 +27,16 @@ public interface HoadonRepository extends JpaRepository<Hoadon, Integer> {
 
     List<Hoadon> findByIdlichhen_TrangthaiAndTrangthaiAndDate(int TrangthaiLich, int Trangthai,LocalDate date);
 
-    List<Hoadon> findByIdlichhen_TrangthaicaAndIdlichhen_IdkhachhangAndTrangthai(boolean tt,String idKhach,int ttHD);
+    @Query("SELECT hd FROM Hoadon hd " +
+            "JOIN Lichhen lh ON lh.id = hd.idlichhen.id " +
+            "WHERE lh.trangthaica = :trangthaica " +
+            "AND lh.idkhachhang = :idkhachhang " +
+            "AND lh.trangthai <> 3")
+    List<Hoadon> findByIdlichhen_TrangthaicaAndIdlichhen_IdkhachhangAndTrangthai(
+            @Param("trangthaica") Boolean trangthaica,
+            @Param("idkhachhang") String idkhachhang
+    );
+//    List<Hoadon> findByIdlichhen_TrangthaicaAndIdlichhen_IdkhachhangAndTrangthai(boolean tt,String idKhach,int ttHD);
 //    ________________Thống kê______________________
 // Thống kê theo ngày
     @Query("SELECT FUNCTION('DATE', h.date) AS ngay, SUM(h.sotien) AS doanhthu " +

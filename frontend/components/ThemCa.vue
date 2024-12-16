@@ -32,7 +32,7 @@ const themCaHen = async () => {
         trangthai.value = false;
         toast.success('Thêm ca hẹn thành công');
       if (modal) {
-        modal.hide();
+        // modal.hide();
       }
     } catch (e) {
         toast.error('Thêm ca hẹn thất bại');

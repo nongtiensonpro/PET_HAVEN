@@ -52,17 +52,22 @@ public class HoaDonService {
                 .stream()
                 .max(Comparator.comparing(Giamgia::getPhantramgiam));
         float phanTramGiam =0;
-        phanTramGiam = Math.max(0, Math.min(phanTramGiam, 100));
+        phanTramGiam = Math.max(0, Math.min(phanTramGiam, 90));
 
         String id = authentication.getName();
-        List<Hoadon> hoadonList = hoadonRepository.findByIdlichhen_TrangthaicaAndIdlichhen_IdkhachhangAndTrangthai(true,id,2);
-
+        List<Hoadon> hoadonList = hoadonRepository.findByIdlichhen_TrangthaicaAndIdlichhen_IdkhachhangAndTrangthai(true,id);
         if (maxGiamGia.isPresent()) {
             if(!hoadonList.isEmpty()){
                 for(Hoadon hoadon1 : hoadonList){
 //                    Check xem đã dùng voucher chưa ???
-                    if (hoadon1.getIdgiamgia() != null && hoadon1.getIdgiamgia().getId().equals(maxGiamGia.get().getId())){
+                    if (hoadon1.getIdgiamgia() != null && hoadon1.getIdgiamgia().getId() == (maxGiamGia.get().getId())){
                         phanTramGiam =0;
+                        System.out.println(1);
+                        break;
+                    }else {
+                        phanTramGiam = maxGiamGia.get().getPhantramgiam();
+                        hoadon.setIdgiamgia(maxGiamGia.get()); // Gán giảm giá lớn nhất vào hóa đơn
+                        System.out.println(2);
                         break;
                     }
                 }
