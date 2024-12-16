@@ -69,7 +69,7 @@ CREATE TABLE LichHen
 );
 -- quy ước trang thai:
 -- 0 : thành công
--- 1 : thất bại
+-- 1 : đã đổi
 -- 2 : đã hủy
 -- 3 : chờ thanh toán
 -- 4 : chờ xác nhận
@@ -95,7 +95,7 @@ CREATE TABLE HoaDon
 -- Quy ước:
 -- 1: Chờ thanh toán
 -- 2: Thành công
--- 3: Thất bại
+-- 3: Đã hoàn tiền
 
 
 CREATE TABLE DanhGia
@@ -119,11 +119,8 @@ CREATE TABLE NgayNghi
 
 
 
--- Thêm dữ liệu vào bảng ThongTinCaNhan
-INSERT INTO ThongTinCaNhan (HoTen, Tuoi, GioiTinh, idTaiKhoan, SDT)
-VALUES ('Nguyen Van A', 25, 'Nam', 1, '0901234567'),
-       ('Tran Thi B', 30, 'Nu', 2, '0907654321'),
-       ('Le Van C', 22, 'Nam', 3, '0901122334');
+
+
 
 -- Thêm dữ liệu vào bảng GiamGia
 INSERT INTO GiamGia (PhanTramGiam, NgayBatDau, NgayKetThuc, MoTa, TrangThai)
@@ -162,9 +159,9 @@ VALUES (1, 1, 1, '2024-10-02 ', 1 , 1,TRUE),
 
 -- Thêm dữ liệu vào bảng HoaDon
 INSERT INTO HoaDon (idLichHen, Date,SoTienBanDau, SoTien, NgayThanhToan, PhuongThucThanhToan, TrangThai,MaGiaoDich,idGiamGia)
-VALUES (1, '2024-10-02 10:00:00',90000, 90000, '2024-10-02 11:00:00', 'Offline', 1,'1',2),
-       (2, '2024-10-03 14:00:00',90000, 120000, '2024-10-03 15:00:00', 'Online', 2,'2',2),
-       (3, '2024-10-04 09:00:00',90000, 170000, '2024-10-04 10:00:00', 'Online', 3,'3',2);
+VALUES (1, '2024-10-02 10:00:00',20, 20, '2024-10-02 11:00:00', 'Offline', 1,'1',2),
+       (2, '2024-10-03 14:00:00',20, 20, '2024-10-03 15:00:00', 'Online', 2,'2',2),
+       (3, '2024-10-04 09:00:00',20, 20, '2024-10-04 10:00:00', 'Online', 3,'3',2);
 
 -- Thêm dữ liệu vào bảng DanhGia
 INSERT INTO DanhGia (idTaiKhoan, SoSao, MoTa, Date, TrangThai,idHoaDon)

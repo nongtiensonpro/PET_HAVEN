@@ -299,7 +299,7 @@ const formatCurrency = (amount) => {
 const getTrangThai = (status: number): string => {
   const statusMap = {
     0: 'Thành công',
-    1: 'Thất bại',
+    1: 'Đã đổi',
     2: 'Đã hủy',
     3: 'Chờ thanh toán',
     4: 'Chờ xác nhận',
@@ -313,7 +313,7 @@ const getTrangThaiHoaDon = (status: number): string => {
   const statusMap = {
     1: 'Chờ thanh toán',
     2: 'Thành công',
-    3: 'Thất bại'
+    3: 'Đã hoàn tiền'
   };
   return statusMap[status] || 'Không xác định';
 };

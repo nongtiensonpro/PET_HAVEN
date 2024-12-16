@@ -30,7 +30,7 @@ async function themNgayNghi() {
     toast.success('Cập nhật ngày nghỉ thành công');
     ngayNghi.value = ''; // Reset form
     if (modal) {
-      modal.hide(); // Đóng modal
+      // modal.hide(); // Đóng modal
     }
   } catch (error) {
     toast.error('Cập nhật ngày nghỉ thất bại');

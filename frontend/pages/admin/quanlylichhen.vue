@@ -302,7 +302,7 @@ const formatCurrency = (amount: number): string => {
 const getTrangThai = (status: number): string => {
   const trangThaiMap: { [key: number]: string } = {
     0: 'Thành công',
-    1: 'Thất bại',
+    1: 'Đã đổi',
     2: 'Đã hủy',
     3: 'Chờ thanh toán',
     4: 'Chờ xác nhận',

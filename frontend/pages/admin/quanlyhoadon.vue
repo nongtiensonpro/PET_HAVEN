@@ -135,7 +135,7 @@ const getTrangThai = (trangthai: number) => {
     case 2:
       return 'Thành công';
     case 3:
-      return 'Thất bại';
+      return 'Đã hoàn tiền';
     default:
       return 'Không xác định';
   }
