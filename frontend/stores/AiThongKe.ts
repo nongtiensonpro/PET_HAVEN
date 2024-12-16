@@ -1,9 +1,10 @@
-import { GoogleGenerativeAI } from '@google/generative-ai';
-import { useServiceStore } from '~/stores/DichVuStores';
-import { useVoucherStore } from '~/stores/VorchersStores';
-import { useUserStore } from '~/stores/user';
-import { computed, onMounted, ref, watch } from 'vue';
-import { useQuanLyLichHenKhachHang } from '~/stores/QuanLyLichHenKhachHang';
+import {GoogleGenerativeAI} from '@google/generative-ai';
+import {useServiceStore} from '~/stores/DichVuStores';
+import {useVoucherStore} from '~/stores/VorchersStores';
+import {useUserStore} from '~/stores/user';
+import {computed, onMounted, ref, watch} from 'vue';
+import {useQuanLyLichHenKhachHang} from '~/stores/QuanLyLichHenKhachHang';
+import type { BookingData } from './MauKhachDatDichVu';
 
 export const useAIThongKeStore = defineStore('ai', () => {
     const serviceStore = useServiceStore();
@@ -14,8 +15,7 @@ export const useAIThongKeStore = defineStore('ai', () => {
 
     const apiKey = 'AIzaSyAngio9lHhhKrSYBeh_RBYxnQvkflv8CXQ';
     const genAI = new GoogleGenerativeAI(apiKey);
-    // const model = genAI.getGenerativeModel({ model: 'gemini-2.0-flash-exp' });
-    const model = genAI.getGenerativeModel({ model: 'gemini-1.5-flash' });
+    const model = genAI.getGenerativeModel({model: 'gemini-2.0-exp-flash'});
 
     const generationConfig = {
         temperature: 1,
@@ -27,23 +27,41 @@ export const useAIThongKeStore = defineStore('ai', () => {
     const services = computed(() =>
         serviceStore.services.filter(service => service.trangthai && service.hien)
     );
-
     const vouchers = computed(() =>
         voucherStore.ListVoucher.filter(voucher => voucher.trangthai)
     );
 
-    const user = computed(() => userStore.userInfo);
-
-    const getServiceInfo = () =>
-        services.value.map(({ id, ten, mota, gia }) => ({ id, ten, mota, gia }));
-
-    const getVoucherInfo = () =>
-        vouchers.value.map(({ id, phantramgiam, ngaybatdau, ngayketthuc, mota, trangthai }) =>
-            ({ id, phantramgiam, ngaybatdau, ngayketthuc, mota, trangthai }));
-
     const context = computed(() => {
-        const serviceInfo = getServiceInfo();
-        const voucherInfo = getVoucherInfo();
+        const serviceInfo = services.value.map(({id, ten, gia}: { id: number; ten: string; gia: number }) => ({
+            id,
+            ten,
+            gia
+        }));
+        const voucherInfo = vouchers.value.map(({id, phantramgiam, ngaybatdau, ngayketthuc}: {
+            id: number;
+            phantramgiam: number;
+            ngaybatdau: Date;
+            ngayketthuc: Date;
+        }) => ({id, phantramgiam, ngaybatdau, ngayketthuc}));
+        const appointments = lichHenStore.appointments.value || [];
+
+        const statusMap = {
+            0: 'Thành công', 1: 'Thất bại', 2: 'Đã hủy', 3: 'Chờ thanh toán',
+            4: 'Chờ xác nhận', 5: 'Rỗng', 6: 'Thanh toán thành công',
+            7: 'Đã hoàn tiền', 8: 'Chờ sử dụng'
+        };
+
+        const countServices = appointments.reduce((acc, a) => {
+            acc[a.dichvu.tendichvu] = (acc[a.dichvu.tendichvu] || 0) + 1;
+            return acc;
+        }, {});
+        const mostBookedService = Object.entries(countServices).reduce((a, b) => a[1] > b[1] ? a : b);
+
+        const totalRevenue = appointments
+            .filter((a: BookingData) => a.trangthai === 3 || a.trangthai === 6) // Đã hoàn thành hoặc thanh toán thành công
+            .reduce((sum: number, a: BookingData) => sum + a.dichvu.giatien, 0)
+            .toLocaleString();
+
         return `
             Bạn là một chuyên gia phân tích dữ liệu cho cửa hàng thú cưng PetHaven. Hãy tuân thủ các quy tắc sau:
 
@@ -54,47 +72,22 @@ export const useAIThongKeStore = defineStore('ai', () => {
             5. Trả lời ngắn gọn, súc tích nhưng đầy đủ thông tin.
             6. Sử dụng các số liệu cụ thể khi có thể để hỗ trợ các nhận định.
             7. Nếu không có đủ dữ liệu để đưa ra kết luận chính xác, hãy nêu rõ và đề xuất cách thu thập thêm dữ liệu.
-            
+
             Thống kê dịch vụ:
-            ${serviceInfo.map(service =>
-            `-Tên dịch vụ :  ${service.ten}: Giá dịch vụ ${service.gia} USD`
-        ).join('\n')}
-            
+            ${serviceInfo.map(service => `- ${service.ten}: ${service.gia} USD`).join('\n')}
+
             Thống kê khuyến mãi:
-            ${voucherInfo.map(voucher =>
-            `- Giảm ${voucher.phantramgiam}% phần trăm : ${voucher.mota} (Từ ngày ${voucher.ngaybatdau} đến ngày ${voucher.ngayketthuc})`
-        ).join('\n')}
-        
+            ${voucherInfo.map(voucher => `- Giảm ${voucher.phantramgiam}%: Từ ${voucher.ngaybatdau} đến ${voucher.ngayketthuc}`).join('\n')}
+
             Thống kê lịch hẹn:
-            Tổng số lịch hẹn: ${lichHenStore.appointments.value?.length || 0}
-            ${lichHenStore.appointments.value?.length > 0 ?
-            `Phân loại theo trạng thái lịch hẹn:
-            - Thành công: ${lichHenStore.appointments.value.filter(a => a.trangthai === 0).length}
-            - Thất bại: ${lichHenStore.appointments.value.filter(a => a.trangthai === 1).length}
-            - Đã hủy: ${lichHenStore.appointments.value.filter(a => a.trangthai === 2).length}
-            - Chờ thanh toán: ${lichHenStore.appointments.value.filter(a => a.trangthai === 3).length}
-            - Chờ xác nhận: ${lichHenStore.appointments.value.filter(a => a.trangthai === 4).length}
-            - Rỗng: ${lichHenStore.appointments.value.filter(a => a.trangthai === 5).length}
-            - Thanh toán thành công: ${lichHenStore.appointments.value.filter(a => a.trangthai === 6).length}
-            - Đã hoàn tiền: ${lichHenStore.appointments.value.filter(a => a.trangthai === 7).length}
-            - Chờ sử dụng: ${lichHenStore.appointments.value.filter(a => a.trangthai === 8).length}
+            Tổng số lịch hẹn: ${appointments.length}
+            ${appointments.length > 0 ? `
+            Phân loại theo trạng thái lịch hẹn:
+           ${Object.entries(statusMap).map(([status, label]) => `- ${label}: ${appointments.filter((a: BookingData) => a.trangthai === parseInt(status)).length}`).join('\n')}
 
-            Dịch vụ được đặt nhiều nhất: ${(() => {
-                const serviceCounts = lichHenStore.appointments.value.reduce((acc, appointment) => {
-                    acc[appointment.dichvu.tendichvu] = (acc[appointment.dichvu.tendichvu] || 0) + 1;
-                    return acc;
-                }, {});
-                const maxService = Object.entries(serviceCounts).reduce((a, b) => a[1] > b[1] ? a : b);
-                return `${maxService[0]} (${maxService[1]} lần)`;
-            })()}
-
-            Tổng doanh thu từ lịch hẹn đã hoàn thành: ${
-                lichHenStore.appointments.value
-                    .filter(a => a.trangthai === 3)
-                    .reduce((sum, a) => sum + a.dichvu.giatien, 0)
-                    .toLocaleString()
-            } USD`
-            : 'Chưa có dữ liệu lịch hẹn.'}
+            Dịch vụ được đặt nhiều nhất: ${mostBookedService[0]} (${mostBookedService[1]} lần)
+            Tổng doanh thu từ lịch hẹn đã hoàn thành: ${totalRevenue} USD
+            ` : 'Chưa có dữ liệu lịch hẹn.'}
 
             Hãy phân tích dữ liệu trên và đưa ra các nhận xét, xu hướng, và đề xuất để cải thiện hiệu suất kinh doanh của PetHaven.
         `;
@@ -108,25 +101,19 @@ export const useAIThongKeStore = defineStore('ai', () => {
             chatHistory.value = JSON.parse(storedHistory);
         } else {
             chatHistory.value = [
-                {
-                    role: "user",
-                    parts: [{ text: context.value }],
-                },
-                {
-                    role: "model",
-                    parts: [{ text: "Xin chào! Tôi là nhân viên tôi sẽ giúp bạn thống kê! 🐶🐱" }],
-                },
+                {role: "user", parts: [{text: context.value}]},
+                {role: "model", parts: [{text: "Xin chào! Tôi là nhân viên tôi sẽ giúp bạn thống kê! 🐶🐱"}]},
             ];
         }
     };
 
     watch(chatHistory, (newHistory) => {
         sessionStorage.setItem('aiChatHistory', JSON.stringify(newHistory));
-    }, { deep: true });
+    }, {deep: true});
 
     const sendMessage = async (prompt: string) => {
         try {
-            chatHistory.value.push({ role: "user", parts: [{ text: context.value + "\n\n" + prompt }] });
+            chatHistory.value.push({role: "user", parts: [{text: context.value + "\n\n" + prompt}]});
 
             const chatSession = model.startChat({
                 generationConfig,
@@ -136,7 +123,7 @@ export const useAIThongKeStore = defineStore('ai', () => {
             const result = await chatSession.sendMessage(prompt);
             const responseText = result.response.text();
 
-            chatHistory.value.push({ role: "model", parts: [{ text: responseText }] });
+            chatHistory.value.push({role: "model", parts: [{text: responseText}]});
 
             return responseText;
         } catch (error) {
@@ -152,8 +139,7 @@ export const useAIThongKeStore = defineStore('ai', () => {
     onMounted(async () => {
         loadChatHistory();
         await fetchData();
-        refreshInterval.value = setInterval(fetchData, 60 * 1000);
     });
 
-    return { sendMessage, chatHistory };
+    return {sendMessage, chatHistory};
 });
