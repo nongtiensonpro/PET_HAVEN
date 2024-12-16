@@ -154,7 +154,22 @@ public class DatLichController {
     public ResponseEntity<?> huyLichHen(@PathVariable Integer id) throws PayPalRESTException {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         String idUser = authentication.getName();
-        Optional<Hoadon> hoadonOptional = hoaDonService.finHoadonByIdLich(id);
+        Optional<Hoadon> hoadonOptional1 = hoaDonService.finHoadonByIdLich2(id,1);
+        Optional<Hoadon> hoadonOptional2 = hoaDonService.finHoadonByIdLich2(id,2);
+
+        Hoadon hoadonOptional;
+
+        hoadonOptional = hoadonOptional2.orElse(null);
+        if (hoadonOptional1.isPresent()) {
+            hoadonOptional = hoadonOptional1.get();
+        }
+        if (hoadonOptional == null) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Không tìm thấy hóa đơn phù hợp.");
+        }
+        if (hoadonOptional1.isPresent() && hoadonOptional2.isPresent() || !hoadonOptional1.isPresent() && !hoadonOptional2.isPresent()) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Hóa đơn ko hợp lệ");
+        }
+
         Lichhen lichhen = lichHenService.findById(id);
         Map<String, String> response = new HashMap<>();
         if (lichhen == null) {
@@ -186,15 +201,13 @@ public class DatLichController {
             lichHenService.addOrUpdate(lichhenNew);
 
 //            Hoàn tiền
-            if (hoadonOptional.isPresent()) {
-                Hoadon hoadon = hoadonOptional.get();
                 if (lichhen.getTrangthai() == 6) { // Đã thanh toán
-                    System.out.println(hoadon.getMagiaodich());
-                    Refund refund = payPalService.refundPayment(hoadon.getMagiaodich(), hoadon.getSotien(), "USD");
+                    System.out.println(hoadonOptional.getMagiaodich());
+                    Refund refund = payPalService.refundPayment(hoadonOptional.getMagiaodich(), hoadonOptional.getSotien(), "USD");
                     System.out.println(refund);
                     if ("completed".equals(refund.getState())) {
-                        hoadon.setTrangthai(3); // Trạng thái: thất bại
-                        hoaDonService.addOrUpdate(hoadon);
+                        hoadonOptional.setTrangthai(3); // Trạng thái: thất bại
+                        hoaDonService.addOrUpdate(hoadonOptional);
                         lichhenNew.setTrangthai(7); // Trạng thái: Đã hoàn tiền
                         lichHenService.addOrUpdate(lichhenNew);
                     } else {
@@ -202,11 +215,13 @@ public class DatLichController {
                                 .body("Hoàn tiền thất bại: " + refund.getReason());
                     }
                 }
-            }
 
-            //           Hủy hóa đơn chờ
-//            Hoadon hoadonNew = hoadonOptional.get();
-//            hoaDonService.deleteHoadonById(hoadonNew.getId());
+
+//            Xóa hóa đơn chờ
+            if (hoadonOptional.getTrangthai() == 1){
+                System.out.println("hello");
+                hoaDonService.deleteHoadonById(hoadonOptional.getId());
+            }
 
             // Cập nhật lịch gốc với trạng thái đã hủy
             lichhen.setIdkhachhang("demo");
@@ -231,7 +246,11 @@ public class DatLichController {
     public ResponseEntity<?> thayDoiThoiGian(@PathVariable Integer id,@Valid @RequestBody DoiLichDTO doiLichDTO) {
         Lichhen lichhen = lichHenService.findById(id);
         Lichhen lichhenNew = new Lichhen();
-        Optional<Hoadon> hoadonOptional = hoaDonService.finHoadonByIdLich(id);
+        Optional<Hoadon> hoadonOptional1 = hoaDonService.finHoadonByIdLich2(id,1);
+        Optional<Hoadon> hoadonOptional2 = hoaDonService.finHoadonByIdLich2(id,2);
+
+        Hoadon hoadonOptional;
+
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         String idUser = authentication.getName();
 
@@ -239,7 +258,15 @@ public class DatLichController {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Lịch hẹn không tồn tại.");
         }
 
-        if (!hoadonOptional.isPresent()) {
+        hoadonOptional = hoadonOptional2.orElse(null);
+        if (hoadonOptional1.isPresent()) {
+            hoadonOptional = hoadonOptional1.get();
+        }
+        if (hoadonOptional == null) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Không tìm thấy hóa đơn phù hợp.");
+        }
+
+        if (hoadonOptional1.isPresent() && hoadonOptional2.isPresent() || !hoadonOptional1.isPresent() && !hoadonOptional2.isPresent()) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Hóa đơn ko hợp lệ");
         }
 
@@ -269,9 +296,8 @@ public class DatLichController {
             lichHenService.addOrUpdate(lichDoi);
 
 //            Cập nhập lại hóa đơn chờ
-            Hoadon hoadon = hoadonOptional.get();
-            hoadon.setIdlichhen(lichDoi);
-            hoaDonService.addOrUpdate(hoadon);
+            hoadonOptional.setIdlichhen(lichDoi);
+            hoaDonService.addOrUpdate(hoadonOptional);
 
 //            Cập nhập số lần thay đổi
             lichhen.setSolanthaydoi(lichhen.getSolanthaydoi()+1);

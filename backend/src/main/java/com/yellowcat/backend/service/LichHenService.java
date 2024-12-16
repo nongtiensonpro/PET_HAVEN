@@ -213,7 +213,7 @@ public class LichHenService {
                 System.out.println("Tiến trình bị hủy.");
                 return CompletableFuture.completedFuture(ResponseEntity.ok().build()); // Nếu tiến trình bị hủy thì kết thúc
             }
-            Thread.sleep( 50 * 1000);
+            Thread.sleep( 20 * 60 * 1000);
             // Lấy ID mới từ Map nếu có
             currentId = scheduleMap.getOrDefault(lichhenId, lichhenId);
             System.out.println(currentId);
@@ -232,8 +232,7 @@ public class LichHenService {
         Lichhen lichhen1 = lichhenOptional.get();
         if (lichhen1.getTrangthai() == 4) {
 
-
-            Optional<Hoadon> hoadonOptional = hoaDonService.finHoadonByIdLich(lichhen1.getId());
+            
             Optional<Lichhen> lichhenOptional1 = lichhenRepository.findById(lichhen1.getId());
             if (!lichhenOptional1.isPresent()) {
                 return CompletableFuture.completedFuture(ResponseEntity.notFound().build());
