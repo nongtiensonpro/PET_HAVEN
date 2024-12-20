@@ -117,28 +117,25 @@ CREATE TABLE NgayNghi
 );
 
 
-
-
-
-
-
--- Thêm dữ liệu vào bảng GiamGia
-INSERT INTO GiamGia (PhanTramGiam, NgayBatDau, NgayKetThuc, MoTa, TrangThai)
-VALUES
-       (20, '2024-11-01 00:00:00', '2024-11-30 23:59:59', 'Giảm giá tháng 11', TRUE),
-       (15, '2024-12-01 00:00:00', '2024-12-31 23:59:59', 'Giảm giá tháng 12', TRUE);
-
 -- Thêm dữ liệu vào bảng DichVu
-INSERT INTO DichVu (TenDichVu, MoTa, Anh, GiaTien,trangthai,Hien)
-VALUES ('Dịch vụ 1', 'Mô tả dịch vụ 1', NULL, 10,true,true),
-       ('Dịch vụ 2', 'Mô tả dịch vụ 2', NULL, 15,true,true),
-       ('Dịch vụ 3', 'Mô tả dịch vụ 3', NULL, 20,true,true);
+INSERT INTO public.dichvu (id, tendichvu, mota, anh, giatien, trangthai, hien) VALUES (5, 'Spa cho mèo < 3kg (full)', 'Bao gồm cắt tỉa - tắm - massage', null, 18, true, true);
+INSERT INTO public.dichvu (id, tendichvu, mota, anh, giatien, trangthai, hien) VALUES (6, 'Spa cho mèo >= 3kg (full)', 'Bao gồm cắt tỉa - tắm - massage', null, 23, true, true);
+INSERT INTO public.dichvu (id, tendichvu, mota, anh, giatien, trangthai, hien) VALUES (7, 'Spa cho mèo >= 3kg (cắt tỉa)', 'Cắt tỉa bộ móng cho chú mèo của bạn', null, 10, true, true);
 
--- Thêm dữ liệu vào bảng ThuCung
-INSERT INTO ThuCung (Ten, CanNang, Tuoi, Giong, IDTaiKhoan, Image)
-VALUES ('Dog 1', 10.5, 2, 'Golden', 1, NULL),
-       ('Dog 2', 8.3, 3, 'Bulldog', 2, NULL),
-       ('Dog 3', 12.7, 4, 'Labrador', 3, NULL);
+
+-- -- Thêm dữ liệu vào bảng GiamGia
+-- INSERT INTO GiamGia (PhanTramGiam, NgayBatDau, NgayKetThuc, MoTa, TrangThai)
+-- VALUES
+--        (20, '2024-11-01 00:00:00', '2024-11-30 23:59:59', 'Giảm giá tháng 11', TRUE),
+--        (15, '2024-12-01 00:00:00', '2024-12-31 23:59:59', 'Giảm giá tháng 12', TRUE);
+
+
+
+-- -- Thêm dữ liệu vào bảng ThuCung
+-- INSERT INTO ThuCung (Ten, CanNang, Tuoi, Giong, IDTaiKhoan, Image)
+-- VALUES ('Dog 1', 10.5, 2, 'Golden', 1, NULL),
+--        ('Dog 2', 8.3, 3, 'Bulldog', 2, NULL),
+--        ('Dog 3', 12.7, 4, 'Labrador', 3, NULL);
 
 INSERT INTO CaLichHen ( ThoiGianCa, TrangThai)
 VALUES
@@ -151,21 +148,21 @@ VALUES
     ('13:00:00', TRUE),
     ('14:00:00', TRUE);
 
--- Thêm dữ liệu vào bảng LichHen
-INSERT INTO LichHen (idKhachHang, idThuCung, idDichVu, Date, TrangThai , idCaLichHen,TrangThaiCa)
-VALUES (1, 1, 1, '2024-10-02 ', 1 , 1,TRUE),
-       (2, 2, 2, '2024-10-03 ', 2, 2,TRUE),
-       (3, 3, 3, '2024-10-04 ', 3 , 3,TRUE);
+-- -- Thêm dữ liệu vào bảng LichHen
+-- INSERT INTO LichHen (idKhachHang, idThuCung, idDichVu, Date, TrangThai , idCaLichHen,TrangThaiCa)
+-- VALUES (1, 1, 1, '2024-10-02 ', 1 , 1,TRUE),
+--        (2, 2, 2, '2024-10-03 ', 2, 2,TRUE),
+--        (3, 3, 3, '2024-10-04 ', 3 , 3,TRUE);
 
--- Thêm dữ liệu vào bảng HoaDon
-INSERT INTO HoaDon (idLichHen, Date,SoTienBanDau, SoTien, NgayThanhToan, PhuongThucThanhToan, TrangThai,MaGiaoDich,idGiamGia)
-VALUES (1, '2024-10-02 10:00:00',20, 20, '2024-10-02 11:00:00', 'Offline', 1,'1',2),
-       (2, '2024-10-03 14:00:00',20, 20, '2024-10-03 15:00:00', 'Online', 2,'2',2),
-       (3, '2024-10-04 09:00:00',20, 20, '2024-10-04 10:00:00', 'Online', 3,'3',2);
+-- -- Thêm dữ liệu vào bảng HoaDon
+-- INSERT INTO HoaDon (idLichHen, Date,SoTienBanDau, SoTien, NgayThanhToan, PhuongThucThanhToan, TrangThai,MaGiaoDich,idGiamGia)
+-- VALUES (1, '2024-10-02 10:00:00',20, 20, '2024-10-02 11:00:00', 'Offline', 1,'1',2),
+--        (2, '2024-10-03 14:00:00',20, 20, '2024-10-03 15:00:00', 'Online', 2,'2',2),
+--        (3, '2024-10-04 09:00:00',20, 20, '2024-10-04 10:00:00', 'Online', 3,'3',2);
 
--- Thêm dữ liệu vào bảng DanhGia
-INSERT INTO DanhGia (idTaiKhoan, SoSao, MoTa, Date, TrangThai,idHoaDon)
-VALUES (1, 5, 'Rất tốt', '2024-10-01 12:00:00', TRUE,'1'),
-       (2, 4, 'Tốt', '2024-09-30 11:00:00', TRUE,'1'),
-       (3, 3, 'Bình thường', '2024-09-29 10:00:00', FALSE,'1');
+-- -- Thêm dữ liệu vào bảng DanhGia
+-- INSERT INTO DanhGia (idTaiKhoan, SoSao, MoTa, Date, TrangThai,idHoaDon)
+-- VALUES (1, 5, 'Rất tốt', '2024-10-01 12:00:00', TRUE,'1'),
+--        (2, 4, 'Tốt', '2024-09-30 11:00:00', TRUE,'1'),
+--        (3, 3, 'Bình thường', '2024-09-29 10:00:00', FALSE,'1');
 
