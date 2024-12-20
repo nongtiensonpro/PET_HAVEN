@@ -45,7 +45,7 @@
                     </button>
 
                     <button
-                        v-if="hoaDon.idlichhen.trangthai === 6 "
+                        v-if="hoaDon.idlichhen.trangthai === 8 "
                         @click="thanhToanHoaDon(hoaDon.idlichhen.id)"
                         class="btn btn-sm btn-outline-primary m-1">
                       Checkin
@@ -332,7 +332,9 @@ const getTrangThai = (status: number): string => {
     3: 'Chờ thanh toán',
     4: 'Chờ xác nhận',
     5: 'Rỗng',
-    6: 'Thanh toán thành công'
+    6: 'Thanh toán thành công',
+    7: 'Đã hoàn tiền',
+    8: 'Chờ sử dụng'
   };
   return statusMap[status] || 'Không xác định';
 };
