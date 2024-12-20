@@ -12,16 +12,22 @@ const petName = ref('');
 const petWeight = ref('');
 const petBreed = ref('');
 const petAge = ref('');
+const petGender = ref(true); // true for male, false for female
+const isCat = ref(true);
+const healthStatus = ref('');
+const description = ref('');
 const errors = ref({
   name: '',
   weight: '',
   breed: '',
-  age: ''
+  age: '',
+  healthStatus: '',
+  description: ''
 });
 
 function validateFields() {
   let isValid = true;
-  errors.value = { name: '', weight: '', breed: '', age: '' };
+  errors.value = { name: '', weight: '', breed: '', age: '', healthStatus: '', description: '' };
 
   if (!petName.value) {
     errors.value.name = 'Tên thú cưng không được để trống';
@@ -39,6 +45,14 @@ function validateFields() {
     errors.value.age = 'Tuổi phải là một số';
     isValid = false;
   }
+  if (!healthStatus.value) {
+    errors.value.healthStatus = 'Tình trạng sức khỏe không được để trống';
+    isValid = false;
+  }
+  if (!description.value) {
+    errors.value.description = 'Mô tả không được để trống';
+    isValid = false;
+  }
 
   return isValid;
 }
@@ -51,18 +65,27 @@ function addPet() {
   try {
     const newPet = {
       ten: petName.value,
-      cannang: petWeight.value,
+      cannang: parseFloat(petWeight.value),
       giong: petBreed.value,
-      tuoi: petAge.value,
-      id: '', // Add appropriate id value
-      idtaikhoan: '' // Add appropriate idtaikhoan value
+      tuoi: parseInt(petAge.value),
+      idtaikhoan: userInfo.value.id,
+      gioitinh: petGender.value,
+      cophaimeokhong: isCat.value,
+      tinhtrangsuckhoe: healthStatus.value,
+      mota: description.value
     };
     userStore.addPet(newPet);
 
+    // Reset form fields
     petName.value = '';
     petWeight.value = '';
     petBreed.value = '';
     petAge.value = '';
+    petGender.value = true;
+    isCat.value = true;
+    healthStatus.value = '';
+    description.value = '';
+
     toast.success('Thêm thú cưng thành công');
     const modalElement = document.getElementById('exampleModal');
     if (modalElement) {
@@ -93,15 +116,42 @@ function addPet() {
             <label>Tên thú cưng:</label>
             <input type="text" v-model="petName" class="form-control" />
             <span class="text-danger">{{ errors.name }}</span><br>
+
             <label>Cân nặng:</label>
             <input type="text" v-model="petWeight" class="form-control" />
             <span class="text-danger">{{ errors.weight }}</span><br>
+
             <label>Giống:</label>
             <input type="text" v-model="petBreed" class="form-control" />
             <span class="text-danger">{{ errors.breed }}</span><br>
+
             <label>Tuổi:</label>
             <input type="text" v-model="petAge" class="form-control" />
             <span class="text-danger">{{ errors.age }}</span><br>
+
+            <label>Giới tính:</label>
+            <div>
+              <input type="radio" id="male" v-model="petGender" :value="true">
+              <label for="male">Đực</label>
+              <input type="radio" id="female" v-model="petGender" :value="false">
+              <label for="female">Cái</label>
+            </div><br>
+
+            <label>Loại thú cưng:</label>
+            <div>
+              <input type="radio" id="cat" v-model="isCat" :value="true">
+              <label for="cat">Mèo</label>
+              <input type="radio" id="dog" v-model="isCat" :value="false">
+              <label for="dog">Chó</label>
+            </div><br>
+
+            <label>Tình trạng sức khỏe:</label>
+            <textarea v-model="healthStatus" class="form-control"></textarea>
+            <span class="text-danger">{{ errors.healthStatus }}</span><br>
+
+            <label>Mô tả:</label>
+            <textarea v-model="description" class="form-control"></textarea>
+            <span class="text-danger">{{ errors.description }}</span><br>
           </div>
         </div>
         <div class="modal-footer">

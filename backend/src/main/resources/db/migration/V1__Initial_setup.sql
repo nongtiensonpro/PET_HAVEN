@@ -33,16 +33,20 @@ CREATE TABLE DichVu
     Hien        BOOLEAN NOT NULL
 );
 
-CREATE TABLE ThuCung
-(
-    ID         SERIAL PRIMARY KEY,
-    Ten        VARCHAR(100) NOT NULL,
-    CanNang    FLOAT,
-    Tuoi       INT,
-    Giong      VARCHAR(100),
-    IDTaiKhoan VARCHAR(255) not null ,
-    Image      TEXT
+CREATE TABLE ThuCung (
+                         ID             SERIAL PRIMARY KEY,
+                         Ten            VARCHAR(100) NOT NULL,
+                         CanNang        FLOAT CHECK (CanNang >= 0),
+                         Tuoi           INT CHECK (Tuoi >= 0),
+                         Giong          VARCHAR(100),
+                         IDTaiKhoan VARCHAR(255) not null ,
+                         Image          TEXT,
+                         GioiTinh       BOOLEAN NOT NULL,
+                         CoPhaiMeoKhong BOOLEAN NOT NULL,
+                         TinhTrangSucKhoe TEXT,
+                         MoTa TEXT
 );
+
 
 CREATE TABLE CaLichHen
 (

@@ -1,5 +1,5 @@
 <template>
-  <div class="container mt-4">
+  <div class="container bg-light mt-4 p-4">
     <div v-if="loading" class="text-center">
       <div class="spinner-border text-primary" role="status">
         <span class="visually-hidden">Đang tải thông tin hóa đơn...</span>
@@ -40,13 +40,18 @@
         </div>
 
         <div class="col-md-6">
-          <section class="info-section">
+                    <section class="info-section">
             <h3 class="section-title">Thông tin thú cưng</h3>
+            <p><strong>ID:</strong> {{ hoaDon.idlichhen.thucung.id }}</p>
             <p><strong>Tên:</strong> {{ hoaDon.idlichhen.thucung.ten }}</p>
-            <p><strong>Giống:</strong> {{ hoaDon.idlichhen.thucung.giong }}</p>
             <p><strong>Cân nặng:</strong> {{ hoaDon.idlichhen.thucung.cannang }} kg</p>
             <p><strong>Tuổi:</strong> {{ hoaDon.idlichhen.thucung.tuoi }} năm</p>
-            <p><strong>ID:</strong> {{ hoaDon.idlichhen.thucung.id }}</p>
+            <p><strong>Giống:</strong> {{ hoaDon.idlichhen.thucung.giong }}</p>
+            <p><strong>ID Tài khoản:</strong> {{ hoaDon.idlichhen.thucung.idtaikhoan }}</p>
+            <p><strong>Giới tính:</strong> {{ hoaDon.idlichhen.thucung.gioitinh ? 'Đực' : 'Cái' }}</p>
+            <p><strong>Loại:</strong> {{ hoaDon.idlichhen.thucung.cophaimeokhong ? 'Mèo' : 'Chó' }}</p>
+            <p><strong>Tình trạng sức khỏe:</strong> {{ hoaDon.idlichhen.thucung.tinhtrangsuckhoe || 'Không có thông tin' }}</p>
+            <p><strong>Mô tả:</strong> {{ hoaDon.idlichhen.thucung.mota || 'Không có mô tả' }}</p>
           </section>
 
           <section class="info-section">
@@ -54,17 +59,19 @@
             <p><strong>Tên dịch vụ:</strong> {{ hoaDon.idlichhen.dichvu.tendichvu }}</p>
             <p><strong>Mô tả:</strong> {{ hoaDon.idlichhen.dichvu.mota }}</p>
             <p><strong>Giá tiền:</strong> {{ hoaDon.idlichhen.dichvu.giatien }} VND</p>
-            <p><strong>Trạng thái dịch vụ:</strong> {{ hoaDon.idlichhen.dichvu.trangthai ? 'Hoạt động' : 'Không hoạt động' }}</p>
+            <p><strong>Trạng thái dịch vụ:</strong>
+              {{ hoaDon.idlichhen.dichvu.trangthai ? 'Hoạt động' : 'Không hoạt động' }}</p>
           </section>
 
           <section class="info-section">
             <h3 class="section-title">Thông tin ca lịch hẹn</h3>
             <p><strong>Tên ca:</strong> {{ hoaDon.idlichhen.idcalichhen.tenca }}</p>
             <p><strong>Thời gian ca:</strong> {{ hoaDon.idlichhen.idcalichhen.thoigianca }}</p>
-            <p><strong>Trạng thái ca:</strong> {{ hoaDon.idlichhen.idcalichhen.trangthai ? 'Hoạt động' : 'Không hoạt động' }}</p>
+            <p><strong>Trạng thái ca:</strong>
+              {{ hoaDon.idlichhen.idcalichhen.trangthai ? 'Hoạt động' : 'Không hoạt động' }}</p>
           </section>
 
-          <section class="info-section" v-if="hoaDon.idgiamgia.trangthai">
+          <section class="info-section" v-if="hoaDon.idgiamgia && hoaDon.idgiamgia.phantramgiam > 0">
             <h3 class="section-title">Thông tin giảm giá</h3>
             <p><strong>Phần trăm giảm:</strong> {{ hoaDon.idgiamgia.phantramgiam }}%</p>
             <p><strong>Ngày bắt đầu:</strong> {{ formatDate(hoaDon.idgiamgia.ngaybatdau) }}</p>
@@ -88,9 +95,9 @@
 </template>
 
 <script setup lang="ts">
-import { ref, onMounted } from 'vue';
-import { useRoute, useRouter } from 'vue-router';
-import { useQuanLyHoaDonStore } from '~/stores/QuanLyHoaDon';
+import {ref, onMounted} from 'vue';
+import {useRoute, useRouter} from 'vue-router';
+import {useQuanLyHoaDonStore} from '~/stores/QuanLyHoaDon';
 
 const route = useRoute();
 const router = useRouter();
@@ -99,10 +106,14 @@ const hoaDon = ref(null);
 const loading = ref(true);
 const getTrangThaiLichHen = (trangthai: number) => {
   switch (trangthai) {
-    case 0: return 'Chờ xác nhận';
-    case 1: return 'Đã xác nhận';
-    case 2: return 'Đã hủy';
-    default: return 'Không xác định';
+    case 0:
+      return 'Chờ xác nhận';
+    case 1:
+      return 'Đã xác nhận';
+    case 2:
+      return 'Đã hủy';
+    default:
+      return 'Không xác định';
   }
 };
 const fetchHoaDon = async (id: number) => {
@@ -124,10 +135,14 @@ const formatDate = (dateString: string) => {
 
 const getTrangThai = (trangthai: number) => {
   switch (trangthai) {
-    case 1: return 'Chờ thanh toán';
-    case 2: return 'Thành công';
-    case 3: return 'Thất bại';
-    default: return 'Không xác định';
+    case 1:
+      return 'Chờ thanh toán';
+    case 2:
+      return 'Thành công';
+    case 3:
+      return 'Thất bại';
+    default:
+      return 'Không xác định';
   }
 };
 
@@ -140,7 +155,7 @@ onMounted(() => {
   fetchHoaDon(id);
 });
 
-function inHoaDon(id : String) {
+function inHoaDon(id: String) {
   store.inHoaDon(id);
 }
 </script>
@@ -156,7 +171,7 @@ function inHoaDon(id : String) {
   border-radius: 8px;
   padding: 20px;
   margin-bottom: 20px;
-  box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
 }
 
 .section-title {

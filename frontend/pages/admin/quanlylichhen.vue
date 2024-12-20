@@ -114,83 +114,84 @@
                 </div>
               </div>
               <div class="col">
+                <button type="button" class="btn btn-sm btn-outline-info" @click="viewHoaDon(lichhen.idcalichhen.id)">Chi tiết</button>
               <!--Chi tiet -->
-              <button
-                  type="button"
-                  class="btn btn-sm btn-outline-info"
-                  data-bs-toggle="modal"
-                  data-bs-target="#exampleModal"
-                  @click="selectLichHen(lichhen)">
-                Chi tiết
-              </button>
-              <div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel"
-              >
-                <div class="modal-dialog">
-                  <div class="modal-content">
-                    <div class="modal-header">
-                      <h1 class="modal-title fs-5" id="exampleModalLabel">Chi tiết lịch hẹn</h1>
-                      <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                    </div>
-                    <div class="modal-body">
-                      <table class="table table-bordered">
-                        <tbody>
-                        <tr>
-                          <th>ID Lịch Hẹn</th>
-                          <td>{{ selectedLichHen?.id }}</td>
-                        </tr>
-                        <tr>
-                          <th>ID Khách Hàng</th>
-                          <td>{{ selectedLichHen?.idkhachhang }}</td>
-                        </tr>
-                        <tr>
-                          <th>Tên Thú Cưng</th>
-                          <td>{{ selectedLichHen?.thucung.ten }}</td>
-                        </tr>
-                        <tr>
-                          <th>Cân Nặng Thú Cưng</th>
-                          <td>{{ selectedLichHen?.thucung.cannang }} kg</td>
-                        </tr>
-                        <tr>
-                          <th>Tuổi Thú Cưng</th>
-                          <td>{{ selectedLichHen?.thucung.tuoi }} năm</td>
-                        </tr>
-                        <tr>
-                          <th>Giống Thú Cưng</th>
-                          <td>{{ selectedLichHen?.thucung.giong }}</td>
-                        </tr>
-                        <tr>
-                          <th>Dịch Vụ</th>
-                          <td>{{ selectedLichHen?.dichvu.tendichvu }}</td>
-                        </tr>
-                        <tr>
-                          <th>Mô Tả Dịch Vụ</th>
-                          <td>{{ selectedLichHen?.dichvu.mota }}</td>
-                        </tr>
-                        <tr>
-                          <th>Email Người Đặt</th>
-                          <td>{{ selectedLichHen?.emailNguoiDat }}</td>
-                        </tr>
-                        <tr>
-                          <th>Ngày Hẹn</th>
-                          <td>{{ formatDate(selectedLichHen?.date) }}</td>
-                        </tr>
-                        <tr>
-                          <th>Thời Gian Ca</th>
-                          <td>{{ selectedLichHen?.idcalichhen.thoigianca }}</td>
-                        </tr>
-                        <tr>
-                          <th>Trạng Thái</th>
-                          <td>{{ getTrangThai(selectedLichHen?.trangthai) }}</td>
-                        </tr>
-                        </tbody>
-                      </table>
-                    </div>
-                    <div class="modal-footer">
-                      <button type="button" class="custom-button" data-bs-dismiss="modal">Close</button>
-                    </div>
-                  </div>
-                </div>
-              </div>
+<!--              <button-->
+<!--                  type="button"-->
+<!--                  class="btn btn-sm btn-outline-info"-->
+<!--                  data-bs-toggle="modal"-->
+<!--                  data-bs-target="#exampleModal"-->
+<!--                  @click="selectLichHen(lichhen)">-->
+<!--                Chi tiết-->
+<!--              </button>-->
+<!--              <div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel"-->
+<!--              >-->
+<!--                <div class="modal-dialog">-->
+<!--                  <div class="modal-content">-->
+<!--                    <div class="modal-header">-->
+<!--                      <h1 class="modal-title fs-5" id="exampleModalLabel">Chi tiết lịch hẹn</h1>-->
+<!--                      <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>-->
+<!--                    </div>-->
+<!--                    <div class="modal-body">-->
+<!--                      <table class="table table-bordered">-->
+<!--                        <tbody>-->
+<!--                        <tr>-->
+<!--                          <th>ID Lịch Hẹn</th>-->
+<!--                          <td>{{ selectedLichHen?.id }}</td>-->
+<!--                        </tr>-->
+<!--                        <tr>-->
+<!--                          <th>ID Khách Hàng</th>-->
+<!--                          <td>{{ selectedLichHen?.idkhachhang }}</td>-->
+<!--                        </tr>-->
+<!--                        <tr>-->
+<!--                          <th>Tên Thú Cưng</th>-->
+<!--                          <td>{{ selectedLichHen?.thucung.ten }}</td>-->
+<!--                        </tr>-->
+<!--                        <tr>-->
+<!--                          <th>Cân Nặng Thú Cưng</th>-->
+<!--                          <td>{{ selectedLichHen?.thucung.cannang }} kg</td>-->
+<!--                        </tr>-->
+<!--                        <tr>-->
+<!--                          <th>Tuổi Thú Cưng</th>-->
+<!--                          <td>{{ selectedLichHen?.thucung.tuoi }} năm</td>-->
+<!--                        </tr>-->
+<!--                        <tr>-->
+<!--                          <th>Giống Thú Cưng</th>-->
+<!--                          <td>{{ selectedLichHen?.thucung.giong }}</td>-->
+<!--                        </tr>-->
+<!--                        <tr>-->
+<!--                          <th>Dịch Vụ</th>-->
+<!--                          <td>{{ selectedLichHen?.dichvu.tendichvu }}</td>-->
+<!--                        </tr>-->
+<!--                        <tr>-->
+<!--                          <th>Mô Tả Dịch Vụ</th>-->
+<!--                          <td>{{ selectedLichHen?.dichvu.mota }}</td>-->
+<!--                        </tr>-->
+<!--                        <tr>-->
+<!--                          <th>Email Người Đặt</th>-->
+<!--                          <td>{{ selectedLichHen?.emailNguoiDat }}</td>-->
+<!--                        </tr>-->
+<!--                        <tr>-->
+<!--                          <th>Ngày Hẹn</th>-->
+<!--                          <td>{{ formatDate(selectedLichHen?.date) }}</td>-->
+<!--                        </tr>-->
+<!--                        <tr>-->
+<!--                          <th>Thời Gian Ca</th>-->
+<!--                          <td>{{ selectedLichHen?.idcalichhen.thoigianca }}</td>-->
+<!--                        </tr>-->
+<!--                        <tr>-->
+<!--                          <th>Trạng Thái</th>-->
+<!--                          <td>{{ getTrangThai(selectedLichHen?.trangthai) }}</td>-->
+<!--                        </tr>-->
+<!--                        </tbody>-->
+<!--                      </table>-->
+<!--                    </div>-->
+<!--                    <div class="modal-footer">-->
+<!--                      <button type="button" class="custom-button" data-bs-dismiss="modal">Close</button>-->
+<!--                    </div>-->
+<!--                  </div>-->
+<!--                </div>-->
+<!--              </div>-->
               </div>
               </div>
               <!--Chi tiet -->
@@ -357,6 +358,8 @@ async function doiNgayHen(ngayHen: string, idcalichhen: number) {
     }
   }
 }
-
+const viewHoaDon = (id: number) => {
+  navigateTo(`/admin/chitiethoadon/${id}`);
+};
 
 </script>

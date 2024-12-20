@@ -15,6 +15,11 @@ const ten = ref(props.thuCung ? props.thuCung.ten : '');
 const cannang = ref<number | null>(props.thuCung ? props.thuCung.cannang : null);
 const tuoi = ref<number | null>(props.thuCung ? props.thuCung.tuoi : null);
 const giong = ref(props.thuCung ? props.thuCung.giong : '');
+// const image = ref(props.thuCung ? props.thuCung.image : '');
+const gioitinh = ref(props.thuCung ? props.thuCung.gioitinh : true);
+const cophaimeokhong = ref(props.thuCung ? props.thuCung.cophaimeokhong : true);
+const tinhtrangsuckhoe = ref(props.thuCung ? props.thuCung.tinhtrangsuckhoe : '');
+const mota = ref(props.thuCung ? props.thuCung.mota : '');
 const errors = ref<string[]>([]);
 const thuCung = ref<ThuCungKhachHang | null>(props.thuCung);
 
@@ -29,8 +34,11 @@ const validateForm = () => {
   if (tuoi.value === null || tuoi.value < 0) {
     errors.value.push('Tuổi không hợp lệ.');
   }
-  if (!giong) {
+  if (!giong.value) {
     errors.value.push('Giống không được để trống.');
+  }
+  if (!tinhtrangsuckhoe.value) {
+    errors.value.push('Tình trạng sức khỏe không được để trống.');
   }
   return errors.value.length === 0;
 };
@@ -44,7 +52,11 @@ const saveChanges = () => {
           cannang.value,
           tuoi.value,
           giong.value,
-          props.thuCung.idtaikhoan
+          props.thuCung.idtaikhoan,
+          gioitinh.value,
+          cophaimeokhong.value,
+          tinhtrangsuckhoe.value,
+          mota.value
       );
       console.log('Thú cưng đã được cập nhật:', thuCung.value);
       useStore().updatePet(thuCung.value);
@@ -55,7 +67,7 @@ const saveChanges = () => {
         modalInstance.hide();
       }
       return navigateTo('/user/infouser');
-    }catch (error) {
+    } catch (error) {
       toast.error('Lỗi khi cập nhật thú cưng. Vui lòng thử lại.');
     }
   }
@@ -96,6 +108,36 @@ const saveChanges = () => {
             <div class="mb-3">
               <label for="giong" class="form-label">Giống</label>
               <input type="text" class="form-control" id="giong" v-model="giong">
+            </div>
+<!--            <div class="mb-3">-->
+<!--              <label for="image" class="form-label">Hình ảnh (URL)</label>-->
+<!--              <input type="text" class="form-control" id="image" v-model="image">-->
+<!--            </div>-->
+            <div class="mb-3">
+              <label class="form-label">Giới tính</label>
+              <div>
+                <input type="radio" id="male" value="true" v-model="gioitinh">
+                <label for="male">Đực</label>
+                <input type="radio" id="female" value="false" v-model="gioitinh">
+                <label for="female">Cái</label>
+              </div>
+            </div>
+            <div class="mb-3">
+              <label class="form-label">Loại thú cưng</label>
+              <div>
+                <input type="radio" id="cat" value="true" v-model="cophaimeokhong">
+                <label for="cat">Mèo</label>
+                <input type="radio" id="dog" value="false" v-model="cophaimeokhong">
+                <label for="dog">Chó</label>
+              </div>
+            </div>
+            <div class="mb-3">
+              <label for="tinhtrangsuckhoe" class="form-label">Tình trạng sức khỏe</label>
+              <textarea class="form-control" id="tinhtrangsuckhoe" v-model="tinhtrangsuckhoe"></textarea>
+            </div>
+            <div class="mb-3">
+              <label for="mota" class="form-label">Mô tả</label>
+              <textarea class="form-control" id="mota" v-model="mota"></textarea>
             </div>
           </div>
           <div class="modal-footer">

@@ -192,6 +192,8 @@ onMounted(() => {
                       <th>Tên</th>
                       <th>Cân nặng</th>
                       <th>Giống</th>
+                      <th>Giới tính</th>
+                      <th>Loại thú cưng</th>
                       <th>Tuổi</th>
                       <th>Thao tác</th>
                     </tr>
@@ -201,7 +203,10 @@ onMounted(() => {
                       <td>{{ thuCung.ten }}</td>
                       <td>{{ thuCung.cannang }}</td>
                       <td>{{ thuCung.giong }}</td>
+                      <td>{{thuCung.gioitinh?'Cái':'Đựa'}}</td>
+                      <td>{{thuCung.cophaimeokhong?'Mèo':'Chó'}}</td>
                       <td>{{ thuCung.tuoi }}</td>
+
                       <td>
                         <CapNhatThuCung
                             :thuCung="thuCung"

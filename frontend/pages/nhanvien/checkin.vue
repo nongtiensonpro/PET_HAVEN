@@ -4,7 +4,7 @@
       <div class="col-12 mb-4">
         <div class="card shadow">
           <div class="card-header bg-primary text-white d-flex justify-content-between align-items-center">
-            <h5 class="mb-0">Lịch hẹn hôm nay</h5>
+            <h5 class="mb-0">Lịch hẹn hôm nay </h5>
             <button @click="fetchHoaDon" class="btn btn-light btn-sm">
               <i class="fas fa-sync-alt me-1"></i> Làm mới
             </button>
@@ -34,7 +34,7 @@
                   <td>{{ hoaDon.idlichhen.dichvu.tendichvu }}</td>
                   <td>{{ formatDate(hoaDon.idlichhen.date) }}</td>
                   <td>{{ formatCurrency(hoaDon.sotien) }}</td>
-                  <td><span class="badge bg-warning">{{ getTrangThai(hoaDon.idlichhen.trangthai) }}</span></td>
+                  <td><span class="badge bg-warning">{{ getTrangThai(hoaDon.idlichhen.trangthai) }} {{hoaDon.idlichhen.trangthai}}</span></td>
                   <td>
 
                     <button
@@ -60,7 +60,9 @@
                       <div class="modal-dialog modal-lg">
                         <div class="modal-content">
                           <div class="modal-header">
-                            <h5 class="modal-title" id="exampleModalLabel">Thông tin chi tiết hóa đơn #{{ hoaDon.id }}</h5>
+                            <h5 class="modal-title" id="exampleModalLabel">Thông tin chi tiết hóa đơn #{{
+                                hoaDon.id
+                              }}</h5>
                             <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                           </div>
                           <div class="modal-body">
@@ -71,10 +73,12 @@
                                   <strong>Ngày hẹn:</strong> {{ formatDate(hoaDon.date) }}
                                 </div>
                                 <div class="mb-3">
-                                  <strong>Ngày thanh toán:</strong> {{ hoaDon.ngaythanhtoan ? formatDate(hoaDon.ngaythanhtoan) : 'Chưa thanh toán' }}
+                                  <strong>Ngày thanh toán:</strong>
+                                  {{ hoaDon.ngaythanhtoan ? formatDate(hoaDon.ngaythanhtoan) : 'Chưa thanh toán' }}
                                 </div>
                                 <div class="mb-3">
-                                  <strong>Phương thức thanh toán:</strong> {{ hoaDon.phuongthucthanhtoan || 'Chưa xác định' }}
+                                  <strong>Phương thức thanh toán:</strong>
+                                  {{ hoaDon.phuongthucthanhtoan || 'Chưa xác định' }}
                                 </div>
                                 <div class="mb-3">
                                   <strong>Người thanh toán:</strong> {{ hoaDon.nguoithanhtoan || 'Chưa thanh toán' }}
@@ -95,16 +99,35 @@
                                   <strong>Email:</strong> {{ hoaDon.idlichhen.emailNguoiDat }}
                                 </div>
                                 <div class="mb-3">
-                                  <strong>Tên thú cưng:</strong> {{ hoaDon.idlichhen.thucung.ten }}
+                                  <strong>ID:</strong> {{ hoaDon.idlichhen.thucung.id }}
                                 </div>
                                 <div class="mb-3">
-                                  <strong>Giống:</strong> {{ hoaDon.idlichhen.thucung.giong }}
+                                  <strong>Tên thú cưng:</strong> {{ hoaDon.idlichhen.thucung.ten }}
                                 </div>
                                 <div class="mb-3">
                                   <strong>Cân nặng:</strong> {{ hoaDon.idlichhen.thucung.cannang }} kg
                                 </div>
                                 <div class="mb-3">
                                   <strong>Tuổi:</strong> {{ hoaDon.idlichhen.thucung.tuoi }} tuổi
+                                </div>
+                                <div class="mb-3">
+                                  <strong>Giống:</strong> {{ hoaDon.idlichhen.thucung.giong }}
+                                </div>
+                                <div class="mb-3">
+                                  <strong>ID Tài khoản:</strong> {{ hoaDon.idlichhen.thucung.idtaikhoan }}
+                                </div>
+                                <div class="mb-3">
+                                  <strong>Giới tính:</strong> {{ hoaDon.idlichhen.thucung.gioitinh ? 'Đực' : 'Cái' }}
+                                </div>
+                                <div class="mb-3">
+                                  <strong>Loại:</strong> {{ hoaDon.idlichhen.thucung.cophaimeokhong ? 'Mèo' : 'Chó' }}
+                                </div>
+                                <div class="mb-3">
+                                  <strong>Tình trạng sức khỏe:</strong>
+                                  {{ hoaDon.idlichhen.thucung.tinhtrangsuckhoe || 'Không có thông tin' }}
+                                </div>
+                                <div class="mb-3">
+                                  <strong>Mô tả:</strong> {{ hoaDon.idlichhen.thucung.mota || 'Không có mô tả' }}
                                 </div>
                               </div>
                             </div>
@@ -125,7 +148,8 @@
                                     <strong>Mô tả:</strong> {{ hoaDon.idgiamgia.mota }}
                                   </div>
                                   <div class="mb-3">
-                                    <strong>Thời gian:</strong> {{ formatDate(hoaDon.idgiamgia.ngaybatdau) }} - {{ formatDate(hoaDon.idgiamgia.ngayketthuc) }}
+                                    <strong>Thời gian:</strong> {{ formatDate(hoaDon.idgiamgia.ngaybatdau) }} -
+                                    {{ formatDate(hoaDon.idgiamgia.ngayketthuc) }}
                                   </div>
                                   <div class="mb-3">
                                     <strong>Phần trăm giảm:</strong> {{ hoaDon.idgiamgia.phantramgiam }}%
@@ -140,7 +164,9 @@
                           </div>
                           <div class="modal-footer">
                             <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Đóng</button>
-                 <button type="button" v-if="hoaDon.idlichhen.trangthai === 3" class="btn btn-primary" @click="thanhToanHoaDon(hoaDon.idlichhen.id)">Thanh toán</button>
+                            <button type="button" v-if="hoaDon.idlichhen.trangthai === 3" class="btn btn-primary"
+                                    @click="thanhToanHoaDon(hoaDon.idlichhen.id)">Thanh toán
+                            </button>
                           </div>
                         </div>
                       </div>
@@ -154,7 +180,8 @@
                   <li class="page-item" :class="{ disabled: currentPage1 === 1 }">
                     <a class="page-link" href="#" @click.prevent="changePage(currentPage1 - 1, 1)">Trước</a>
                   </li>
-                  <li v-for="page in totalPages1" :key="page" class="page-item" :class="{ active: currentPage1 === page }">
+                  <li v-for="page in totalPages1" :key="page" class="page-item"
+                      :class="{ active: currentPage1 === page }">
                     <a class="page-link" href="#" @click.prevent="changePage(page, 1)">{{ page }}</a>
                   </li>
                   <li class="page-item" :class="{ disabled: currentPage1 === totalPages1 }">
@@ -215,7 +242,8 @@
                   <li class="page-item" :class="{ disabled: currentPage2 === 1 }">
                     <a class="page-link" href="#" @click.prevent="changePage(currentPage2 - 1, 2)">Trước</a>
                   </li>
-                  <li v-for="page in totalPages2" :key="page" class="page-item" :class="{ active: currentPage2 === page }">
+                  <li v-for="page in totalPages2" :key="page" class="page-item"
+                      :class="{ active: currentPage2 === page }">
                     <a class="page-link" href="#" @click.prevent="changePage(page, 2)">{{ page }}</a>
                   </li>
                   <li class="page-item" :class="{ disabled: currentPage2 === totalPages2 }">
@@ -232,9 +260,9 @@
 </template>
 
 <script setup lang="ts">
-import { useCheckInStore } from '~/stores/CheckInStores'
-import { ref, onMounted, onUnmounted } from "vue";
-import { useQuanLyHoaDonStore } from '~/stores/QuanLyHoaDon';
+import {useCheckInStore} from '~/stores/CheckInStores'
+import {ref, onMounted, onUnmounted} from "vue";
+import {useQuanLyHoaDonStore} from '~/stores/QuanLyHoaDon';
 import Swal from 'sweetalert2';
 import HoaDonKhachHang from "~/models/HoaDonKhachHang";
 
@@ -293,7 +321,7 @@ const formatDate = (dateString) => {
 };
 
 const formatCurrency = (amount) => {
-  return new Intl.NumberFormat('vi-VN', { style: 'currency', currency: 'USD' }).format(amount);
+  return new Intl.NumberFormat('vi-VN', {style: 'currency', currency: 'USD'}).format(amount);
 };
 
 const getTrangThai = (status: number): string => {

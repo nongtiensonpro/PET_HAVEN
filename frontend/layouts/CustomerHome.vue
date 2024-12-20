@@ -190,9 +190,9 @@
               </button>
               <div class="collapse navbar-collapse" id="navbarNav">
                 <ul class="navbar-nav">
-                  <li class="nav-item" v-if="userInfo?.role && userInfo.role.includes('admin')">
-                    <NuxtLink class="nav-link" :to="`/admin/quanlyhoadon`">Quản lý hóa đơn</NuxtLink>
-                  </li>
+<!--                  <li class="nav-item" v-if="userInfo?.role && userInfo.role.includes('admin')">-->
+<!--                    <NuxtLink class="nav-link" :to="`/admin/quanlyhoadon`">Quản lý hóa đơn</NuxtLink>-->
+<!--                  </li>-->
                   <li class="nav-item" v-if="userInfo?.role && userInfo.role.includes('admin')">
                     <NuxtLink class="nav-link" :to="`/admin/service/servicelist`">Tổng quan dịch vụ</NuxtLink>
                   </li>

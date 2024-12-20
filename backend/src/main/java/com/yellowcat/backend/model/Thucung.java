@@ -36,6 +36,20 @@ public class Thucung {
     @Column(name = "image", length = Integer.MAX_VALUE)
     private String image;
 
+    @NotNull
+    @Column(name = "gioitinh", nullable = false)
+    private Boolean gioitinh;
+
+    @NotNull
+    @Column(name = "cophaimeokhong", nullable = false)
+    private Boolean cophaimeokhong;
+
+    @Column(name = "tinhtrangsuckhoe", length = Integer.MAX_VALUE)
+    private String tinhtrangsuckhoe;
+
+    @Column(name = "mota", length = Integer.MAX_VALUE)
+    private String mota;
+
     public Integer getId() {
         return id;
     }
@@ -92,4 +106,35 @@ public class Thucung {
         this.image = image;
     }
 
+    public Boolean getGioitinh() {
+        return gioitinh;
+    }
+
+    public void setGioitinh(Boolean gioitinh) {
+        this.gioitinh = gioitinh;
+    }
+
+    public Boolean getCophaimeokhong() {
+        return cophaimeokhong;
+    }
+
+    public void setCophaimeokhong(Boolean cophaimeokhong) {
+        this.cophaimeokhong = cophaimeokhong;
+    }
+
+    public String getTinhtrangsuckhoe() {
+        return tinhtrangsuckhoe;
+    }
+
+    public void setTinhtrangsuckhoe(String tinhtrangsuckhoe) {
+        this.tinhtrangsuckhoe = tinhtrangsuckhoe;
+    }
+
+    public String getMota() {
+        return mota;
+    }
+
+    public void setMota(String mota) {
+        this.mota = mota;
+    }
 }
