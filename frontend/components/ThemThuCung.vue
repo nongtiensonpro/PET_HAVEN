@@ -69,6 +69,7 @@ function addPet() {
       const modalInstance = bootstrap.Modal.getInstance(modalElement);
       modalInstance.hide();
     }
+    return navigateTo('/user/infouser');
   } catch (error) {
     toast.error('Thêm thú cưng thất bại');
   }

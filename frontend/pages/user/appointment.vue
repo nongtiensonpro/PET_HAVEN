@@ -161,132 +161,100 @@ const prevPage = () => {
 </script>
 
 <template>
-  <div class="container py-4">
-    <div class="card shadow-sm">
-      <div class="card-header bg-light text-white py-3">
-        <h4 class="mb-0 text fs-4">Quản lý lịch hẹn của {{ userStore.userInfo?.name }}</h4>
-      </div>
-      <div class="card-body">
-        <div v-if="lichHenStore.isLoading" class="text-center py-5">
-          <div class="spinner-border text-primary" role="status">
-            <span class="visually-hidden">Đang tải...</span>
-          </div>
-        </div>
+  <div class="container py-4 bg-light">
+    <h2 class="mb-4">Quản lý lịch hẹn của {{ userStore.userInfo?.name }}</h2>
 
-        <div v-else-if="lichHenStore.error" class="alert alert-danger">
-          {{ lichHenStore.error }}
-          <button class="custom-button" @click="lichHenStore.clearError">Đóng</button>
-        </div>
-
-        <div v-else>
-          <div class="mb-3">
-            <input
-                v-model="searchTerm"
-                type="text"
-                class="form-control"
-                placeholder="Tìm kiếm lịch hẹn..."
-            />
-          </div>
-          <div class="table-responsive">
-            <table class="table table-hover">
-              <thead class="table-light">
-              <tr>
-                <th>STT</th>
-                <th>Dịch vụ</th>
-                <th>Thú cưng</th>
-                <th>Ngày hẹn</th>
-                <th>Ca</th>
-                <th>Trạng thái</th>
-                <th>Thao tác</th>
-              </tr>
-              </thead>
-              <tbody>
-              <tr v-for="(item, index) in paginatedAppointments"
-                  :key="item.id"
-                  v-memo="[item.trangthai]">
-                <td>{{ lichHenStore.currentPage * lichHenStore.pageSize + index + 1 }} : {{ item.id }}</td>
-                <td>
-                  <div>{{ item.dichvu.tendichvu }}</div>
-                  <small class="text-muted">{{ item.dichvu.giatien.toLocaleString() }} USD</small>
-                </td>
-                <td>
-                  <div>{{ item.thucung.ten }}</div>
-                  <small class="text-muted">{{ item.thucung.giong }}</small>
-                </td>
-                <td>{{ new Date(item.date).toLocaleDateString('vi-VN') }}</td>
-                <td>
-                  {{ item.idcalichhen.tenca }}
-                  <div><small>{{ item.idcalichhen.thoigianca }}</small></div>
-                </td>
-                <td>
-                    <span :class="getTrangThaiClass(item.trangthai)">
-                      {{ getTrangThaiText(item.trangthai) }}
-                    </span>
-                </td>
-                <td>
-                  <div class="row">
-                    <div class="col">
-                      <button v-if="item.trangthai === 4 || item.trangthai === 6"
-                              class="custom-button"
-                              @click="thayDoiLichHen(item.id)">
-                        Hủy hoặc đổi lịch hẹn
-                      </button>
-                    </div>
-                    <div class="col">
-                      <button v-if="item.trangthai === 0 || item.trangthai === 6"
-                              class="custom-button"
-                              @click="chiTietLichHen(item.id)">
-                        Chi tiết
-                      </button>
-                    </div>
-                    <div class="col">
-                      <button v-if="item.trangthai === 3 || item.trangthai === 4"
-                              class="custom-button"
-                              @click="thanhToan(item.id)">
-                        Thanh toán
-                      </button>
-                    </div>
-                  </div>
-                </td>
-              </tr>
-              </tbody>
-            </table>
-          </div>
-          <div class="d-flex justify-content-between align-items-center mt-3">
-            <div>
-              Hiển thị {{ lichHenStore.paginatedAppointments.length }} / {{ lichHenStore.appointments.length }} lịch hẹn
-            </div>
-            <nav aria-label="Page navigation">
-              <ul class="pagination">
-                <li class="page-item" :class="{ disabled: currentPage === 1 }">
-                  <button class="custom-button" @click="prevPage" :disabled="currentPage === 1">Trước</button>
-                </li>
-                <li class="page-item" style="background: none !important;" v-for="page in totalPages" :key="page" :class="{ active: page === currentPage }">
-                  <button class="text fs-4" style="background: none !important;" @click="currentPage = page">{{ page }}</button>
-                </li>
-                <li class="page-item" :class="{ disabled: currentPage === totalPages }">
-                  <button class="custom-button" @click="nextPage" :disabled="currentPage === totalPages">Sau</button>
-                </li>
-              </ul>
-            </nav>
-            <div class="btn-group">
-              <button class="btn btn-outline-primary"
-                      :disabled="lichHenStore.currentPage === 0"
-                      @click="lichHenStore.prevPage">
-                <i class="fas fa-chevron-left"></i>
-              </button>
-              <button class="btn btn-outline-primary"
-                      :disabled="lichHenStore.currentPage >= lichHenStore.totalPages - 1"
-                      @click="lichHenStore.nextPage">
-                <i class="fas fa-chevron-right"></i>
-              </button>
-            </div>
-          </div>
-        </div>
+    <div v-if="lichHenStore.isLoading" class="text-center">
+      <div class="spinner-border text-primary" role="status">
+        <span class="visually-hidden">Đang tải...</span>
       </div>
     </div>
-    <div v-if="showOverlay" class="overlay">
-      <div class="overlay-content">
+
+    <div v-else-if="lichHenStore.error" class="alert alert-danger">
+      {{ lichHenStore.error }}
+      <button class="btn btn-outline-danger btn-sm ms-2" @click="lichHenStore.clearError">Đóng</button>
+    </div>
+
+    <div v-else>
+      <input
+        v-model="searchTerm"
+        type="text"
+        class="form-control mb-3"
+        placeholder="Tìm kiếm lịch hẹn..."
+      />
+
+      <div class="table-responsive">
+        <table class="table table-hover">
+          <thead>
+            <tr>
+              <th>Dịch vụ</th>
+              <th>Thú cưng</th>
+              <th>Ngày hẹn</th>
+              <th>Trạng thái</th>
+              <th>Thao tác</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr v-for="item in paginatedAppointments" :key="item.id">
+              <td>
+                {{ item.dichvu.tendichvu }}
+                <small class="text-muted d-block">{{ item.dichvu.giatien.toLocaleString() }} USD</small>
+              </td>
+              <td>
+                {{ item.thucung.ten }}
+                <small class="text-muted d-block">{{ item.thucung.giong }}</small>
+              </td>
+              <td>
+                {{ new Date(item.date).toLocaleDateString('vi-VN') }}
+                <small class="text-muted d-block">{{ item.idcalichhen.tenca }} - {{ item.idcalichhen.thoigianca }}</small>
+              </td>
+              <td>
+                <span :class="getTrangThaiClass(item.trangthai)">
+                  {{ getTrangThaiText(item.trangthai) }}
+                </span>
+              </td>
+              <td>
+                <button v-if="item.trangthai === 4 || item.trangthai === 6"
+                        class="btn btn-outline-primary btn-sm me-2"
+                        @click="thayDoiLichHen(item.id)">
+                  Hủy/Đổi
+                </button>
+                <button v-if="item.trangthai === 0 || item.trangthai === 6"
+                        class="btn btn-outline-info btn-sm me-2"
+                        @click="chiTietLichHen(item.id)">
+                  Chi tiết
+                </button>
+                <button v-if="item.trangthai === 3 || item.trangthai === 4"
+                        class="btn btn-outline-success btn-sm"
+                        @click="thanhToan(item.id)">
+                  Thanh toán
+                </button>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+
+      <div class="d-flex justify-content-between align-items-center mt-3">
+        <span>Hiển thị {{ paginatedAppointments.length }} / {{ lichHenStore.appointments.length }} lịch hẹn</span>
+        <nav>
+          <ul class="pagination">
+            <li class="page-item" :class="{ disabled: currentPage === 1 }">
+              <button class="page-link" @click="prevPage">Trước</button>
+            </li>
+            <li class="page-item" v-for="page in totalPages" :key="page" :class="{ active: page === currentPage }">
+              <button class="page-link" @click="currentPage = page">{{ page }}</button>
+            </li>
+            <li class="page-item" :class="{ disabled: currentPage === totalPages }">
+              <button class="page-link" @click="nextPage">Sau</button>
+            </li>
+          </ul>
+        </nav>
+      </div>
+    </div>
+
+    <div v-if="showOverlay" class="position-fixed top-0 start-0 w-100 h-100 bg-dark bg-opacity-50 d-flex align-items-center justify-content-center">
+      <div class="bg-white p-4 rounded">
         <p>Đang chuyển hướng đến PayPal...</p>
         <p>Vui lòng chờ {{ countdown }} giây</p>
         <div class="spinner-border text-primary" role="status">
@@ -299,4 +267,12 @@ const prevPage = () => {
 
 <style scoped>
 
+.card {
+  transition: all 0.3s ease;
+}
+
+.card:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+}
 </style>

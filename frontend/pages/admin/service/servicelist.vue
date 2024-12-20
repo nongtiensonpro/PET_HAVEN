@@ -195,7 +195,7 @@ const updateTTHienService = async (serviceId: String) => {
 </script>
 
 <template>
-  <div class="container p-4">
+  <div class="container bg-light p-4">
     <div class="container">
       <div class="text fs-1">
         Tổng quan dịch vụ

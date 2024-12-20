@@ -131,7 +131,7 @@ async function huyNgayNghi(ngayNghi: NgayNghi) {
 </script>
 
 <template>
-  <div class="">
+  <div class="bg-light p-4">
     <div class="text fs-1">
       Quản lý thời gian
     </div>
@@ -148,7 +148,7 @@ async function huyNgayNghi(ngayNghi: NgayNghi) {
         </div>
       </div>
     </div>
-  </div>
+
   <div class="row">
     <div class="col container">
       <table class="table">
@@ -232,6 +232,7 @@ async function huyNgayNghi(ngayNghi: NgayNghi) {
         </div>
       </div>
     </div>
+  </div>
   </div>
 </template>
 

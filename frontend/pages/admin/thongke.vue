@@ -1,5 +1,5 @@
 <template>
-  <div class="container mx-auto p-4">
+  <div class="container mx-auto bg-light p-4">
     <h2 class="text font-bold mb-6 text-center text-gray-800">Thống Kê Dữ Liệu</h2>
     <div class="bg-white shadow-md rounded-lg overflow-hidden p-4">
       <div class="p-6 space-y-6">

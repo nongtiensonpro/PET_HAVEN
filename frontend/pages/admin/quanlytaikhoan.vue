@@ -1,5 +1,5 @@
 <template>
-  <div class="container">
+  <div class="container bg-light p-4">
     <div class="text fs-1">
       Quản lý tài khoản
     </div>

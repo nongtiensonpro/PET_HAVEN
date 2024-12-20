@@ -54,6 +54,7 @@ const saveChanges = () => {
         const modalInstance = bootstrap.Modal.getInstance(modalElement);
         modalInstance.hide();
       }
+      return navigateTo('/user/infouser');
     }catch (error) {
       toast.error('Lỗi khi cập nhật thú cưng. Vui lòng thử lại.');
     }

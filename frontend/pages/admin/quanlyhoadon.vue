@@ -1,5 +1,5 @@
 <template>
-  <div class="container">
+  <div class="container bg-light p-4">
     <h1>Quản lý hóa đơn</h1>
     <div class="d-flex justify-content-between align-items-center mb-3">
       <div class="row">
