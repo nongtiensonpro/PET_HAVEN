@@ -5,8 +5,7 @@ import {useUserStore} from '~/stores/user';
 import {computed, onMounted, onUnmounted, ref} from 'vue';
 import {useQuanLyLichHenKhachHang} from '~/stores/QuanLyLichHenKhachHang';
 import type {BookingData} from './MauKhachDatDichVu';
-import type {DichVu, TuyChonDichVu, TuyChonCanNang} from '~/models/DichVu';
-
+import type { DichVu, TuyChonDichVu, TuyChonCanNang } from '~/models/DichVu';
 export const useAIStore = defineStore('ai', () => {
     const serviceStore = useServiceStore();
     const voucherStore = useVoucherStore();
@@ -29,21 +28,19 @@ export const useAIStore = defineStore('ai', () => {
         serviceStore.services.filter(service => service.trangthai && service.hien)
     );
 
-    const getServiceInfo = (): DichVu[] =>
-        services.value.map(({id, tendichvu, mota, tuyChonDichVus}) => ({
-            id,
-            tendichvu,
-            mota,
-            tuyChonDichVus: tuyChonDichVus || []
-        }));
-
     const vouchers = computed(() =>
         voucherStore.ListVoucher.filter(voucher => voucher.trangthai)
     );
 
     const user = computed(() => userStore.userInfo);
 
-
+    const getServiceInfo = (): DichVu[] =>
+        services.value.map(({ id, tendichvu, mota, tuyChonDichVus }) => ({
+            id,
+            tendichvu,
+            mota,
+            tuyChonDichVus: tuyChonDichVus || []
+        }));
 
     const getVoucherInfo = () =>
         vouchers.value.map(({id, phantramgiam, ngaybatdau, ngayketthuc, mota, trangthai}) =>
