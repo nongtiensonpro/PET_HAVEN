@@ -21,7 +21,10 @@
                 <img :src="service.anh" class="card-img-top" :alt="service.tendichvu">
               </div>
             </div>
-            <div class="col">
+            <div class="col card-header ">
+              <div>
+                <p class="text fs-4">{{ service.mota }}</p>
+              </div>
               <ChonDichVu :serviceOptions="service.tuyChonDichVus" />
             </div>
           </div>

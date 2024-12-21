@@ -26,7 +26,6 @@
               {{ formatWeightRange(weight) }}
             </button>
           </div>
-          <p>Mô tả:</p>
           <div v-html="option.mota"></div>
           <p v-if="selectedWeight" class="mt-3 text fs-3">
             Giá tiền: {{ formatCurrency(selectedWeight.giatien) }} USD

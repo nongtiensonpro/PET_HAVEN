@@ -141,7 +141,7 @@ CREATE TABLE NgayNghi
 
 -- Thêm dịch vụ Spa cho Chó Mèo
 INSERT INTO DichVu (TenDichVu, MoTa, TrangThai, Hien)
-VALUES ('Dịch vụ Spa cho Chó Mèo', 'Dịch vụ chăm sóc và làm đẹp toàn diện cho thú cưng', TRUE, TRUE);
+VALUES ('Dịch vụ Spa cho Mèo', 'Dịch vụ chăm sóc và làm đẹp toàn diện cho thú cưng', TRUE, TRUE);
 
 -- Lấy ID của dịch vụ vừa thêm
 DO
