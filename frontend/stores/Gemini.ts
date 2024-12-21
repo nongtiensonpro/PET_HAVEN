@@ -5,6 +5,7 @@ import {useUserStore} from '~/stores/user';
 import {computed, onMounted, onUnmounted, ref} from 'vue';
 import {useQuanLyLichHenKhachHang} from '~/stores/QuanLyLichHenKhachHang';
 import type {BookingData} from './MauKhachDatDichVu';
+import type {DichVu, TuyChonDichVu, TuyChonCanNang} from '~/models/DichVu';
 
 export const useAIStore = defineStore('ai', () => {
     const serviceStore = useServiceStore();
@@ -28,14 +29,21 @@ export const useAIStore = defineStore('ai', () => {
         serviceStore.services.filter(service => service.trangthai && service.hien)
     );
 
+    const getServiceInfo = (): DichVu[] =>
+        services.value.map(({id, tendichvu, mota, tuyChonDichVus}) => ({
+            id,
+            tendichvu,
+            mota,
+            tuyChonDichVus: tuyChonDichVus || []
+        }));
+
     const vouchers = computed(() =>
         voucherStore.ListVoucher.filter(voucher => voucher.trangthai)
     );
 
     const user = computed(() => userStore.userInfo);
 
-    const getServiceInfo = () =>
-        services.value.map(({id, ten, mota, gia}) => ({id, ten, mota, gia}));
+
 
     const getVoucherInfo = () =>
         vouchers.value.map(({id, phantramgiam, ngaybatdau, ngayketthuc, mota, trangthai}) =>
@@ -57,9 +65,18 @@ export const useAIStore = defineStore('ai', () => {
             7. Nếu không chắc chắn về thông tin, hãy đề nghị khách hàng liên hệ trực tiếp với cửa hàng để được tư vấn chi tiết hơn.
             
             Dịch vụ tại cửa hàng hiện có:
-            ${serviceInfo.map(service =>
-            `- (Tên dịch vụ: ${service.ten}): (Mô tả dịch vụ: ${service.mota}) (Giá dịch vụ: ${service.gia})`
-        ).join('\n')}
+        ${serviceInfo.map((service: DichVu) => `
+        - Tên dịch vụ: ${service.tendichvu}
+          Mô tả: ${service.mota}
+          ${(service.tuyChonDichVus || []).map((option: TuyChonDichVu) => `
+            Tùy chọn: ${option.tenTuyChon}
+            ${option.moTa ? `Mô tả tùy chọn: ${option.moTa}` : ''}
+            Giá theo cân nặng:
+            ${(option.tuyChonCanNangs || []).map((weight: TuyChonCanNang) => `
+              - ${weight.canNangMin !== null ? `Từ ${weight.canNangMin}kg` : ''}${weight.canNangMax !== null ? ` đến ${weight.canNangMax}kg` : ''}: ${weight.giaTien} USD
+            `).join('')}
+          `).join('\n')}
+        `).join('\n')}
             
             Chương trình khuyến mãi tại cửa hàng hiện có:
             ${voucherInfo.map(voucher =>
