@@ -42,43 +42,43 @@ public class HoaDonService {
 
     public void addOrUpdate(Hoadon hoadon){hoadonRepository.save(hoadon);}
 
-    public Double TinhGiaTien(Integer idDichVu,Hoadon hoadon){
-        float giaDichVu = dichVuService.findById(idDichVu)
-                .map(Dichvu::getGiatien)
-                .orElseThrow(() -> new IllegalArgumentException("Dịch vụ không tồn tại"));
-        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-
-        Optional<Giamgia> maxGiamGia = giamGiaService.findGiamGiaTheoNgayHienTai()
-                .stream()
-                .max(Comparator.comparing(Giamgia::getPhantramgiam));
-        float phanTramGiam =0;
-        phanTramGiam = Math.max(0, Math.min(phanTramGiam, 90));
-
-        String id = authentication.getName();
-        List<Hoadon> hoadonList = hoadonRepository.findByIdlichhen_TrangthaicaAndIdlichhen_IdkhachhangAndTrangthai(true,id);
-        if (maxGiamGia.isPresent()) {
-            if(!hoadonList.isEmpty()){
-                for(Hoadon hoadon1 : hoadonList){
-//                    Check xem đã dùng voucher chưa ???
-                    if (hoadon1.getIdgiamgia() != null && hoadon1.getIdgiamgia().getId() == (maxGiamGia.get().getId())){
-                        phanTramGiam =0;
-                        System.out.println(1);
-                        break;
-                    }else {
-                        phanTramGiam = maxGiamGia.get().getPhantramgiam();
-                        hoadon.setIdgiamgia(maxGiamGia.get()); // Gán giảm giá lớn nhất vào hóa đơn
-                        System.out.println(2);
-                        break;
-                    }
-                }
-            }else {
-                phanTramGiam = maxGiamGia.get().getPhantramgiam();
-                hoadon.setIdgiamgia(maxGiamGia.get()); // Gán giảm giá lớn nhất vào hóa đơn
-            }
-        }
-        Double giaTien = (double) (giaDichVu - giaDichVu*phanTramGiam/100);
-        return giaTien;
-    }
+//    public Double TinhGiaTien(Integer idDichVu,Hoadon hoadon){
+//        float giaDichVu = dichVuService.findById(idDichVu)
+//                .map(Dichvu::getGiatien)
+//                .orElseThrow(() -> new IllegalArgumentException("Dịch vụ không tồn tại"));
+//        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+//
+//        Optional<Giamgia> maxGiamGia = giamGiaService.findGiamGiaTheoNgayHienTai()
+//                .stream()
+//                .max(Comparator.comparing(Giamgia::getPhantramgiam));
+//        float phanTramGiam =0;
+//        phanTramGiam = Math.max(0, Math.min(phanTramGiam, 90));
+//
+//        String id = authentication.getName();
+//        List<Hoadon> hoadonList = hoadonRepository.findByIdlichhen_TrangthaicaAndIdlichhen_IdkhachhangAndTrangthai(true,id);
+//        if (maxGiamGia.isPresent()) {
+//            if(!hoadonList.isEmpty()){
+//                for(Hoadon hoadon1 : hoadonList){
+////                    Check xem đã dùng voucher chưa ???
+//                    if (hoadon1.getIdgiamgia() != null && hoadon1.getIdgiamgia().getId() == (maxGiamGia.get().getId())){
+//                        phanTramGiam =0;
+//                        System.out.println(1);
+//                        break;
+//                    }else {
+//                        phanTramGiam = maxGiamGia.get().getPhantramgiam();
+//                        hoadon.setIdgiamgia(maxGiamGia.get()); // Gán giảm giá lớn nhất vào hóa đơn
+//                        System.out.println(2);
+//                        break;
+//                    }
+//                }
+//            }else {
+//                phanTramGiam = maxGiamGia.get().getPhantramgiam();
+//                hoadon.setIdgiamgia(maxGiamGia.get()); // Gán giảm giá lớn nhất vào hóa đơn
+//            }
+//        }
+//        Double giaTien = (double) (giaDichVu - giaDichVu*phanTramGiam/100);
+//        return giaTien;
+//    }
     public List<Hoadon> getAllHoaDonChuaThanhToan(){
         System.out.println(LocalDate.now());
         return hoadonRepository.findByIdlichhen_Date(LocalDate.now());

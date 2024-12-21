@@ -79,77 +79,77 @@ public class DatLichController {
 
 
     // API tạo lịch hẹn khi khách hàng ấn nút xác nhận
-    @PutMapping("/xac-nhan-dat")
-    public ResponseEntity<Lichhen> createLichhen(
-           @Valid @RequestBody DatLichDTO datLichDTO ) {
-        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-        Jwt jwt = (Jwt) authentication.getPrincipal();
-
-        String idUser = authentication.getName(); // Đây là idUser
-        String email = jwt.getClaimAsString("email");
-        Optional<Lichhen> lichhenOptional = lichHenService.getLichHenByDateandCa(LocalDate.parse(datLichDTO.getDate()),datLichDTO.getIdcalichhen());
-
-        Thucung thucung = datLichDTO.getIdThuCung();
-        thucung.setIdtaikhoan(idUser);
-        thuCungService.saveOrUpdate(thucung);
-
-        Optional<Dichvu> dichvuOptional = dichVuService.findById(datLichDTO.getIdDichVu());
-        Dichvu dichvu = dichvuOptional.get();
-
-        if (!lichhenOptional.isPresent()) {
-            System.out.println("lịch không tồn tại");
-            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
-        }
-//        Check xem có lịch đã được đặt chưa
-        if (lichhenOptional.get().getTrangthai()!=5){
-            System.out.println("Lịch đã được đặt trước rồi , vui lòng chọn thời gian khác");
-            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
-        }
-//        Check không cho đặt ca trong quá khứ
-        if (!caLichHenService.isCaAvailable(datLichDTO.getIdcalichhen(),LocalDate.parse(datLichDTO.getDate()))){
-            System.out.println("Không được đặt ca trong quá khứ");
-            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
-        }
-
-
-        Lichhen lichhen = lichhenOptional.get();
-        System.out.println(lichhen);
-        lichhen.setIdkhachhang(idUser);
-        lichhen.setEmailNguoiDat(email);
-        lichhen.setTrangthai(4);
-        lichhen.setThucung(thucung);
-        lichhen.setDate(LocalDate.parse(datLichDTO.getDate()));
-        lichhen.setDichvu(dichvu);
-        lichhen.setSolannhacnho(0);
-        if(!lichhen.getTrangthaica()){
-            lichhen.setTrangthaica(true);
-        }else {
-            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
-        }
-
-
-
-        Hoadon hoadon = new Hoadon();
-        hoadon.setDate(LocalDate.now());
-        hoadon.setIdlichhen(lichhen);
-        hoadon.setPhuongthucthanhtoan("Offline");
-        hoadon.setTrangthai(1);
-        Double SoTien = hoaDonService.TinhGiaTien(datLichDTO.getIdDichVu(),hoadon);
-        hoadon.setSotienbandau(Double.valueOf(lichhen.getDichvu().getGiatien()));
-        hoadon.setSotien(SoTien);
-        hoadon.setMagiaodich(hoaDonService.MaGiaoDichRandom());
-        hoaDonService.addOrUpdate(hoadon);
-
-        Lichhen createLich = lichHenService.addOrUpdate(lichhen);
-
-        lichHenService.sendEmailWithActions(createLich);
-
-        lichHenService.scheduleTrangThaiChange(createLich.getId());
-
-        lichHenService.updateScheduleId(lichhen.getId(), lichhen.getId());
-
-        return new ResponseEntity<>(createLich, HttpStatus.CREATED);
-    }
+//    @PutMapping("/xac-nhan-dat")
+//    public ResponseEntity<Lichhen> createLichhen(
+//           @Valid @RequestBody DatLichDTO datLichDTO ) {
+//        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+//        Jwt jwt = (Jwt) authentication.getPrincipal();
+//
+//        String idUser = authentication.getName(); // Đây là idUser
+//        String email = jwt.getClaimAsString("email");
+//        Optional<Lichhen> lichhenOptional = lichHenService.getLichHenByDateandCa(LocalDate.parse(datLichDTO.getDate()),datLichDTO.getIdcalichhen());
+//
+//        Thucung thucung = datLichDTO.getIdThuCung();
+//        thucung.setIdtaikhoan(idUser);
+//        thuCungService.saveOrUpdate(thucung);
+//
+//        Optional<Dichvu> dichvuOptional = dichVuService.findById(datLichDTO.getIdDichVu());
+//        Dichvu dichvu = dichvuOptional.get();
+//
+//        if (!lichhenOptional.isPresent()) {
+//            System.out.println("lịch không tồn tại");
+//            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+//        }
+////        Check xem có lịch đã được đặt chưa
+//        if (lichhenOptional.get().getTrangthai()!=5){
+//            System.out.println("Lịch đã được đặt trước rồi , vui lòng chọn thời gian khác");
+//            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+//        }
+////        Check không cho đặt ca trong quá khứ
+//        if (!caLichHenService.isCaAvailable(datLichDTO.getIdcalichhen(),LocalDate.parse(datLichDTO.getDate()))){
+//            System.out.println("Không được đặt ca trong quá khứ");
+//            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+//        }
+//
+//
+//        Lichhen lichhen = lichhenOptional.get();
+//        System.out.println(lichhen);
+//        lichhen.setIdkhachhang(idUser);
+//        lichhen.setEmailNguoiDat(email);
+//        lichhen.setTrangthai(4);
+//        lichhen.setThucung(thucung);
+//        lichhen.setDate(LocalDate.parse(datLichDTO.getDate()));
+//        lichhen.setDichvu(dichvu);
+//        lichhen.setSolannhacnho(0);
+//        if(!lichhen.getTrangthaica()){
+//            lichhen.setTrangthaica(true);
+//        }else {
+//            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+//        }
+//
+//
+//
+//        Hoadon hoadon = new Hoadon();
+//        hoadon.setDate(LocalDate.now());
+//        hoadon.setIdlichhen(lichhen);
+//        hoadon.setPhuongthucthanhtoan("Offline");
+//        hoadon.setTrangthai(1);
+//        Double SoTien = hoaDonService.TinhGiaTien(datLichDTO.getIdDichVu(),hoadon);
+//        hoadon.setSotienbandau(Double.valueOf(lichhen.getDichvu().getGiatien()));
+//        hoadon.setSotien(SoTien);
+//        hoadon.setMagiaodich(hoaDonService.MaGiaoDichRandom());
+//        hoaDonService.addOrUpdate(hoadon);
+//
+//        Lichhen createLich = lichHenService.addOrUpdate(lichhen);
+//
+//        lichHenService.sendEmailWithActions(createLich);
+//
+//        lichHenService.scheduleTrangThaiChange(createLich.getId());
+//
+//        lichHenService.updateScheduleId(lichhen.getId(), lichhen.getId());
+//
+//        return new ResponseEntity<>(createLich, HttpStatus.CREATED);
+//    }
 
     @Transactional
     @PutMapping("/huy-lich/{id}")

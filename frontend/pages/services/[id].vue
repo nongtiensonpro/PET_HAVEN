@@ -3,11 +3,11 @@
     <div class="card">
 
       <div v-if="service">
-       <LoiChaoKhiKhachHangXemDichVu :service="service" />
+        <LoiChaoKhiKhachHangXemDichVu :service="service"/>
         <div class="card-header">
           <div class="row">
             <div class="col">
-              <h2 class="mb-0">{{ service.tendichvu }} - {{ formatCurrency(service.giatien) }} USD</h2>
+              <h2 class="mb-0">{{ service.tendichvu }}</h2>
             </div>
           </div>
         </div>
@@ -22,14 +22,7 @@
               </div>
             </div>
             <div class="col">
-              <div class="">
-                <div class="card-header">
-                  Mô tả:
-                </div>
-                <div class="card-body">
-                  <p>{{ service.mota }}</p>
-                </div>
-              </div>
+              <ChonDichVu :serviceOptions="service.tuyChonDichVus" />
             </div>
           </div>
         </div>
@@ -41,7 +34,7 @@
       <h3 class="mb-4">Đánh giá và nhận xét</h3>
       <div v-if="danhGias.length > 0">
         <div style="padding-bottom: 10px">
-          <TongHopBinhLuanGemini :danhGias="danhGias" />
+          <TongHopBinhLuanGemini :danhGias="danhGias"/>
         </div>
         <div v-for="danhGia in danhGias" :key="danhGia.id" class="card mb-3">
           <div class="card-body">
@@ -113,11 +106,13 @@ import {useDanhGiaStore} from '~/stores/DanhGiaStores';
 import {useRoute} from 'vue-router';
 import CapNhatDanhGia from '~/components/CapNhatDanhGia.vue';
 import type DanhGia from "~/models/DanhGia";
-import type Service from "~/models/DichVu";
+import Service from "~/models/DichVu";
 import {useUserStore} from '~/stores/user';
 import {useToast} from 'vue-toastification';
 import Swal from "sweetalert2";
 import CapNhatCaHen from "~/components/CapNhatCaLichHen.vue";
+import DichVu from "~/models/DichVu";
+import ChonDichVu from "~/components/ChonDichVu.vue";
 
 const toast = useToast();
 const userStore = useUserStore()
@@ -125,7 +120,7 @@ const userInfo = computed(() => userStore.userInfo);
 const serviceStore = useServiceStore();
 const danhGiaStore = useDanhGiaStore();
 const route = useRoute();
-const service = ref<Service | null>(null);
+const service = ref<DichVu | null>(null);
 const errorMessage = ref('Có lỗi đã xảy ra vui lòng thử lại !');
 const danhGias = ref<DanhGia[]>([]);
 const refreshInterval = ref<number | null>(null);
@@ -204,6 +199,7 @@ async function anDanhGia(idDanhGia: number) {
     toast.error('Lỗi ẩn bình luận! Vui lòng thử lại.', {})
   }
 }
+
 </script>
 
 <style scoped>
@@ -214,4 +210,6 @@ async function anDanhGia(idDanhGia: number) {
 .star-rating {
   font-size: 1.2rem;
 }
+
+
 </style>

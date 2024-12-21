@@ -20,6 +20,8 @@ import org.springframework.web.multipart.MultipartFile;
 
 
 import java.io.File;
+import java.util.Collections;
+import java.util.HashMap;
 import java.util.Map;
 import java.util.Optional;
 
@@ -38,7 +40,7 @@ public class DichVuController {
 
     @RequestMapping("/all")
     public Page<Dichvu> getAllDichVu(@RequestParam(defaultValue = "0") int page) {
-        Pageable pageable = PageRequest.of(page, 10,Sort.by(Sort.Direction.DESC, "id")); // 10 items per page
+        Pageable pageable = PageRequest.of(page, 10, Sort.by(Sort.Direction.DESC, "id")); // 10 items per page
         return dichVuService.getAllDichVu(pageable);
     }
 
@@ -89,7 +91,6 @@ public class DichVuController {
             Dichvu dichvu = new Dichvu();
             dichvu.setTendichvu(tenDichVu);
             dichvu.setMota(moTa);
-            dichvu.setGiatien(giaTien);
             dichvu.setTrangthai(trangThai);
             dichvu.setAnh(imageUrl);
             dichvu.setHien(false);
@@ -108,14 +109,14 @@ public class DichVuController {
     }
 
 
-
-
     @PreAuthorize("hasAnyRole('admin')")
     @PutMapping("/update/{id}")
     public ResponseEntity<?> updateone(
             @Valid @RequestParam("tenDichVu") String tenDichVu,
             @Valid @RequestParam("moTa") String moTa,
-            @Valid @RequestParam("giaTien") Float giaTien,
+            @Valid @RequestParam("trangThai") Boolean trangThai,
+            @Valid @RequestParam("hien") Boolean hien,
+            @RequestParam(value = "tuyChonDichVus", required = false) String tuyChonDichVusJson,
             @RequestParam(value = "file", required = false) MultipartFile file,
             @PathVariable int id) {
 
@@ -130,7 +131,15 @@ public class DichVuController {
         Dichvu dichvu2 = dichvu1.get();
         dichvu2.setTendichvu(tenDichVu);
         dichvu2.setMota(moTa);
-        dichvu2.setGiatien(giaTien);
+        dichvu2.setTrangthai(trangThai);
+        dichvu2.setHien(hien);
+
+        // Handle tuyChonDichVus
+        if (tuyChonDichVusJson != null && !tuyChonDichVusJson.isEmpty()) {
+            // You'll need to implement a method to parse the JSON and update tuyChonDichVus
+            // For example:
+            // dichvu2.setTuyChonDichVus(parseTuyChonDichVusJson(tuyChonDichVusJson));
+        }
 
         if (file != null && !file.isEmpty()) {
             try {
@@ -162,15 +171,26 @@ public class DichVuController {
         }
 
         // Cập nhật dịch vụ vào database
-        dichVuService.addOrUpdateDichVu(dichvu2);
-        return ResponseEntity
-                .status(HttpStatus.OK)
-                .body(Map.of("status", "success", "message", "Dịch vụ cập nhật thành công", "data", dichvu2));
+        Dichvu updatedDichvu = dichVuService.addOrUpdateDichVu(dichvu2);
+
+        // Prepare the response
+        Map<String, Object> response = new HashMap<>();
+        response.put("status", "success");
+        response.put("message", "Dịch vụ cập nhật thành công");
+        response.put("content", Collections.singletonList(updatedDichvu));
+        response.put("page", createPageInfo(updatedDichvu));
+
+        return ResponseEntity.status(HttpStatus.OK).body(response);
     }
 
-
-
-
+    private Map<String, Object> createPageInfo(Dichvu dichvu) {
+        Map<String, Object> pageInfo = new HashMap<>();
+        pageInfo.put("totalElements", 1);
+        pageInfo.put("totalPages", 1);
+        pageInfo.put("size", 1);
+        pageInfo.put("number", 0);
+        return pageInfo;
+    }
 
 
     @PreAuthorize("hasAnyRole('admin')")
@@ -182,9 +202,9 @@ public class DichVuController {
     }
 
     @GetMapping("/find")
-    public ResponseEntity<Page<Dichvu>> findDichVu(@RequestParam String namedv,@RequestParam(defaultValue = "0") Integer page) {
-        Pageable pageable = PageRequest.of(page,10);
-        Page<Dichvu> dichvus = dichVuService.FindByNameDV(namedv,pageable);
+    public ResponseEntity<Page<Dichvu>> findDichVu(@RequestParam String namedv, @RequestParam(defaultValue = "0") Integer page) {
+        Pageable pageable = PageRequest.of(page, 10);
+        Page<Dichvu> dichvus = dichVuService.FindByNameDV(namedv, pageable);
         return ResponseEntity.ok(dichvus);
     }
 
@@ -193,9 +213,9 @@ public class DichVuController {
     public ResponseEntity<Dichvu> updateTrangThai(@PathVariable Integer id) {
         Optional<Dichvu> dichvu1 = dichVuService.findById(id);
         Dichvu dichvu = dichvu1.get();
-        if (dichvu.getTrangthai()){
+        if (dichvu.getTrangthai()) {
             dichvu.setTrangthai(false);
-        }else {
+        } else {
             dichvu.setTrangthai(true);
         }
         dichVuService.addOrUpdateDichVu(dichvu);
@@ -210,9 +230,9 @@ public class DichVuController {
             return ResponseEntity.notFound().build();
         }
         Dichvu dichvu = dichvu1.get();
-        if (dichvu.getHien()){
+        if (dichvu.getHien()) {
             dichvu.setHien(false);
-        }else {
+        } else {
             dichvu.setHien(true);
         }
         dichVuService.addOrUpdateDichVu(dichvu);
