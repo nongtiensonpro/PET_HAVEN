@@ -150,7 +150,7 @@ $$
         dichvu_id  INT;
         tuychon_id INT;
     BEGIN
-        SELECT ID INTO dichvu_id FROM DichVu WHERE TenDichVu = 'Dịch vụ Spa cho Chó Mèo';
+        SELECT ID INTO dichvu_id FROM DichVu WHERE TenDichVu = 'Dịch vụ Spa cho Mèo';
 
         -- Thêm các tùy chọn cho dịch vụ
         INSERT INTO TuyChonDichVu (IDDichVu, TenTuyChon, MoTa, TrangThai)
