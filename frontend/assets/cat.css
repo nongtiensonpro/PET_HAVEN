@@ -44,7 +44,7 @@
 .navbar {
     background: #F8F8F1 !important;
     border-radius: 25px;
-    border: 1px solid #400D01;
+    padding: 1.3rem;
 }
 
 .no-b {

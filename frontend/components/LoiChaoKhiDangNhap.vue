@@ -57,7 +57,7 @@ function tiepTucChat() {
       <i class="fas fa-spinner fa-spin me-2"></i> Thưa cậu chủ em đang suy nghĩ 🤔💭🧠
     </div>
     <div v-else class="greeting">
-      <div class="greeting-text">
+      <div class="text fs-4 justify-content-around">
         {{ greeting }}
       </div>
       <button class="custom-button" @click="tiepTucChat">
@@ -75,9 +75,9 @@ function tiepTucChat() {
   display: flex;
   align-items: center;
   padding: 25px;
-  background-color: #fff;
-  border-radius: 15px;
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  //background-color: rgba(246, 246, 234, 0.62);
+  //border-radius: 15px;
+  //box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
 }
 
 
@@ -98,12 +98,7 @@ function tiepTucChat() {
   color: #666;
 }
 
-.greeting-text {
-  font-size: 1.1em;
-  font-family: Arial, Helvetica, sans-serif;
-  color: #333;
-  flex-grow: 1;
-}
+
 
 .greeting-text strong {
   color: #28a745; /* Màu thương hiệu PetHaven (ví dụ) */

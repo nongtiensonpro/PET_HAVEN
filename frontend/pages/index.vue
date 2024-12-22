@@ -199,9 +199,5 @@
     height: 100%;
     object-fit: contain; /* Or 'cover' depending on desired behavior */
   }
-  .custom-button{
-    border: 1px solid black;
-    border-radius: 5px;
-    padding: 5px;
-  }
+
   </style>
