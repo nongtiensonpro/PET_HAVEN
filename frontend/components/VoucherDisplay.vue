@@ -1,6 +1,7 @@
 <template>
   <div class="voucher-carousel">
-    <div v-if="vouchers.length > 0" class="carousel-container">
+    <div v-if="vouchers.length > 0 && accessToken" class="carousel-container">
+<!--      <h2 class="text text-center">Chương trình khuyến mãi</h2>-->
       <div class="carousel-track" :style="{ transform: `translateX(${-currentIndex * 100}%)` }">
         <div v-for="voucher in vouchers" :key="voucher.id" class="voucher-item">
           <div class="voucher">
@@ -15,7 +16,7 @@
         </div>
       </div>
     </div>
-    <div v-else class="login-message">
+    <div v-else-if="vouchers.length > 0 && !accessToken" class="login-message">
       <div class="message-content">
         <i class="fas fa-lock"></i>
         <h3>Đăng nhập để xem voucher</h3>
@@ -23,11 +24,14 @@
         <button @click="navigateToLogin" class="custom-button">Đăng nhập ngay</button>
       </div>
     </div>
+    <div v-else>
+      <p class="text-center">Không có voucher nào.</p>
+    </div>
   </div>
 </template>
 
 <script setup lang="ts">
-import { ref, onMounted, onUnmounted } from 'vue';
+import { ref, onMounted, onUnmounted, computed } from 'vue';
 import { useRouter } from 'vue-router';
 import Voucher from '~/models/Voucher';
 
@@ -38,6 +42,7 @@ const props = defineProps<{
 const router = useRouter();
 const currentIndex = ref(0);
 const intervalId = ref<number | null>(null);
+const accessToken = computed(() => localStorage.getItem('access_token'));
 
 const formatDate = (dateString: string) => {
   const date = new Date(dateString);
@@ -45,24 +50,25 @@ const formatDate = (dateString: string) => {
 };
 
 const startCarousel = () => {
-  if (props.vouchers.length > 0) {
-    intervalId.value = window.setInterval(() => {
-      currentIndex.value = (currentIndex.value + 1) % props.vouchers.length;
-    }, 3000);
-  }
+  intervalId.value = window.setInterval(() => {
+    currentIndex.value = (currentIndex.value + 1) % props.vouchers.length;
+  }, 3000);
 };
 
 const navigateToLogin = () => {
-    window.location.href = 'http://localhost:8080/oauth2/authorization/keycloak'
+  router.push('/login');
 };
 
 onMounted(() => {
-  startCarousel();
+  if (props.vouchers.length > 0 && accessToken.value) {
+    startCarousel();
+  }
 });
 
 onUnmounted(() => {
-  if (intervalId.value) {
+  if (intervalId.value !== null) {
     clearInterval(intervalId.value);
+    intervalId.value = null;
   }
 });
 </script>
@@ -93,7 +99,7 @@ onUnmounted(() => {
 }
 
 .voucher {
-  background: linear-gradient(45deg, #ff9a9e 0%, #fad0c4 99%, #fad0c4 100%);
+  background: white;
   border-radius: 10px;
   padding: 20px;
   width: 300px;
@@ -134,6 +140,9 @@ h3 {
 .message-content {
   max-width: 300px;
   margin: 0 auto;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
 }
 
 .login-message i {
@@ -152,7 +161,7 @@ h3 {
   margin-bottom: 20px;
 }
 
-.login-button {
+.custom-button {
   background-color: #e74c3c;
   color: white;
   border: none;
@@ -162,7 +171,7 @@ h3 {
   transition: background-color 0.3s ease;
 }
 
-.login-button:hover {
+.custom-button:hover {
   background-color: #c0392b;
 }
 </style>

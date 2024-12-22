@@ -73,7 +73,7 @@
 }
 .custom-button {
     background-color: rgba(246, 246, 234, 0.62);
-    border: 1px solid #400D01;
+    /*border: 1px solid #400D01;*/
     color: #400D01;
     padding: 15px 32px;
     text-align: center;
@@ -143,9 +143,9 @@ body::before {
 }
 
 .card {
-    border: 0.6px solid #400D01;
-    border-radius: 0.25rem;
-    background: #F2F0D8 !important;
+
+    border-radius: 25px;
+    background: rgba(248, 249, 250, 0.50) !important;
     color: #400D01 !important;
 }
 

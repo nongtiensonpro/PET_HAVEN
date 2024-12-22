@@ -278,6 +278,165 @@ $$
     END
 $$;
 
+
+
+-- Thêm dịch vụ Vệ sinh cho Chó Mèo
+INSERT INTO DichVu (TenDichVu, MoTa, TrangThai, Hien)
+VALUES ('Dịch vụ Vệ sinh cho Chó Mèo', 'Dịch vụ vệ sinh chuyên nghiệp cho thú cưng', TRUE, TRUE);
+
+-- Lấy ID của dịch vụ vừa thêm
+DO
+$$
+    DECLARE
+        dichvu_id  INT;
+        tuychon_id INT;
+    BEGIN
+        SELECT ID INTO dichvu_id FROM DichVu WHERE TenDichVu = 'Dịch vụ Vệ sinh cho Chó Mèo';
+
+        -- Thêm các tùy chọn cho dịch vụ
+        INSERT INTO TuyChonDichVu (IDDichVu, TenTuyChon, MoTa, TrangThai)
+        VALUES (dichvu_id, 'Vệ sinh cơ bản', '<ul>
+    <li>
+        <strong>Tắm:</strong>
+        Làm sạch toàn thân bằng sữa tắm chuyên dụng, phù hợp với từng loại da và lông.
+    </li>
+    <li>
+        <strong>Sấy:</strong>
+        Sấy khô lông bằng máy sấy chuyên nghiệp, đảm bảo an toàn và không gây tổn thương da.
+    </li>
+    <li>
+        <strong>Vệ sinh tai:</strong>
+        Làm sạch tai, loại bỏ ráy tai và ngăn ngừa các bệnh về tai.
+    </li>
+    <li>
+        <strong>Cắt móng:</strong>
+        Cắt tỉa móng gọn gàng, đảm bảo an toàn và tránh trầy xước.
+    </li>
+</ul>
+', TRUE),
+               (dichvu_id, 'Vệ sinh nâng cao', '<ul>
+    <li>
+        <strong>Tắm:</strong>
+        Làm sạch sâu với sữa tắm đặc trị, giúp loại bỏ bụi bẩn, vi khuẩn và nấm.
+    </li>
+    <li>
+        <strong>Sấy:</strong>
+        Sấy khô và tạo kiểu lông cơ bản bằng máy sấy chuyên nghiệp.
+    </li>
+    <li>
+        <strong>Vệ sinh tai:</strong>
+        Làm sạch tai bằng dung dịch vệ sinh chuyên dụng, loại bỏ ráy tai và ngăn ngừa viêm nhiễm.
+    </li>
+    <li>
+        <strong>Cắt móng:</strong>
+        Cắt tỉa móng và mài dũa, tạo độ nhẵn mịn và an toàn cho thú cưng.
+    </li>
+    <li>
+        <strong>Nặn tuyến hôi:</strong>
+        Loại bỏ tuyến hôi, giúp thú cưng thơm tho và tự tin hơn.
+    </li>
+</ul>
+', TRUE);
+
+        -- Thêm các tùy chọn cân nặng cho mỗi tùy chọn dịch vụ
+        FOR tuychon_id IN (SELECT ID FROM TuyChonDichVu WHERE IDDichVu = dichvu_id)
+            LOOP
+                INSERT INTO TuyChonCanNang (IDTuyChonDichVu, CanNangMin, CanNangMax, GiaTien, TrangThai)
+                VALUES (tuychon_id, 0, 5,
+                        CASE
+                            WHEN (SELECT TenTuyChon FROM TuyChonDichVu WHERE ID = tuychon_id) = 'Vệ sinh cơ bản'
+                                THEN 10
+                            WHEN (SELECT TenTuyChon FROM TuyChonDichVu WHERE ID = tuychon_id) = 'Vệ sinh nâng cao'
+                                THEN 15
+                            END,
+                        TRUE),
+                       (tuychon_id, 5, 10,
+                        CASE
+                            WHEN (SELECT TenTuyChon FROM TuyChonDichVu WHERE ID = tuychon_id) = 'Vệ sinh cơ bản'
+                                THEN 15
+                            WHEN (SELECT TenTuyChon FROM TuyChonDichVu WHERE ID = tuychon_id) = 'Vệ sinh nâng cao'
+                                THEN 20
+                            END,
+                        TRUE),
+                       (tuychon_id, 10, NULL,
+                        CASE
+                            WHEN (SELECT TenTuyChon FROM TuyChonDichVu WHERE ID = tuychon_id) = 'Vệ sinh cơ bản'
+                                THEN 20
+                            WHEN (SELECT TenTuyChon FROM TuyChonDichVu WHERE ID = tuychon_id) = 'Vệ sinh nâng cao'
+                                THEN 25
+                            END,
+                        TRUE);
+            END LOOP;
+    END
+$$;
+
+
+-- Thêm dịch vụ Khám bệnh cho Chó Mèo
+INSERT INTO DichVu (TenDichVu, MoTa, TrangThai, Hien)
+VALUES ('Dịch vụ Khám bệnh cho Chó Mèo', 'Dịch vụ khám và điều trị bệnh cho thú cưng', TRUE, TRUE);
+
+-- Lấy ID của dịch vụ vừa thêm
+DO
+$$
+    DECLARE
+        dichvu_id  INT;
+        tuychon_id INT;
+    BEGIN
+        SELECT ID INTO dichvu_id FROM DichVu WHERE TenDichVu = 'Dịch vụ Khám bệnh cho Chó Mèo';
+
+        -- Thêm các tùy chọn cho dịch vụ
+        INSERT INTO TuyChonDichVu (IDDichVu, TenTuyChon, MoTa, TrangThai)
+        VALUES (dichvu_id, 'Khám tổng quát', '<ul>
+    <li>
+        <strong>Kiểm tra sức khỏe tổng thể:</strong>
+        Đánh giá tình trạng sức khỏe chung, bao gồm kiểm tra thân nhiệt, nhịp tim, hô hấp.
+    </li>
+    <li>
+        <strong>Khám lâm sàng:</strong>
+        Quan sát các triệu chứng lâm sàng, phát hiện các bất thường về da, lông, mắt, mũi, miệng.
+    </li>
+    <li>
+        <strong>Tư vấn sức khỏe:</strong>
+        Cung cấp lời khuyên về chế độ dinh dưỡng, chăm sóc và phòng ngừa bệnh cho thú cưng.
+    </li>
+</ul>
+', TRUE),
+               (dichvu_id, 'Khám chuyên khoa', '<ul>
+    <li>
+        <strong>Khám chuyên sâu:</strong>
+        Tập trung vào các vấn đề sức khỏe cụ thể, như da liễu, hô hấp, tiêu hóa, tim mạch.
+    </li>
+    <li>
+        <strong>Chẩn đoán hình ảnh:</strong>
+        Sử dụng các phương tiện chẩn đoán như siêu âm, X-quang để xác định bệnh.
+    </li>
+    <li>
+        <strong>Xét nghiệm:</strong>
+        Tiến hành các xét nghiệm máu, nước tiểu để phân tích và chẩn đoán bệnh.
+    </li>
+    <li>
+        <strong>Điều trị:</strong>
+        Kê đơn thuốc và đưa ra phác đồ điều trị phù hợp với tình trạng bệnh của thú cưng.
+    </li>
+</ul>
+', TRUE);
+
+        -- Thêm các tùy chọn cân nặng cho mỗi tùy chọn dịch vụ
+        FOR tuychon_id IN (SELECT ID FROM TuyChonDichVu WHERE IDDichVu = dichvu_id)
+            LOOP
+                INSERT INTO TuyChonCanNang (IDTuyChonDichVu, CanNangMin, CanNangMax, GiaTien, TrangThai)
+                VALUES (tuychon_id, 1, NULL,
+                        CASE
+                            WHEN (SELECT TenTuyChon FROM TuyChonDichVu WHERE ID = tuychon_id) = 'Khám tổng quát'
+                                THEN 50
+                            WHEN (SELECT TenTuyChon FROM TuyChonDichVu WHERE ID = tuychon_id) = 'Khám chuyên khoa'
+                                THEN 100
+                            END,
+                        TRUE);
+            END LOOP;
+    END
+$$;
+
 -- -- Thêm dữ liệu vào bảng GiamGia
 -- INSERT INTO GiamGia (PhanTramGiam, NgayBatDau, NgayKetThuc, MoTa, TrangThai)
 -- VALUES

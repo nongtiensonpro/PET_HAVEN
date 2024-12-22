@@ -54,29 +54,43 @@ function tiepTucChat() {
 <template>
   <div class="greeting-container">
     <div v-if="isLoading" class="loading">
-      Thưa cậu chủ em đang suy nghĩ 🤔💭🧠
+      <i class="fas fa-spinner fa-spin me-2"></i> Thưa cậu chủ em đang suy nghĩ 🤔💭🧠
     </div>
     <div v-else class="greeting">
-      <div class="row">
-        <div class="col-10">
-          {{ greeting }}
-        </div>
-        <div class="col-2 custom-button" @click="tiepTucChat">
-          <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-chat-dots-fill" viewBox="0 0 16 16">
-            <path d="M16 8c0 3.866-3.582 7-8 7a9 9 0 0 1-2.347-.306c-.584.296-1.925.864-4.181 1.234-.2.032-.352-.176-.273-.362.354-.836.674-1.95.77-2.966C.744 11.37 0 9.76 0 8c0-3.866 3.582-7 8-7s8 3.134 8 7M5 8a1 1 0 1 0-2 0 1 1 0 0 0 2 0m4 0a1 1 0 1 0-2 0 1 1 0 0 0 2 0m3 1a1 1 0 1 0 0-2 1 1 0 0 0 0 2"/>
-          </svg>
-        </div>
+      <div class="greeting-text">
+        {{ greeting }}
       </div>
+      <button class="custom-button" @click="tiepTucChat">
+        <span class="button-text">Tiếp tục Chat</span>
+        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="currentColor" class="bi bi-chat-right-dots-fill" viewBox="0 0 16 16">
+          <path d="M16 2a2 2 0 0 0-2-2H2a2 2 0 0 0-2 2v8a2 2 0 0 0 2 2h9.586a1 1 0 0 1 .707.293l2.853 2.853a.5.5 0 0 0 .854-.353zM4.5 5.5a.5.5 0 0 1 .5-.5h7a.5.5 0 0 1 0 1h-7a.5.5 0 0 1-.5-.5m0 3a.5.5 0 0 1 .5-.5h7a.5.5 0 0 1 0 1h-7a.5.5 0 0 1-.5-.5m0 3a.5.5 0 0 1 .5-.5h4a.5.5 0 0 1 0 1h-4a.5.5 0 0 1-.5-.5"/>
+        </svg>
+      </button>
     </div>
   </div>
 </template>
 
 <style scoped>
 .greeting-container {
-  padding: 20px;
-  background-color: #f0f8ff;
-  border-radius: 8px;
-  box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+  display: flex;
+  align-items: center;
+  padding: 25px;
+  background-color: #fff;
+  border-radius: 15px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+
+@keyframes pulse {
+  0% {
+    transform: scale(1);
+  }
+  50% {
+    transform: scale(1.1);
+  }
+  100% {
+    transform: scale(1);
+  }
 }
 
 .loading {
@@ -84,8 +98,38 @@ function tiepTucChat() {
   color: #666;
 }
 
-.greeting {
-  font-size: 1.2em;
+.greeting-text {
+  font-size: 1.1em;
+  font-family: Arial, Helvetica, sans-serif;
   color: #333;
+  flex-grow: 1;
+}
+
+.greeting-text strong {
+  color: #28a745; /* Màu thương hiệu PetHaven (ví dụ) */
+}
+
+.custom-button {
+  background-color: transparent; /* Màu nền trong suốt */
+  border: none;
+  padding: 5px 10px;
+  border-radius: 5px;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+  display: flex; /* Sử dụng flexbox */
+  align-items: center; /* Căn giữa theo chiều dọc */
+  white-space: nowrap;
+}
+
+.custom-button:hover {
+  background-color: rgba(40, 167, 69, 0.2); /* Hiệu ứng hover */
+}
+
+.bi {
+  margin-left: 5px;
+}
+.button-text {
+  margin-right: 5px; /* Khoảng cách giữa chữ và biểu tượng */
+  font-size: 14px;
 }
 </style>

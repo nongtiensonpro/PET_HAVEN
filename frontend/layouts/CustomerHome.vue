@@ -1,7 +1,7 @@
 <template>
   <NuxtLayout>
     <div class="container p-4">
-      <div class="row d-flex align-items-center">
+      <div class="row d-flex align-items-center bg-opacity-75 bg-light" style="border-radius: 25px; margin: 5px">
         <!-- Logo và tiêu đề -->
         <div class="col-md-4 d-flex align-items-center p-1">
           <img :src="logoImage" class="img-fluid rounded-top me-2" alt="Logo">
@@ -141,7 +141,7 @@
 
 
       <!-- Navbar -->
-      <div class="container">
+      <div class="container " >
         <div v-if="viewRole === 0">
           <nav class="navbar navbar-expand-lg bg-body-tertiary">
             <div class="container-fluid">
@@ -222,13 +222,13 @@
         </div>
       </div>
 
-      <div class="container h-100 w-100 m-4 p-1">
+      <div class="container h-100 w-100 p-4 bg-opacity-75 bg-light" style="border-radius: 25px; margin-top: 5px">
         <NuxtPage />
       </div>
 
       <footer>
         <div v-if="viewRole == 0">
-          <div class="container">
+          <div class="container  p-4 bg-opacity-75 bg-light" style="border-radius: 25px; margin-top: 5px">
             <div class="row">
               <div class="col">
                 <div class="row">

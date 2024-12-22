@@ -155,14 +155,14 @@ const events = ref([
   {
     title: 'Chọn',
     start: new Date(),
-    color: '#3788d8',
+    color: '#400D01',
     allDay: true
   }
 ])
 function handleDateClick(info) {
   selectedDate.value = new Date(info.dateStr)
   datLichStore.updateDatLichInfo(info.dateStr)
-  events.value = [{ title: 'Chọn', start: info.dateStr, color: '#3788d8' }]
+  events.value = [{ title: 'Chọn', start: info.dateStr, color: '#400D01' }]
 }
 
 function confirmBooking() {
@@ -210,6 +210,7 @@ function confirmBooking() {
 .calendar {
   font-family: 'Arial', sans-serif;
   margin-bottom: 30px;
+  color: #400D01 !important;
 }
 
 .booking-details {
@@ -224,7 +225,7 @@ function confirmBooking() {
 
 .selected-date {
   font-size: 1.1em;
-  color: #007bff;
+  color: #400D01;
 }
 
 .form-select {
@@ -235,8 +236,8 @@ function confirmBooking() {
 }
 
 .form-select:focus {
-  border-color: #80bdff;
-  box-shadow: 0 0 0 0.2rem rgba(0,123,255,.25);
+  border-color: #f6f6ea;
+  box-shadow: 0 0 0 0.2rem rgb(64, 13, 1);
 }
 
 .btn-primary {
@@ -248,20 +249,20 @@ function confirmBooking() {
 
 .btn-primary:hover {
   transform: translateY(-2px);
-  box-shadow: 0 4px 8px rgba(0,123,255,0.3);
+  box-shadow: 0 4px 8px rgb(64, 13, 1);
 }
 
 :deep(.fc) {
   --fc-border-color: #e0e0e0;
-  --fc-button-bg-color: #007bff;
-  --fc-button-border-color: #007bff;
-  --fc-button-hover-bg-color: #0056b3;
-  --fc-button-hover-border-color: #0056b3;
-  --fc-button-active-bg-color: #0056b3;
-  --fc-button-active-border-color: #0056b3;
-  --fc-event-bg-color: #007bff;
-  --fc-event-border-color: #007bff;
-  --fc-today-bg-color: #e6f2ff;
+  --fc-button-bg-color: #400D01;
+  --fc-button-border-color: #400D01;
+  --fc-button-hover-bg-color: #5a1301;
+  --fc-button-hover-border-color: #5a1301;
+  --fc-button-active-bg-color: #5a1301;
+  --fc-button-active-border-color: #5a1301;
+  --fc-event-bg-color: #400D01;
+  --fc-event-border-color: #400D01;
+  --fc-today-bg-color: rgba(64, 13, 1, 0.1);
 }
 
 :deep(.fc-button-primary) {
@@ -276,9 +277,8 @@ function confirmBooking() {
   background-color: var(--fc-button-hover-bg-color);
   border-color: var(--fc-button-hover-border-color);
   transform: translateY(-2px);
-  box-shadow: 0 4px 8px rgba(0,123,255,0.3);
+  box-shadow: 0 4px 8px rgba(64, 13, 1, 0.3);
 }
-
 :deep(.fc-day-today) {
   background-color: var(--fc-today-bg-color) !important;
 }

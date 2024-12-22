@@ -14,8 +14,8 @@
           <div class="card-body">
             <h4 class="card-title mb-4"><i class="fas fa-info-circle me-2"></i>Thông tin đặt lịch</h4>
             <div v-if="tempData">
-              <div class="card border-primary mb-3">
-                <div class="card-header bg-primary text-white">
+              <div class="card mb-3">
+                <div class="card-header bg-light text fs-4">
                   <i class="fas fa-calendar-check me-2"></i>Chi tiết lịch hẹn
                 </div>
                 <div class="card-body">
@@ -238,8 +238,8 @@ async function payAtCounter() {
 
 <style scoped>
 .accordion-button:not(.collapsed) {
-  background-color: #e7f1ff;
-  color: #0c63e4;
+  background-color: #f6f6ea;
+  color: #400D01;
 }
 
 .accordion-button:focus {

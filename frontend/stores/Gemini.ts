@@ -185,7 +185,7 @@ export const useAIStore = defineStore('ai', () => {
 
     onMounted(async () => {
         await fetchData();
-        refreshInterval.value = setInterval(fetchData, 60 * 1000);
+        // refreshInterval.value = setInterval(fetchData, 60 * 1000);
     });
 
     return {sendMessage, chatHistory};
