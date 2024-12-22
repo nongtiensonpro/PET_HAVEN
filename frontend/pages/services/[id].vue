@@ -6,8 +6,8 @@
         <LoiChaoKhiKhachHangXemDichVu :service="service"/>
         <div class="card-header">
           <div class="row">
-            <div class="col">
-              <h2 class="mb-0">{{ service.tendichvu }}</h2>
+            <div class="col card-header">
+              <div class="text fs-2">{{ service.tendichvu }}</div>
             </div>
           </div>
         </div>
@@ -23,7 +23,7 @@
             </div>
             <div class="col card-header ">
               <div>
-                <p class="text fs-4">{{ service.mota }}</p>
+                <p class="card-header text fs-4">{{ service.mota }}</p>
               </div>
               <ChonDichVu :serviceOptions="service.tuyChonDichVus" />
             </div>
@@ -33,8 +33,8 @@
       <div v-else class="text-danger p-4">{{ errorMessage }}</div>
     </div>
 
-    <div class="mt-5">
-      <h3 class="mb-4">Đánh giá và nhận xét</h3>
+    <div class="mt-5 card p-4">
+      <h3 class="mb-4 card-header">Đánh giá và nhận xét</h3>
       <div v-if="danhGias.length > 0">
         <div style="padding-bottom: 10px">
           <TongHopBinhLuanGemini :danhGias="danhGias"/>
@@ -67,7 +67,6 @@
                 </div>
               </div>
             </div>
-
             <p class="card-text mb-3"><strong>Nội dung:</strong> {{ danhGia.mota }}</p>
 
             <div class="row">

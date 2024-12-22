@@ -84,9 +84,6 @@ function tiepTucChat() {
 <style scoped>
 .greeting-container {
   padding: 20px;
-  background-color: #f0f8ff;
-  border-radius: 8px;
-  box-shadow: 0 2px 4px rgba(0,0,0,0.1);
 }
 
 .loading {

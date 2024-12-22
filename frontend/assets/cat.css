@@ -145,7 +145,7 @@ body::before {
 .card {
 
     border-radius: 25px;
-    background: rgba(248, 249, 250, 0.50) !important;
+    background: rgba(248, 249, 250, 0.90) !important;
     color: #400D01 !important;
 }
 

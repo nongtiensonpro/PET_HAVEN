@@ -101,30 +101,27 @@ function tiepTucChat() {
 
 
 .greeting-text strong {
-  color: #28a745; /* Màu thương hiệu PetHaven (ví dụ) */
+  color: #28a745;
 }
 
 .custom-button {
-  background-color: transparent; /* Màu nền trong suốt */
+  background-color: transparent;
   border: none;
   padding: 5px 10px;
   border-radius: 5px;
   cursor: pointer;
   transition: background-color 0.3s ease;
-  display: flex; /* Sử dụng flexbox */
-  align-items: center; /* Căn giữa theo chiều dọc */
+  display: flex;
+  align-items: center;
   white-space: nowrap;
 }
 
-.custom-button:hover {
-  background-color: rgba(40, 167, 69, 0.2); /* Hiệu ứng hover */
-}
 
 .bi {
   margin-left: 5px;
 }
 .button-text {
-  margin-right: 5px; /* Khoảng cách giữa chữ và biểu tượng */
+  margin-right: 5px;
   font-size: 14px;
 }
 </style>
