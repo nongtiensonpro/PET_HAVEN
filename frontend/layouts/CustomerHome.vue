@@ -34,7 +34,8 @@
 
               <!-- Offcanvas quản lý tài khoản -->
               <div class="offcanvas offcanvas-start" data-bs-scroll="true" tabindex="-1" id="offcanvasWithBothOptions"
-                   aria-labelledby="offcanvasWithBothOptionsLabel">
+                   aria-labelledby="offcanvasWithBothOptionsLabel"
+                   style="border-radius: 0 25px 25px 0; background: rgba(246, 246, 234, 0.75); backdrop-filter: blur(5px); box-shadow: 0 0 10px 5px rgba(246, 246, 234, 0.3);">
                 <div class="offcanvas-header">
                   <h5 class="offcanvas-title" id="offcanvasWithBothOptionsLabel">
                     <template v-if="Array.isArray(userInfo.role)">
@@ -203,7 +204,7 @@
                   <!--                    <NuxtLink class="nav-link" :to="`/admin/quanlyhoadon`">Quản lý hóa đơn</NuxtLink>-->
                   <!--                  </li>-->
                   <li class="nav-item" v-if="userInfo?.role && userInfo.role.includes('admin')">
-                    <NuxtLink class="nav-link" :to="`/admin/service/servicelist`">Dịch vụ</NuxtLink>
+                    <NuxtLink class="nav-link" :to="`/admin/service/servicelist`" >Dịch vụ</NuxtLink>
                   </li>
                   <li class="nav-item" v-if="userInfo?.role && userInfo.role.includes('admin')">
                     <NuxtLink class="nav-link" :to="`/admin/quanlytaikhoan`">Tài khoản</NuxtLink>
