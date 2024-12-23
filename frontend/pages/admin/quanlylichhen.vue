@@ -1,7 +1,7 @@
 <template>
   <div class="container">
-    <div class="card shadow">
-      <div class="card-header  text-white d-flex justify-content-between align-items-center">
+    <div class="card">
+      <div class="card-header text-white d-flex justify-content-between align-items-center">
         <h5 class="mb-0 text fs-4">Tất cả các lịch hẹn</h5>
         <button @click="fetchHoaDon" class="btn btn-sm btn-outline-success">
            Làm mới
@@ -363,3 +363,6 @@ const viewHoaDon = (id: number) => {
 };
 
 </script>
+
+<style scoped>
+</style>

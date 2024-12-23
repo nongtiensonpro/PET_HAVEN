@@ -1,5 +1,5 @@
 <template>
-  <div class="container bg-light p-4">
+  <div class="container card bg-light p-4" style="border-radius: 25px">
     <div class="text fs-1">
       Quản lý tài khoản
     </div>

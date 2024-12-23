@@ -1,5 +1,5 @@
 <template>
-  <div class="voucher-list container mt-5 bg-light p-4">
+  <div class="voucher-list card container mt-5 bg-light p-4" style="border-radius: 25px">
     <h1 class="title mb-4">Quản lý Voucher</h1>
     <div class="row mb-4">
       <div class="col">

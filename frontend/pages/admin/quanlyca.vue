@@ -131,7 +131,7 @@ async function huyNgayNghi(ngayNghi: NgayNghi) {
 </script>
 
 <template>
-  <div class="bg-light p-4">
+  <div class="card p-4" style="border-radius: 25px">
     <div class="text fs-1">
       Quản lý thời gian
     </div>
