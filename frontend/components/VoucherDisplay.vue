@@ -99,7 +99,7 @@ onUnmounted(() => {
 }
 
 .voucher {
-  background: white;
+  background: rgb(242, 240, 216) !important;
   border-radius: 10px;
   padding: 20px;
   width: 300px;
@@ -132,7 +132,7 @@ h3 {
 .login-message {
   text-align: center;
   padding: 20px;
-  background-color: #f8f9fa;
+  background-color: rgb(242, 240, 216) !important;
   border-radius: 10px;
   box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
 }
@@ -163,7 +163,7 @@ h3 {
 
 .custom-button {
   background-color: #e74c3c;
-  color: white;
+  color: rgb(242, 240, 216) !important;
   border: none;
   padding: 10px 20px;
   border-radius: 5px;

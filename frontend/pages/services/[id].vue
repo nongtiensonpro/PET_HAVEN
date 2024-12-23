@@ -1,12 +1,11 @@
 <template>
-  <div class="container my-5">
+  <div class="container">
     <div class="card">
-
       <div v-if="service">
         <LoiChaoKhiKhachHangXemDichVu :service="service"/>
         <div class="card-header">
           <div class="row">
-            <div class="col card-header">
+            <div class="col">
               <div class="text fs-2">{{ service.tendichvu }}</div>
             </div>
           </div>
@@ -92,13 +91,14 @@
           </div>
         </div>
       </div>
-      <div v-else class="alert alert-info">
+      <div v-else class="alert alert-light">
         <i class="fas fa-info-circle me-2"></i>
         Chưa có đánh giá nào cho dịch vụ này.
       </div>
     </div>
+    <a class="custom-button p-4" href="/" role="button">Trở về trang chủ</a>
   </div>
-  <a class="custom-button p-4" href="/" role="button">Trở về trang chủ</a>
+
 </template>
 
 <script setup lang="ts">

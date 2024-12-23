@@ -9,15 +9,16 @@
           <input
             v-model="searchTerm"
             type="text"
-            class="custom-button"
+            class="custom-button w-100"
             placeholder="Tìm kiếm voucher..."
             @input="handleSearch"
           >
+
+      </div>
+      <div class="col">
         <button class="custom-button" type="button" @click="handleSearch">
           Tìm kiếm
         </button>
-      </div>
-      <div class="col">
         <button @click="refreshVouchers" class="custom-button">
           Làm mới
         </button>

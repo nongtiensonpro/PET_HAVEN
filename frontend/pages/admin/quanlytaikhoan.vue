@@ -6,13 +6,13 @@
     <div class="d-flex justify-content-between align-items-center mb-3">
       <div class="row">
         <div class="col">
-          <button type="button" @click="lamMoi()" class="custom-button">Làm mới bảng</button>
-        </div>
-        <div class="col">
           <input v-model="searchTerm" type="text" class="custom-button" placeholder="Tìm kiếm...">
         </div>
         <div class="col">
           <button @click="search" class="custom-button">Tìm kiếm</button>
+        </div>
+        <div class="col">
+          <button type="button" @click="lamMoi()" class="custom-button">Làm mới bảng</button>
         </div>
       </div>
     </div>

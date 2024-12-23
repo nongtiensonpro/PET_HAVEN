@@ -21,14 +21,14 @@
           <!-- Nút đăng nhập và quản lý tài khoản -->
           <div>
             <div v-if="!isLoggedIn">
-              <button type="button" class="custom-button btn-equal" @click="login1">
+              <button type="button" class="custom-button btn-equal" @click="login1" style="border: none !important;">
                 {{ login }}
               </button>
             </div>
 
             <div v-else>
               <button class="custom-button btn-equal" type="button" data-bs-toggle="offcanvas"
-                      data-bs-target="#offcanvasWithBothOptions" aria-controls="offcanvasWithBothOptions">
+                      data-bs-target="#offcanvasWithBothOptions" aria-controls="offcanvasWithBothOptions" style="border: none !important;">
                 Tài khoản
               </button>
 
@@ -100,13 +100,13 @@
           </div>
 
           <!-- Nút thay đổi ngôn ngữ -->
-          <button type="button" class="custom-button btn-equal m-2 text-center" @click="changeLanguage">
+          <button type="button" class="custom-button btn-equal m-2 text-center" @click="changeLanguage" style="border: none !important;">
             {{ currentLanguage === 'vi' ? switchToEnglish : switchToVietnamese }}
           </button>
 
           <!-- Nút thông báo -->
           <div class="dropdown">
-            <button class="custom-button btn-equal dropdown-toggle position-relative" type="button"
+            <button class="custom-button btn-equal dropdown-toggle position-relative" type="button" style="border: none !important;"
                     data-bs-toggle="dropdown" aria-expanded="false">
               <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-bell-fill"
                    viewBox="0 0 16 16">
@@ -266,7 +266,6 @@
                     <h3>{{ aboutUs }}</h3>
                     <p>
                       {{ introductionText }}
-                      <a href="#" role="button">{{ moreInfo }}</a>
                     </p>
                   </div>
                 </div>
@@ -644,6 +643,7 @@ onMounted(() => {
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
+  border: none;
 }
 
 </style>
