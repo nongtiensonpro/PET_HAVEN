@@ -24,34 +24,44 @@ export const useServiceStore = defineStore('serviceStore', {
             }
         },
         async addDichVu(service: DichVu) {
-            const token = localStorage.getItem('access_token');
-            const formData = new FormData();
-            formData.append('tenDichVu', service.tendichvu);
-            formData.append('moTa', service.mota);
-            formData.append('giaTien', service.giatien);
-            formData.append('trangThai', service.trangthai);
+    const token = localStorage.getItem('access_token');
+    
+    // Create a DichVuDTO object
+    const dichVuDTO = {
+        tenDichVu: service.tendichvu,
+        moTa: service.mota,
+        anh: service.anh, // Assuming 'anh' is a property of DichVu
+        trangThai: service.trangthai,
+        hien: true, // Set a default value for 'hien'
+        tuyChonDichVu: [] // Initialize as an empty array
+    };
 
-            const fileInput = document.querySelector('#fileInput') as HTMLInputElement;
-            if (fileInput && fileInput.files && fileInput.files.length > 0) {
-                formData.append('file', fileInput.files[0]);
-            }
-            try {
-                const response = await fetch(API_ENDPOINTS.API_ENDPOINTS.dichVu.addDichVu, {
-                    method: 'POST',
-                    headers: {
-                        'Authorization': `Bearer ${token}`
-                    },
-                    body: formData
-                });
+    try {
+        const response = await fetch(API_ENDPOINTS.API_ENDPOINTS.dichVu.addDichVu, {
+            method: 'POST',
+            headers: {
+                'Authorization': `Bearer ${token}`,
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify(dichVuDTO)
+        });
 
-                if (!response.ok) {
-                    return {success: false, message: response.status};
-                }
-                return {success: true, message: 'Thêm dịch vụ thành công'};
-            } catch (error) {
-                return {success: false, message: 'Lỗi thêm dịch vụ'};
-            }
-        },
+        if (!response.ok) {
+            throw new Error(`HTTP error! Status: ${response.status}`);
+        }
+
+        const data = await response.json();
+        console.log("Dịch vụ đã được thêm:", data);
+
+        // Update the local state if necessary
+        // this.services.push(data);
+
+        return { success: true, message: 'Thêm dịch vụ thành công' };
+    } catch (error) {
+        console.error('Lỗi khi thêm dịch vụ:', error);
+        return { success: false, message: 'Lỗi thêm dịch vụ: ' + error.message };
+    }
+},
         async updateDichVu(service: DichVu) {
             const updateDichVuUrl = API_ENDPOINTS.API_ENDPOINTS.dichVu.updateDichVu + service.id;
             const token = localStorage.getItem('access_token');
@@ -202,43 +212,40 @@ export const useServiceStore = defineStore('serviceStore', {
             }
         },
         async updateService(dichVu: DichVu) {
-            console.log(" Dữ liệu sẽ gửi đi "+ JSON.stringify(dichVu));
+            console.log("Dữ liệu sẽ gửi đi " + JSON.stringify(dichVu));
             const updateDichVuUrl = API_ENDPOINTS.API_ENDPOINTS.dichVu.updateDichVu + dichVu.id;
             const token = localStorage.getItem('access_token');
-            const formDataUpdate = new FormData();
 
-            formDataUpdate.append('tenDichVu', dichVu.tendichvu);
-            formDataUpdate.append('moTa', dichVu.mota);
-            formDataUpdate.append('giaTien', dichVu.giatien);
-            formDataUpdate.append('trangThai', dichVu.trangthai.toString());
-            formDataUpdate.append('hien', dichVu.hien.toString());
-
-            // Xử lý các tùy chọn dịch vụ
-            dichVu.tuyChonDichVus.forEach((tuyChon, index) => {
-                formDataUpdate.append(`tuyChonDichVus[${index}].tenTuyChon`, tuyChon.tentuychon);
-                formDataUpdate.append(`tuyChonDichVus[${index}].moTa`, tuyChon.mota);
-                formDataUpdate.append(`tuyChonDichVus[${index}].trangThai`, tuyChon.trangthai.toString());
-
-                tuyChon.tuyChonCanNangs.forEach((canNang, canNangIndex) => {
-                    formDataUpdate.append(`tuyChonDichVus[${index}].tuyChonCanNangs[${canNangIndex}].canNangMin`, canNang.cannangmin.toString());
-                    formDataUpdate.append(`tuyChonDichVus[${index}].tuyChonCanNangs[${canNangIndex}].canNangMax`, canNang.cannangmax?.toString() || '');
-                    formDataUpdate.append(`tuyChonDichVus[${index}].tuyChonCanNangs[${canNangIndex}].giaTien`, canNang.giatien.toString());
-                    formDataUpdate.append(`tuyChonDichVus[${index}].tuyChonCanNangs[${canNangIndex}].trangThai`, canNang.trangthai.toString());
-                });
-            });
-
-            // Xử lý file ảnh nếu có
-            if (dichVu.file instanceof File) {
-                formDataUpdate.append('file', dichVu.file);
-            }
+            // Tạo đối tượng DichVuDTO phù hợp với backend
+            const dichVuDTO = {
+                tenDichVu: dichVu.tendichvu,
+                moTa: dichVu.mota,
+                anh: dichVu.anh, // Assuming 'anh' is a property of DichVu
+                trangThai: dichVu.trangthai,
+                hien: dichVu.hien,
+                tuyChonDichVu: dichVu.tuyChonDichVus.map(tuyChon => ({
+                    id: tuyChon.id,
+                    tenTuyChon: tuyChon.tentuychon,
+                    moTa: tuyChon.mota,
+                    trangThai: tuyChon.trangthai,
+                    tuyChonCanNang: tuyChon.tuyChonCanNangs.map(canNang => ({
+                        id: canNang.id,
+                        canNangMin: canNang.cannangmin,
+                        canNangMax: canNang.cannangmax,
+                        giaTien: canNang.giatien,
+                        trangThai: canNang.trangthai
+                    }))
+                }))
+            };
 
             try {
                 const response = await fetch(updateDichVuUrl, {
                     method: 'PUT',
                     headers: {
                         'Authorization': `Bearer ${token}`,
+                        'Content-Type': 'application/json'
                     },
-                    body: formDataUpdate,
+                    body: JSON.stringify(dichVuDTO)
                 });
 
                 if (!response.ok) {
