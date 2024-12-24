@@ -85,6 +85,10 @@ const updateTTHienService = (serviceId) => handleServiceAction(
 );
 
 const chiTietDV = (serviceId) => navigateTo(`/admin/service/${serviceId}`);
+
+function themDichVu() {
+  navigateTo('/admin/service/themdichvu');
+}
 </script>
 
 <template>
@@ -108,6 +112,9 @@ const chiTietDV = (serviceId) => navigateTo(`/admin/service/${serviceId}`);
                     <path d="M8 4.466V.534a.25.25 0 0 1 .41-.192l2.36 1.966c.12.1.12.284 0 .384L8.41 4.658A.25.25 0 0 1 8 4.466"/>
                   </svg>
                 </button>
+              </div>
+              <div class="col-2">
+                <button type="button" class="custom-button" @click="themDichVu">Thêm</button>
               </div>
             </div>
           </div>
