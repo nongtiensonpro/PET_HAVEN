@@ -3,9 +3,9 @@ import { onMounted, ref, onUnmounted, computed } from "vue";
 import { useCaLichHenStore } from "~/stores/QuanLyCaLichHen"
 import type NgayNghi from "~/models/NgayNghi";
 import type CaLichHen from "~/models/CaHen";
-import ThemCa from '~/components/ThemCa.vue'
+import ThemCa from '~/pages/admin/themthoigian.vue'
 import CapNhatCaHen from '~/components/CapNhatCaLichHen.vue'
-import CapNhatNgayNghi from "~/components/CapNhatNgayNghi.vue";
+import CapNhatNgayNghi from "~/pages/admin/capnhatngaynghi.vue";
 import Swal from 'sweetalert2';
 import { useToast } from 'vue-toastification'
 
@@ -128,6 +128,13 @@ async function huyNgayNghi(ngayNghi: NgayNghi) {
   }
 }
 
+function themThoiGian() {
+  return navigateTo('/admin/themthoigian');
+}
+function capNhatNgayNghi() {
+  return navigateTo('/admin/capnhatngaynghi');
+}
+
 </script>
 
 <template>
@@ -138,10 +145,10 @@ async function huyNgayNghi(ngayNghi: NgayNghi) {
     <div class="card-body">
       <div class="row">
         <div class="col-2">
-          <ThemCa />
+          <button type="button" class="custom-button" @click="themThoiGian">Thêm thời gian</button>
         </div>
         <div class="col-3">
-          <CapNhatNgayNghi />
+          <button type="button" class="custom-button" @click="capNhatNgayNghi">Cập nhật ngày </button>
         </div>
         <div class="col-3">
           <button type="button" @click="lammoi()" class="custom-button">Làm mới</button>

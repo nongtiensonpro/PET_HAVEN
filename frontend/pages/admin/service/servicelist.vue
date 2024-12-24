@@ -99,7 +99,7 @@ function themDichVu() {
         <div class="col-10">
           <div class="form-group">
             <div class="row">
-              <div class="col-8">
+              <div class="col-6">
                 <input v-model="name" type="text" class="custom-button" style="min-width: 100% !important;" placeholder="Tìm kiếm ?">
               </div>
               <div class="col-2">

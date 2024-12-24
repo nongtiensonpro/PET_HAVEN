@@ -3,7 +3,7 @@
     <h1 class="title mb-4">Quản lý Voucher</h1>
     <div class="row mb-4">
       <div class="col">
-        <add-voucher @added="refresh" />
+        <button type="button" class="custom-button" @click="themVoucher">Thêm</button>
       </div>
       <div class="col">
           <input
@@ -55,10 +55,7 @@
             </td>
             <td>
               <div class="d-flex">
-                <CapNhatVoucher
-                  :voucher="voucher"
-                  @updated="refresh"
-                />
+                <button type="button" class=" btn btn-sm m-1 btn-outline-success" @click="capNhatVoucher(voucher)">Cập nhật</button>
                 <button
                   @click="updateTrangThaiVoucher(voucher.id)"
                   type="button"
@@ -97,7 +94,7 @@
 import { onMounted, onUnmounted, ref, computed, watch } from 'vue';
 import { useVoucherStore } from '~/stores/VorchersStores';
 import AddVoucher from '~/components/AddVoucher.vue';
-import CapNhatVoucher from '~/components/CapNhatVoucher.vue';
+import CapNhatVoucher from '~/pages/admin/chitietvoucher/CapNhatVoucher.vue';
 import type Voucher from "~/models/Voucher";
 import { useToast } from 'vue-toastification';
 import Swal from "sweetalert2";
@@ -204,10 +201,18 @@ function handleSearch() {
   currentPage.value = 1; // Reset to first page after search
 }
 
-// Watch for changes in voucherData and searchTerm
+
 watch([voucherData, searchTerm], () => {
   handleSearch();
 }, { immediate: true });
+
+function themVoucher(){
+  return navigateTo('/admin/themvoucher');
+}
+
+function capNhatVoucher(voucher: Voucher){
+  return navigateTo(`/admin/chitietvoucher/${voucher.id}`);
+}
 
 </script>
 
