@@ -17,11 +17,11 @@ const newService = ref<DichVu>({
   tuyChonDichVus: []
 });
 
-const { addService } = serviceStore;
+const { addDichVu } = serviceStore;
 
 const saveNewService = async () => {
   try {
-    await addService(newService.value);
+    await addDichVu(newService.value);
     toast.success('Thêm dịch vụ mới thành công!');
     navigateTo('/admin/service/servicelist');
   } catch (error) {
