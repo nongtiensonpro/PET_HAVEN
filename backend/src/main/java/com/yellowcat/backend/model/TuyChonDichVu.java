@@ -37,7 +37,7 @@ public class TuyChonDichVu {
     private Boolean trangthai;
 
     @JsonManagedReference
-    @OneToMany(mappedBy = "tuyChonDichVu", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    @OneToMany(mappedBy = "tuyChonDichVu", cascade = CascadeType.ALL, fetch = FetchType.EAGER)
     private List<TuyChonCanNang> tuyChonCanNangs;
 
     public Integer getId() {
