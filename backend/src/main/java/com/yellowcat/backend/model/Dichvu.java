@@ -41,7 +41,7 @@ public class Dichvu {
     private Boolean hien = false;
 
     @JsonManagedReference
-    @OneToMany(mappedBy = "dichvu", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    @OneToMany(mappedBy = "dichvu", cascade = CascadeType.ALL, fetch = FetchType.EAGER)
     private List<TuyChonDichVu> tuyChonDichVus;
 
     // Getters and setters

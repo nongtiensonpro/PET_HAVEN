@@ -2,6 +2,7 @@ package com.yellowcat.backend.controller;
 
 
 import com.cloudinary.Cloudinary;
+import com.yellowcat.backend.DTO.DichVuDTO;
 import com.yellowcat.backend.model.Dichvu;
 import com.yellowcat.backend.service.CloudinaryService;
 import com.yellowcat.backend.service.DichVuService;
@@ -53,134 +54,119 @@ public class DichVuController {
     @PreAuthorize("hasAnyRole('admin')")
     @PostMapping("/add")
     public ResponseEntity<?> createDichVu(
-            @Valid @RequestParam("tenDichVu") String tenDichVu,
-            @Valid @RequestParam("moTa") String moTa,
-            @Valid @RequestParam("giaTien") Float giaTien,
-            @Valid @RequestParam("trangThai") Boolean trangThai,
-            @RequestParam(value = "file", required = false) MultipartFile file) {
+            @RequestBody DichVuDTO request) {
 
-        try {
-            String imageUrl;
+//        try {
+//            String imageUrl;
+//
+//            // Kiểm tra nếu người dùng không upload ảnh
+//            if (file == null || file.isEmpty()) {
+//                imageUrl = "http://localhost:8080/images/AvatarDichVu/default-avatar.jpg";
+//            } else {
+//                // Xác thực tên file và loại bỏ các ký tự nguy hiểm
+//                String fileName = StringUtils.cleanPath(file.getOriginalFilename());
+//
+//                if (!isValidFileName(fileName)) {
+//                    return ResponseEntity
+//                            .status(HttpStatus.BAD_REQUEST)
+//                            .body(Map.of("status", "error", "message", "Tên file không hợp lệ."));
+//                }
+//
+//                // Tạo tệp tạm thời
+//                File tempFile = File.createTempFile("upload_", fileName);
+//                file.transferTo(tempFile);  // Chuyển MultipartFile thành File
+//
+//                // Upload file lên Cloudinary
+//                Map uploadResult = cloudinaryService.uploadFile(tempFile);
+//                imageUrl = uploadResult.get("url").toString();
+//
+//                // Xóa file tạm sau khi upload
+//                tempFile.delete();
+//            }
+//
+//            // Tạo đối tượng Dichvu
+//            Dichvu dichvu = new Dichvu();
+//            dichvu.setTendichvu(tenDichVu);
+//            dichvu.setMota(moTa);
+//            dichvu.setTrangthai(trangThai);
+//            dichvu.setAnh(imageUrl);
+//            dichvu.setHien(false);
+//            // Lưu DichVu vào database
+//            dichVuService.addOrUpdateDichVu(dichvu);
+//
+//            return ResponseEntity
+//                    .status(HttpStatus.OK)
+//                    .body(Map.of("status", "success", "message", "Dịch vụ tạo thành công!", "data", dichvu));
+//        } catch (Exception e) {
+//            e.printStackTrace();
+//            return ResponseEntity
+//                    .status(HttpStatus.INTERNAL_SERVER_ERROR)
+//                    .body(Map.of("status", "error", "message", "Không thể tạo dịch vụ.", "error", e.getMessage()));
+//        }
 
-            // Kiểm tra nếu người dùng không upload ảnh
-            if (file == null || file.isEmpty()) {
-                imageUrl = "http://localhost:8080/images/AvatarDichVu/default-avatar.jpg";
-            } else {
-                // Xác thực tên file và loại bỏ các ký tự nguy hiểm
-                String fileName = StringUtils.cleanPath(file.getOriginalFilename());
-
-                if (!isValidFileName(fileName)) {
-                    return ResponseEntity
-                            .status(HttpStatus.BAD_REQUEST)
-                            .body(Map.of("status", "error", "message", "Tên file không hợp lệ."));
-                }
-
-                // Tạo tệp tạm thời
-                File tempFile = File.createTempFile("upload_", fileName);
-                file.transferTo(tempFile);  // Chuyển MultipartFile thành File
-
-                // Upload file lên Cloudinary
-                Map uploadResult = cloudinaryService.uploadFile(tempFile);
-                imageUrl = uploadResult.get("url").toString();
-
-                // Xóa file tạm sau khi upload
-                tempFile.delete();
-            }
-
-            // Tạo đối tượng Dichvu
-            Dichvu dichvu = new Dichvu();
-            dichvu.setTendichvu(tenDichVu);
-            dichvu.setMota(moTa);
-            dichvu.setTrangthai(trangThai);
-            dichvu.setAnh(imageUrl);
-            dichvu.setHien(false);
-            // Lưu DichVu vào database
-            dichVuService.addOrUpdateDichVu(dichvu);
-
-            return ResponseEntity
-                    .status(HttpStatus.OK)
-                    .body(Map.of("status", "success", "message", "Dịch vụ tạo thành công!", "data", dichvu));
-        } catch (Exception e) {
-            e.printStackTrace();
-            return ResponseEntity
-                    .status(HttpStatus.INTERNAL_SERVER_ERROR)
-                    .body(Map.of("status", "error", "message", "Không thể tạo dịch vụ.", "error", e.getMessage()));
-        }
+        dichVuService.themDichVu(request);
+        return ResponseEntity.ok("Dịch vụ đã được thêm thành công.");
     }
 
 
     @PreAuthorize("hasAnyRole('admin')")
     @PutMapping("/update/{id}")
     public ResponseEntity<?> updateone(
-            @Valid @RequestParam("tenDichVu") String tenDichVu,
-            @Valid @RequestParam("moTa") String moTa,
-            @Valid @RequestParam("trangThai") Boolean trangThai,
-            @Valid @RequestParam("hien") Boolean hien,
-            @RequestParam(value = "tuyChonDichVus", required = false) String tuyChonDichVusJson,
-            @RequestParam(value = "file", required = false) MultipartFile file,
-            @PathVariable int id) {
+            @RequestBody DichVuDTO request, @PathVariable int id) {
 
-        Optional<Dichvu> dichvu1 = dichVuService.findById(id);
+        dichVuService.updateDichVu((long) id, request);
 
-        if (!dichvu1.isPresent()) {
-            return ResponseEntity
-                    .status(HttpStatus.NOT_FOUND)
-                    .body(Map.of("status", "error", "message", "Dịch vụ không tồn tại."));
-        }
+//        if (!dichvu1.isPresent()) {
+//            return ResponseEntity
+//                    .status(HttpStatus.NOT_FOUND)
+//                    .body(Map.of("status", "error", "message", "Dịch vụ không tồn tại."));
+//        }
+//
+//        Dichvu dichvu2 = dichvu1.get();
+//        dichvu2.setTendichvu(tenDichVu);
+//        dichvu2.setMota(moTa);
+//        dichvu2.setTrangthai(trangThai);
+//        dichvu2.setHien(hien);
+//
+//        // Handle tuyChonDichVus
+//        if (tuyChonDichVusJson != null && !tuyChonDichVusJson.isEmpty()) {
+//            // You'll need to implement a method to parse the JSON and update tuyChonDichVus
+//            // For example:
+//            // dichvu2.setTuyChonDichVus(parseTuyChonDichVusJson(tuyChonDichVusJson));
+//        }
+//
+//        if (file != null && !file.isEmpty()) {
+//            try {
+//                String fileName = StringUtils.cleanPath(file.getOriginalFilename());
+//                if (!isValidFileName(fileName)) {
+//                    return ResponseEntity
+//                            .status(HttpStatus.BAD_REQUEST)
+//                            .body(Map.of("status", "error", "message", "Tên file không hợp lệ."));
+//                }
+//
+//                // Tạo file tạm thời
+//                File tempFile = File.createTempFile("upload_", fileName);
+//                file.transferTo(tempFile); // Chuyển MultipartFile thành File
+//
+//                // Upload file lên Cloudinary
+//                Map uploadResult = cloudinaryService.uploadFile(tempFile);
+//                String imageUrl = uploadResult.get("url").toString();
+//                dichvu2.setAnh(imageUrl);
+//
+//                // Xóa file tạm sau khi upload
+//                tempFile.delete();
+//
+//            } catch (Exception e) {
+//                e.printStackTrace();
+//                return ResponseEntity
+//                        .status(HttpStatus.INTERNAL_SERVER_ERROR)
+//                        .body(Map.of("status", "error", "message", "Không thể cập nhật ảnh."));
+//            }
+//        }
 
-        Dichvu dichvu2 = dichvu1.get();
-        dichvu2.setTendichvu(tenDichVu);
-        dichvu2.setMota(moTa);
-        dichvu2.setTrangthai(trangThai);
-        dichvu2.setHien(hien);
 
-        // Handle tuyChonDichVus
-        if (tuyChonDichVusJson != null && !tuyChonDichVusJson.isEmpty()) {
-            // You'll need to implement a method to parse the JSON and update tuyChonDichVus
-            // For example:
-            // dichvu2.setTuyChonDichVus(parseTuyChonDichVusJson(tuyChonDichVusJson));
-        }
 
-        if (file != null && !file.isEmpty()) {
-            try {
-                String fileName = StringUtils.cleanPath(file.getOriginalFilename());
-                if (!isValidFileName(fileName)) {
-                    return ResponseEntity
-                            .status(HttpStatus.BAD_REQUEST)
-                            .body(Map.of("status", "error", "message", "Tên file không hợp lệ."));
-                }
-
-                // Tạo file tạm thời
-                File tempFile = File.createTempFile("upload_", fileName);
-                file.transferTo(tempFile); // Chuyển MultipartFile thành File
-
-                // Upload file lên Cloudinary
-                Map uploadResult = cloudinaryService.uploadFile(tempFile);
-                String imageUrl = uploadResult.get("url").toString();
-                dichvu2.setAnh(imageUrl);
-
-                // Xóa file tạm sau khi upload
-                tempFile.delete();
-
-            } catch (Exception e) {
-                e.printStackTrace();
-                return ResponseEntity
-                        .status(HttpStatus.INTERNAL_SERVER_ERROR)
-                        .body(Map.of("status", "error", "message", "Không thể cập nhật ảnh."));
-            }
-        }
-
-        // Cập nhật dịch vụ vào database
-        Dichvu updatedDichvu = dichVuService.addOrUpdateDichVu(dichvu2);
-
-        // Prepare the response
-        Map<String, Object> response = new HashMap<>();
-        response.put("status", "success");
-        response.put("message", "Dịch vụ cập nhật thành công");
-        response.put("content", Collections.singletonList(updatedDichvu));
-        response.put("page", createPageInfo(updatedDichvu));
-
-        return ResponseEntity.status(HttpStatus.OK).body(response);
+        return ResponseEntity.status(HttpStatus.OK).body("update thành công");
     }
 
     private Map<String, Object> createPageInfo(Dichvu dichvu) {
