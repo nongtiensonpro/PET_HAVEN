@@ -114,12 +114,22 @@ const formatCanNang = (option: any) => {
 const confirmSelection = () => {
   if (canConfirm.value) {
     const currentData = mauKhachDatDichVu.getTempData() || {};
-    mauKhachDatDichVu.saveTempData({
+    const updatedData = {
       ...currentData,
-      dichvu: selectedService.value,
-      tuyChonDichVu: selectedTuyChonDichVu.value,
-      tuyChonCanNang: selectedTuyChonCanNang.value,
-    });
+      dichvu: {
+        id: selectedService.value!.id,
+        tendichvu: selectedService.value!.tendichvu,
+        mota: selectedService.value!.mota,
+        anh: selectedService.value!.anh,
+        trangthai: selectedService.value!.trangthai,
+        hien: selectedService.value!.hien,
+      },
+      tuyChonDichVu: selectedTuyChonDichVu.value as TuyChonDichVu,
+      tuyChonCanNang: selectedTuyChonCanNang.value as TuyChonCanNang,
+    };
+
+    mauKhachDatDichVu.saveTempData(updatedData);
+
     console.log('Selection confirmed:', {
       service: selectedService.value?.tendichvu,
       option: selectedTuyChonDichVu.value?.tentuychon,

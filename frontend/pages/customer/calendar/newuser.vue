@@ -14,7 +14,7 @@
             <div v-if="tempData">
               <div class="card mb-3">
                 <div class="card-header bg-light text fs-4">
-                  <i class="fas fa-calendar-check me-2"></i>Chi tiết lịch hẹn
+                  <i class="fas fa-calendar-check me-2"></i>Chi tiết lịch hẹn {{tempData.idlichhen?.dichvu==null? 'Chưa chọn dịch vụ' : tempData.idlichhen.dichvu.tendichvu  }}
                 </div>
                 <div class="card-body">
                   <div class="row g-3">
@@ -209,9 +209,7 @@ const isBookingComplete = computed(() => {
       tempData.value.thucung;
 });
 
-function payWithVNPay() {
-  useToast().success('Tính năng đang phát triển ?', {})
-}
+
 
 const isLoading = ref(false);
 const elapsedTime = ref(0);
