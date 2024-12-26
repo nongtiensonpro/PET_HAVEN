@@ -19,6 +19,7 @@
                 <div class="card-body">
                   <div class="row g-3">
                     <div v-if=" tempData.idlichhen?.calichhen">
+                      <h5 class="text-muted mb-3"><i class="fas fa-paw text-primary me-2"></i>Thời gian đặt lịch</h5>
                       <div class="col mb-3">
                         <div class="row">
                           <div class="col-12">
@@ -34,6 +35,25 @@
                           </div>
                         </div>
                         </div>
+                    </div>
+                    <div v-if="tempData.idlichhen?.dichvu">
+                      <h5 class="text-muted mb-3"><i class="fas fa-concierge-bell text-primary me-2"></i>Dịch vụ đã chọn</h5>
+                      <div class="col mb-3">
+                        <div class="row">
+                          <div class="col-12">
+                            <strong>Tên dịch vụ: </strong>{{ tempData.idlichhen.dichvu.tendichvu }}
+                          </div>
+                          <div class="col-12">
+                            <strong>Mô tả: </strong>{{ tempData.idlichhen.dichvu.mota }}
+                          </div>
+                          <div class="col-12" v-if="tempData.idlichhen.tuyChonDichVu">
+                            <strong>Tùy chọn dịch vụ: </strong>{{ tempData.idlichhen.tuyChonDichVu.ten }}
+                          </div>
+                          <div class="col-12" v-if="tempData.idlichhen.tuyChonCanNang">
+                            <strong>Tùy chọn cân nặng: </strong>{{ tempData.idlichhen.tuyChonCanNang.ten }}
+                          </div>
+                        </div>
+                      </div>
                     </div>
                     <div v-if="tempData.thucung" class="col-12">
                       <h5 class="text-muted mb-3"><i class="fas fa-paw text-primary me-2"></i>Thông tin thú cưng</h5>
