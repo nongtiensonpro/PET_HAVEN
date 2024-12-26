@@ -99,7 +99,6 @@
             <h2 class="accordion-header">
               <button class="accordion-button" type="button" data-bs-toggle="collapse" data-bs-target="#collapseOne"
                       :aria-expanded="!isDateTimeSelected" :class="{ 'collapsed': isDateTimeSelected }">
-
                 <i class="fas fa-calendar-alt me-2"></i>Chọn ngày và giờ hẹn
               </button>
             </h2>
@@ -114,16 +113,13 @@
             <h2 class="accordion-header">
               <button class="accordion-button" type="button" data-bs-toggle="collapse"
                       data-bs-target="#collapseTwo"
-                      :aria-expanded="isDateTimeSelected"
-                      :class="{ 'collapsed': !isDateTimeSelected }">
-
+                      :aria-expanded="!isServiceSelected" :class="{ 'collapsed': isServiceSelected }">
                 <i class="fas fa-paw me-2"></i>Lựa chọn dịch vụ
               </button>
             </h2>
             <div id="collapseTwo" class="accordion-collapse collapse"
-                 :class="{ 'show': isDateTimeSelected }"
+                 :class="{ 'show': !isServiceSelected }"
                  data-bs-parent="#bookingAccordion">
-
               <div class="accordion-body">
                 <ChonDichVuDatLich/>
               </div>
@@ -133,16 +129,13 @@
             <h2 class="accordion-header">
               <button class="accordion-button" type="button" data-bs-toggle="collapse"
                       data-bs-target="#collapseThree"
-                      :aria-expanded="isDateTimeSelected"
-                      :class="{ 'collapsed': !isDateTimeSelected }">
-
+                      :aria-expanded="!isPetSelected" :class="{ 'collapsed': isPetSelected }">
                 <i class="fas fa-paw me-2"></i>Lựa chọn thú cưng
               </button>
             </h2>
             <div id="collapseThree" class="accordion-collapse collapse"
-                 :class="{ 'show': isDateTimeSelected }"
+                 :class="{ 'show': !isPetSelected }"
                  data-bs-parent="#bookingAccordion">
-
               <div class="accordion-body">
                 <Pet/>
               </div>
@@ -199,9 +192,15 @@ definePageMeta({
 const datLichStore = useDatLichStore();
 
 const isDateTimeSelected = computed(() => {
-  return tempData.value?.idlichhen?.dichvu && tempData.value?.idlichhen?.calichhen;
-})
+  return !!tempData.value?.idlichhen?.calichhen;
+});
+const isServiceSelected = computed(() => {
+  return !!tempData.value?.dichvu;
+});
 
+const isPetSelected = computed(() => {
+  return !!tempData.value?.thucung;
+});
 const isBookingComplete = computed(() => {
   return tempData.value &&
       tempData.value.dichvu &&
@@ -246,6 +245,8 @@ async function payAtCounter() {
     }
   }
 }
+
+
 
 
 </script>
