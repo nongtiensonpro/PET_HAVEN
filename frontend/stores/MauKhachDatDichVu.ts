@@ -1,13 +1,17 @@
+import { TuyChonDichVu, TuyChonCanNang } from './DichVu'; // Assuming DichVu.ts is in the same directory
+
 interface BookingData {
-  // Định nghĩa interface cho dữ liệu đặt lịch
   date: string;
   dichvu: {
     id: number;
     tendichvu: string;
     mota: string;
     anh: string | null;
-    giatien: number;
+    trangthai: boolean;
+    hien: boolean;
   };
+  tuyChonDichVu: TuyChonDichVu;
+  tuyChonCanNang: TuyChonCanNang;
   emailNguoiDat: string;
   id: number;
   idcalichhen: {

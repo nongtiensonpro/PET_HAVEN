@@ -5,9 +5,7 @@
       Vui lòng đăng nhập để sử dụng chức năng này!
     </div>
   </div>
-
   <div v-else class="container py-5">
-<!--    <h2 class="mb-4"><i class="fas fa-home me-2"></i>Nhà Haven \ <span class="text-primary">Đặt lịch</span></h2>-->
     <div class="row">
       <div class="col-lg-6 mb-4">
         <div class="card shadow-sm h-100">
@@ -20,36 +18,12 @@
                 </div>
                 <div class="card-body">
                   <div class="row g-3">
-                    <div v-if="tempData.idlichhen?.dichvu && tempData.idlichhen?.calichhen">
+                    <div v-if=" tempData.idlichhen?.calichhen">
                       <div class="col mb-3">
                         <div class="row">
-                          <div class="col">
-                            <h5 class="text-muted"><i class="fas fa-clipboard-list text-primary me-2"></i>Dịch vụ</h5>
-                            <p class="mb-0"><strong>Tên:</strong> {{ tempData.idlichhen.dichvu.tendichvu }}</p>
-                            <p class="mb-0"><strong>Giá tiền:</strong> {{
-                                formatCurrency(tempData.idlichhen.dichvu.giatien)
-                              }}</p>
-                            <div class="col">
-                              <p class="mb-0"><strong>Mô tả:</strong> {{
-                                  tempData.idlichhen.dichvu.mota
-                                }}</p>
-                            </div>
-                          </div>
-                          <div class="col">
-                            <div v-if="tempData.idlichhen.dichvu.anh==null">
-                              <img class="card-img-top" src="~/assets/image/cat2.jpg" alt="Anh Meo Meo">
-                            </div>
-                            <div v-else>
-                              <img class="card-img-top" :src="tempData.idlichhen.dichvu.anh" alt="Anh Meo Meo">
-                            </div>
-
-                          </div>
                           <div class="col-12">
                             <strong>Thời gian : </strong>
                             <div class="row">
-<!--                              <div class="col">-->
-<!--                                Tên ca: {{ tempData.idlichhen.calichhen.tenca }}-->
-<!--                              </div>-->
                               <div class="col">
                                 Giờ : {{ tempData.idlichhen.calichhen.thoigianca }}
                               </div>
@@ -116,10 +90,29 @@
                       :aria-expanded="isDateTimeSelected"
                       :class="{ 'collapsed': !isDateTimeSelected }">
 
-              <i class="fas fa-paw me-2"></i>Thông tin thú cưng
+              <i class="fas fa-paw me-2"></i>Lựa chọn dịch vụ
               </button>
             </h2>
             <div id="collapseTwo" class="accordion-collapse collapse"
+                 :class="{ 'show': isDateTimeSelected }"
+                 data-bs-parent="#bookingAccordion">
+
+            <div class="accordion-body">
+                <ChonDichVuDatLich/>
+              </div>
+            </div>
+          </div>
+          <div class="accordion-item">
+            <h2 class="accordion-header">
+              <button class="accordion-button" type="button" data-bs-toggle="collapse"
+                      data-bs-target="#collapseThree"
+                      :aria-expanded="isDateTimeSelected"
+                      :class="{ 'collapsed': !isDateTimeSelected }">
+
+              <i class="fas fa-paw me-2"></i>Lựa chọn thú cưng
+              </button>
+            </h2>
+            <div id="collapseThree" class="accordion-collapse collapse"
                  :class="{ 'show': isDateTimeSelected }"
                  data-bs-parent="#bookingAccordion">
 
@@ -164,6 +157,7 @@ import {useMauKhachDatDichVu} from '~/stores/MauKhachDatDichVu'
 import DichVu from "~/models/DichVu";
 import { useToast } from 'vue-toastification'
 import { useDatLichStore } from '~/stores/DatLichStores'
+import ChonDichVuDatLich from "~/components/ChonDichVuDatLich.vue";
 import { ref, computed } from 'vue';
 import Swal from 'sweetalert2';
 const accessToken = localStorage.getItem('access_token');
@@ -171,6 +165,7 @@ const viewRole = localStorage.getItem('viewRole');
 const serviceStore = useServiceStore();
 const {getTempData} = useMauKhachDatDichVu()
 const tempData = computed(() => getTempData())
+
 const services = computed((): DichVu[] => {
   return serviceStore.services.filter((service: DichVu) => service.trangthai);
 });
