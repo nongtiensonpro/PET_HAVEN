@@ -14,7 +14,7 @@ export default {
   phone: 'Phone: 0944214116',
   email: 'Email: contact_pethaven.vn',
   facebook: 'Facebook: PetHaven',
-  footerCopyright: '© 2024 PetHaven. Copyright belongs to us.',
+  footerCopyright: '© 2024 PetHaven. Made with Love By Yellow Cat',
   serviceNotAvailable: 'Service not available',
   login:'Login'
 }as const;
