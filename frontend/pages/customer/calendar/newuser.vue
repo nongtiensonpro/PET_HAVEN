@@ -14,7 +14,7 @@
             <div v-if="tempData">
               <div class="card mb-3">
                 <div class="card-header bg-light text fs-4">
-                  <i class="fas fa-calendar-check me-2"></i>Chi tiết lịch hẹn {{tempData.idlichhen?.dichvu==null? 'Chưa chọn dịch vụ' : tempData.idlichhen.dichvu.tendichvu  }}
+                  <i class="fas fa-calendar-check me-2"></i>Chi tiết lịch hẹn
                 </div>
                 <div class="card-body">
                   <div class="row g-3">
@@ -34,23 +34,29 @@
                             </div>
                           </div>
                         </div>
-                        </div>
+                      </div>
                     </div>
-                    <div v-if="tempData.idlichhen?.dichvu">
-                      <h5 class="text-muted mb-3"><i class="fas fa-concierge-bell text-primary me-2"></i>Dịch vụ đã chọn</h5>
+                    <div v-if="tempData && tempData.dichvu">
+                      <h5 class="text-muted mb-3"><i class="fas fa-concierge-bell text-primary me-2"></i>Dịch vụ đã chọn
+                      </h5>
                       <div class="col mb-3">
                         <div class="row">
                           <div class="col-12">
-                            <strong>Tên dịch vụ: </strong>{{ tempData.idlichhen.dichvu.tendichvu }}
+                            <strong>Tên dịch vụ: </strong>{{ tempData.dichvu.tendichvu }}
                           </div>
                           <div class="col-12">
-                            <strong>Mô tả: </strong>{{ tempData.idlichhen.dichvu.mota }}
+                            <strong>Mô tả: </strong>{{ tempData.dichvu.mota }}
                           </div>
-                          <div class="col-12" v-if="tempData.idlichhen.tuyChonDichVu">
-                            <strong>Tùy chọn dịch vụ: </strong>{{ tempData.idlichhen.tuyChonDichVu.ten }}
+                          <div class="col-12" v-if="tempData.tuyChonDichVu">
+                            <strong>Tùy chọn dịch vụ: </strong>{{ tempData.tuyChonDichVu.tentuychon }}
                           </div>
-                          <div class="col-12" v-if="tempData.idlichhen.tuyChonCanNang">
-                            <strong>Tùy chọn cân nặng: </strong>{{ tempData.idlichhen.tuyChonCanNang.ten }}
+                          <div class="col-12" v-if="tempData.tuyChonCanNang">
+                            <strong>Tùy chọn cân nặng: </strong>
+                            {{ tempData.tuyChonCanNang.cannangmin }} -
+                            {{ tempData.tuyChonCanNang.cannangmax ? tempData.tuyChonCanNang.cannangmax : 'trở lên' }} kg
+                          </div>
+                          <div class="col-12" v-if="tempData.tuyChonCanNang">
+                            <strong>Giá tiền: </strong>{{ tempData.tuyChonCanNang.giatien }} USD
                           </div>
                         </div>
                       </div>
@@ -94,10 +100,11 @@
               <button class="accordion-button" type="button" data-bs-toggle="collapse" data-bs-target="#collapseOne"
                       :aria-expanded="!isDateTimeSelected" :class="{ 'collapsed': isDateTimeSelected }">
 
-              <i class="fas fa-calendar-alt me-2"></i>Chọn ngày và giờ hẹn
+                <i class="fas fa-calendar-alt me-2"></i>Chọn ngày và giờ hẹn
               </button>
             </h2>
-            <div id="collapseOne" class="accordion-collapse collapse" :class="{ 'show': !isDateTimeSelected }" data-bs-parent="#bookingAccordion">
+            <div id="collapseOne" class="accordion-collapse collapse" :class="{ 'show': !isDateTimeSelected }"
+                 data-bs-parent="#bookingAccordion">
               <div class="accordion-body">
                 <Calendar/>
               </div>
@@ -110,14 +117,14 @@
                       :aria-expanded="isDateTimeSelected"
                       :class="{ 'collapsed': !isDateTimeSelected }">
 
-              <i class="fas fa-paw me-2"></i>Lựa chọn dịch vụ
+                <i class="fas fa-paw me-2"></i>Lựa chọn dịch vụ
               </button>
             </h2>
             <div id="collapseTwo" class="accordion-collapse collapse"
                  :class="{ 'show': isDateTimeSelected }"
                  data-bs-parent="#bookingAccordion">
 
-            <div class="accordion-body">
+              <div class="accordion-body">
                 <ChonDichVuDatLich/>
               </div>
             </div>
@@ -129,14 +136,14 @@
                       :aria-expanded="isDateTimeSelected"
                       :class="{ 'collapsed': !isDateTimeSelected }">
 
-              <i class="fas fa-paw me-2"></i>Lựa chọn thú cưng
+                <i class="fas fa-paw me-2"></i>Lựa chọn thú cưng
               </button>
             </h2>
             <div id="collapseThree" class="accordion-collapse collapse"
                  :class="{ 'show': isDateTimeSelected }"
                  data-bs-parent="#bookingAccordion">
 
-            <div class="accordion-body">
+              <div class="accordion-body">
                 <Pet/>
               </div>
             </div>
@@ -144,7 +151,7 @@
         </div>
       </div>
     </div>
-    <div  v-if="isBookingComplete">
+    <div v-if="isBookingComplete">
       <div class="col">
         <div class="card">
           <div class="card-body">
@@ -172,23 +179,19 @@
 <script setup lang="ts">
 import Calendar from '~/components/Calendar.vue'
 import Pet from '~/components/Pet.vue'
-import {useServiceStore} from '~/stores/DichVuStores';
 import {useMauKhachDatDichVu} from '~/stores/MauKhachDatDichVu'
-import DichVu from "~/models/DichVu";
-import { useToast } from 'vue-toastification'
-import { useDatLichStore } from '~/stores/DatLichStores'
+import {useToast} from 'vue-toastification'
+import {useDatLichStore} from '~/stores/DatLichStores'
 import ChonDichVuDatLich from "~/components/ChonDichVuDatLich.vue";
-import { ref, computed } from 'vue';
+import {ref, computed} from 'vue';
 import Swal from 'sweetalert2';
+
 const accessToken = localStorage.getItem('access_token');
 const viewRole = localStorage.getItem('viewRole');
-const serviceStore = useServiceStore();
+
 const {getTempData} = useMauKhachDatDichVu()
 const tempData = computed(() => getTempData())
 
-const services = computed((): DichVu[] => {
-  return serviceStore.services.filter((service: DichVu) => service.trangthai);
-});
 definePageMeta({
   middleware: ['auth']
 })
@@ -199,22 +202,20 @@ const isDateTimeSelected = computed(() => {
   return tempData.value?.idlichhen?.dichvu && tempData.value?.idlichhen?.calichhen;
 })
 
-const formatCurrency = (value: number) => {
-  return new Intl.NumberFormat('vi-VN', {style: 'currency', currency: 'USD'}).format(value);
-};
 const isBookingComplete = computed(() => {
   return tempData.value &&
-      tempData.value.idlichhen?.dichvu &&
+      tempData.value.dichvu &&
+      tempData.value.tuyChonDichVu &&
+      tempData.value.tuyChonCanNang &&
+      tempData.value.thucung &&
       tempData.value.idlichhen?.calichhen &&
-      tempData.value.thucung;
+      tempData.value.idlichhen?.date;
 });
-
 
 
 const isLoading = ref(false);
 const elapsedTime = ref(0);
 const toast = useToast();
-
 
 async function payAtCounter() {
   isLoading.value = true;
@@ -223,27 +224,27 @@ async function payAtCounter() {
     elapsedTime.value++;
   }, 1000);
   const result = await Swal.fire({
-      title: 'Xác nhận',
-      text: "Bạn có đặt lịch hẹn không?",
-      icon: 'success',
-      showCancelButton: true,
-      confirmButtonColor: '#3085d6',
-      cancelButtonColor: '#d33',
-      confirmButtonText: 'Có',
-      cancelButtonText: 'Không'
-    });
-  if(result.isConfirmed) {
-  try {
-    await datLichStore.xacNhanDatLich();
-    clearInterval(timer);
-    isLoading.value = false;
-    return navigateTo('/customer/pay/payinfo');
-  } catch (error) {
-    clearInterval(timer);
-    isLoading.value = false;
-    toast.error('Xảy ra lỗi khi xác nhận đặt lịch');
+    title: 'Xác nhận',
+    text: "Bạn có đặt lịch hẹn không?",
+    icon: 'success',
+    showCancelButton: true,
+    confirmButtonColor: '#3085d6',
+    cancelButtonColor: '#d33',
+    confirmButtonText: 'Có',
+    cancelButtonText: 'Không'
+  });
+  if (result.isConfirmed) {
+    try {
+      await datLichStore.xacNhanDatLich();
+      clearInterval(timer);
+      isLoading.value = false;
+      return navigateTo('/customer/pay/payinfo');
+    } catch (error) {
+      clearInterval(timer);
+      isLoading.value = false;
+      toast.error('Xảy ra lỗi khi xác nhận đặt lịch');
+    }
   }
-}
 }
 
 

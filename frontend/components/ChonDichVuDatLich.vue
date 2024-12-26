@@ -68,7 +68,7 @@ const listDichVu = ref<DichVu[]>(serviceStore.services);
 const selectedService = ref<DichVu | null>(null);
 const selectedTuyChonDichVu = ref<any>(null);
 const selectedTuyChonCanNang = ref<any>(null);
-
+const emit = defineEmits(['serviceSelected']);
 const hasTuyChonDichVus = computed(() =>
   selectedService.value?.tuyChonDichVus && selectedService.value.tuyChonDichVus.length > 0
 );
@@ -129,7 +129,7 @@ const confirmSelection = () => {
     };
 
     mauKhachDatDichVu.saveTempData(updatedData);
-
+    emit('serviceSelected', updatedData);
     console.log('Selection confirmed:', {
       service: selectedService.value?.tendichvu,
       option: selectedTuyChonDichVu.value?.tentuychon,

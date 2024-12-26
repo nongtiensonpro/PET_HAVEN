@@ -83,12 +83,14 @@ export const useDatLichStore = defineStore('datLichStore', {
                     console.error('Lỗi khi định dạng ngày:', error);
                     throw new Error('Ngày đặt lịch không hợp lệ');
                 }
-                // console.log('Request Body trước khi gửi BE nè :', JSON.stringify({
-                //     idThuCung: dichVuVaThuCungKhachHangDat.thucung,
-                //     date: formattedDate,
-                //     idcalichhen: dichVuVaThuCungKhachHangDat.idlichhen.calichhen,
-                //     idDichVu: dichVuVaThuCungKhachHangDat.idlichhen.dichvu
-                // }));
+                console.log('Request Body trước khi gửi BE nè :', JSON.stringify({
+                    idThuCung: dichVuVaThuCungKhachHangDat.thucung.id,
+                    date: formattedDate,
+                    idcalichhen: dichVuVaThuCungKhachHangDat.idlichhen.calichhen.id,
+                    idDichVu: dichVuVaThuCungKhachHangDat.dichvu.id,
+                    idTuyChonDichVu: dichVuVaThuCungKhachHangDat.tuyChonDichVu.id,
+                    idTuyChonCanNang: dichVuVaThuCungKhachHangDat.tuyChonCanNang.id
+                }));
                 const response = await fetch('http://localhost:8080/api/dat-lich/xac-nhan-dat', {
                     method: 'PUT',
                     headers: {
@@ -96,10 +98,12 @@ export const useDatLichStore = defineStore('datLichStore', {
                         'Content-Type': 'application/json',
                     },
                     body: JSON.stringify({
-                        idThuCung: dichVuVaThuCungKhachHangDat.thucung,
+                        idThuCung: dichVuVaThuCungKhachHangDat.thucung.id,
                         date: formattedDate,
                         idcalichhen: dichVuVaThuCungKhachHangDat.idlichhen.calichhen.id,
-                        idDichVu: dichVuVaThuCungKhachHangDat.idlichhen.dichvu.id
+                        idDichVu: dichVuVaThuCungKhachHangDat.dichvu.id,
+                        idTuyChonDichVu: dichVuVaThuCungKhachHangDat.tuyChonDichVu.id,
+                        idTuyChonCanNang: dichVuVaThuCungKhachHangDat.tuyChonCanNang.id
                     })
                 });
 
