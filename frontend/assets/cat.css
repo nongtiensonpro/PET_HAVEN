@@ -40,7 +40,6 @@
     font-style: normal;
 }
 
-
 .navbar {
     background: rgba(246, 246, 234, 0.62) !important;
     border-radius: 25px;
@@ -49,6 +48,7 @@
     backdrop-filter: blur(5px);
     box-shadow: 0 0 10px 5px rgba(246, 246, 234, 0.3);
 }
+
 .no-b {
     border: none;
     outline: none;
@@ -65,7 +65,7 @@
     line-height: normal;
 }
 
-.text{
+.text {
     color: #400D01;
     font-family: 'Baloo 2', sans-serif !important;
     font-size: 48px;
@@ -73,9 +73,9 @@
     font-weight: 600;
     line-height: normal;
 }
+
 .custom-button {
     background-color: rgba(246, 246, 234, 0.62);
-    /*border: 1px solid #400D01;*/
     color: #400D01;
     padding: 15px 32px;
     text-align: center;
@@ -89,20 +89,26 @@
     min-width: 100px;
     flex-grow: 1;
     white-space: nowrap;
+    transition: background-color 0.3s, color 0.3s, box-shadow 0.3s;
 }
 
-.custom-button:hover{
+.custom-button:hover {
     background-color: #f6f6ea;
-    filter: drop-shadow(1px 1px 1px #400D01);
+    color: #400D01;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
 }
 
+.custom-button:active {
+    background-color: #d9d9c1;
+    color: #400D01;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
 
-/* Toast thành công */
+/* Toastify Styles */
 .Toastify__toast--success {
     background-color: #400D01 !important;
     color: #f6f6ea !important;
 }
-
 
 .Toastify__toast--error {
     background-color: #F44336 !important;
@@ -113,7 +119,6 @@
     background-color: #FFC107 !important;
     color: #f6f6ea !important;
 }
-
 
 .Toastify__toast--info {
     background-color: #2196F3 !important;
@@ -130,6 +135,7 @@ html, body {
     background-attachment: fixed !important;
     color: #400D01 !important;
     font-family: 'Baloo 2', sans-serif !important;
+    position: relative;
 }
 
 /* Thêm một lớp overlay để làm cho văn bản dễ đọc hơn */
@@ -140,7 +146,7 @@ body::before {
     left: 0;
     width: 100%;
     height: 100%;
-    background-color: rgb(242, 240, 216) !important;
+    background-color: rgba(242, 240, 216, 0.8); /* Làm mờ màu nền để dễ đọc hơn */
     z-index: -1;
 }
 
@@ -152,6 +158,11 @@ body::before {
     box-shadow: 0 0 10px 5px rgba(246, 246, 234, 0.3);
     padding: 1rem;
     margin-top: 5px;
+    transition: box-shadow 0.3s;
+}
+
+.card:hover {
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
 }
 
 .pagination {
@@ -162,20 +173,34 @@ body::before {
 
 .pagination button {
     margin: 0 10px;
+    padding: 10px 20px;
+    border: none;
+    border-radius: 5px;
+    font-size: 16px;
+    color: #f6f6ea;
+    background-color: #400D01;
+    cursor: pointer;
+    transition: background-color 0.3s, color 0.3s, box-shadow 0.3s;
+}
+
+.pagination button:hover {
+    background-color: #f6f6ea;
+    color: #400D01;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
 }
 
 .table {
     border-radius: 25px;
-    background: rgb(242, 240, 216) !important;
+    background: rgba(242, 240, 216, 0.8) !important; /* Tăng độ mờ cho dễ đọc */
     color: #400D01 !important;
     backdrop-filter: blur(5px);
     box-shadow: 0 0 10px 5px rgba(246, 246, 234, 0.3);
-    padding: 1rem; padding-top: ;
+    padding: 1rem;
     margin-top: 5px;
     overflow: hidden; /* Để giữ cho các góc bo tròn */
+    transition: background-color 0.3s, color 0.3s, box-shadow 0.3s;
 }
 
-/* Thêm kiểu cho các phần tử bên trong bảng */
 .table th,
 .table td {
     background-color: transparent !important;
@@ -188,4 +213,192 @@ body::before {
 
 .table tbody tr:hover {
     background-color: rgba(246, 246, 234, 0.9) !important;
+    transition: background-color 0.3s;
+}
+
+a {
+    color: #400D01;
+    text-decoration: none;
+    transition: color 0.3s, text-decoration 0.3s;
+}
+
+a:hover {
+    color: #f6f6ea;
+    text-decoration: underline;
+}
+
+input, textarea {
+    padding: 10px;
+    border: 1px solid #400D01;
+    border-radius: 5px;
+    font-size: 16px;
+    color: #400D01;
+    background-color: rgba(242, 240, 216, 0.8); /* Tăng độ mờ cho dễ đọc */
+    transition: border-color 0.3s, box-shadow 0.3s;
+}
+
+input:focus, textarea:focus {
+    border-color: #f6f6ea;
+    box-shadow: 0 0 5px rgba(246, 246, 234, 0.5);
+}
+
+select {
+    padding: 10px;
+    border: 1px solid #400D01;
+    border-radius: 5px;
+    font-size: 16px;
+    color: #400D01;
+    background-color: rgba(242, 240, 216, 0.8); /* Tăng độ mờ cho dễ đọc */
+    transition: border-color 0.3s, box-shadow 0.3s;
+}
+
+select:focus {
+    border-color: #f6f6ea;
+    box-shadow: 0 0 5px rgba(246, 246, 234, 0.5);
+}
+
+button {
+    padding: 10px 20px;
+    border-radius: 5px;
+    font-size: 16px;
+    color: #f6f6ea;
+    background-color: #400D01;
+    cursor: pointer;
+    transition: background-color 0.3s, color 0.3s, box-shadow 0.3s;
+}
+
+button:hover {
+    background-color: #f6f6ea;
+    color: #400D01;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+button:active {
+    background-color: #d9d9c1;
+    color: #400D01;
+    box-shadow: 0 1px 2px rgba(0, 0, 0, 0.1);
+}
+
+/* Media Queries for Mobile Devices */
+@media (max-width: 768px) {
+    .navbar {
+        padding: 1rem;
+    }
+
+    .text {
+        font-size: 32px;
+    }
+
+    .custom-button {
+        padding: 10px 20px;
+        font-size: 14px;
+        min-width: 80px;
+    }
+
+    .table {
+        font-size: 14px;
+        padding: 0.5rem;
+    }
+
+    .table th,
+    .table td {
+        padding: 8px;
+    }
+
+    input, textarea, select {
+        padding: 8px;
+        font-size: 14px;
+    }
+
+    .pagination button {
+        padding: 8px 16px;
+        font-size: 14px;
+    }
+}
+
+/* Additional Styles for Headings and Paragraphs */
+h1, h2, h3, h4, h5, h6 {
+    color: #400D01;
+    font-family: 'Baloo 2', sans-serif;
+    font-weight: 600;
+    margin: 1.5rem 0;
+}
+
+p {
+    color: #400D01;
+    font-family: 'Baloo 2', sans-serif;
+    font-size: 18px;
+    line-height: 1.5;
+    margin: 1rem 0;
+}
+
+/* Animation for Smooth Transitions */
+.fade-in {
+    animation: fadeIn 1s ease-in-out;
+}
+
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+    }
+    to {
+        opacity: 1;
+    }
+}
+
+/* Additional Shadow for Cards and Tables */
+.card, .table {
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    transition: box-shadow 0.3s;
+}
+
+.card:hover, .table:hover {
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+/* Form Styles */
+form {
+    background: rgba(246, 246, 234, 0.62);
+    border-radius: 25px;
+    padding: 1rem;
+    backdrop-filter: blur(5px);
+    box-shadow: 0 0 10px 5px rgba(246, 246, 234, 0.3);
+    margin-top: 5px;
+    display: flex;
+    flex-direction: column;
+}
+
+form label {
+    margin-bottom: 0.5rem;
+    color: #400D01;
+    font-family: 'Baloo 2', sans-serif;
+    font-size: 16px;
+    font-weight: 600;
+}
+
+form input, form textarea, form select {
+    margin-bottom: 1rem;
+}
+
+form button {
+    align-self: flex-end;
+}
+
+/* Scrollbar Customization */
+::-webkit-scrollbar {
+    width: 10px;
+}
+
+::-webkit-scrollbar-track {
+    background: rgba(246, 246, 234, 0.4);
+    border-radius: 5px;
+}
+
+::-webkit-scrollbar-thumb {
+    background: #400D01;
+    border-radius: 5px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+    background: #f6f6ea;
 }
