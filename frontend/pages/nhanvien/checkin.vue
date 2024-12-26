@@ -3,7 +3,7 @@
     <div class="row">
       <div class="col-12 mb-4">
         <div class="card shadow">
-          <div class="card-header bg-primary text-white d-flex justify-content-between align-items-center">
+          <div class="card-header  text d-flex justify-content-between align-items-center">
             <h5 class="mb-0">Lịch hẹn hôm nay </h5>
             <button @click="fetchHoaDon" class="btn btn-light btn-sm">
               <i class="fas fa-sync-alt me-1"></i> Làm mới
@@ -196,7 +196,7 @@
 
       <div class="col-12">
         <div class="card shadow">
-          <div class="card-header bg-success text-white d-flex justify-content-between align-items-center">
+          <div class="card-header  text d-flex justify-content-between align-items-center">
             <h5 class="mb-0">Hóa đơn đã thanh toán</h5>
             <button @click="fetchHoaDonThanhToan" class="btn btn-light btn-sm">
               <i class="fas fa-sync-alt me-1"></i> Làm mới

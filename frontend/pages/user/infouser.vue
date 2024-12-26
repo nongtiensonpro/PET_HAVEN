@@ -1,8 +1,9 @@
 <script setup lang="ts">
 import {useUserStore} from '~/stores/user';
 import {computed} from "vue";
-import ThemThuCung from "~/components/ThemThuCung.vue"
+import ThemThuCung from "~/pages/user/themthucung.vue"
 import CapNhatThuCung from "~/components/CapNhatThuCung.vue"
+import type {ThuCung} from "~/models/ChiTietDanhGia";
 
 const userStore = useUserStore();
 
@@ -132,6 +133,14 @@ onMounted(() => {
   }
 })
 
+function themThuCung() {
+  return navigateTo('/user/themthucung');
+}
+
+function capNhatThuCung(thuCung : ThuCung) {
+  return navigateTo(`/user/capnhatthucung/${thuCung.id}`);
+}
+
 </script>
 
 <template>
@@ -166,7 +175,7 @@ onMounted(() => {
           <div class="container p-4">
             <div class="row">
               <div class="col-2">
-                <ThemThuCung/>
+                <button type="button" class="custom-button" @click="themThuCung">Thêm thú cưng</button>
               </div>
             </div>
             <div v-if="userInfo?.listThuCung == 0">
@@ -208,10 +217,7 @@ onMounted(() => {
                       <td>{{ thuCung.tuoi }}</td>
 
                       <td>
-                        <CapNhatThuCung
-                            :thuCung="thuCung"
-                            @update:thuCung="thuCung"
-                        ></CapNhatThuCung>
+                        <button type="button" class="btn btn-sm btn-warning m-1" @click="capNhatThuCung=(thuCung)">Cập nhật thú cưng</button>
                       </td>
                     </tr>
                     </tbody>

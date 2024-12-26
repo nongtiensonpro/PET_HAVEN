@@ -1,13 +1,12 @@
 <template>
-  <div class="container my-5">
+  <div class="container">
     <div class="card">
-
       <div v-if="service">
-       <LoiChaoKhiKhachHangXemDichVu :service="service" />
+        <LoiChaoKhiKhachHangXemDichVu :service="service"/>
         <div class="card-header">
           <div class="row">
             <div class="col">
-              <h2 class="mb-0">{{ service.tendichvu }} - {{ formatCurrency(service.giatien) }} USD</h2>
+              <div class="text fs-2">{{ service.tendichvu }}</div>
             </div>
           </div>
         </div>
@@ -21,15 +20,11 @@
                 <img :src="service.anh" class="card-img-top" :alt="service.tendichvu">
               </div>
             </div>
-            <div class="col">
-              <div class="">
-                <div class="card-header">
-                  Mô tả:
-                </div>
-                <div class="card-body">
-                  <p>{{ service.mota }}</p>
-                </div>
+            <div class="col card-header ">
+              <div>
+                <p class="card-header text fs-4">{{ service.mota }}</p>
               </div>
+              <ChonDichVu :serviceOptions="service.tuyChonDichVus" />
             </div>
           </div>
         </div>
@@ -37,11 +32,11 @@
       <div v-else class="text-danger p-4">{{ errorMessage }}</div>
     </div>
 
-    <div class="mt-5">
-      <h3 class="mb-4">Đánh giá và nhận xét</h3>
+    <div class="mt-5 card p-4">
+      <h3 class="mb-4 card-header">Đánh giá và nhận xét</h3>
       <div v-if="danhGias.length > 0">
         <div style="padding-bottom: 10px">
-          <TongHopBinhLuanGemini :danhGias="danhGias" />
+          <TongHopBinhLuanGemini :danhGias="danhGias"/>
         </div>
         <div v-for="danhGia in danhGias" :key="danhGia.id" class="card mb-3">
           <div class="card-body">
@@ -71,7 +66,6 @@
                 </div>
               </div>
             </div>
-
             <p class="card-text mb-3"><strong>Nội dung:</strong> {{ danhGia.mota }}</p>
 
             <div class="row">
@@ -97,13 +91,14 @@
           </div>
         </div>
       </div>
-      <div v-else class="alert alert-info">
+      <div v-else class="alert alert-light">
         <i class="fas fa-info-circle me-2"></i>
         Chưa có đánh giá nào cho dịch vụ này.
       </div>
     </div>
+    <a class="custom-button p-4" href="/" role="button">Trở về trang chủ</a>
   </div>
-  <a class="custom-button p-4" href="/" role="button">Trở về trang chủ</a>
+
 </template>
 
 <script setup lang="ts">
@@ -113,11 +108,13 @@ import {useDanhGiaStore} from '~/stores/DanhGiaStores';
 import {useRoute} from 'vue-router';
 import CapNhatDanhGia from '~/components/CapNhatDanhGia.vue';
 import type DanhGia from "~/models/DanhGia";
-import type Service from "~/models/DichVu";
+import Service from "~/models/DichVu";
 import {useUserStore} from '~/stores/user';
 import {useToast} from 'vue-toastification';
 import Swal from "sweetalert2";
 import CapNhatCaHen from "~/components/CapNhatCaLichHen.vue";
+import DichVu from "~/models/DichVu";
+import ChonDichVu from "~/components/ChonDichVu.vue";
 
 const toast = useToast();
 const userStore = useUserStore()
@@ -125,7 +122,7 @@ const userInfo = computed(() => userStore.userInfo);
 const serviceStore = useServiceStore();
 const danhGiaStore = useDanhGiaStore();
 const route = useRoute();
-const service = ref<Service | null>(null);
+const service = ref<DichVu | null>(null);
 const errorMessage = ref('Có lỗi đã xảy ra vui lòng thử lại !');
 const danhGias = ref<DanhGia[]>([]);
 const refreshInterval = ref<number | null>(null);
@@ -204,6 +201,7 @@ async function anDanhGia(idDanhGia: number) {
     toast.error('Lỗi ẩn bình luận! Vui lòng thử lại.', {})
   }
 }
+
 </script>
 
 <style scoped>
@@ -214,4 +212,6 @@ async function anDanhGia(idDanhGia: number) {
 .star-rating {
   font-size: 1.2rem;
 }
+
+
 </style>

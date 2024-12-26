@@ -1,8 +1,10 @@
 package com.yellowcat.backend.model;
 
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
+import java.util.List;
 
 @Entity
 @Table(name = "dichvu")
@@ -25,14 +27,8 @@ public class Dichvu {
     private String mota;
 
     @JsonProperty
-    @NotNull
     @Column(name = "anh", length = Integer.MAX_VALUE)
     private String anh;
-
-    @JsonProperty
-    @NotNull
-    @Column(name = "giatien", nullable = false)
-    private Float giatien;
 
     @JsonProperty
     @NotNull
@@ -44,21 +40,11 @@ public class Dichvu {
     @Column(name = "hien", nullable = false)
     private Boolean hien = false;
 
-    public Boolean getHien() {
-        return hien;
-    }
+    @JsonManagedReference
+    @OneToMany(mappedBy = "dichvu", cascade = CascadeType.ALL, fetch = FetchType.EAGER)
+    private List<TuyChonDichVu> tuyChonDichVus;
 
-    public void setHien(Boolean hien) {
-        this.hien = hien;
-    }
-
-    public Boolean getTrangthai() {
-        return trangthai;
-    }
-
-    public void setTrangthai(Boolean trangthai) {
-        this.trangthai = trangthai;
-    }
+    // Getters and setters
 
     public Integer getId() {
         return id;
@@ -92,11 +78,27 @@ public class Dichvu {
         this.anh = anh;
     }
 
-    public Float getGiatien() {
-        return giatien;
+    public Boolean getTrangthai() {
+        return trangthai;
     }
 
-    public void setGiatien(Float giatien) {
-        this.giatien = giatien;
+    public void setTrangthai(Boolean trangthai) {
+        this.trangthai = trangthai;
+    }
+
+    public Boolean getHien() {
+        return hien;
+    }
+
+    public void setHien(Boolean hien) {
+        this.hien = hien;
+    }
+
+    public List<TuyChonDichVu> getTuyChonDichVus() {
+        return tuyChonDichVus;
+    }
+
+    public void setTuyChonDichVus(List<TuyChonDichVu> tuyChonDichVus) {
+        this.tuyChonDichVus = tuyChonDichVus;
     }
 }

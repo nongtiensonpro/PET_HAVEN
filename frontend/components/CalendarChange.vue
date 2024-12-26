@@ -274,8 +274,8 @@ async function huyLichHenNe() {
   --fc-border-color: #e0e0e0;
   --fc-button-bg-color: #007bff;
   --fc-button-border-color: #007bff;
-  --fc-button-hover-bg-color: #0056b3;
-  --fc-button-hover-border-color: #0056b3;
+  --fc-button-hover-bg-color: #400d01;
+  --fc-button-hover-border-color: #400d01;
   --fc-button-active-bg-color: #0056b3;
   --fc-button-active-border-color: #0056b3;
   --fc-event-bg-color: #007bff;

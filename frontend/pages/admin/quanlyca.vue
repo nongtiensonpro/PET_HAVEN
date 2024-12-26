@@ -3,9 +3,9 @@ import { onMounted, ref, onUnmounted, computed } from "vue";
 import { useCaLichHenStore } from "~/stores/QuanLyCaLichHen"
 import type NgayNghi from "~/models/NgayNghi";
 import type CaLichHen from "~/models/CaHen";
-import ThemCa from '~/components/ThemCa.vue'
+import ThemCa from '~/pages/admin/themthoigian.vue'
 import CapNhatCaHen from '~/components/CapNhatCaLichHen.vue'
-import CapNhatNgayNghi from "~/components/CapNhatNgayNghi.vue";
+import CapNhatNgayNghi from "~/pages/admin/capnhatngaynghi.vue";
 import Swal from 'sweetalert2';
 import { useToast } from 'vue-toastification'
 
@@ -128,23 +128,35 @@ async function huyNgayNghi(ngayNghi: NgayNghi) {
   }
 }
 
+function themThoiGian() {
+  return navigateTo('/admin/themthoigian');
+}
+function capNhatNgayNghi() {
+  return navigateTo('/admin/capnhatngaynghi');
+}
+
 </script>
 
 <template>
-  <div class="bg-light p-4">
+  <div class="card p-4" style="border-radius: 25px">
     <div class="text fs-1">
       Quản lý thời gian
     </div>
     <div class="card-body">
       <div class="row">
         <div class="col-2">
-          <ThemCa />
+          <button type="button" class="custom-button" @click="themThoiGian">Thêm thời gian</button>
         </div>
         <div class="col-3">
-          <CapNhatNgayNghi />
+          <button type="button" class="custom-button" @click="capNhatNgayNghi">Cập nhật ngày </button>
         </div>
         <div class="col-3">
-          <button type="button" @click="lammoi()" class="custom-button">Làm mới</button>
+          <button type="button" @click="lammoi()" class="custom-button">
+            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-arrow-clockwise" viewBox="0 0 16 16">
+              <path fill-rule="evenodd" d="M8 3a5 5 0 1 0 4.546 2.914.5.5 0 0 1 .908-.417A6 6 0 1 1 8 2z"/>
+              <path d="M8 4.466V.534a.25.25 0 0 1 .41-.192l2.36 1.966c.12.1.12.284 0 .384L8.41 4.658A.25.25 0 0 1 8 4.466"/>
+            </svg>
+          </button>
         </div>
       </div>
     </div>

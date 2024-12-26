@@ -1,45 +1,28 @@
 <template>
   <div class="calendar-container">
-    <FullCalendar
-      :options="calendarOptions"
-      class="calendar"
-    />
+    <FullCalendar :options="calendarOptions" class="calendar" />
     <div class="booking-details card m-4">
       <div class="card-body">
         <div class="row">
           <div class="col-12 mb-3">
             <p class="selected-date">Bạn đã chọn ngày: <strong>{{ formattedSelectedDate }}</strong></p>
           </div>
-          <div v-if="services && services.length && lichhens && lichhens.length">
-            <div class="row">
-              <div class="col-md-6 mb-3">
-                <label for="service" class="form-label">Dịch vụ:</label>
-                <select id="service" v-model="selectedService" class="form-select">
-                  <option value="" disabled>Chọn dịch vụ</option>
-                  <option v-for="service in services" :key="service.id" :value="service.id">
-                    {{ service.tendichvu }}
-                  </option>
-                </select>
-              </div>
-              <div class="col-md-6 mb-3">
-                <label for="time" class="form-label">Thời gian:</label>
-                <select id="time" v-model="selectedTime" class="form-select">
-                  <option value="" disabled>Chọn thời gian</option>
-                  <option v-for="lichhen in lichhens" :key="lichhen.id" :value="lichhen.id">
-                    {{ lichhen.thoigianca }}
-                  </option>
-                </select>
-              </div>
+          <template v-if="hasAvailableSlots">
+            <div class="col-md-6 mb-3">
+              <label for="time" class="form-label">Thời gian:</label>
+              <select id="time" v-model="selectedTime" class="form-select">
+                <option value="" disabled>Chọn thời gian</option>
+                <option v-for="lichhen in lichhens" :key="lichhen.id" :value="lichhen.id">
+                  {{ lichhen.thoigianca }}
+                </option>
+              </select>
             </div>
-
-            <div class="row">
-              <div class="col-12">
-                <button @click="confirmBooking" class="custom-button" :disabled="!isFormValid">
-                  Tiếp tục
-                </button>
-              </div>
+            <div class="col-12">
+              <button @click="confirmBooking" class="custom-button" :disabled="!isFormValid">
+                Tiếp tục
+              </button>
             </div>
-          </div>
+          </template>
           <div v-else class="col-12">
             <p class="text-danger">Ngày bạn đã chọn không khả dụng. Vui lòng chọn lại ngày khác.</p>
           </div>
@@ -57,57 +40,38 @@ import timeGridPlugin from '@fullcalendar/timegrid'
 import interactionPlugin from '@fullcalendar/interaction'
 import viLocale from '@fullcalendar/core/locales/vi'
 import { useToast } from 'vue-toastification'
-import DichVu from "~/models/DichVu"
-import CaHen from "~/models/CaHen"
 import { useDatLichStore } from '~/stores/DatLichStores'
 import { useMauKhachDatDichVu } from '~/stores/MauKhachDatDichVu'
+import DichVuKhachDat from "~/models/DichVuKhachDat"
 
-import DichVuKhachDat from "~/models/DichVuKhachDat";
-
-const { saveTempData, getTempData, clearTempData } = useMauKhachDatDichVu()
-
-
+const { saveTempData, getTempData } = useMauKhachDatDichVu()
 const datLichStore = useDatLichStore()
 const toast = useToast()
 
 const today = new Date()
-const endDate = new Date(today)
-endDate.setDate(today.getDate() + 6)
+const endDate = new Date(today.getTime() + 6 * 24 * 60 * 60 * 1000)
 
-const selectedDate = ref(new Date())
-const selectedService = ref('')
+const selectedDate = ref(today)
 const selectedTime = ref('')
 
-const formattedSelectedDate = computed(() => {
-  return new Intl.DateTimeFormat('vi-VN', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' }).format(selectedDate.value)
-})
+const formattedSelectedDate = computed(() =>
+  new Intl.DateTimeFormat('vi-VN', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' }).format(selectedDate.value)
+)
 
-const fetchCaHen = datLichStore.fetchCaHen
+const services = computed(() => datLichStore.DichVu)
+const lichhens = computed(() => datLichStore.CaLichHen)
 
+const hasAvailableSlots = computed(() => services.value.length > 0 && lichhens.value.length > 0)
 
-const services = computed((): DichVu[] => datLichStore.DichVu)
-const lichhens = computed((): CaHen[] => datLichStore.CaLichHen)
+const isFormValid = computed(() => selectedDate.value && selectedTime.value)
 
-
-const isFormValid = computed(() => {
-  return selectedDate.value && selectedService.value && selectedTime.value
-})
-function formatDate(date) {
-  const year = date.getFullYear();
-  const month = String(date.getMonth() + 1).padStart(2, '0');
-  const day = String(date.getDate()).padStart(2, '0');
-  return `${year}-${month}-${day}`;
-}
 onMounted(() => {
-  const today = new Date();
-  const formattedDate = formatDate(today);
-  fetchCaHen(formattedDate);
-  handleDateClick({ dateStr: formattedDate });
+  const formattedDate = formatDate(today)
+  datLichStore.fetchCaHen(formattedDate)
+  handleDateClick({ dateStr: formattedDate })
 })
 
-watch(selectedDate, (newDate) => {
-  fetchCaHen(newDate)
-})
+watch(selectedDate, (newDate) => datLichStore.fetchCaHen(formatDate(newDate)))
 
 const calendarOptions = computed(() => ({
   plugins: [dayGridPlugin, timeGridPlugin, interactionPlugin],
@@ -117,23 +81,13 @@ const calendarOptions = computed(() => ({
     center: 'title',
     right: 'dayGridWeek,today'
   },
-  events: events.value,
-  eventClick: handleEventClick,
+  events: [{ title: 'Chọn', start: selectedDate.value, color: '#400D01', allDay: true }],
+  eventClick: () => {},
   dateClick: handleDateClick,
   locale: viLocale,
-  buttonText: {
-    today: 'Hôm nay',
-    week: '7 ngày',
-    dayGridWeek: 'Tuần'
-  },
-  validRange: {
-    start: today,
-    end: endDate
-  },
-  visibleRange: {
-    start: today,
-    end: endDate
-  },
+  buttonText: { today: 'Hôm nay', week: '7 ngày', dayGridWeek: 'Tuần' },
+  validRange: { start: today, end: endDate },
+  visibleRange: { start: today, end: endDate },
   duration: { days: 7 },
   dayCount: 7,
   height: 'auto',
@@ -147,47 +101,37 @@ const calendarOptions = computed(() => ({
   nowIndicator: true
 }))
 
-function handleEventClick(info) {
-  // toast.info(`Bạn đã chọn: ${info.event.title}`, { timeout: 2000 })
+function formatDate(date: Date): string {
+  return date.toISOString().split('T')[0]
 }
 
-const events = ref([
-  {
-    title: 'Chọn',
-    start: new Date(),
-    color: '#3788d8',
-    allDay: true
-  }
-])
-function handleDateClick(info) {
+function handleDateClick(info: { dateStr: string }) {
   selectedDate.value = new Date(info.dateStr)
   datLichStore.updateDatLichInfo(info.dateStr)
-  events.value = [{ title: 'Chọn', start: info.dateStr, color: '#3788d8' }]
 }
 
 function confirmBooking() {
   if (isFormValid.value) {
-    const selectedDichVu = services.value.find(service => service.id === Number(selectedService.value));
-    const selectedCaLichHen = lichhens.value.find(ca => ca.id === Number(selectedTime.value));
+    const selectedCaLichHen = lichhens.value.find(ca => ca.id === Number(selectedTime.value))
 
-    if (!selectedDichVu || !selectedCaLichHen) {
-      toast.error('Không tìm thấy dịch vụ hoặc ca lịch hẹn đã chọn', { timeout: 3000 });
-      return;
+    if (!selectedCaLichHen) {
+      toast.error('Không tìm thấy ca lịch hẹn đã chọn', { timeout: 3000 })
+      return
     }
 
     const dichVuKhachDat = new DichVuKhachDat({
-      dichvu: selectedDichVu,
       calichhen: selectedCaLichHen,
       date: selectedDate.value
-    });
+    })
 
-    saveTempData(dichVuKhachDat);
-    console.log('Dữ liệu đã lưu:', getTempData());
+    saveTempData(dichVuKhachDat)
+    console.log('Dữ liệu đã lưu:', getTempData())
   } else {
-    toast.error('Vui lòng điền đầy đủ thông tin đặt lịch', { timeout: 3000 });
+    toast.error('Vui lòng điền đầy đủ thông tin đặt lịch', { timeout: 3000 })
   }
 }
 </script>
+
 
 <style scoped>
 .calendar-container {
@@ -210,6 +154,7 @@ function confirmBooking() {
 .calendar {
   font-family: 'Arial', sans-serif;
   margin-bottom: 30px;
+  color: #400D01 !important;
 }
 
 .booking-details {
@@ -224,7 +169,7 @@ function confirmBooking() {
 
 .selected-date {
   font-size: 1.1em;
-  color: #007bff;
+  color: #400D01;
 }
 
 .form-select {
@@ -235,8 +180,8 @@ function confirmBooking() {
 }
 
 .form-select:focus {
-  border-color: #80bdff;
-  box-shadow: 0 0 0 0.2rem rgba(0,123,255,.25);
+  border-color: #f6f6ea;
+  box-shadow: 0 0 0 0.2rem rgb(64, 13, 1);
 }
 
 .btn-primary {
@@ -248,20 +193,20 @@ function confirmBooking() {
 
 .btn-primary:hover {
   transform: translateY(-2px);
-  box-shadow: 0 4px 8px rgba(0,123,255,0.3);
+  box-shadow: 0 4px 8px rgb(64, 13, 1);
 }
 
 :deep(.fc) {
   --fc-border-color: #e0e0e0;
-  --fc-button-bg-color: #007bff;
-  --fc-button-border-color: #007bff;
-  --fc-button-hover-bg-color: #0056b3;
-  --fc-button-hover-border-color: #0056b3;
-  --fc-button-active-bg-color: #0056b3;
-  --fc-button-active-border-color: #0056b3;
-  --fc-event-bg-color: #007bff;
-  --fc-event-border-color: #007bff;
-  --fc-today-bg-color: #e6f2ff;
+  --fc-button-bg-color: #400D01;
+  --fc-button-border-color: #400D01;
+  --fc-button-hover-bg-color: #5a1301;
+  --fc-button-hover-border-color: #5a1301;
+  --fc-button-active-bg-color: #5a1301;
+  --fc-button-active-border-color: #5a1301;
+  --fc-event-bg-color: #400D01;
+  --fc-event-border-color: #400D01;
+  --fc-today-bg-color: rgba(64, 13, 1, 0.1);
 }
 
 :deep(.fc-button-primary) {
@@ -276,9 +221,8 @@ function confirmBooking() {
   background-color: var(--fc-button-hover-bg-color);
   border-color: var(--fc-button-hover-border-color);
   transform: translateY(-2px);
-  box-shadow: 0 4px 8px rgba(0,123,255,0.3);
+  box-shadow: 0 4px 8px rgba(64, 13, 1, 0.3);
 }
-
 :deep(.fc-day-today) {
   background-color: var(--fc-today-bg-color) !important;
 }

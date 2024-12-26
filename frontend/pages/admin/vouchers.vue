@@ -1,93 +1,107 @@
 <template>
-  <div class="voucher-list container mt-5 bg-light p-4">
+  <div class="voucher-list card container mt-5 p-4" style="border-radius: 25px">
     <h1 class="title mb-4">Quản lý Voucher</h1>
     <div class="row mb-4">
-      <div class="col">
-        <add-voucher @added="refresh" />
-      </div>
-      <div class="col">
-          <input
-            v-model="searchTerm"
-            type="text"
-            class="custom-button"
-            placeholder="Tìm kiếm voucher..."
-            @input="handleSearch"
-          >
-        <button class="custom-button" type="button" @click="handleSearch">
-          Tìm kiếm
+      <div class="col-md-4 d-flex align-items-center">
+        <button type="button" class="custom-button me-2" @click="themVoucher">
+          <span class="me-2">Thêm</span>
+          <font-awesome-icon icon="fa-solid fa-plus" />
         </button>
       </div>
-      <div class="col">
-        <button @click="refreshVouchers" class="custom-button">
-          Làm mới
+      <div class="col-md-4">
+        <input
+            v-model="searchTerm"
+            type="text"
+            class="form-control"
+            placeholder="Tìm kiếm voucher..."
+            @input="handleSearch"
+        >
+      </div>
+      <div class="col-md-4 d-flex align-items-center justify-content-end">
+        <button @click="refreshVouchers" class="custom-button me-2" title="Làm mới">
+          <font-awesome-icon icon="fa-solid fa-arrows-rotate" />
+        </button>
+        <button class="custom-button" type="button" @click="handleSearch" title="Tìm kiếm">
+          <font-awesome-icon icon="fa-solid fa-magnifying-glass" />
         </button>
       </div>
     </div>
+
     <div class="table-responsive">
       <table class="table table-hover">
-        <thead class="thead-light">
-          <tr>
-            <th>ID</th>
-            <th>Mô tả</th>
-            <th>Giảm giá</th>
-            <th>Ngày bắt đầu</th>
-            <th>Ngày kết thúc</th>
-            <th>Trạng thái</th>
-            <th>Thao tác</th>
-          </tr>
+        <thead class="table-light">
+        <tr>
+          <th scope="col">ID</th>
+          <th scope="col">Mô tả</th>
+          <th scope="col">Giảm giá</th>
+          <th scope="col">Ngày bắt đầu</th>
+          <th scope="col">Ngày kết thúc</th>
+          <th scope="col">Trạng thái</th>
+          <th scope="col">Thao tác</th>
+        </tr>
         </thead>
         <tbody>
-          <tr v-for="voucher in paginatedVouchers" :key="voucher.id">
-            <td>{{ voucher.id }}</td>
-            <td>{{ voucher.mota }}</td>
-            <td>
-              <span class="badge bg-success text-white">
+        <tr v-for="voucher in paginatedVouchers" :key="voucher.id">
+          <td>{{ voucher.id }}</td>
+          <td>{{ voucher.mota }}</td>
+          <td>
+              <span class="badge rounded-pill" :class="voucher.phantramgiam > 50 ? 'bg-danger' : 'bg-success'">
                 {{ voucher.phantramgiam }}%
               </span>
-            </td>
-            <td>{{ formatDate(voucher.ngaybatdau) }}</td>
-            <td>{{ formatDate(voucher.ngayketthuc) }}</td>
-            <td>
-              <span :class="['badge', voucher.trangthai ? 'bg-success' : 'bg-danger']">
+          </td>
+          <td>{{ formatDate(voucher.ngaybatdau) }}</td>
+          <td>{{ formatDate(voucher.ngayketthuc) }}</td>
+          <td>
+              <span :class="['badge', voucher.trangthai ? 'bg-success' : 'bg-warning text-dark']">
                 {{ voucher.trangthai ? 'Hoạt động' : 'Không hoạt động' }}
               </span>
-            </td>
-            <td>
-              <div class="d-flex">
-                <CapNhatVoucher
-                  :voucher="voucher"
-                  @updated="refresh"
-                />
-                <button
+          </td>
+          <td>
+            <div class="d-flex">
+              <button type="button" class="btn btn-sm btn-outline-primary me-2" @click="capNhatVoucher(voucher)">
+                <font-awesome-icon icon="fa-solid fa-pen-to-square" />
+              </button>
+              <button
                   @click="updateTrangThaiVoucher(voucher.id)"
                   type="button"
-                  class="btn btn-sm  m-1"
+                  class="btn btn-sm"
                   :class="voucher.trangthai ? 'btn-outline-danger' : 'btn-outline-success'"
-                >
-                  {{ voucher.trangthai ? 'Hủy' : 'Kích hoạt' }}
-                </button>
-              </div>
-            </td>
-          </tr>
+              >
+                <font-awesome-icon :icon="voucher.trangthai ? 'fa-solid fa-ban' : 'fa-solid fa-check'" />
+              </button>
+            </div>
+          </td>
+        </tr>
         </tbody>
       </table>
     </div>
-    <!-- Pagination -->
-    <div class="pagination d-flex justify-content-center align-items-center mt-3">
-      <div class="row">
-        <div class="col">
-          <button @click="prevPage" :disabled="currentPage === 1" class="custom-button">Trước</button>
-        </div>
-        <div class="col">
-          <span class="text fs-5">Trang {{ currentPage }} / {{ totalPages }}</span>
-        </div>
-        <div class="col">
-          <button @click="nextPage" :disabled="currentPage === totalPages" class="custom-button">Sau</button>
-        </div>
-      </div>
 
-
-
+    <div class="d-flex justify-content-center align-items-center mt-3">
+      <nav aria-label="Page navigation">
+        <ul class="pagination">
+          <li class="page-item">
+            <button
+                @click="prevPage"
+                :disabled="currentPage === 1"
+                class="page-link custom-button"
+            >
+              Trước
+            </button>
+          </li>
+          <li class="page-item disabled">
+            <span class="page-link">Trang {{ currentPage }} / {{ totalPages }}</span>
+          </li>
+          <li class="page-item">
+            <button
+                @click="nextPage"
+                :disabled="currentPage === totalPages"
+                class="page-link custom-button"
+            >
+              Sau
+            </button>
+          </li>
+        </ul>
+      </nav>
     </div>
   </div>
 </template>
@@ -95,8 +109,6 @@
 <script setup lang="ts">
 import { onMounted, onUnmounted, ref, computed, watch } from 'vue';
 import { useVoucherStore } from '~/stores/VorchersStores';
-import AddVoucher from '~/components/AddVoucher.vue';
-import CapNhatVoucher from '~/components/CapNhatVoucher.vue';
 import type Voucher from "~/models/Voucher";
 import { useToast } from 'vue-toastification';
 import Swal from "sweetalert2";
@@ -203,10 +215,18 @@ function handleSearch() {
   currentPage.value = 1; // Reset to first page after search
 }
 
-// Watch for changes in voucherData and searchTerm
+
 watch([voucherData, searchTerm], () => {
   handleSearch();
 }, { immediate: true });
+
+function themVoucher(){
+  return navigateTo('/admin/themvoucher');
+}
+
+function capNhatVoucher(voucher: Voucher){
+  return navigateTo(`/admin/chitietvoucher/${voucher.id}`);
+}
 
 </script>
 
