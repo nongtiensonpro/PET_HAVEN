@@ -23,7 +23,6 @@ export const useStore = defineStore("userStore", {
                     throw new Error("Failed to fetch users");
                 }
                 const data = await response.json();
-                console.log(data);
                 this.users = data;
                 return this.users;
             } catch (error) {
@@ -32,7 +31,6 @@ export const useStore = defineStore("userStore", {
             }
         },
         async addPet(pet: ThuCungKhachHang) {
-            console.log('Tên : '+pet.ten+ ' Tuổi : ' + pet.tuoi + ' Giống : ' + pet.giong+ ' Cân nặng : ' + pet.cannang+'gau gau gau')
             const token = localStorage.getItem("access_token");
             try {
                 const response = await fetch("http://localhost:8080/api/thu-cung/add", {
@@ -47,7 +45,6 @@ export const useStore = defineStore("userStore", {
                     throw new Error("Failed to add pet");
                 }
                 const data = await response.json();
-                console.log(data);
                 this.fetchUsers();
                 return data;
             } catch (error) {
@@ -56,7 +53,6 @@ export const useStore = defineStore("userStore", {
             }
         },
         async updatePet(pet: ThuCungKhachHang) {
-            console.log('ID' + pet.idtaikhoan+ ' Tên : '+pet.ten+ ' Tuổi : ' + pet.tuoi + ' Giống : ' + pet.giong+ ' Cân nặng : ' + pet.cannang+'gau gau gau')
             const token = localStorage.getItem("access_token");
             try {
                 const response = await fetch("http://localhost:8080/api/thu-cung/update", {
@@ -71,7 +67,6 @@ export const useStore = defineStore("userStore", {
                     throw new Error("Failed to add pet");
                 }
                 const data = await response.json();
-                console.log(data);
                 this.fetchUsers();
                 return data;
             } catch (error) {

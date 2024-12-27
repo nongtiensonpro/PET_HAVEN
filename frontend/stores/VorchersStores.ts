@@ -20,14 +20,14 @@ export const useVoucherStore = defineStore('voucherInState', {
                 })
                 const data = await response.json();
                 this.ListVoucher = data;
-                console.log(data)
+
                 return data;
             } catch (e) {
-                console.log(e)
+                // console.log(e)
             }
         },
         async addVoucher(voucher: Voucher) {
-            console.log(voucher)
+
             const token = localStorage.getItem('access_token');
             try {
                 const response = await fetch('http://localhost:8080/api/giam-gia/add', {
@@ -44,10 +44,10 @@ export const useVoucherStore = defineStore('voucherInState', {
                 }
 
                 const data = await response.json();
-                console.log(data);
+
                 return data;
             } catch (e) {
-                console.error('Error adding voucher:', e);
+                // console.error('Error adding voucher:', e);
                 throw e;
             }
         },
@@ -68,7 +68,7 @@ export const useVoucherStore = defineStore('voucherInState', {
                 }
 
                 const data = await response.text();
-                console.log('Update response:', data);
+
 
                 // Update the local state
                 const index = this.ListVoucher.findIndex(v => v.id === voucher.id);
@@ -78,7 +78,7 @@ export const useVoucherStore = defineStore('voucherInState', {
 
                 return data; // Return the response message
             } catch (e) {
-                console.error('Error updating voucher:', e);
+                // console.error('Error updating voucher:', e);
                 throw e; // Re-throw the error for the component to handle
             }
         },
@@ -92,9 +92,9 @@ export const useVoucherStore = defineStore('voucherInState', {
                     },
                 })
                 const data = await response.json();
-                console.log(data)
+
             } catch (e) {
-                console.log(e)
+                // console.log(e)
             }
         }
 

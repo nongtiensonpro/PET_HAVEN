@@ -36,7 +36,6 @@ export const useCaLichHenStore = defineStore('useCalichhen', {
             }
         },
         async themCaLichHen(caHen: CaLichHen) {
-            console.log(caHen);
             const formatTimeToHHMM = (time: string): string => {
                 const date = new Date(time);
                 const hours = date.getHours().toString().padStart(2, '0');
@@ -233,7 +232,6 @@ export const useCaLichHenStore = defineStore('useCalichhen', {
                     throw new Error("Failed to fetch ngày nghỉ");
                 }
                 const data = await response.json();
-                console.log('Fetched Ngay Nghi:', data);
                 this.ngayNghi = data;
                 return this.ngayNghi;
             } catch (e) {

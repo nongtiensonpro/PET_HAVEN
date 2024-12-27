@@ -364,8 +364,7 @@ const refreshServices = async () => {
   try {
     await serviceStore.fetchServices();
   } catch (error) {
-    console.error('Không thể làm mới danh sách dịch vụ:', error);
-    // Có thể thêm thông báo lỗi cho người dùng ở đây
+
   }
 };
 
@@ -419,7 +418,7 @@ onMounted(() => {
   const code = route.query.code as string;
 
   if (code) {
-    console.log('Authorization code:', code);
+    // console.log('Authorization code:', code);
     exchangeAuthorizationCodeForToken(code);
   } else {
     const accessToken = localStorage.getItem('access_token');
@@ -501,32 +500,32 @@ const exchangeAuthorizationCodeForToken = async (code: string) => {
 
     if (!response.ok) {
       const errorData = await response.json();
-      console.error('Error exchanging authorization code for token:', errorData.error_description);
+
     }
 
     const data = await response.json();
     if (data.error) {
-      console.error('Error fetching token:', data.error_description);
+
     } else {
       localStorage.setItem('access_token', data.access_token);
       localStorage.setItem('refresh_token', data.refresh_token);
-      console.log('Access token:', data.access_token);
+
       router.push('/');
       await fetchUserInfo(data.access_token);
-      console.log("Lấy thông tin tài khoản sau khi lấy token", data.access_token);
+
 
       userStore.setLoggedIn(true);
     }
   } catch (error) {
     localStorage.setItem('viewRole', '0');
-    console.error('Error fetching token:', error);
+
   }
 };
 
 const refreshAccessToken = async () => {
   const refreshToken = localStorage.getItem('refresh_token');
   if (!refreshToken) {
-    console.error('No refresh token available');
+
     userStore.setLoggedIn(false);
     return;
   }
@@ -551,17 +550,17 @@ const refreshAccessToken = async () => {
 
     if (!response.ok) {
       const errorData = await response.json();
-      console.error(`Error refreshing token: ${errorData.error_description}`);
+
     }
 
     const data = await response.json();
     localStorage.setItem('access_token', data.access_token);
     localStorage.setItem('refresh_token', data.refresh_token);
-    console.log('New access token:', data.access_token);
+
     return data.access_token;
   } catch (error) {
     localStorage.setItem('viewRole', '0');
-    console.error('Error refreshing token:', error);
+
     return null;
   }
 };
@@ -578,12 +577,12 @@ const fetchUserInfo = async (accessToken: string) => {
     });
 
     if (response.status === 401) {
-      console.log('Access token expired, refreshing token...');
+
       const newAccessToken = await refreshAccessToken();
       if (newAccessToken) {
         return fetchUserInfo(newAccessToken);
       } else {
-        console.error('Unable to refresh access token');
+
         userStore.setLoggedIn(false);
         return;
       }
@@ -591,12 +590,12 @@ const fetchUserInfo = async (accessToken: string) => {
 
     if (!response.ok) {
       const errorData = await response.json();
-      console.error(`Error fetching user info: ${errorData.error_description}`);
+
       return;
     }
 
     const userInfoData = await response.json();
-    console.log('User Info:', userInfoData);
+
 
     const roles = userInfoData.roles || [];
     userStore.setUserInfo({
@@ -608,11 +607,10 @@ const fetchUserInfo = async (accessToken: string) => {
     userStore.setLoggedIn(true);
 
     if (userInfoData.username) {
-      console.log('User info refreshed successfully');
+
     }
   } catch (error) {
     localStorage.setItem('viewRole', '0');
-    console.error('Error fetching user info:', error);
     userStore.setLoggedIn(false);
   }
 };
@@ -627,7 +625,6 @@ onMounted(() => {
   const code = route.query.code as string;
 
   if (code) {
-    console.log('Authorization code:', code);
     exchangeAuthorizationCodeForToken(code);
   } else {
     const accessToken = localStorage.getItem('access_token');

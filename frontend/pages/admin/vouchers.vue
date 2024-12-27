@@ -5,7 +5,6 @@
       <div class="col-md-4 d-flex align-items-center">
         <button type="button" class="custom-button me-2" @click="themVoucher">
           <span class="me-2">Thêm</span>
-          <font-awesome-icon icon="fa-solid fa-plus" />
         </button>
       </div>
       <div class="col-md-4">
@@ -18,11 +17,17 @@
         >
       </div>
       <div class="col-md-4 d-flex align-items-center justify-content-end">
-        <button @click="refreshVouchers" class="custom-button me-2" title="Làm mới">
-          <font-awesome-icon icon="fa-solid fa-arrows-rotate" />
-        </button>
+
         <button class="custom-button" type="button" @click="handleSearch" title="Tìm kiếm">
-          <font-awesome-icon icon="fa-solid fa-magnifying-glass" />
+          <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-search" viewBox="0 0 16 16">
+            <path d="M11.742 10.344a6.5 6.5 0 1 0-1.397 1.398h-.001q.044.06.098.115l3.85 3.85a1 1 0 0 0 1.415-1.414l-3.85-3.85a1 1 0 0 0-.115-.1zM12 6.5a5.5 5.5 0 1 1-11 0 5.5 5.5 0 0 1 11 0"/>
+          </svg>
+        </button>
+        <button @click="refreshVouchers" class="custom-button me-2" title="Làm mới">
+          <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-arrow-clockwise" viewBox="0 0 16 16">
+            <path fill-rule="evenodd" d="M8 3a5 5 0 1 0 4.546 2.914.5.5 0 0 1 .908-.417A6 6 0 1 1 8 2z"/>
+            <path d="M8 4.466V.534a.25.25 0 0 1 .41-.192l2.36 1.966c.12.1.12.284 0 .384L8.41 4.658A.25.25 0 0 1 8 4.466"/>
+          </svg>
         </button>
       </div>
     </div>
@@ -59,7 +64,7 @@
           <td>
             <div class="d-flex">
               <button type="button" class="btn btn-sm btn-outline-primary me-2" @click="capNhatVoucher(voucher)">
-                <font-awesome-icon icon="fa-solid fa-pen-to-square" />
+                  Cập nhật
               </button>
               <button
                   @click="updateTrangThaiVoucher(voucher.id)"
@@ -67,7 +72,7 @@
                   class="btn btn-sm"
                   :class="voucher.trangthai ? 'btn-outline-danger' : 'btn-outline-success'"
               >
-                <font-awesome-icon :icon="voucher.trangthai ? 'fa-solid fa-ban' : 'fa-solid fa-check'" />
+                  Đổi trạng thái
               </button>
             </div>
           </td>

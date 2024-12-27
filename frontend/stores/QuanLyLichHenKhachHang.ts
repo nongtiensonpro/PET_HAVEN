@@ -41,9 +41,8 @@ export const useQuanLyLichHenKhachHang = defineStore('quanLyLichHenKhachHang', (
       
       const data = await response.json();
       appointments.value = data.content;
-      console.log('Dữ liệu tải thành công'+data.content);
     } catch (err) {
-      error.value = 'Không thể tải lịch hẹn';
+      // error.value = 'Không thể tải lịch hẹn';
       console.error(err);
     } finally {
       isLoading.value = false;
@@ -67,7 +66,7 @@ export const useQuanLyLichHenKhachHang = defineStore('quanLyLichHenKhachHang', (
       );
     } catch (err) {
       error.value = 'Không thể hủy lịch hẹn';
-      console.error(err);
+      // console.error(err);
     } finally {
       isLoading.value = false;
     }
