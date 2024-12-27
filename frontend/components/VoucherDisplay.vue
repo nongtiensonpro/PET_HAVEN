@@ -1,7 +1,6 @@
 <template>
   <div class="voucher-carousel">
     <div v-if="vouchers.length > 0 && accessToken" class="carousel-container">
-<!--      <h2 class="text text-center">Chương trình khuyến mãi</h2>-->
       <div class="carousel-track" :style="{ transform: `translateX(${-currentIndex * 100}%)` }">
         <div v-for="voucher in vouchers" :key="voucher.id" class="voucher-item">
           <div class="voucher">
