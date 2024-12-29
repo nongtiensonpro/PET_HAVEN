@@ -22,7 +22,8 @@ public class DanhGiaService {
     }
 
     public List<Danhgia> getAllDanhGiaTheoDichVu(Integer idDichVu) {
-        return DanhGiaRepository.findByIdhoadon_Idlichhen_Dichvu_IdAndTrangthai(idDichVu,true);
+//        return DanhGiaRepository.findByIdhoadon_Idlichhen_Dichvu_IdAndTrangthai(idDichVu,true);
+        return null;
     }
 
     public Optional<Danhgia> getDanhGiaoTheoHD(Integer idHd ,String idTk){

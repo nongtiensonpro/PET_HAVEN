@@ -36,7 +36,7 @@ public class Lichhen {
     @NotNull
     @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "iddichvu")
-    private Dichvu dichvu;
+    private TuyChonCanNang tuyChonCanNang;
 
     @JsonProperty
     @NotNull
@@ -147,12 +147,12 @@ public class Lichhen {
         this.thucung = thucung;
     }
 
-    public Dichvu getDichvu() {
-        return dichvu;
+    public @NotNull TuyChonCanNang getTuyChonCanNang() {
+        return tuyChonCanNang;
     }
 
-    public void setDichvu(Dichvu dichvu) {
-        this.dichvu = dichvu;
+    public void setTuyChonCanNang(@NotNull TuyChonCanNang tuyChonCanNang) {
+        this.tuyChonCanNang = tuyChonCanNang;
     }
 
     public String getEmailNguoiDat() {

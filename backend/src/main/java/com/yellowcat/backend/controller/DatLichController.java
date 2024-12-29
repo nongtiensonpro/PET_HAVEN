@@ -57,7 +57,7 @@ public class DatLichController {
     private PayPalService payPalService;
 
     @Autowired
-    private TuyChonCanNangRepository tuyChonCanNangRepository;
+    private TuyChonCanNangService tuyChonCanNangService;
 
     @GetMapping("/dat-lich-info")
     public ResponseEntity<Map<String, Object>> getDatLichInfo(@RequestParam("ngay") LocalDate ngay) {
@@ -104,8 +104,11 @@ public class DatLichController {
             thuCungService.saveOrUpdate(new Thucung(idUser, datLichDTO.getIdThuCung()));
         }
 
-        Optional<Dichvu> dichvuOptional = dichVuService.findById(datLichDTO.getIdDichVu());
-        Dichvu dichvu = dichvuOptional.get();
+        Optional<TuyChonCanNang> tuyChonCanNangOptional = tuyChonCanNangService.findById(datLichDTO.getIdTuyChonCanNang());
+        if (!tuyChonCanNangOptional.isPresent()) {
+            return ResponseEntity.notFound().build();
+        }
+        TuyChonCanNang tuyChonCanNang = tuyChonCanNangOptional.get();
 
         if (!lichhenOptional.isPresent()) {
             System.out.println("lịch không tồn tại");
@@ -129,7 +132,7 @@ public class DatLichController {
         lichhen.setTrangthai(4);
         lichhen.setThucung(thucungOptional.orElse(null)); // Fix: Use orElse(null) to handle Optional
         lichhen.setDate(LocalDate.parse(datLichDTO.getDate()));
-        lichhen.setDichvu(dichvu);
+        lichhen.setTuyChonCanNang(tuyChonCanNang);
         lichhen.setSolannhacnho(0);
         if (!lichhen.getTrangthaica()) {
             lichhen.setTrangthaica(true);
@@ -143,7 +146,7 @@ public class DatLichController {
         hoadon.setPhuongthucthanhtoan("Offline");
         hoadon.setTrangthai(1);
         Double SoTien = hoaDonService.TinhGiaTien(datLichDTO.getIdDichVu(), hoadon);
-        hoadon.setSotienbandau(Double.valueOf(String.valueOf(tuyChonCanNangRepository.findById(datLichDTO.getIdTuyChonCanNang()).get().getGiatien())));
+        hoadon.setSotienbandau(Double.valueOf(String.valueOf(tuyChonCanNang.getGiatien())));
         hoadon.setSotien(SoTien);
         hoadon.setMagiaodich(hoaDonService.MaGiaoDichRandom());
         hoaDonService.addOrUpdate(hoadon);
@@ -205,7 +208,7 @@ public class DatLichController {
             lichhenNew.setIdcalichhen(lichhen.getIdcalichhen());
             lichhenNew.setThoigianhuy(LocalDateTime.now());
             lichhenNew.setThucung(lichhen.getThucung());
-            lichhenNew.setDichvu(lichhen.getDichvu());
+            lichhenNew.setTuyChonCanNang(lichhen.getTuyChonCanNang());
             lichhenNew.setDate(lichhen.getDate());
             lichhenNew.setTrangthaica(true);
             lichHenService.addOrUpdate(lichhenNew);
@@ -299,7 +302,7 @@ public class DatLichController {
             lichDoi.setTrangthai(lichhen.getTrangthai());
             lichDoi.setThoigianthaydoi(LocalDateTime.now());
             lichDoi.setThucung(lichhen.getThucung());
-            lichDoi.setDichvu(lichhen.getDichvu());
+            lichDoi.setTuyChonCanNang(lichhen.getTuyChonCanNang());
             lichDoi.setTrangthaica(true);
             lichDoi.setSolanthaydoi(lichhen.getSolanthaydoi());
             lichDoi.setSolannhacnho(lichhen.getSolannhacnho());
@@ -319,7 +322,7 @@ public class DatLichController {
             lichhenNew.setIdcalichhen(lichhen.getIdcalichhen());
             lichhenNew.setThoigianthaydoi(LocalDateTime.now());
             lichhenNew.setThucung(lichhen.getThucung());
-            lichhenNew.setDichvu(lichhen.getDichvu());
+            lichhenNew.setTuyChonCanNang(lichhen.getTuyChonCanNang());
             lichhenNew.setDate(lichhen.getDate());
             lichhenNew.setTrangthaica(true);
             lichhenNew.setSolanthaydoi(lichhen.getSolanthaydoi());

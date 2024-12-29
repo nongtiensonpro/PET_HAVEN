@@ -251,7 +251,7 @@ public class LichHenService {
             lichhenNew.setIdcalichhen(lichhen.getIdcalichhen());
             lichhenNew.setThoigianhuy(LocalDateTime.now());
             lichhenNew.setThucung(lichhen.getThucung());
-            lichhenNew.setDichvu(lichhen.getDichvu());
+            lichhenNew.setTuyChonCanNang(lichhen.getTuyChonCanNang());
             lichhenNew.setDate(lichhen.getDate());
             lichhenNew.setTrangthaica(true);
 

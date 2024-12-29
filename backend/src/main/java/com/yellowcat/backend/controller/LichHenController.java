@@ -127,7 +127,7 @@ public class LichHenController {
             lichDoi.setTrangthai(lichhen.getTrangthai()); // Đặt trạng thái là "Chờ thanh toán"
             lichDoi.setThoigianthaydoi(LocalDateTime.now());
             lichDoi.setThucung(lichhen.getThucung());
-            lichDoi.setDichvu(lichhen.getDichvu());
+            lichDoi.setTuyChonCanNang(lichhen.getTuyChonCanNang());
             lichDoi.setTrangthaica(true);
             lichDoi.setSolanthaydoi(lichhen.getSolanthaydoi());
 
@@ -144,7 +144,7 @@ public class LichHenController {
             lichhenNew.setIdcalichhen(lichhen.getIdcalichhen());
             lichhenNew.setThoigianthaydoi(LocalDateTime.now());
             lichhenNew.setThucung(lichhen.getThucung());
-            lichhenNew.setDichvu(lichhen.getDichvu());
+            lichhenNew.setTuyChonCanNang(lichhen.getTuyChonCanNang());
             lichhenNew.setDate(lichhen.getDate());
             lichhenNew.setTrangthaica(true);
             lichhenNew.setSolanthaydoi(lichhen.getSolanthaydoi());

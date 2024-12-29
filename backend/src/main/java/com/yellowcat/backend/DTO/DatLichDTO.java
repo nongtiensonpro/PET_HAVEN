@@ -13,7 +13,7 @@ public class DatLichDTO {
     @NotNull
     private Integer idcalichhen;
     @NotNull
-    private Integer idDichVu;
+    private Integer idTuyChonCanNang;
 
 
 
@@ -45,11 +45,11 @@ public class DatLichDTO {
     }
 
 
-    public Integer getIdDichVu() {
-        return idDichVu;
+    public @NotNull Integer getIdTuyChonCanNang() {
+        return idTuyChonCanNang;
     }
 
-    public void setIdDichVu(Integer idDichVu) {
-        this.idDichVu = idDichVu;
+    public void setIdTuyChonCanNang(@NotNull Integer idTuyChonCanNang) {
+        this.idTuyChonCanNang = idTuyChonCanNang;
     }
 }
