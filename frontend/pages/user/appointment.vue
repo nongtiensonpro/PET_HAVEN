@@ -196,10 +196,10 @@ const prevPage = () => {
           </thead>
           <tbody>
             <tr v-for="item in paginatedAppointments" :key="item.id">
-              <td>
-                {{ item.dichvu.tendichvu }}
-                <small class="text-muted d-block">{{ item.dichvu.giatien.toLocaleString() }} USD</small>
-              </td>
+<!--              <td>-->
+<!--                {{ item.dichvu.tendichvu }}-->
+<!--                <small class="text-muted d-block">{{ item.dichvu.giatien.toLocaleString() }} USD</small>-->
+<!--              </td>-->
               <td>
                 {{ item.thucung.ten }}
                 <small class="text-muted d-block">{{ item.thucung.giong }}</small>

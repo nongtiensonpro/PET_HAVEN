@@ -2,11 +2,9 @@ package com.yellowcat.backend.service;
 
 import com.yellowcat.backend.DTO.ThongKeResponDTO;
 import com.yellowcat.backend.DTO.ThongKeTimeDTO;
-import com.yellowcat.backend.model.Dichvu;
-import com.yellowcat.backend.model.Giamgia;
-import com.yellowcat.backend.model.Hoadon;
-import com.yellowcat.backend.model.Lichhen;
+import com.yellowcat.backend.model.*;
 import com.yellowcat.backend.repository.HoadonRepository;
+import com.yellowcat.backend.repository.TuyChonCanNangRepository;
 import jakarta.mail.internet.MimeMessage;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.ByteArrayResource;
@@ -36,71 +34,91 @@ public class HoaDonService {
     @Autowired
     EmailService emailService;
 
+    @Autowired
+    private TuyChonCanNangRepository tuyChonCanNangRepository;
+
     private static final String CHARACTERS = "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
     private static final int LENGTH = 17;
     private static final SecureRandom RANDOM = new SecureRandom();
 
-    public void addOrUpdate(Hoadon hoadon){hoadonRepository.save(hoadon);}
+    public void addOrUpdate(Hoadon hoadon) {
+        hoadonRepository.save(hoadon);
+    }
 
-//    public Double TinhGiaTien(Integer idDichVu,Hoadon hoadon){
-//        float giaDichVu = dichVuService.findById(idDichVu)
-//                .map(Dichvu::getGiatien)
-//                .orElseThrow(() -> new IllegalArgumentException("Dịch vụ không tồn tại"));
-//        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-//
-//        Optional<Giamgia> maxGiamGia = giamGiaService.findGiamGiaTheoNgayHienTai()
-//                .stream()
-//                .max(Comparator.comparing(Giamgia::getPhantramgiam));
-//        float phanTramGiam =0;
-//        phanTramGiam = Math.max(0, Math.min(phanTramGiam, 90));
-//
-//        String id = authentication.getName();
-//        List<Hoadon> hoadonList = hoadonRepository.findByIdlichhen_TrangthaicaAndIdlichhen_IdkhachhangAndTrangthai(true,id);
-//        if (maxGiamGia.isPresent()) {
-//            if(!hoadonList.isEmpty()){
-//                for(Hoadon hoadon1 : hoadonList){
-////                    Check xem đã dùng voucher chưa ???
-//                    if (hoadon1.getIdgiamgia() != null && hoadon1.getIdgiamgia().getId() == (maxGiamGia.get().getId())){
-//                        phanTramGiam =0;
-//                        System.out.println(1);
-//                        break;
-//                    }else {
-//                        phanTramGiam = maxGiamGia.get().getPhantramgiam();
-//                        hoadon.setIdgiamgia(maxGiamGia.get()); // Gán giảm giá lớn nhất vào hóa đơn
-//                        System.out.println(2);
-//                        break;
-//                    }
-//                }
-//            }else {
-//                phanTramGiam = maxGiamGia.get().getPhantramgiam();
-//                hoadon.setIdgiamgia(maxGiamGia.get()); // Gán giảm giá lớn nhất vào hóa đơn
-//            }
-//        }
-//        Double giaTien = (double) (giaDichVu - giaDichVu*phanTramGiam/100);
-//        return giaTien;
-//    }
-    public List<Hoadon> getAllHoaDonChuaThanhToan(){
+    public Double TinhGiaTien(Integer idDichVu, Hoadon hoadon) {
+        Optional<TuyChonCanNang> giaDichVuOptional = tuyChonCanNangRepository.findById(idDichVu);
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+
+        Optional<Giamgia> maxGiamGia = giamGiaService.findGiamGiaTheoNgayHienTai()
+                .stream()
+                .max(Comparator.comparing(Giamgia::getPhantramgiam));
+        float phanTramGiam = 0;
+        phanTramGiam = Math.max(0, Math.min(phanTramGiam, 90));
+
+        String id = authentication.getName();
+        List<Hoadon> hoadonList = hoadonRepository.findByIdlichhen_TrangthaicaAndIdlichhen_IdkhachhangAndTrangthai(true, id);
+        if (maxGiamGia.isPresent()) {
+            if (!hoadonList.isEmpty()) {
+                for (Hoadon hoadon1 : hoadonList) {
+                    if (hoadon1.getIdgiamgia() != null && hoadon1.getIdgiamgia().getId() == (maxGiamGia.get().getId())) {
+                        phanTramGiam = 0;
+                        System.out.println(1);
+                        break;
+                    } else {
+                        phanTramGiam = maxGiamGia.get().getPhantramgiam();
+                        hoadon.setIdgiamgia(maxGiamGia.get());
+                        System.out.println(2);
+                        break;
+                    }
+                }
+            } else {
+                phanTramGiam = maxGiamGia.get().getPhantramgiam();
+                hoadon.setIdgiamgia(maxGiamGia.get());
+            }
+        }
+
+        if (giaDichVuOptional.isPresent()) {
+            TuyChonCanNang giaDichVu = giaDichVuOptional.get();
+            Double giaTien = (double) (giaDichVu.getGiatien() * (1 - phanTramGiam / 100));
+            return giaTien;
+        } else {
+            throw new IllegalArgumentException("Invalid idDichVu: " + idDichVu);
+        }
+    }
+
+    public List<Hoadon> getAllHoaDonChuaThanhToan() {
         System.out.println(LocalDate.now());
         return hoadonRepository.findByIdlichhen_Date(LocalDate.now());
     }
 
-    public List<Hoadon> getALl(){return hoadonRepository.findAll();}
-
-    public Optional<Hoadon> findById(int id){return hoadonRepository.findById(id);}
-
-    public List<Hoadon> LichSuThanhToanHoaDonTheoTaiKhoan(String email){return hoadonRepository.findByNguoithanhtoanAndPhuongthucthanhtoan(email,LocalDate.now());}
-
-    public Optional<Hoadon> finHoadonByIdLich(Integer id){return hoadonRepository.findByIdlichhen_IdAndTrangthai(id,1);}
-
-    public Optional<Hoadon> finHoadonByIdLich2(Integer id,Integer tt){return hoadonRepository.findByIdlichhen_IdAndTrangthai(id,tt);}
-
-
-    public List<Hoadon> getList(){
-        return hoadonRepository.findByIdlichhen_TrangthaiAndTrangthaiAndDate(8,2,LocalDate.now());
+    public List<Hoadon> getALl() {
+        return hoadonRepository.findAll();
     }
 
-    public  Optional<Hoadon> findHoaDonOnline(String idPayPal)
-    {return hoadonRepository.findByMagiaodich(idPayPal);}
+    public Optional<Hoadon> findById(int id) {
+        return hoadonRepository.findById(id);
+    }
+
+    public List<Hoadon> LichSuThanhToanHoaDonTheoTaiKhoan(String email) {
+        return hoadonRepository.findByNguoithanhtoanAndPhuongthucthanhtoan(email, LocalDate.now());
+    }
+
+    public Optional<Hoadon> finHoadonByIdLich(Integer id) {
+        return hoadonRepository.findByIdlichhen_IdAndTrangthai(id, 1);
+    }
+
+    public Optional<Hoadon> finHoadonByIdLich2(Integer id, Integer tt) {
+        return hoadonRepository.findByIdlichhen_IdAndTrangthai(id, tt);
+    }
+
+
+    public List<Hoadon> getList() {
+        return hoadonRepository.findByIdlichhen_TrangthaiAndTrangthaiAndDate(8, 2, LocalDate.now());
+    }
+
+    public Optional<Hoadon> findHoaDonOnline(String idPayPal) {
+        return hoadonRepository.findByMagiaodich(idPayPal);
+    }
 
     public static String MaGiaoDichRandom() {
         StringBuilder transactionId = new StringBuilder(LENGTH);
@@ -115,7 +133,8 @@ public class HoaDonService {
 
         return transactionId.toString();  // Trả về mã giao dịch duy nhất
     }
-    public void deleteHoadonById(Integer id){
+
+    public void deleteHoadonById(Integer id) {
         hoadonRepository.deleteById(id);
     }
 
@@ -151,12 +170,12 @@ public class HoaDonService {
     }
 
     public List<Object[]> thongKeTheoNam(LocalDate startDate, LocalDate endDate) {
-        List<Object[]> rawData =  hoadonRepository.thongKeTheoNam(startDate,endDate);
+        List<Object[]> rawData = hoadonRepository.thongKeTheoNam(startDate, endDate);
         return rawData;
     }
 
-    public List<ThongKeResponDTO> Top10KhachHang(LocalDate startDate, LocalDate endDate){
-        List<Object[]> rawData =  hoadonRepository.findTopCustomers(startDate,endDate);
+    public List<ThongKeResponDTO> Top10KhachHang(LocalDate startDate, LocalDate endDate) {
+        List<Object[]> rawData = hoadonRepository.findTopCustomers(startDate, endDate);
         List<ThongKeResponDTO> result = new ArrayList<>();
 
         for (Object[] row : rawData) {
@@ -178,7 +197,6 @@ public class HoaDonService {
             throw new IllegalArgumentException("Invalid date format: " + date);
         }
     }
-
 
 
 }

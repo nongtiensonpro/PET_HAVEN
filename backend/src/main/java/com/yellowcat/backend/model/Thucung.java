@@ -50,6 +50,13 @@ public class Thucung {
     @Column(name = "mota", length = Integer.MAX_VALUE)
     private String mota;
 
+    public Thucung(String idUser, Integer idThuCung) {
+    }
+
+    public Thucung() {
+
+    }
+
     public Integer getId() {
         return id;
     }

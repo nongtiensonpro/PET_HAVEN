@@ -3,6 +3,7 @@ package com.yellowcat.backend.controller;
 import com.paypal.api.payments.Refund;
 import com.paypal.base.rest.PayPalRESTException;
 import com.yellowcat.backend.DTO.DatLichDTO;
+import com.yellowcat.backend.DTO.DatLichMoiDTO;
 import com.yellowcat.backend.DTO.DoiLichDTO;
 import com.yellowcat.backend.PAY.PayPalService;
 import com.yellowcat.backend.model.*;
@@ -28,6 +29,9 @@ import java.util.Map;
 import java.util.Optional;
 import java.util.concurrent.atomic.AtomicBoolean;
 
+import com.yellowcat.backend.repository.TuyChonCanNangRepository;
+
+
 @RestController
 @RequestMapping("/api/dat-lich")
 public class DatLichController {
@@ -51,6 +55,9 @@ public class DatLichController {
 
     @Autowired
     private PayPalService payPalService;
+
+    @Autowired
+    private TuyChonCanNangRepository tuyChonCanNangRepository;
 
     @GetMapping("/dat-lich-info")
     public ResponseEntity<Map<String, Object>> getDatLichInfo(@RequestParam("ngay") LocalDate ngay) {
@@ -78,86 +85,87 @@ public class DatLichController {
     }
 
 
-    // API tạo lịch hẹn khi khách hàng ấn nút xác nhận
-//    @PutMapping("/xac-nhan-dat")
-//    public ResponseEntity<Lichhen> createLichhen(
-//           @Valid @RequestBody DatLichDTO datLichDTO ) {
-//        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-//        Jwt jwt = (Jwt) authentication.getPrincipal();
-//
-//        String idUser = authentication.getName(); // Đây là idUser
-//        String email = jwt.getClaimAsString("email");
-//        Optional<Lichhen> lichhenOptional = lichHenService.getLichHenByDateandCa(LocalDate.parse(datLichDTO.getDate()),datLichDTO.getIdcalichhen());
-//
-//        Thucung thucung = datLichDTO.getIdThuCung();
-//        thucung.setIdtaikhoan(idUser);
-//        thuCungService.saveOrUpdate(thucung);
-//
-//        Optional<Dichvu> dichvuOptional = dichVuService.findById(datLichDTO.getIdDichVu());
-//        Dichvu dichvu = dichvuOptional.get();
-//
-//        if (!lichhenOptional.isPresent()) {
-//            System.out.println("lịch không tồn tại");
-//            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
-//        }
-////        Check xem có lịch đã được đặt chưa
-//        if (lichhenOptional.get().getTrangthai()!=5){
-//            System.out.println("Lịch đã được đặt trước rồi , vui lòng chọn thời gian khác");
-//            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
-//        }
-////        Check không cho đặt ca trong quá khứ
-//        if (!caLichHenService.isCaAvailable(datLichDTO.getIdcalichhen(),LocalDate.parse(datLichDTO.getDate()))){
-//            System.out.println("Không được đặt ca trong quá khứ");
-//            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
-//        }
-//
-//
-//        Lichhen lichhen = lichhenOptional.get();
-//        System.out.println(lichhen);
-//        lichhen.setIdkhachhang(idUser);
-//        lichhen.setEmailNguoiDat(email);
-//        lichhen.setTrangthai(4);
-//        lichhen.setThucung(thucung);
-//        lichhen.setDate(LocalDate.parse(datLichDTO.getDate()));
-//        lichhen.setDichvu(dichvu);
-//        lichhen.setSolannhacnho(0);
-//        if(!lichhen.getTrangthaica()){
-//            lichhen.setTrangthaica(true);
-//        }else {
-//            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
-//        }
-//
-//
-//
-//        Hoadon hoadon = new Hoadon();
-//        hoadon.setDate(LocalDate.now());
-//        hoadon.setIdlichhen(lichhen);
-//        hoadon.setPhuongthucthanhtoan("Offline");
-//        hoadon.setTrangthai(1);
-//        Double SoTien = hoaDonService.TinhGiaTien(datLichDTO.getIdDichVu(),hoadon);
-//        hoadon.setSotienbandau(Double.valueOf(lichhen.getDichvu().getGiatien()));
-//        hoadon.setSotien(SoTien);
-//        hoadon.setMagiaodich(hoaDonService.MaGiaoDichRandom());
-//        hoaDonService.addOrUpdate(hoadon);
-//
-//        Lichhen createLich = lichHenService.addOrUpdate(lichhen);
-//
-//        lichHenService.sendEmailWithActions(createLich);
-//
-//        lichHenService.scheduleTrangThaiChange(createLich.getId());
-//
-//        lichHenService.updateScheduleId(lichhen.getId(), lichhen.getId());
-//
-//        return new ResponseEntity<>(createLich, HttpStatus.CREATED);
-//    }
+    @PutMapping("/xac-nhan-dat")
+    public ResponseEntity<Lichhen> createLichhen(@Valid @RequestBody DatLichMoiDTO datLichDTO) {
+        System.out.println("DatLichMoiDTO: " + datLichDTO.toString());
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        Jwt jwt = (Jwt) authentication.getPrincipal();
+
+        String idUser = authentication.getName(); // Đây là idUser
+        String email = jwt.getClaimAsString("email");
+        Optional<Lichhen> lichhenOptional = lichHenService.getLichHenByDateandCa(LocalDate.parse(datLichDTO.getDate()), datLichDTO.getIdcalichhen());
+
+        Optional<Thucung> thucungOptional = thuCungService.findThuCungById(datLichDTO.getIdThuCung());
+        if (thucungOptional.isPresent()) {
+            Thucung thucung = thucungOptional.get();
+            thucung.setIdtaikhoan(idUser);
+            thuCungService.saveOrUpdate(thucung);
+        } else {
+            thuCungService.saveOrUpdate(new Thucung(idUser, datLichDTO.getIdThuCung()));
+        }
+
+        Optional<Dichvu> dichvuOptional = dichVuService.findById(datLichDTO.getIdDichVu());
+        Dichvu dichvu = dichvuOptional.get();
+
+        if (!lichhenOptional.isPresent()) {
+            System.out.println("lịch không tồn tại");
+            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+        }
+        // Check xem có lịch đã được đặt chưa
+        if (lichhenOptional.get().getTrangthai() != 5) {
+            System.out.println("Lịch đã được đặt trước rồi , vui lòng chọn thời gian khác");
+            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+        }
+        // Check không cho đặt ca trong quá khứ
+        if (!caLichHenService.isCaAvailable(datLichDTO.getIdcalichhen(), LocalDate.parse(datLichDTO.getDate()))) {
+            System.out.println("Không được đặt ca trong quá khứ");
+            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+        }
+
+        Lichhen lichhen = lichhenOptional.get();
+        System.out.println(lichhen);
+        lichhen.setIdkhachhang(idUser);
+        lichhen.setEmailNguoiDat(email);
+        lichhen.setTrangthai(4);
+        lichhen.setThucung(thucungOptional.orElse(null)); // Fix: Use orElse(null) to handle Optional
+        lichhen.setDate(LocalDate.parse(datLichDTO.getDate()));
+        lichhen.setDichvu(dichvu);
+        lichhen.setSolannhacnho(0);
+        if (!lichhen.getTrangthaica()) {
+            lichhen.setTrangthaica(true);
+        } else {
+            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+        }
+
+        Hoadon hoadon = new Hoadon();
+        hoadon.setDate(LocalDate.now());
+        hoadon.setIdlichhen(lichhen);
+        hoadon.setPhuongthucthanhtoan("Offline");
+        hoadon.setTrangthai(1);
+        Double SoTien = hoaDonService.TinhGiaTien(datLichDTO.getIdDichVu(), hoadon);
+        hoadon.setSotienbandau(Double.valueOf(String.valueOf(tuyChonCanNangRepository.findById(datLichDTO.getIdTuyChonCanNang()).get().getGiatien())));
+        hoadon.setSotien(SoTien);
+        hoadon.setMagiaodich(hoaDonService.MaGiaoDichRandom());
+        hoaDonService.addOrUpdate(hoadon);
+
+        Lichhen createLich = lichHenService.addOrUpdate(lichhen);
+
+        lichHenService.sendEmailWithActions(createLich);
+
+        lichHenService.scheduleTrangThaiChange(createLich.getId());
+
+        lichHenService.updateScheduleId(lichhen.getId(), lichhen.getId());
+
+        return new ResponseEntity<>(createLich, HttpStatus.CREATED);
+    }
 
     @Transactional
     @PutMapping("/huy-lich/{id}")
     public ResponseEntity<?> huyLichHen(@PathVariable Integer id) throws PayPalRESTException {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         String idUser = authentication.getName();
-        Optional<Hoadon> hoadonOptional1 = hoaDonService.finHoadonByIdLich2(id,1);
-        Optional<Hoadon> hoadonOptional2 = hoaDonService.finHoadonByIdLich2(id,2);
+        Optional<Hoadon> hoadonOptional1 = hoaDonService.finHoadonByIdLich2(id, 1);
+        Optional<Hoadon> hoadonOptional2 = hoaDonService.finHoadonByIdLich2(id, 2);
 
         Hoadon hoadonOptional;
 
@@ -187,7 +195,7 @@ public class DatLichController {
 
         if (lichhen.getTrangthai() == 4 || lichhen.getTrangthai() == 6) {
             // Tạo bản ghi lưu lại lịch sử đặt với trạng thái hủy
-            lichhen.setSolanthaydoi(lichhen.getSolanthaydoi()+1);
+            lichhen.setSolanthaydoi(lichhen.getSolanthaydoi() + 1);
 
             Lichhen lichhenNew = new Lichhen();
             lichhenNew.setSolanthaydoi(lichhen.getSolanthaydoi());
@@ -203,24 +211,24 @@ public class DatLichController {
             lichHenService.addOrUpdate(lichhenNew);
 
 //            Hoàn tiền
-                if (lichhen.getTrangthai() == 6) { // Đã thanh toán
-                    System.out.println(hoadonOptional.getMagiaodich());
-                    Refund refund = payPalService.refundPayment(hoadonOptional.getMagiaodich(), hoadonOptional.getSotien(), "USD");
-                    System.out.println(refund);
-                    if ("completed".equals(refund.getState())) {
-                        hoadonOptional.setTrangthai(3); // Trạng thái: thất bại
-                        hoaDonService.addOrUpdate(hoadonOptional);
-                        lichhenNew.setTrangthai(7); // Trạng thái: Đã hoàn tiền
-                        lichHenService.addOrUpdate(lichhenNew);
-                    } else {
-                        return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
-                                .body("Hoàn tiền thất bại: " + refund.getReason());
-                    }
+            if (lichhen.getTrangthai() == 6) { // Đã thanh toán
+                System.out.println(hoadonOptional.getMagiaodich());
+                Refund refund = payPalService.refundPayment(hoadonOptional.getMagiaodich(), hoadonOptional.getSotien(), "USD");
+                System.out.println(refund);
+                if ("completed".equals(refund.getState())) {
+                    hoadonOptional.setTrangthai(3); // Trạng thái: thất bại
+                    hoaDonService.addOrUpdate(hoadonOptional);
+                    lichhenNew.setTrangthai(7); // Trạng thái: Đã hoàn tiền
+                    lichHenService.addOrUpdate(lichhenNew);
+                } else {
+                    return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                            .body("Hoàn tiền thất bại: " + refund.getReason());
                 }
+            }
 
 
 //            Xóa hóa đơn chờ
-            if (hoadonOptional.getTrangthai() == 1){
+            if (hoadonOptional.getTrangthai() == 1) {
                 System.out.println("hello");
                 hoaDonService.deleteHoadonById(hoadonOptional.getId());
             }
@@ -245,11 +253,11 @@ public class DatLichController {
 
     @Transactional
     @PutMapping("/thay-doi-thoi-gian/{id}")
-    public ResponseEntity<?> thayDoiThoiGian(@PathVariable Integer id,@Valid @RequestBody DoiLichDTO doiLichDTO) {
+    public ResponseEntity<?> thayDoiThoiGian(@PathVariable Integer id, @Valid @RequestBody DoiLichDTO doiLichDTO) {
         Lichhen lichhen = lichHenService.findById(id);
         Lichhen lichhenNew = new Lichhen();
-        Optional<Hoadon> hoadonOptional1 = hoaDonService.finHoadonByIdLich2(id,1);
-        Optional<Hoadon> hoadonOptional2 = hoaDonService.finHoadonByIdLich2(id,2);
+        Optional<Hoadon> hoadonOptional1 = hoaDonService.finHoadonByIdLich2(id, 1);
+        Optional<Hoadon> hoadonOptional2 = hoaDonService.finHoadonByIdLich2(id, 2);
 
         Hoadon hoadonOptional;
 
@@ -277,10 +285,10 @@ public class DatLichController {
             return ResponseEntity.status(HttpStatus.FORBIDDEN).body("Bạn không phải là chủ lịch hẹn này.");
         }
 
-        if ( lichhen.getTrangthai() == 4 || lichhen.getTrangthai() == 6) {
+        if (lichhen.getTrangthai() == 4 || lichhen.getTrangthai() == 6) {
 
 //          Thay đổi thời gian và ca lịch
-            Optional<Lichhen> lichhenDoiOptional = lichHenService.getLichHenByDateandCa(doiLichDTO.getDate(),Integer.parseInt(doiLichDTO.getIdcalichhen()));
+            Optional<Lichhen> lichhenDoiOptional = lichHenService.getLichHenByDateandCa(doiLichDTO.getDate(), Integer.parseInt(doiLichDTO.getIdcalichhen()));
             if (!lichhenDoiOptional.isPresent()) {
                 return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Lịch lỗi.");
             }
@@ -302,7 +310,7 @@ public class DatLichController {
             hoaDonService.addOrUpdate(hoadonOptional);
 
 //            Cập nhập số lần thay đổi
-            lichhen.setSolanthaydoi(lichhen.getSolanthaydoi()+1);
+            lichhen.setSolanthaydoi(lichhen.getSolanthaydoi() + 1);
 
 //            Tạo bản ghi lưu trừ lịch đổi
             lichhenNew.setEmailNguoiDat(lichhen.getEmailNguoiDat());
@@ -321,12 +329,12 @@ public class DatLichController {
             lichhen.setTrangthai(5);
             lichhen.setEmailNguoiDat("default-email@example.com");
             lichhen.setIdkhachhang("demo");
-            if (lichhen.getTrangthaica()){
+            if (lichhen.getTrangthaica()) {
                 lichhen.setTrangthaica(false);
-            }else {
+            } else {
                 return ResponseEntity.ok("Lỗi ca");
             }
-            lichHenService.updateScheduleId(id,lichDoi.getId());
+            lichHenService.updateScheduleId(id, lichDoi.getId());
             lichHenService.addOrUpdate(lichhen);
             return new ResponseEntity<>(lichDoi, HttpStatus.OK);
         }
