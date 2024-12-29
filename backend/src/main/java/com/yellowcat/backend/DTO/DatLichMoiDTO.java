@@ -1,12 +1,13 @@
 package com.yellowcat.backend.DTO;
 
+import com.yellowcat.backend.model.Thucung;
 import jakarta.validation.constraints.NotNull;
 import java.time.LocalDate;
 
 public class DatLichMoiDTO {
 
     @NotNull
-    private Integer idThuCung;
+    private Thucung idThuCung;
 
     @NotNull
     private String date;
@@ -27,11 +28,11 @@ public class DatLichMoiDTO {
     public DatLichMoiDTO() {}
 
     // Getters and Setters
-    public Integer getIdThuCung() {
+    public Thucung getIdThuCung() {
         return idThuCung;
     }
 
-    public void setIdThuCung(Integer idThuCung) {
+    public void setIdThuCung(Thucung idThuCung) {
         this.idThuCung = idThuCung;
     }
 
@@ -78,7 +79,7 @@ public class DatLichMoiDTO {
     @Override
     public String toString() {
         return "DatLichMoiDTO{" +
-                "idThuCung=" + idThuCung +
+                "idThuCung=" + idThuCung.toString() +
                 ", date='" + date + '\'' +
                 ", idcalichhen=" + idcalichhen +
                 ", idDichVu=" + idDichVu +

@@ -144,4 +144,21 @@ public class Thucung {
     public void setMota(String mota) {
         this.mota = mota;
     }
+
+    @Override
+    public String toString() {
+        return "Thucung{" +
+                "id=" + (id == null ? "Không có id" : id) +
+                ", ten='" + ten + '\'' +
+                ", cannang=" + cannang +
+                ", tuoi=" + tuoi +
+                ", giong='" + giong + '\'' +
+                ", idtaikhoan='" + idtaikhoan + '\'' +
+                ", image='" + image + '\'' +
+                ", gioitinh=" + gioitinh +
+                ", cophaimeokhong=" + cophaimeokhong +
+                ", tinhtrangsuckhoe='" + tinhtrangsuckhoe + '\'' +
+                ", mota='" + mota + '\'' +
+                '}';
+    }
 }

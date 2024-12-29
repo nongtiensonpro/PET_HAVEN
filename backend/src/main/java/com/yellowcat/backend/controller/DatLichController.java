@@ -95,13 +95,13 @@ public class DatLichController {
         String email = jwt.getClaimAsString("email");
         Optional<Lichhen> lichhenOptional = lichHenService.getLichHenByDateandCa(LocalDate.parse(datLichDTO.getDate()), datLichDTO.getIdcalichhen());
 
-        Optional<Thucung> thucungOptional = thuCungService.findThuCungById(datLichDTO.getIdThuCung());
+        Optional<Thucung> thucungOptional = thuCungService.findThuCungById(datLichDTO.getIdThuCung().getId());
         if (thucungOptional.isPresent()) {
             Thucung thucung = thucungOptional.get();
             thucung.setIdtaikhoan(idUser);
             thuCungService.saveOrUpdate(thucung);
         } else {
-            thuCungService.saveOrUpdate(new Thucung(idUser, datLichDTO.getIdThuCung()));
+            thuCungService.saveOrUpdate(new Thucung(idUser, datLichDTO.getIdThuCung().getId()));
         }
 
         Optional<Dichvu> dichvuOptional = dichVuService.findById(datLichDTO.getIdDichVu());

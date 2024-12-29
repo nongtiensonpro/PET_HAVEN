@@ -98,7 +98,7 @@ export const useDatLichStore = defineStore('datLichStore', {
                         'Content-Type': 'application/json',
                     },
                     body: JSON.stringify({
-                        idThuCung: dichVuVaThuCungKhachHangDat.thucung.id,
+                        idThuCung: dichVuVaThuCungKhachHangDat.thucung,
                         date: formattedDate,
                         idcalichhen: dichVuVaThuCungKhachHangDat.idlichhen.calichhen.id,
                         idDichVu: dichVuVaThuCungKhachHangDat.dichvu.id,
