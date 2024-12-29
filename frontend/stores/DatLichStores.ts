@@ -84,7 +84,7 @@ export const useDatLichStore = defineStore('datLichStore', {
                     throw new Error('Ngày đặt lịch không hợp lệ');
                 }
                 console.log('Request Body trước khi gửi BE nè :', JSON.stringify({
-                    idThuCung: dichVuVaThuCungKhachHangDat.thucung.id,
+                    idThuCung: dichVuVaThuCungKhachHangDat.thucung,
                     date: formattedDate,
                     idcalichhen: dichVuVaThuCungKhachHangDat.idlichhen.calichhen.id,
                     idDichVu: dichVuVaThuCungKhachHangDat.dichvu.id,
