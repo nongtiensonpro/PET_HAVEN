@@ -20,17 +20,16 @@
                     <div v-if="thayDoiLichHenStore.getDichVu && thayDoiLichHenStore.getCaLichHen">
                       <div class="col mb-3">
                         <div class="row">
-                          <div class="col">
+                          <div class="col-md-6">
                             <h5 class="text-muted"><i class="fas fa-clipboard-list text-primary me-2"></i>Dịch vụ</h5>
                             <p class="mb-0"><strong>Tên:</strong> {{ thayDoiLichHenStore.getDichVu.tendichvu }}</p>
-                            <p class="mb-0"><strong>Giá tiền:</strong>
-                              {{ formatCurrency(thayDoiLichHenStore.getDichVu.giatien) }}</p>
-                            <div class="col">
-                              <p class="mb-0"><strong>Mô tả:</strong> {{ thayDoiLichHenStore.getDichVu.mota }}</p>
-                            </div>
+                            <p class="mb-0"><strong>Tùy chọn:</strong> {{ getSelectedTuyChon }}</p>
+                            <p class="mb-0"><strong>Giá tiền:</strong> {{ formatCurrency(getSelectedTuyChonGiaTien) }}</p>
+                            <p class="mb-0"><strong>Mô tả:</strong></p>
+                            <ul class="list-unstyled" v-html="getSelectedTuyChonMoTa"></ul>
                           </div>
-                          <div class="col">
-                            <img class="card-img-top" src="/assets/image/cat2.jpg" alt="VN Pay">
+                          <div class="col-md-6">
+                            <img class="card-img-top" :src="thayDoiLichHenStore.getDichVu.anh" alt="Hình ảnh dịch vụ">
                           </div>
                           <div class="col-12">
                             <strong>Thời gian : </strong>
@@ -75,7 +74,7 @@
           </div>
         </div>
       </div>
-      <div class="col-lg-6 mb-4" v-if="thayDoiLichHenStore.lichHenDetails &&thayDoiLichHenStore.lichHenDetails.trangthai ===0" >
+      <div class="col-lg-6 mb-4" v-if="thayDoiLichHenStore.lichHenDetails && thayDoiLichHenStore.lichHenDetails.trangthai === 0">
         <div class="card p-4">
           <h4 class="card-title mb-4">Đánh giá lịch hẹn của bạn</h4>
           <div v-if="chiTietDanhGia">
@@ -109,6 +108,13 @@
           <div v-else>
             <ThemDanhGia :idLichHen="String(thayDoiLichHenStore.lichHenDetails.id)" />
             <p class="text-center">Chưa có đánh giá nào cho lịch hẹn này hãy thêm đánh giá!</p>
+          </div>
+        </div>
+      </div>
+      <div v-else class="col">
+        <div class="card">
+          <div class="card-body">
+            <h4 class="card-title text-center">Bạn cần sử dụng dịch vụ sau đó mới có quyền đánh giá dịch vụ</h4>
           </div>
         </div>
       </div>

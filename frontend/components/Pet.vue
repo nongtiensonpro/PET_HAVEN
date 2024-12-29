@@ -5,10 +5,12 @@
       <label for="pet-select" class="form-label" v-else>Hãy nhập thông tin thú cưng đầu tiên của bạn</label>
       <div class="col-md-6">
         <div class="form-group">
-          <label for="pet-select" class="form-label">Thông tin thú cưng đã được lưu {{listThuCung?.length}}</label>
-          <select v-model="selectedPet" id="pet-select" class="form-select">
+          <label for="pet-select" class="form-label">Số lượng thú cưng bạn đã lưu {{listThuCung?.length}}</label>
+          <select v-model="selectedPet" id="pet-select" class="form-select" @change="handlePetSelection">
             <option value="new">Thú cưng mới</option>
-            <option v-if="listThuCung?.length > 0" value="existing">Thú cưng hiện có</option>
+            <option v-for="pet in listThuCung" :key="pet.id" :value="pet.id">
+              {{ pet.ten }} ({{ pet.cophaimeokhong ? 'Mèo' : 'Chó' }})
+            </option>
           </select>
         </div>
       </div>
@@ -136,9 +138,8 @@ const selectedExistingPet = ref(null);
 
 onMounted(() => {
   if (listThuCung.value.length > 0) {
-    selectedPet.value = 'existing';
-    selectedExistingPet.value = listThuCung.value[0].id;
-    loadExistingPet();
+    selectedPet.value = listThuCung.value[0].id;
+    loadExistingPet(selectedPet.value);
   }
 });
 
@@ -184,23 +185,17 @@ const saveData = () => {
       thucung: {
         ...currentData.thucung,
         ...petForm,
-        id: selectedPet.value === 'existing' ? selectedExistingPet.value : null
+        id: selectedPet.value === 'new' ? null : selectedPet.value
       }
     };
     updateDataAfterBooking(updatedData);
   }
 };
 
-const loadExistingPet = () => {
-  if (selectedPet.value === 'existing' && selectedExistingPet.value) {
-    const pet = listThuCung.value.find(p => p.id === selectedExistingPet.value);
-    if (pet) {
-      Object.assign(petForm, pet);
-    }
-  } else {
-    Object.keys(petForm).forEach(key => petForm[key] = '');
-    petForm.gioitinh = true;
-    petForm.cophaimeokhong = true;
+const loadExistingPet = (petId) => {
+  const pet = listThuCung.value.find(p => p.id === petId);
+  if (pet) {
+    Object.assign(petForm, pet);
   }
 };
 
@@ -217,6 +212,17 @@ watch(selectedPet, (newValue) => {
 });
 
 watch(selectedExistingPet, loadExistingPet);
+
+
+const handlePetSelection = () => {
+  if (selectedPet.value === 'new') {
+    Object.keys(petForm).forEach(key => petForm[key] = '');
+    petForm.gioitinh = true;
+    petForm.cophaimeokhong = true;
+  } else {
+    loadExistingPet(selectedPet.value);
+  }
+};
 </script>
 
 <style scoped>
