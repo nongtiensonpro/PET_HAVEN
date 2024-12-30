@@ -46,10 +46,10 @@
         />
       </div>
       <div class="d-flex justify-content-end">
-        <button type="button" class="btn btn-secondary me-2" @click="goBack">
+        <button type="button" class="custom-button" @click="goBack">
           Quay lại
         </button>
-        <button type="submit" class="btn btn-primary">Lưu thay đổi</button>
+        <button type="submit" class="custom-button">Lưu thay đổi</button>
       </div>
     </form>
   </div>
@@ -95,6 +95,7 @@ async function updateVoucher() {
       try {
         await voucherStore.updateVoucher(selectedVoucher.value);
         toast.success('Cập nhật voucher thành công.');
+        return navigateTo("/admin/vouchers")
       } catch (error) {
         toast.error('Có lỗi xảy ra khi cập nhật voucher. Vui lòng thử lại.');
       }

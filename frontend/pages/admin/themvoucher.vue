@@ -64,11 +64,8 @@ async function submitVoucher() {
      await voucherStore.addVoucher(voucher.value);
      voucher.value = new Voucher(0, 0, new Date(), new Date(), '', true);
      const modal = document.getElementById('addVoucherModal');
-     if (modal) {
-       const bsModal = bootstrap.Modal.getInstance(modal);
-       bsModal?.hide();
-     }
      toast.success('Thêm voucher thành công.');
+     return navigateTo('/admin/vouchers');
    }catch (error) {
      toast.error('Thêm voucher thất bại, vui lòng thử lại sau.');
    }

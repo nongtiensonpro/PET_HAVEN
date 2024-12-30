@@ -33,7 +33,7 @@
                   <td>{{ hoaDon.idlichhen.thucung.ten }}</td>
                   <td>{{ formatDate(hoaDon.idlichhen.date) }}</td>
                   <td>{{ formatCurrency(hoaDon.sotien) }}</td>
-                  <td><span class="badge bg-warning">{{ getTrangThai(hoaDon.idlichhen.trangthai) }} {{hoaDon.idlichhen.trangthai}}</span></td>
+                  <td><span class="badge bg-warning">{{ getTrangThai(hoaDon.idlichhen.trangthai) }}</span></td>
                   <td>
 
                     <button

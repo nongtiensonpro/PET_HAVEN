@@ -54,8 +54,8 @@ async function saveTrangThai() {
     try {
       await useQuanLyAdmin.thayDoiTrangThai(selectedLichHen.value.id, selectedTrangThai.value);
       toast.success('Thay đổi trạng thái thành công', {timeout: 3000});
-      // Refresh the data
       listLichHen.value = await useQuanLyAdmin.fetchHoaDonKhachHangs();
+      return navigateTo('/admin/quanlylichhen')
     } catch (error) {
       toast.error(`Không thể thay đổi trạng thái. Vui lòng thử lại. ${error}`, {timeout: 3000});
     }
