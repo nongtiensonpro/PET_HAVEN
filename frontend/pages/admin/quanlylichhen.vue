@@ -70,48 +70,7 @@
               </div>
 
               <div class="col">
-                <button type="button" class="btn btn-sm btn-outline-success" data-bs-toggle="modal" data-bs-target="#exampleModal1"
-                        @click="selectLichHen(lichhen)">
-                  Thay đổi trạng thái
-                </button>
-
-                <!-- Modal -->
-                <div class="modal fade" id="exampleModal1" tabindex="-1" aria-labelledby="exampleModalLabel1"
-                >
-                  <div class="modal-dialog">
-                    <div class="modal-content">
-                      <div class="modal-header">
-                        <h1 class="modal-title fs-5" id="exampleModalLabel1">Thay đổi trạng thái</h1>
-                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                      </div>
-                      <div class="modal-body">
-                        <div class="form-floating">
-                          <select class="form-select" id="floatingSelect" v-model="selectedTrangThai"
-                                  :aria-label="'Trạng thái bây giờ là ' + getTrangThai(selectedLichHen?.trangthai)">
-                            <option selected>Lựa chọn trạng thái</option>
-                            <option>{{ selectedLichHen?.id }}</option>
-                            <option value="0">Thành công</option>
-                            <option value="1">Thất bại</option>
-                            <option value="2">Đã hủy</option>
-                            <option value="3">Chờ thanh toán</option>
-                            <option value="4">Chờ xác nhận</option>
-                            <option value="5">Rỗng</option>
-                            <option value="6">Thanh toán thành công</option>
-                          </select>
-                          <label for="floatingSelect">Trạng thái bây giờ là {{
-                              getTrangThai(selectedLichHen?.trangthai)
-                            }}</label>
-                        </div>
-                      </div>
-                      <div class="modal-footer">
-                        <button type="button" class="custom-button" data-bs-dismiss="modal">Đóng</button>
-                        <button type="button" class="custom-button"
-                                @click="saveTrangThai(selectedLichHen?.id, selectedTrangThai)">Lưu trạng thái
-                        </button>
-                      </div>
-                    </div>
-                  </div>
-                </div>
+                <button type="button" class="btn btn-sm btn-outline-success" @click="thayDoiTrangThai(lichhen)">Thay đổi trạng thái</button>
               </div>
               <div class="col">
                 <button type="button" class="btn btn-sm btn-outline-info" @click="viewHoaDon(lichhen.idcalichhen.id)">Chi tiết</button>
@@ -155,6 +114,7 @@ import Swal from 'sweetalert2';
 import {useToast} from 'vue-toastification';
 import CalendarAdmin from "~/components/CalendarChangeAdmin.vue";
 import type {Lichhen} from "~/models/LichSuDatLich";
+import Thaydoitrangthai from "~/pages/admin/thaydoitrangthai/[id].vue";
 
 const useQuanLyAdmin = useQuanLyLichHenAdminStore();
 const lichhen = ref<Lichhen[]>([]);
@@ -238,27 +198,7 @@ const getTrangThai = (status: number): string => {
   return trangThaiMap[status] || 'Không xác định';
 };
 
-async function saveTrangThai(id: number, idTrangThai: number) {
-  const result = await Swal.fire({
-    title: 'Xác nhận',
-    text: 'Bạn có muốn thay đổi trạng thái không?',
-    icon: 'warning',
-    showCancelButton: true,
-    confirmButtonColor: '#3085d6',
-    cancelButtonColor: '#d33',
-    confirmButtonText: 'Có',
-    cancelButtonText: 'Không',
-  });
-  if (result.isConfirmed) {
-    try {
-      await useQuanLyAdmin.thayDoiTrangThai(id, idTrangThai);
-      toast.success('Thay đổi trạng thái thành công', {timeout: 3000});
-      await fetchHoaDon(); // Refresh the data
-    } catch (error) {
-      toast.error(`Không thể thay đổi trạng thái. Vui lòng thử lại. ${error}`, {timeout: 3000});
-    }
-  }
-}
+
 
 async function doiNgayHen(ngayHen: string, idcalichhen: number) {
   const result = await Swal.fire({
@@ -285,7 +225,12 @@ const viewHoaDon = (id: number) => {
   navigateTo(`/admin/chitiethoadon/${id}`);
 };
 
+const thayDoiTrangThai = (lichHen: Lichhen) => {
+  navigateTo(`/admin/thaydoitrangthai/${lichHen.id}`);
+}
+
 </script>
 
 <style scoped>
+
 </style>

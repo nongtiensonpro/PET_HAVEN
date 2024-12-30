@@ -5,80 +5,56 @@
         <span class="visually-hidden">Đang tải thông tin hóa đơn...</span>
       </div>
     </div>
-    <div v-else>
-      <h1 class="mb-4 text-center">Chi tiết hóa đơn #{{ hoaDon.id }}</h1>
-
+    <div v-else-if="hoaDon">
+      <h2 class="mb-4">Chi tiết hóa đơn</h2>
       <div class="row g-4">
-        <div class="col-md-6">
-          <section class="info-section">
-            <h3 class="section-title">Thông tin khách hàng</h3>
-            <p><strong>Email:</strong> {{ hoaDon.idlichhen.emailNguoiDat }}</p>
-            <p><strong>ID Khách hàng:</strong> {{ hoaDon.idlichhen.idkhachhang }}</p>
-          </section>
-
-          <section class="info-section">
-            <h3 class="section-title">Thông tin hóa đơn</h3>
-            <p><strong>Ngày đặt:</strong> {{ formatDate(hoaDon.date) }}</p>
-            <p><strong>Số tiền đầu:</strong> {{ hoaDon.sotienbandau }} USD</p>
-            <p><strong>Số tiền cuối:</strong> {{ hoaDon.sotien }} USD</p>
-            <p><strong>Ngày thanh toán:</strong> {{ formatDate(hoaDon.ngaythanhtoan) }}</p>
-            <p><strong>Phương thức thanh toán:</strong> {{ hoaDon.phuongthucthanhtoan }}</p>
-            <p><strong>Trạng thái:</strong> {{ getTrangThai(hoaDon.trangthai) }}</p>
-            <p><strong>Người thanh toán:</strong> {{ hoaDon.nguoithanhtoan }}</p>
-            <p><strong>Mã giao dịch:</strong> {{ hoaDon.magiaodich }}</p>
-          </section>
-
-          <section class="info-section">
-            <h3 class="section-title">Thông tin lịch hẹn</h3>
-            <p><strong>ID Lịch hẹn:</strong> {{ hoaDon.idlichhen.id }}</p>
-            <p><strong>Ngày hẹn:</strong> {{ formatDate(hoaDon.idlichhen.date) }}</p>
-            <p><strong>Trạng thái lịch hẹn:</strong> {{ getTrangThaiLichHen(hoaDon.idlichhen.trangthai) }}</p>
-            <p><strong>Trạng thái ca:</strong> {{ hoaDon.idlichhen.trangthaica ? 'Đã đặt' : 'Chưa đặt' }}</p>
-            <p><strong>Số lần thay đổi:</strong> {{ hoaDon.idlichhen.solanthaydoi }}</p>
-            <p><strong>Số lần nhắc nhở:</strong> {{ hoaDon.idlichhen.solannhacnho }}</p>
-          </section>
+        <div class="col-md-6 info-section">
+          <h3 class="section-title">Thông tin hóa đơn</h3>
+          <p><strong>Mã hóa đơn:</strong> {{ hoaDon.id }}</p>
+          <p><strong>Ngày lập:</strong> {{ formatDate(hoaDon.date) }}</p>
+          <p><strong>Trạng thái:</strong> {{ getTrangThai(hoaDon.trangthai) }}</p>
+          <p><strong>Phương thức thanh toán:</strong> {{ hoaDon.phuongthucthanhtoan }}</p>
+          <p><strong>Mã giao dịch:</strong> {{ hoaDon.magiaodich }}</p>
+          <p><strong>Người thanh toán:</strong> {{ hoaDon.nguoithanhtoan }}</p>
+          <p v-if="hoaDon.idgiamgia"><strong>Mã giảm giá:</strong> {{ hoaDon.idgiamgia }}</p>
         </div>
-
-        <div class="col-md-6">
-                    <section class="info-section">
-            <h3 class="section-title">Thông tin thú cưng</h3>
-            <p><strong>ID:</strong> {{ hoaDon.idlichhen.thucung.id }}</p>
-            <p><strong>Tên:</strong> {{ hoaDon.idlichhen.thucung.ten }}</p>
-            <p><strong>Cân nặng:</strong> {{ hoaDon.idlichhen.thucung.cannang }} kg</p>
-            <p><strong>Tuổi:</strong> {{ hoaDon.idlichhen.thucung.tuoi }} năm</p>
-            <p><strong>Giống:</strong> {{ hoaDon.idlichhen.thucung.giong }}</p>
-            <p><strong>ID Tài khoản:</strong> {{ hoaDon.idlichhen.thucung.idtaikhoan }}</p>
-            <p><strong>Giới tính:</strong> {{ hoaDon.idlichhen.thucung.gioitinh ? 'Đực' : 'Cái' }}</p>
-            <p><strong>Loại:</strong> {{ hoaDon.idlichhen.thucung.cophaimeokhong ? 'Mèo' : 'Chó' }}</p>
-            <p><strong>Tình trạng sức khỏe:</strong> {{ hoaDon.idlichhen.thucung.tinhtrangsuckhoe || 'Không có thông tin' }}</p>
-            <p><strong>Mô tả:</strong> {{ hoaDon.idlichhen.thucung.mota || 'Không có mô tả' }}</p>
-          </section>
-
-          <section class="info-section">
-            <h3 class="section-title">Thông tin dịch vụ</h3>
-            <p><strong>Tên dịch vụ:</strong> {{ hoaDon.idlichhen.dichvu.tendichvu }}</p>
-            <p><strong>Mô tả:</strong> {{ hoaDon.idlichhen.dichvu.mota }}</p>
-            <p><strong>Giá tiền:</strong> {{ hoaDon.idlichhen.dichvu.giatien }} VND</p>
-            <p><strong>Trạng thái dịch vụ:</strong>
-              {{ hoaDon.idlichhen.dichvu.trangthai ? 'Hoạt động' : 'Không hoạt động' }}</p>
-          </section>
-
-          <section class="info-section">
-            <h3 class="section-title">Thông tin ca lịch hẹn</h3>
-            <p><strong>Tên ca:</strong> {{ hoaDon.idlichhen.idcalichhen.tenca }}</p>
-            <p><strong>Thời gian ca:</strong> {{ hoaDon.idlichhen.idcalichhen.thoigianca }}</p>
-            <p><strong>Trạng thái ca:</strong>
-              {{ hoaDon.idlichhen.idcalichhen.trangthai ? 'Hoạt động' : 'Không hoạt động' }}</p>
-          </section>
-
-          <section class="info-section" v-if="hoaDon.idgiamgia && hoaDon.idgiamgia.phantramgiam > 0">
-            <h3 class="section-title">Thông tin giảm giá</h3>
-            <p><strong>Phần trăm giảm:</strong> {{ hoaDon.idgiamgia.phantramgiam }}%</p>
-            <p><strong>Ngày bắt đầu:</strong> {{ formatDate(hoaDon.idgiamgia.ngaybatdau) }}</p>
-            <p><strong>Ngày kết thúc:</strong> {{ formatDate(hoaDon.idgiamgia.ngayketthuc) }}</p>
-            <p><strong>Mô tả:</strong> {{ hoaDon.idgiamgia.mota }}</p>
-            <p><strong>Trạng thái:</strong> {{ hoaDon.idgiamgia.trangthai ? 'Đang áp dụng' : 'Không áp dụng' }}</p>
-          </section>
+        <div class="col-md-6 info-section">
+          <h3 class="section-title">Thông tin thanh toán</h3>
+          <p><strong>Số tiền ban đầu:</strong> {{ formatCurrency(hoaDon.sotienbandau) }}</p>
+          <p><strong>Số tiền thanh toán:</strong> {{ formatCurrency(hoaDon.sotien) }}</p>
+          <p><strong>Ngày thanh toán:</strong> {{ formatDate(hoaDon.ngaythanhtoan) }}</p>
+        </div>
+        <div class="col-md-12 info-section">
+          <h3 class="section-title">Thông tin lịch hẹn</h3>
+          <p><strong>Mã lịch hẹn:</strong> {{ hoaDon.idlichhen.id }}</p>
+          <p><strong>Mã khách hàng:</strong> {{ hoaDon.idlichhen.idkhachhang }}</p>
+          <p><strong>Ngày hẹn:</strong> {{ formatDate(hoaDon.idlichhen.date) }}</p>
+          <p><strong>Trạng thái lịch hẹn:</strong> {{ getTrangThaiLichHen(hoaDon.idlichhen.trangthai) }}</p>
+          <p><strong>Email người đặt:</strong> {{ hoaDon.idlichhen.emailNguoiDat }}</p>
+          <p><strong>Ca lịch hẹn:</strong> {{ hoaDon.idlichhen.idcalichhen.thoigianca }}</p>
+          <p><strong>Trạng thái ca:</strong> {{ hoaDon.idlichhen.trangthaica ? 'Đã xác nhận' : 'Chưa xác nhận' }}</p>
+          <p><strong>Số lần thay đổi:</strong> {{ hoaDon.idlichhen.solanthaydoi }}</p>
+          <p><strong>Số lần nhắc nhở:</strong> {{ hoaDon.idlichhen.solannhacnho }}</p>
+        </div>
+        <div class="col-md-6 info-section">
+          <h3 class="section-title">Thông tin thú cưng</h3>
+          <p><strong>ID:</strong> {{ hoaDon.idlichhen.thucung.id }}</p>
+          <p><strong>Tên:</strong> {{ hoaDon.idlichhen.thucung.ten }}</p>
+          <p><strong>Cân nặng:</strong> {{ hoaDon.idlichhen.thucung.cannang }} kg</p>
+          <p><strong>Tuổi:</strong> {{ hoaDon.idlichhen.thucung.tuoi }} tuổi</p>
+          <p><strong>Giống:</strong> {{ hoaDon.idlichhen.thucung.giong }}</p>
+          <p><strong>Giới tính:</strong> {{ hoaDon.idlichhen.thucung.gioitinh ? 'Đực' : 'Cái' }}</p>
+          <p><strong>Loại:</strong> {{ hoaDon.idlichhen.thucung.cophaimeokhong ? 'Mèo' : 'Chó' }}</p>
+          <p><strong>Tình trạng sức khỏe:</strong> {{ hoaDon.idlichhen.thucung.tinhtrangsuckhoe }}</p>
+          <p><strong>Mô tả:</strong> {{ hoaDon.idlichhen.thucung.mota }}</p>
+        </div>
+        <div class="col-md-6 info-section">
+          <h3 class="section-title">Thông tin tùy chọn cân nặng</h3>
+          <p><strong>ID:</strong> {{ hoaDon.idlichhen.tuyChonCanNang.id }}</p>
+          <p><strong>Cân nặng tối thiểu:</strong> {{ hoaDon.idlichhen.tuyChonCanNang.cannangmin }} kg</p>
+          <p><strong>Cân nặng tối đa:</strong> {{ hoaDon.idlichhen.tuyChonCanNang.cannangmax ? `${hoaDon.idlichhen.tuyChonCanNang.cannangmax} kg` : 'Không giới hạn' }}</p>
+          <p><strong>Giá tiền:</strong> {{ formatCurrency(hoaDon.idlichhen.tuyChonCanNang.giatien) }}</p>
+          <p><strong>Trạng thái:</strong> {{ hoaDon.idlichhen.tuyChonCanNang.trangthai ? 'Hoạt động' : 'Không hoạt động' }}</p>
         </div>
       </div>
 
@@ -91,19 +67,24 @@
         </div>
       </div>
     </div>
+    <div v-else class="text-center">
+      <p>Không tìm thấy thông tin hóa đơn.</p>
+    </div>
   </div>
 </template>
 
 <script setup lang="ts">
-import {ref, onMounted} from 'vue';
-import {useRoute, useRouter} from 'vue-router';
-import {useQuanLyHoaDonStore} from '~/stores/QuanLyHoaDon';
+import { ref, onMounted } from 'vue';
+import { useRoute, useRouter } from 'vue-router';
+import { useQuanLyHoaDonStore } from '~/stores/QuanLyHoaDon';
+import Hoadon from "~/models/Hoadon";
 
 const route = useRoute();
 const router = useRouter();
 const store = useQuanLyHoaDonStore();
-const hoaDon = ref(null);
+const hoaDon = ref<Hoadon | null>(null);
 const loading = ref(true);
+
 const getTrangThaiLichHen = (trangthai: number) => {
   switch (trangthai) {
     case 0:
@@ -116,10 +97,20 @@ const getTrangThaiLichHen = (trangthai: number) => {
       return 'Không xác định';
   }
 };
+
 const fetchHoaDon = async (id: number) => {
-  await store.fetchListHoaDon();
-  hoaDon.value = store.ListHoaDon.find(item => item.id === id);
-  loading.value = false;
+  try {
+    loading.value = true;
+    await store.fetchListHoaDon();
+    hoaDon.value = store.ListHoaDon.find((item: Hoadon) => item.idlichhen.id === id) || null;
+    if (!hoaDon.value) {
+      console.error('Không tìm thấy hóa đơn với ID:', id);
+    }
+  } catch (error) {
+    console.error('Lỗi khi lấy thông tin hóa đơn:', error);
+  } finally {
+    loading.value = false;
+  }
 };
 
 const formatDate = (dateString: string) => {
@@ -131,6 +122,10 @@ const formatDate = (dateString: string) => {
   const minutes = String(date.getMinutes()).padStart(2, '0');
 
   return `${day}/${month}/${year} ${hours}:${minutes}`;
+};
+
+const formatCurrency = (amount: number) => {
+  return new Intl.NumberFormat('vi-VN', { style: 'currency', currency: 'VND' }).format(amount);
 };
 
 const getTrangThai = (trangthai: number) => {
@@ -155,41 +150,12 @@ onMounted(() => {
   fetchHoaDon(id);
 });
 
-function inHoaDon(id: String) {
+function inHoaDon(id: string) {
   store.inHoaDon(id);
 }
 </script>
 
+
 <style scoped>
-.container {
-  max-width: 1000px;
-  margin: 0 auto;
-}
 
-.info-section {
-  background-color: #f8f9fa;
-  border-radius: 8px;
-  padding: 20px;
-  margin-bottom: 20px;
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-}
-
-.section-title {
-  color: #007bff;
-  border-bottom: 2px solid #007bff;
-  padding-bottom: 10px;
-  margin-bottom: 15px;
-  font-size: 1.2rem;
-}
-
-.btn {
-  padding: 10px 20px;
-  font-size: 1rem;
-}
-
-@media (max-width: 768px) {
-  .col-md-6 {
-    margin-bottom: 20px;
-  }
-}
 </style>

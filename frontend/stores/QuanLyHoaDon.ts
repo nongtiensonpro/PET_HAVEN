@@ -20,7 +20,7 @@ export const useQuanLyHoaDonStore = defineStore('quanLyHoaDonStore', {
                 });
                 const data = await response.json();
                 this.ListHoaDon = data;
-                console.log(data);
+               console.log(JSON.stringify(data, null, 2));
             } catch (error) {
                 console.error('Error fetching list hoa don:', error);
             }
