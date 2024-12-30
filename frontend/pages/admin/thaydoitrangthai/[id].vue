@@ -70,9 +70,6 @@ const formattedDate = computed(() => {
   return '';
 });
 
-function quayLaiQuanLyLichHen() {
-  return navigateTo('/admin/quanlylichhen');
-}
 </script>
 
 <template>
@@ -110,9 +107,6 @@ function quayLaiQuanLyLichHen() {
         <div class="row">
           <div class="col">
             <button type="button" class="custom-button" @click="saveTrangThai">Lưu trạng thái</button>
-          </div>
-          <div class="col">
-            <button type="button" class="custom-button" @click="quayLaiQuanLyLichHen">Quay về</button>
           </div>
         </div>
       </div>

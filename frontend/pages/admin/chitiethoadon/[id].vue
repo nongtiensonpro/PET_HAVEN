@@ -62,9 +62,6 @@
         <div class="col-md-6">
           <button @click="inHoaDon(hoaDon.id)" class="btn btn-primary w-100">In hóa đơn</button>
         </div>
-        <div class="col-md-6">
-          <button @click="goBack" class="btn btn-secondary w-100">Quay lại</button>
-        </div>
       </div>
     </div>
     <div v-else class="text-center">
@@ -141,9 +138,6 @@ const getTrangThai = (trangthai: number) => {
   }
 };
 
-const goBack = () => {
-  router.push('/admin/quanlyhoadon');
-};
 
 onMounted(() => {
   const id = Number(route.params.id);
