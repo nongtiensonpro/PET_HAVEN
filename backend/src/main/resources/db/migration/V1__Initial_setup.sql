@@ -78,7 +78,7 @@ CREATE TABLE LichHen
     ID              SERIAL PRIMARY KEY,
     idKhachHang     VARCHAR(255) NOT NULL,
     idThuCung       INT REFERENCES ThuCung (ID),
-    idDichVu        INT REFERENCES DichVu (ID),
+    idTuyChonCanNang        INT REFERENCES TuyChonCanNang (ID),
     Date            DATE         NOT NULL,
     TrangThai       INT          NOT NULL,
     EmailNguoiDat   VARCHAR(255) NOT NULL default '123@gmail.com',

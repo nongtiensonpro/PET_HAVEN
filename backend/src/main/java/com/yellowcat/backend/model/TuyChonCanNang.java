@@ -31,7 +31,7 @@ public class TuyChonCanNang {
     @JsonProperty
     @NotNull
     @Column(name = "giatien", nullable = false)
-    private Integer giatien;
+    private Double giatien;
 
     @JsonProperty
     @NotNull
@@ -70,11 +70,11 @@ public class TuyChonCanNang {
         this.cannangmax = cannangmax;
     }
 
-    public Integer getGiatien() {
+    public Double getGiatien() {
         return giatien;
     }
 
-    public void setGiatien(Integer giatien) {
+    public void setGiatien(Double giatien) {
         this.giatien = giatien;
     }
 
