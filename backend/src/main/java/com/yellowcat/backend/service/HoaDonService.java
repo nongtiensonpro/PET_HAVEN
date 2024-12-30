@@ -87,8 +87,7 @@ public class HoaDonService {
     }
 
     public List<Hoadon> getAllHoaDonChuaThanhToan() {
-        System.out.println(LocalDate.now());
-        return hoadonRepository.findByIdlichhen_Date(LocalDate.now());
+        return hoadonRepository.findByIdlichhen_DateAndIdlichhen_Trangthaica(LocalDate.now(),true);
     }
 
     public List<Hoadon> getALl() {
@@ -104,7 +103,7 @@ public class HoaDonService {
     }
 
     public Optional<Hoadon> finHoadonByIdLich(Integer id) {
-        return hoadonRepository.findByIdlichhen_IdAndTrangthai(id, 1);
+        return hoadonRepository.findByIdlichhen_Id(id);
     }
 
     public Optional<Hoadon> finHoadonByIdLich2(Integer id, Integer tt) {

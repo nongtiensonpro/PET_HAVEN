@@ -192,7 +192,6 @@ public class LichHenController {
         Optional<Hoadon> hoadonOptional = hoaDonService.finHoadonByIdLich(id);
         if (hoadonOptional.isPresent()) {
             Hoadon hoadon = hoadonOptional.get();
-
             if (lichhen == null) {
                 return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
             }

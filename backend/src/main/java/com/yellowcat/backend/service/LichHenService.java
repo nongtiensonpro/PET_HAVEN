@@ -231,8 +231,9 @@ public class LichHenService {
             return CompletableFuture.completedFuture(ResponseEntity.notFound().build());
         }
         Lichhen lichhen1 = lichhenOptional.get();
+        System.out.println(1);
         if (lichhen1.getTrangthai() == 4) {
-
+            System.out.println(2);
             Optional<Hoadon> hoadonOptional = hoaDonService.finHoadonByIdLich(lichhen1.getId());
             Optional<Lichhen> lichhenOptional1 = lichhenRepository.findById(lichhen1.getId());
             if (!lichhenOptional1.isPresent()) {
@@ -268,6 +269,7 @@ public class LichHenService {
             }
 
             if (hoadonOptional.isPresent()){
+                System.out.println(3);
                 if (hoadonOptional.get().getTrangthai() == 1){
                     Hoadon hoadon = hoadonOptional.get();
                     hoadon.setTrangthai(3);
@@ -279,6 +281,7 @@ public class LichHenService {
             lichhenRepository.save(lichhen);
             return CompletableFuture.completedFuture(ResponseEntity.ok("Lịch hẹn đã được hủy thành công."));
         } else if (lichhen1.getTrangthai() == 6) {
+            System.out.println(4);
             Optional<Lichhen> lichhenOptional1 = lichhenRepository.findById(lichhen1.getId());
             if (!lichhenOptional1.isPresent()) {
                 return CompletableFuture.completedFuture(ResponseEntity.notFound().build());
