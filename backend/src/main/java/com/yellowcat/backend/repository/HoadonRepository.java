@@ -11,7 +11,7 @@ import java.util.Optional;
 
 public interface HoadonRepository extends JpaRepository<Hoadon, Integer> {
 
-    List<Hoadon> findByIdlichhen_Date(LocalDate date);
+    List<Hoadon> findByIdlichhen_DateAndIdlichhen_Trangthaica(LocalDate date,boolean tt);
 
     @Query("SELECT h FROM Hoadon h WHERE h.nguoithanhtoan = :email " +
             "AND h.phuongthucthanhtoan = 'Offline' " +
@@ -20,6 +20,10 @@ public interface HoadonRepository extends JpaRepository<Hoadon, Integer> {
     , @Param("date") LocalDate date);
     Optional<Hoadon> findByIdlichhen_IdAndTrangthai(Integer idlichhen,int tt);
 
+    @Query("SELECT hd FROM Hoadon hd " +
+            "JOIN Lichhen lh ON lh.id = hd.idlichhen.id " +
+            "WHERE hd.trangthai != 3 "+
+            "AND lh.id = :idlichhen")
     Optional<Hoadon> findByIdlichhen_Id(Integer idlichhen);
 
 
@@ -31,7 +35,7 @@ public interface HoadonRepository extends JpaRepository<Hoadon, Integer> {
             "JOIN Lichhen lh ON lh.id = hd.idlichhen.id " +
             "WHERE lh.trangthaica = :trangthaica " +
             "AND lh.idkhachhang = :idkhachhang " +
-            "AND lh.trangthai <> 3")
+            "AND hd.trangthai != 3")
     List<Hoadon> findByIdlichhen_TrangthaicaAndIdlichhen_IdkhachhangAndTrangthai(
             @Param("trangthaica") Boolean trangthaica,
             @Param("idkhachhang") String idkhachhang
