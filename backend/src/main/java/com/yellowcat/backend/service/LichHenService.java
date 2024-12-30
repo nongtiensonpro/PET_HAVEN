@@ -233,7 +233,7 @@ public class LichHenService {
         Lichhen lichhen1 = lichhenOptional.get();
         if (lichhen1.getTrangthai() == 4) {
 
-            
+            Optional<Hoadon> hoadonOptional = hoaDonService.finHoadonByIdLich(lichhen1.getId());
             Optional<Lichhen> lichhenOptional1 = lichhenRepository.findById(lichhen1.getId());
             if (!lichhenOptional1.isPresent()) {
                 return CompletableFuture.completedFuture(ResponseEntity.notFound().build());
@@ -251,7 +251,7 @@ public class LichHenService {
             lichhenNew.setIdcalichhen(lichhen.getIdcalichhen());
             lichhenNew.setThoigianhuy(LocalDateTime.now());
             lichhenNew.setThucung(lichhen.getThucung());
-            lichhenNew.setDichvu(lichhen.getDichvu());
+            lichhenNew.setTuyChonCanNang(lichhen.getTuyChonCanNang());
             lichhenNew.setDate(lichhen.getDate());
             lichhenNew.setTrangthaica(true);
 
@@ -259,11 +259,22 @@ public class LichHenService {
             lichhen.setIdkhachhang("demo");
             lichhen.setTrangthai(5);
             lichhen.setEmailNguoiDat("default-email@example.com");
+            lichhen.setThucung(null);
+            lichhen.setTuyChonCanNang(null);
             if (lichhen.getTrangthaica()) {
                 lichhen.setTrangthaica(false);
             } else {
                 return CompletableFuture.completedFuture(ResponseEntity.badRequest().build());
             }
+
+            if (hoadonOptional.isPresent()){
+                if (hoadonOptional.get().getTrangthai() == 1){
+                    Hoadon hoadon = hoadonOptional.get();
+                    hoadon.setTrangthai(3);
+                    hoaDonService.addOrUpdate(hoadon);
+                }
+            }
+
             lichhenRepository.save(lichhenNew);
             lichhenRepository.save(lichhen);
             return CompletableFuture.completedFuture(ResponseEntity.ok("Lịch hẹn đã được hủy thành công."));

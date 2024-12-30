@@ -139,7 +139,7 @@ public class DichVuDTO {
                 this.canNangMax = canNangMax;
             }
 
-            public int getGiaTien() {
+            public double getGiaTien() {
                 return giaTien;
             }
 

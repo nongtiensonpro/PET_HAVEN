@@ -41,7 +41,7 @@ dependencies {
 	// https://mvnrepository.com/artifact/com.paypal.sdk/rest-api-sdk
 	implementation group: 'com.paypal.sdk', name: 'rest-api-sdk', version: '1.14.0'
 	implementation 'com.itextpdf:itext7-core:7.2.5'
-
+//	implementation 'com.payos:payos-sdk:1.0.0'
 }
 
 tasks.named('test') {
