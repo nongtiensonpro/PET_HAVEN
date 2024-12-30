@@ -21,24 +21,33 @@
                       <div class="col mb-3">
                         <div class="row">
                           <div class="col-md-6">
-                            <h5 class="text-muted"><i class="fas fa-clipboard-list text-primary me-2"></i>Dịch vụ</h5>
+                            <div class="row">
+                              <div class="col">
+                                <h5 class="text-muted"><i class="fas fa-clipboard-list text-primary me-2"></i>Dịch vụ </h5>
+                              </div>
+                              <div class="col">
+                                <button @click="chiTietDichVu(thayDoiLichHenStore.getDichVu.id)" type="button" class="custom-button"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-info" viewBox="0 0 16 16">
+                                  <path d="m8.93 6.588-2.29.287-.082.38.45.083c.294.07.352.176.288.469l-.738 3.468c-.194.897.105 1.319.808 1.319.545 0 1.178-.252 1.465-.598l.088-.416c-.2.176-.492.246-.686.246-.275 0-.375-.193-.304-.533zM9 4.5a1 1 0 1 1-2 0 1 1 0 0 1 2 0"/>
+                                </svg></button>
+                              </div>
+                            </div>
+
                             <p class="mb-0"><strong>Tên:</strong> {{ thayDoiLichHenStore.getDichVu.tendichvu }}</p>
-                            <p class="mb-0"><strong>Tùy chọn:</strong> {{ getSelectedTuyChon }}</p>
-                            <p class="mb-0"><strong>Giá tiền:</strong> {{ formatCurrency(getSelectedTuyChonGiaTien) }}</p>
-                            <p class="mb-0"><strong>Mô tả:</strong></p>
-                            <ul class="list-unstyled" v-html="getSelectedTuyChonMoTa"></ul>
+                            <p class="mb-0"><strong>Mô tả:</strong> {{ thayDoiLichHenStore.getDichVu.mota }}</p>
+                            <p class="mb-0"><strong>Tùy chọn dịch vụ:</strong> {{lichHen?.dichvu.tuyChonDichVus[0].tentuychon }}</p>
+                            <p class="mb-0"><strong>Giá tiền:</strong> {{lichHen?.dichvu.tuyChonDichVus[0].tuyChonCanNangs[0].giatien }} USD</p>
                           </div>
                           <div class="col-md-6">
                             <img class="card-img-top" :src="thayDoiLichHenStore.getDichVu.anh" alt="Hình ảnh dịch vụ">
                           </div>
                           <div class="col-12">
-                            <strong>Thời gian : </strong>
+                            <h5 class="text-muted"><i class="fas fa-clipboard-list text-primary me-2"></i>Thời gian :</h5>
                             <div class="row">
                               <div class="col">
-                                Giờ : {{ thayDoiLichHenStore.getCaLichHen.thoigianca }}
+                                <strong>Ngày :  </strong>{{ formatDate(thayDoiLichHenStore.getDate) }}
                               </div>
                               <div class="col">
-                                Ngày : {{ formatDate(thayDoiLichHenStore.getDate) }}
+                                <strong>Giờ : </strong> {{ thayDoiLichHenStore.getCaLichHen.thoigianca }}
                               </div>
                             </div>
                           </div>
@@ -74,20 +83,22 @@
           </div>
         </div>
       </div>
-      <div class="col-lg-6 mb-4" v-if="thayDoiLichHenStore.lichHenDetails && thayDoiLichHenStore.lichHenDetails.trangthai === 0">
+      <div class="col-lg-6 mb-4"
+           v-if="thayDoiLichHenStore.lichHenDetails && thayDoiLichHenStore.lichHenDetails.trangthai === 0">
         <div class="card p-4">
           <h4 class="card-title mb-4">Đánh giá lịch hẹn của bạn</h4>
           <div v-if="chiTietDanhGia">
             <div class="mb-3 p-3 border rounded">
               <div class="d-flex justify-content-between align-items-center mb-2">
                 <div>
-                  Đánh giá  :
+                  Đánh giá :
                 </div>
                 <div class="heart-rating">
                   <span v-for="n in Number(chiTietDanhGia.sosao)" :key="n" class="text-warning">
                     <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor"
                          class="bi bi-star-fill" viewBox="0 0 16 16">
-                      <path d="M3.612 15.443c-.386.198-.824-.149-.746-.592l.83-4.73L.173 6.765c-.329-.314-.158-.888.283-.95l4.898-.696L7.538.792c.197-.39.73-.39.927 0l2.184 4.327 4.898.696c.441.062.612.636.282.95l-3.522 3.356.83 4.73c.078.443-.36.79-.746.592L8 13.187l-4.389 2.256z"/>
+                      <path
+                          d="M3.612 15.443c-.386.198-.824-.149-.746-.592l.83-4.73L.173 6.765c-.329-.314-.158-.888.283-.95l4.898-.696L7.538.792c.197-.39.73-.39.927 0l2.184 4.327 4.898.696c.441.062.612.636.282.95l-3.522 3.356.83 4.73c.078.443-.36.79-.746.592L8 13.187l-4.389 2.256z"/>
                     </svg>
                   </span>
                 </div>
@@ -106,7 +117,7 @@
             </div>
           </div>
           <div v-else>
-            <ThemDanhGia :idLichHen="String(thayDoiLichHenStore.lichHenDetails.id)" />
+            <ThemDanhGia :idLichHen="String(thayDoiLichHenStore.lichHenDetails.id)"/>
             <p class="text-center">Chưa có đánh giá nào cho lịch hẹn này hãy thêm đánh giá!</p>
           </div>
         </div>
@@ -123,25 +134,35 @@
 </template>
 
 <script setup lang="ts">
-import { useRoute } from 'vue-router'
-import { ref, onMounted } from 'vue';
-import { useThayDoiLichHenStore } from '~/stores/ThayDoiLichHen'
-import { useDanhGiaStore } from '~/stores/DanhGiaStores';
-import type { ChiTietDanhGia } from '~/models/ChiTietDanhGia';
-import { useToast } from "vue-toastification";
+import {useRoute} from 'vue-router'
+import {ref, onMounted} from 'vue';
+import {useThayDoiLichHenStore} from '~/stores/ThayDoiLichHen'
+import {useDanhGiaStore} from '~/stores/DanhGiaStores';
+import type {ChiTietDanhGia} from '~/models/ChiTietDanhGia';
+import {useToast} from "vue-toastification";
 import CapNhatDanhGia from "~/components/CapNhatDanhGia.vue";
 
 const toast = useToast();
 
+
 const thayDoiLichHenStore = useThayDoiLichHenStore()
 const danhGiaStore = useDanhGiaStore()
 const chiTietDanhGia = ref<ChiTietDanhGia | null>(null);
-import type  DanhGia  from '~/models/DanhGia';
+import type DanhGia from '~/models/DanhGia';
+import type LichHenDetails from "~/models/LichHenDetails";
+
 const route = useRoute()
 const id = Array.isArray(route.params.id) ? route.params.id[0] : route.params.id;
+definePageMeta({
+  middleware: ['auth']
+})
+
+
+const lichHen = ref<LichHenDetails | null>(null);
 
 onMounted(async () => {
   await thayDoiLichHenStore.fetchLichHenDetails(Number(id))
+  lichHen.value = thayDoiLichHenStore.lichHenDetails || null;
   await hienThiDanhGia(id)
 })
 const convertToDanhGia = (chiTietDanhGia: ChiTietDanhGia | null): DanhGia | null => {
@@ -149,10 +170,11 @@ const convertToDanhGia = (chiTietDanhGia: ChiTietDanhGia | null): DanhGia | null
   return {
     ...chiTietDanhGia,
     toJSON() {
-      return { ...this };
+      return {...this};
     }
   };
 };
+
 async function hienThiDanhGia(idLichHen: string) {
   const result = await danhGiaStore.chitietdanhgiatheolichhen(idLichHen);
   if ('success' in result) {
@@ -163,22 +185,6 @@ async function hienThiDanhGia(idLichHen: string) {
   }
 }
 
-async function capNhatDanhGia(idLichHen: string, mota: string, sosao: number, idDanhGia: string) {
-  try {
-    await danhGiaStore.capNhatDanhGia(idLichHen, mota, sosao, idDanhGia);
-    toast.success('Cập nhật đánh giá thành công!')
-  } catch (error) {
-    toast.error('Cập nhật đánh giá thất bại!')
-  }
-}
-
-definePageMeta({
-  middleware: ['auth']
-})
-
-const formatCurrency = (value: number) => {
-  return new Intl.NumberFormat('vi-VN', { style: 'currency', currency: 'VND' }).format(value);
-};
 
 const formatDate = (date: string | number | Date) => {
   return new Date(date).toLocaleDateString('vi-VN');
@@ -213,8 +219,13 @@ const getTrangThaiClass = (trangthai: number) => {
   }
   return classMap[trangthai] || ''
 }
+
+function chiTietDichVu(idDichVu : string){
+  return navigateTo('/services/' + idDichVu)
+}
+
 </script>
 
 <style scoped>
-/* Styles remain unchanged */
+
 </style>

@@ -1,23 +1,9 @@
-import {defineStore} from 'pinia';
 import DichVu from '../models/DichVu';
 import CaHen from '../models/CaHen';
 import ThuCungKhachHang from "~/models/ThuCungKhachHang";
 import {useMauKhachDatDichVu} from '~/stores/MauKhachDatDichVu';
+import type LichHenDetails from "~/models/LichHenDetails";
 
-interface LichHenDetails {
-    id: number;
-    idkhachhang: string;
-    thucung: ThuCungKhachHang;
-    dichvu: DichVu;
-    emailNguoiDat: string;
-    date: string;
-    trangthai: number;
-    idcalichhen: CaHen;
-    trangthaica: boolean;
-    thoigianhuy: string | null;
-    thoigianthaydoi: string | null;
-    solanthaydoi: number;
-}
 
 interface ThayDoiLichHenState {
     lichHenDetails: LichHenDetails | null;
