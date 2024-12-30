@@ -94,7 +94,6 @@
                   <th>ID Lịch Hẹn</th>
                   <th>Email KH</th>
                   <th>Tên Thú Cưng</th>
-                  <th>Dịch Vụ</th>
                   <th>Ngày Hẹn</th>
                   <th>Số Tiền</th>
                   <th>Trạng Thái</th>
@@ -107,14 +106,17 @@
                   <td>{{ hoaDon.idlichhen.id }}</td>
                   <td>{{ hoaDon.idlichhen.emailNguoiDat }}</td>
                   <td>{{ hoaDon.idlichhen.thucung.ten }}</td>
-                  <td>{{ hoaDon.idlichhen.dichvu.tendichvu }}</td>
                   <td>{{ formatDate(hoaDon.date) }}</td>
                   <td>{{ formatCurrency(hoaDon.sotien) }}</td>
                   <td><span class="badge bg-success">{{ getTrangThaiHoaDon(hoaDon.trangthai) }} </span></td>
                   <td>
-
                     <button @click="taiHoaDon(hoaDon.id)" class="btn btn-sm btn-outline-success">
                       <i class="fas fa-check-circle me-1"></i> Tải hóa đơn
+                    </button>
+                    <button
+                        @click="viewHoaDon(hoaDon.idlichhen.id)"
+                        class="btn btn-sm btn-outline-primary m-1">
+                      Chi tiết
                     </button>
                   </td>
                 </tr>
@@ -148,7 +150,9 @@ import {ref, onMounted, onUnmounted} from "vue";
 import {useQuanLyHoaDonStore} from '~/stores/QuanLyHoaDon';
 import Swal from 'sweetalert2';
 import HoaDonKhachHang from "~/models/HoaDonKhachHang";
+import {useToast} from 'vue-toastification'
 
+const toast = useToast();
 const useQuanLyHoaDon = useQuanLyHoaDonStore();
 const checkInStore = useCheckInStore()
 
@@ -248,8 +252,15 @@ async function thanhToanHoaDon(id: string) {
     cancelButtonText: 'Không'
   });
   if (result.isConfirmed) {
-    await checkInStore.checkIn(id);
-    refreshData();
+    try {
+      await checkInStore.checkIn(id);
+      refreshData();
+      toast.success('Check in thành công');
+      return navigateTo(`/nhanvien/checkin`);
+    }catch (error) {
+      toast.error('Check in thất bại');
+      return navigateTo(`/nhanvien/checkin`);
+    }
   }
 }
 
