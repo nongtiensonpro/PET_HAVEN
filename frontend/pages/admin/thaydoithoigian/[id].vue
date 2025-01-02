@@ -23,6 +23,9 @@
         <button @click="confirmBooking" class="custom-button" :disabled="!isFormValid">
           Xác nhận thay đổi lịch hẹn
         </button>
+        <button @click="quayLai" class="custom-button">
+          Quay lại
+        </button>
       </div>
     </div>
   </div>
@@ -166,6 +169,7 @@ async function confirmBooking() {
       try {
         await quanLyAdmin.thayDoiLichHenAdmin(props.id, newDate, String(newCaLichHenId));
         toast.success('Đã thay đổi lịch hẹn thành công', { timeout: 3000 });
+        navigateTo(`/admin/quanlylichhen`);
       } catch (error) {
         toast.error('Không thể thay đổi lịch hẹn. Vui lòng thử lại. ' + error, { timeout: 3000 });
       }
@@ -173,6 +177,10 @@ async function confirmBooking() {
   } else {
     toast.error('Vui lòng chọn ngày và thời gian mới', { timeout: 3000 });
   }
+}
+
+function quayLai(){
+  navigateTo(`/admin/quanlylichhen`);
 }
 </script>
 
@@ -185,40 +193,40 @@ async function confirmBooking() {
   border-radius: 12px;
   background-color: #ffffff;
 }
+
 .calendar {
   font-family: 'Arial', sans-serif;
   margin-bottom: 30px;
 }
+
 .booking-details {
-  background-color: #f8f9fa;
-  border-radius: 8px;
+  background-color: rgba(246, 246, 234, 0.3);
+  border-radius: 12px;
   transition: all 0.3s ease;
 }
+
 .booking-details:hover {
-  box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+  box-shadow: 0 5px 15px rgba(64, 13, 1, 0.1);
 }
+
 .selected-date {
   font-size: 1.1em;
-  color: #007bff;
+  color: #400D01;
 }
+
 .form-select {
-  border-radius: 20px;
-  border: 1px solid #ced4da;
+  border-radius: 12px;
+  border: 1px solid #400D01;
   padding: 10px 15px;
   transition: all 0.3s ease;
+  background-color: rgba(246, 246, 234, 0.62);
+  color: #400D01;
 }
+
 .form-select:focus {
-  border-color: #80bdff;
-  box-shadow: 0 0 0 0.2rem rgba(0,123,255,.25);
+  border-color: #400D01;
+  box-shadow: 0 0 0 0.2rem rgba(64, 13, 1, 0.25);
 }
-.btn-primary {
-  border-radius: 20px;
-  padding: 10px 20px;
-  font-weight: bold;
-  transition: all 0.3s ease;
-}
-.btn-primary:hover {
-  transform: translateY(-2px);
-  box-shadow: 0 4px 8px rgba(0,123,255,0.3);
-}
+
+
 </style>

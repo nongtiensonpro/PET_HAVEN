@@ -23,7 +23,6 @@
             <th>ID Lịch Hẹn</th>
             <th>Email KH</th>
             <th>Tên Thú Cưng</th>
-<!--            <th>Dịch Vụ</th>-->
             <th>Thời gian</th>
             <th>Ngày Hẹn</th>
             <th>Trạng Thái</th>
@@ -35,40 +34,14 @@
             <td>{{ lichhen.id }}</td>
             <td>{{ lichhen.emailNguoiDat }}</td>
             <td>{{ lichhen.thucung.ten }}</td>
-<!--            <td>{{ lichhen.dichvu.tendichvu}}</td>-->
             <td>{{ lichhen.idcalichhen.thoigianca }}</td>
             <td>{{ formatDate(lichhen.date) }}</td>
             <td><span class="badge bg-success">{{ getTrangThai(lichhen.trangthai) }}</span></td>
             <td>
-
               <div class="row">
               <div class="col">
-                <div v-if="lichhen.trangthai === 3 || lichhen.trangthai === 4 || lichhen.trangthai === 6">
-                  <!-- Button trigger modal -->
-                  <button type="button" class="btn btn-sm btn-outline-secondary" data-bs-toggle="modal" data-bs-target="#exampleModal2"
-                          @click="selectLichHen(lichhen)">
-
-                    Thay đổi thời gian lịch hẹn
-                  </button>
-                  <div class="modal fade" id="exampleModal2" tabindex="-1" aria-labelledby="exampleModalLabel2">
-                    <div class="modal-dialog">
-                      <div class="modal-content">
-                        <div class="modal-header">
-                          <h1 class="modal-title fs-5" id="exampleModalLabel2">Thay đổi lịch hẹn</h1>
-                          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                        </div>
-                        <div class="modal-body">
-                          <CalendarAdmin :id="String(selectedLichHen?.id)"/>
-                        </div>
-                        <div class="modal-footer">
-                          <button type="button" class="custom-button" data-bs-dismiss="modal">Close</button>
-                        </div>
-                      </div>
-                    </div>
-                  </div>
-                </div>
+                <button v-if="lichhen.trangthai === 3 || lichhen.trangthai === 4 || lichhen.trangthai === 6" type="button" class="btn btn-sm btn-outline-danger" @click="thayDoiThoiGian(lichhen)">Thay đổi thời gian</button>
               </div>
-
               <div class="col">
                 <button type="button" class="btn btn-sm btn-outline-success" @click="thayDoiTrangThai(lichhen)">Thay đổi trạng thái</button>
               </div>
@@ -112,7 +85,7 @@ import HoaDonKhachHang from '~/models/HoaDonKhachHang';
 import {useQuanLyLichHenAdminStore} from '~/stores/QuanLyLichHenAdmin';
 import Swal from 'sweetalert2';
 import {useToast} from 'vue-toastification';
-import CalendarAdmin from "~/components/CalendarChangeAdmin.vue";
+import CalendarAdmin from "~/pages/admin/thaydoithoigian/[id].vue";
 import type {Lichhen} from "~/models/LichSuDatLich";
 import Thaydoitrangthai from "~/pages/admin/thaydoitrangthai/[id].vue";
 
@@ -229,6 +202,9 @@ const thayDoiTrangThai = (lichHen: Lichhen) => {
   navigateTo(`/admin/thaydoitrangthai/${lichHen.id}`);
 }
 
+const thayDoiThoiGian = (lichHen: Lichhen) => {
+  navigateTo(`/admin/thaydoithoigian/${lichHen.id}`);
+}
 </script>
 
 <style scoped>
