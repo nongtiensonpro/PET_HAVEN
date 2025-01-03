@@ -54,11 +54,6 @@
                 </span>
               </div>
               <small class="text-muted">{{ formatDate(danhGia.date) }}</small>
-              <div v-if="danhGia.idhoadon.idlichhen.emailNguoiDat === userInfo?.name">
-                <CapNhatDanhGia
-                    :danhGia="danhGia"
-                />
-              </div>
               <div
                   v-if="Array.isArray(userInfo.role) && userInfo.role.includes('admin') || userInfo.role.includes('manager') || danhGia.idhoadon.idlichhen.emailNguoiDat === userInfo?.name">
                 <div @click="anDanhGia(danhGia.id)">
@@ -73,9 +68,6 @@
                 <h6 class="mb-2">Thông tin khách hàng:</h6>
                 <p class="mb-1"><small class="text-muted">Email: {{ danhGia.idhoadon.idlichhen.emailNguoiDat }}</small>
                 </p>
-                <p class="mb-1"><small class="text-muted">Dịch vụ: {{
-                    danhGia.idhoadon.idlichhen.dichvu.tendichvu
-                  }}</small></p>
               </div>
               <div class="col-md-6">
                 <h6 class="mb-2">Thông tin thú cưng:</h6>
@@ -88,6 +80,11 @@
                   tuổi</small></p>
               </div>
             </div>
+          </div>
+          <div v-if="danhGia.idhoadon.idlichhen.emailNguoiDat === userInfo?.name">
+            <CapNhatDanhGiaTrangChu
+                :danhGia="danhGia"
+            />
           </div>
         </div>
       </div>
@@ -115,6 +112,7 @@ import Swal from "sweetalert2";
 import CapNhatCaHen from "~/components/CapNhatCaLichHen.vue";
 import DichVu from "~/models/DichVu";
 import ChonDichVu from "~/components/ChonDichVu.vue";
+import CapNhatDanhGiaTrangChu from "~/components/CapNhatDanhGiaTrangChu.vue";
 
 const toast = useToast();
 const userStore = useUserStore()

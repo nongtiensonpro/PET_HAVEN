@@ -1,9 +1,17 @@
 <template>
   <div>
-    <form @submit.prevent="submitForm">
-      <div class="mb-3">
-        <label for="rating" class="form-label">Đánh giá (1-5 sao):</label>
-        <div class="star-rating">
+    <div class="accordion accordion-flush" id="accordionFlushExample">
+      <div class="accordion-item">
+        <h2 class="accordion-header">
+          <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#flush-collapseOne" aria-expanded="false" aria-controls="flush-collapseOne">
+            Cập nhật đánh giá
+          </button>
+        </h2>
+        <div id="flush-collapseOne" class="accordion-collapse collapse" data-bs-parent="#accordionFlushExample">
+          <form @submit.prevent="submitForm">
+            <div class="mb-3">
+              <label for="rating" class="form-label">Đánh giá (1-5 sao):</label>
+              <div class="star-rating">
                 <span
                     v-for="star in 5"
                     :key="star"
@@ -12,22 +20,24 @@
                 >
                   &#9733;
                 </span>
+              </div>
+            </div>
+            <div class="mb-3">
+              <label for="review" class="form-label">Nhận xét:</label>
+              <textarea
+                  v-model="localDanhGia.mota"
+                  class="form-control"
+                  id="review"
+                  rows="3"
+              ></textarea>
+            </div>
+            <div class="modal-footer">
+              <button type="submit" class="custom-button" data-bs-dismiss="modal">Lưu thay đánh giá</button>
+            </div>
+          </form>
         </div>
       </div>
-      <div class="mb-3">
-        <label for="review" class="form-label">Nhận xét:</label>
-        <textarea
-            v-model="localDanhGia.mota"
-            class="form-control"
-            id="review"
-            rows="3"
-        ></textarea>
-      </div>
-      <div class="modal-footer">
-        <button type="button" class="custom-button" data-bs-dismiss="modal">Đóng</button>
-        <button type="submit" class="custom-button" data-bs-dismiss="modal">Lưu đánh giá</button>
-      </div>
-    </form>
+    </div>
   </div>
 </template>
 
@@ -80,7 +90,7 @@ async function submitForm() {
       emit('cap-nhat');
       toast.success('Cập nhật đánh giá thành công!');
 
-      return navigateTo('/user/appointment');
+      return navigateTo('/');
     }
   } catch (error) {
     toast.error('Cập nhật đánh giá thất bại!');
