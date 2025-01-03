@@ -4,72 +4,64 @@
       <div class="card-header text-white d-flex justify-content-between align-items-center">
         <h5 class="mb-0 text fs-4">Tất cả các lịch hẹn</h5>
         <button @click="fetchHoaDon" class="btn btn-sm btn-outline-success">
-           Làm mới
+          Làm mới
         </button>
       </div>
       <div class="card-body">
         <div class="mb-3">
-          <input
-              v-model="searchQuery"
-              @input="handleSearch"
-              type="text"
-              class="form-control"
-              placeholder="Tìm kiếm theo email, tên thú cưng hoặc dịch vụ..."
-          >
+          <input v-model="searchQuery" @input="handleSearch" type="text" class="form-control"
+            placeholder="Tìm kiếm theo email, tên thú cưng hoặc dịch vụ...">
         </div>
         <table class="table">
           <thead>
-          <tr>
-            <th>ID Lịch Hẹn</th>
-            <th>Email KH</th>
-            <th>Tên Thú Cưng</th>
-            <th>Thời gian</th>
-            <th>Ngày Hẹn</th>
-            <th>Trạng Thái</th>
-            <th>Thao tác</th>
-          </tr>
+            <tr>
+              <th>ID Lịch Hẹn</th>
+              <th>Email KH</th>
+              <th>Tên Thú Cưng</th>
+              <th>Thời gian</th>
+              <th>Ngày Hẹn</th>
+              <th>Trạng Thái</th>
+              <th>Thao tác</th>
+            </tr>
           </thead>
           <tbody>
-          <tr v-for="lichhen in paginatedHoaDon" :key="lichhen.id">
-            <td>{{ lichhen.id }}</td>
-            <td>{{ lichhen.emailNguoiDat }}</td>
-            <td>{{ lichhen.thucung.ten }}</td>
-            <td>{{ lichhen.idcalichhen.thoigianca }}</td>
-            <td>{{ formatDate(lichhen.date) }}</td>
-            <td><span class="badge bg-success">{{ getTrangThai(lichhen.trangthai) }}</span></td>
-            <td>
-              <div class="row">
-              <div class="col">
-                <button v-if="lichhen.trangthai === 3 || lichhen.trangthai === 4 || lichhen.trangthai === 6" type="button" class="btn btn-sm btn-outline-danger" @click="thayDoiThoiGian(lichhen)">Thay đổi thời gian</button>
-              </div>
-              <div class="col">
-                <button type="button" class="btn btn-sm btn-outline-success" @click="thayDoiTrangThai(lichhen)">Thay đổi trạng thái</button>
-              </div>
-              <div class="col">
-                <button type="button" class="btn btn-sm btn-outline-info" @click="viewHoaDon(lichhen.idcalichhen.id)">Chi tiết</button>
-              </div>
-              </div>
-              <!--Chi tiet -->
-            </td>
-          </tr>
+            <tr v-for="lichhen in paginatedHoaDon" :key="lichhen.id">
+              <td>{{ lichhen.id }}</td>
+              <td>{{ lichhen.emailNguoiDat }}</td>
+              <td>{{ lichhen.thucung.ten }}</td>
+              <td>{{ lichhen.idcalichhen.thoigianca }}</td>
+              <td>{{ formatDate(lichhen.date) }}</td>
+              <td><span class="badge bg-success">{{ getTrangThai(lichhen.trangthai) }}</span></td>
+              <td>
+                <div class="row">
+                  <div class="col">
+                    <!-- v-if="lichhen.trangthai === 3 || lichhen.trangthai === 4 || lichhen.trangthai === 6" -->
+                    <button type="button" class="btn btn-sm btn-outline-danger" @click="thayDoiThoiGian(lichhen)">Thay
+                      đổi thời gian</button>
+                  </div>
+                  <div class="col">
+                    <button type="button" class="btn btn-sm btn-outline-success" @click="thayDoiTrangThai(lichhen)">Thay
+                      đổi trạng thái</button>
+                  </div>
+                  <div class="col">
+                    <button type="button" class="btn btn-sm btn-outline-info"
+                      @click="viewHoaDon(lichhen.idcalichhen.id)">Chi tiết</button>
+                  </div>
+                </div>
+                <!--Chi tiet -->
+              </td>
+            </tr>
           </tbody>
 
         </table>
         <div class="d-flex justify-content-center align-items-center mt-4">
           <div class="d-flex align-items-center">
-            <button
-                @click="changePage(currentPage - 1)"
-                :disabled="currentPage === 1"
-                class="custom-button me-3"
-            >
+            <button @click="changePage(currentPage - 1)" :disabled="currentPage === 1" class="custom-button me-3">
               Trước
             </button>
             <span class="fs-5 mx-3">Trang {{ currentPage }} / {{ totalPages }}</span>
-            <button
-                @click="changePage(currentPage + 1)"
-                :disabled="currentPage === totalPages"
-                class="custom-button ms-3"
-            >
+            <button @click="changePage(currentPage + 1)" :disabled="currentPage === totalPages"
+              class="custom-button ms-3">
               Sau
             </button>
           </div>

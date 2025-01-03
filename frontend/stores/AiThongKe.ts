@@ -15,7 +15,7 @@ export const useAIThongKeStore = defineStore('ai', () => {
     const refreshInterval = ref(null);
     const chatHistory = ref([]);
 
-    const apiKey = 'AIzaSyBIYJJNMbe-QBA2Z1uihw_iqywxtmei9jo';
+    const apiKey = 'AIzaSyAngio9lHhhKrSYBeh_RBYxnQvkflv8CXQ';
     const genAI = new GoogleGenerativeAI(apiKey);
     const model = genAI.getGenerativeModel({ model: 'gemini-2.0-exp-flash' });
 
