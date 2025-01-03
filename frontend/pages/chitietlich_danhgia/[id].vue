@@ -6,48 +6,64 @@
           <div class="card-body">
             <div v-if="thayDoiLichHenStore.lichHenDetails">
               <!-- Thông tin lịch hẹn -->
-              <div class="row g-3">
-                <h5 class="text-muted"><i class="fas fa-info-circle text-primary me-2"></i>Thông tin lịch hẹn</h5>
-                <p><strong>ID:</strong> {{ thayDoiLichHenStore.lichHenDetails.id }}</p>
-                <p><strong>Ngày hẹn:</strong> {{ formatDate(thayDoiLichHenStore.getDate) }}</p>
-                <p><strong>Giờ hẹn:</strong> {{ thayDoiLichHenStore.getCaLichHen.thoigianca }}</p>
-                <p><strong>Email người đặt:</strong> {{ thayDoiLichHenStore.lichHenDetails.emailNguoiDat }}</p>
-                <p><strong>Trạng thái ca:</strong> {{ thayDoiLichHenStore.lichHenDetails.trangthaica ? 'Còn trống' : 'Đã đặt' }}</p>
-                <p><strong>Số lần thay đổi:</strong> {{ thayDoiLichHenStore.lichHenDetails.solanthaydoi }}</p>
-                <p><strong>Số lần nhắc nhở:</strong> {{ thayDoiLichHenStore.lichHenDetails.solannhacnho }}</p>
+              <div class="mb-4">
+                <h5 class="text-primary"><i class="fas fa-calendar-alt me-2"></i>Thông tin lịch hẹn</h5>
+                <div class="row">
+                  <div class="col-md-6">
+                    <p><strong>ID:</strong> {{ thayDoiLichHenStore.lichHenDetails.id }}</p>
+                    <p><strong>Ngày hẹn:</strong> {{ formatDate(thayDoiLichHenStore.getDate) }}</p>
+                    <p><strong>Giờ hẹn:</strong> {{ thayDoiLichHenStore.getCaLichHen.thoigianca }}</p>
+                    <p><strong>Email người đặt:</strong> {{ thayDoiLichHenStore.lichHenDetails.emailNguoiDat }}</p>
+                  </div>
+                  <div class="col-md-6">
+                    <p><strong>Trạng thái ca:</strong> {{ thayDoiLichHenStore.lichHenDetails.trangthaica ? 'Còn trống' : 'Đã đặt' }}</p>
+                    <p><strong>Số lần thay đổi:</strong> {{ thayDoiLichHenStore.lichHenDetails.solanthaydoi }}</p>
+                    <p><strong>Số lần nhắc nhở:</strong> {{ thayDoiLichHenStore.lichHenDetails.solannhacnho }}</p>
+                    <p><strong>Trạng thái:</strong> {{ ['Thành công', 'Đã hủy', 'Chờ xác nhận'][thayDoiLichHenStore.lichHenDetails.trangthai] || 'Không xác định' }}</p>
+                  </div>
+                </div>
               </div>
 
               <!-- Thông tin dịch vụ -->
-              <div class="col-md-6">
-                <h5 class="text-muted"><i class="fas fa-clipboard-list text-primary me-2"></i>Thông tin dịch vụ</h5>
-                <p><strong>Tên dịch vụ:</strong> {{ thayDoiLichHenStore.getDichVu?.tendichvu }}</p>
-                <p><strong>Mô tả:</strong> {{ thayDoiLichHenStore.getDichVu?.mota }}</p>
-                <p><strong>Tùy chọn dịch vụ:</strong> {{ thayDoiLichHenStore.lichHenDetails.tuyChonCanNang?.giatien }} USD</p>
-                <p><strong>Cân nặng tối thiểu:</strong> {{ thayDoiLichHenStore.lichHenDetails.tuyChonCanNang?.cannangmin }} kg</p>
-                <p><strong>Cân nặng tối đa:</strong> {{ thayDoiLichHenStore.lichHenDetails.tuyChonCanNang?.cannangmax || 'Không giới hạn' }} kg</p>
-                <img v-if="thayDoiLichHenStore.getDichVu?.anh" class="img-fluid mt-2" :src="thayDoiLichHenStore.getDichVu.anh" alt="Hình ảnh dịch vụ">
+              <div class="mb-4">
+                <h5 class="text-primary"><i class="fas fa-clipboard-list me-2"></i>Thông tin dịch vụ</h5>
+                <div class="row">
+                  <div class="col-md-6">
+                    <p><strong>Tùy chọn dịch vụ:</strong> {{ thayDoiLichHenStore.lichHenDetails.tuyChonCanNang?.giatien }} USD</p>
+                    <p><strong>Cân nặng tối thiểu:</strong> {{ thayDoiLichHenStore.lichHenDetails.tuyChonCanNang?.cannangmin }} kg</p>
+                    <p><strong>Cân nặng tối đa:</strong> {{ thayDoiLichHenStore.lichHenDetails.tuyChonCanNang?.cannangmax || 'Không giới hạn' }} kg</p>
+                  </div>
+                  <div class="col-md-6">
+                    <p><strong>ID Ca lịch hẹn:</strong> {{ thayDoiLichHenStore.getCaLichHen.id }}</p>
+                    <p><strong>Thời gian hủy:</strong> {{ thayDoiLichHenStore.lichHenDetails.thoigianhuy ? formatDate(thayDoiLichHenStore.lichHenDetails.thoigianhuy) : 'Chưa hủy' }}</p>
+                    <p><strong>Thời gian thay đổi:</strong> {{ thayDoiLichHenStore.lichHenDetails.thoigianthaydoi ? formatDate(thayDoiLichHenStore.lichHenDetails.thoigianthaydoi) : 'Chưa thay đổi' }}</p>
+                  </div>
+                </div>
               </div>
 
               <!-- Thông tin thú cưng -->
-              <div class="col-md-6">
-                <h5 class="text-muted"><i class="fas fa-paw text-primary me-2"></i>Thông tin thú cưng</h5>
-                <p><strong>Tên:</strong> {{ thayDoiLichHenStore.getThuCung.ten }}</p>
-                <p><strong>Tuổi:</strong> {{ thayDoiLichHenStore.getThuCung.tuoi }}</p>
-                <p><strong>Giống:</strong> {{ thayDoiLichHenStore.getThuCung.giong }}</p>
-                <p><strong>Cân nặng:</strong> {{ thayDoiLichHenStore.getThuCung.cannang }} kg</p>
-                <p><strong>Giới tính:</strong> {{ thayDoiLichHenStore.getThuCung.gioitinh ? 'Đực' : 'Cái' }}</p>
-                <p><strong>Loại:</strong> {{ thayDoiLichHenStore.getThuCung.cophaimeokhong ? 'Mèo' : 'Chó' }}</p>
-                <p><strong>Tình trạng sức khỏe:</strong> {{ thayDoiLichHenStore.getThuCung.tinhtrangsuckhoe }}</p>
-                <p v-if="thayDoiLichHenStore.getThuCung.mota"><strong>Mô tả:</strong> {{ thayDoiLichHenStore.getThuCung.mota }}</p>
+              <div class="mb-4">
+                <h5 class="text-primary"><i class="fas fa-paw me-2"></i>Thông tin thú cưng</h5>
+                <div class="row">
+                  <div class="col-md-6">
+                    <p><strong>Tên:</strong> {{ thayDoiLichHenStore.getThuCung.ten }}</p>
+                    <p><strong>Tuổi:</strong> {{ thayDoiLichHenStore.getThuCung.tuoi }}</p>
+                    <p><strong>Giống:</strong> {{ thayDoiLichHenStore.getThuCung.giong }}</p>
+                    <p><strong>Cân nặng:</strong> {{ thayDoiLichHenStore.getThuCung.cannang }} kg</p>
+                  </div>
+                  <div class="col-md-6">
+                    <p><strong>Giới tính:</strong> {{ thayDoiLichHenStore.getThuCung.gioitinh ? 'Đực' : 'Cái' }}</p>
+                    <p><strong>Loại:</strong> {{ thayDoiLichHenStore.getThuCung.cophaimeokhong ? 'Mèo' : 'Chó' }}</p>
+                    <p><strong>Tình trạng sức khỏe:</strong> {{ thayDoiLichHenStore.getThuCung.tinhtrangsuckhoe }}</p>
+                    <p v-if="thayDoiLichHenStore.getThuCung.mota"><strong>Mô tả:</strong> {{ thayDoiLichHenStore.getThuCung.mota }}</p>
+                  </div>
+                </div>
               </div>
 
-              <!-- Các thông tin khác -->
-              <div class="col-md-6">
-                <h5 class="text-muted"><i class="fas fa-cog text-primary me-2"></i>Thông tin khác</h5>
+              <!-- Thông tin khách hàng -->
+              <div>
+                <h5 class="text-primary"><i class="fas fa-user me-2"></i>Thông tin khách hàng</h5>
                 <p><strong>ID Khách hàng:</strong> {{ thayDoiLichHenStore.lichHenDetails.idkhachhang }}</p>
-                <p><strong>ID Ca lịch hẹn:</strong> {{ thayDoiLichHenStore.getCaLichHen.id }}</p>
-                <p><strong>Thời gian hủy:</strong> {{ thayDoiLichHenStore.lichHenDetails.thoigianhuy ? formatDate(thayDoiLichHenStore.lichHenDetails.thoigianhuy) : 'Chưa hủy' }}</p>
-                <p><strong>Thời gian thay đổi:</strong> {{ thayDoiLichHenStore.lichHenDetails.thoigianthaydoi ? formatDate(thayDoiLichHenStore.lichHenDetails.thoigianthaydoi) : 'Chưa thay đổi' }}</p>
               </div>
             </div>
             <div v-else class="text-center">
@@ -70,14 +86,14 @@
           </div>
           <div v-else>
             <ThemDanhGia :idLichHen="String(thayDoiLichHenStore.lichHenDetails.id)"/>
-            <p class="text-center">Chưa có đánh giá nào cho lịch hẹn này hãy thêm đánh giá!</p>
+            <p class="text-center text fs-4">Chưa có đánh giá nào cho lịch hẹn này hãy thêm đánh giá!</p>
           </div>
         </div>
       </div>
       <div v-else class="col">
         <div class="card">
           <div class="card-body">
-            <h4 class="card-title text-center">Bạn cần sử dụng dịch vụ sau đó mới có quyền đánh giá dịch vụ</h4>
+            <h4 class="card-title text-center text fs-4">Bạn cần sử dụng dịch vụ sau đó mới có quyền đánh giá dịch vụ</h4>
           </div>
         </div>
       </div>
