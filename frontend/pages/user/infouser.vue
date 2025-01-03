@@ -5,6 +5,7 @@ import ThemThuCung from "~/pages/user/themthucung.vue"
 import CapNhatThuCung from "~/pages/user/capnhatthucung/[id].vue"
 import type {ThuCung} from "~/models/ChiTietDanhGia";
 
+
 const userStore = useUserStore();
 
 const userInfo = computed(() => userStore.userInfo);
@@ -138,6 +139,7 @@ function themThuCung() {
 }
 
 function capNhatThuCung(thuCung : ThuCung) {
+  console.log(thuCung);
   return navigateTo(`/user/capnhatthucung/${thuCung.id}`);
 }
 
@@ -217,7 +219,7 @@ function capNhatThuCung(thuCung : ThuCung) {
                       <td>{{ thuCung.tuoi }}</td>
 
                       <td>
-                        <button type="button" class="btn btn-sm btn-warning m-1" @click="capNhatThuCung=(thuCung)">Cập nhật thú cưng</button>
+                        <button type="button" class="btn btn-sm btn-warning m-1" @click="capNhatThuCung(thuCung)">Cập nhật thú cưng</button>
                       </td>
                     </tr>
                     </tbody>

@@ -93,8 +93,8 @@
               Trước
             </button>
           </li>
-          <li class="page-item disabled">
-            <span class="page-link">Trang {{ currentPage }} / {{ totalPages }}</span>
+          <li class="page-item container disabled">
+            {{ currentPage }} / {{ totalPages }}
           </li>
           <li class="page-item">
             <button

@@ -1,10 +1,11 @@
-import {GoogleGenerativeAI} from '@google/generative-ai';
-import {useServiceStore} from '~/stores/DichVuStores';
-import {useVoucherStore} from '~/stores/VorchersStores';
-import {useUserStore} from '~/stores/user';
-import {computed, onMounted, ref, watch} from 'vue';
-import {useQuanLyLichHenKhachHang} from '~/stores/QuanLyLichHenKhachHang';
+import { GoogleGenerativeAI } from '@google/generative-ai';
+import { useServiceStore } from '~/stores/DichVuStores';
+import { useVoucherStore } from '~/stores/VorchersStores';
+import { useUserStore } from '~/stores/user';
+import { computed, onMounted, ref, watch } from 'vue';
+import { useQuanLyLichHenKhachHang } from '~/stores/QuanLyLichHenKhachHang';
 import type { BookingData } from './MauKhachDatDichVu';
+import DichVu from '~/models/DichVu';
 
 export const useAIThongKeStore = defineStore('ai', () => {
     const serviceStore = useServiceStore();
@@ -12,10 +13,11 @@ export const useAIThongKeStore = defineStore('ai', () => {
     const userStore = useUserStore();
     const lichHenStore = useQuanLyLichHenKhachHang();
     const refreshInterval = ref(null);
+    const chatHistory = ref([]);
 
     const apiKey = 'AIzaSyBIYJJNMbe-QBA2Z1uihw_iqywxtmei9jo';
     const genAI = new GoogleGenerativeAI(apiKey);
-    const model = genAI.getGenerativeModel({model: 'gemini-2.0-exp-flash'});
+    const model = genAI.getGenerativeModel({ model: 'gemini-2.0-exp-flash' });
 
     const generationConfig = {
         temperature: 1,
@@ -25,24 +27,30 @@ export const useAIThongKeStore = defineStore('ai', () => {
     };
 
     const services = computed(() =>
-        serviceStore.services.filter(service => service.trangthai && service.hien)
+        serviceStore.services.filter((service: DichVu) => service.trangthai && service.hien)
     );
+
     const vouchers = computed(() =>
         voucherStore.ListVoucher.filter(voucher => voucher.trangthai)
     );
 
+    const getLowestPrice = (service: DichVu): number => {
+        return service.tuyChonDichVus
+            .flatMap(tuyChon => tuyChon.tuyChonCanNangs)
+            .reduce((min, canNang) => Math.min(min, canNang.giaTien), Infinity);
+    };
+
     const context = computed(() => {
-        const serviceInfo = services.value.map(({id, ten, gia}: { id: number; ten: string; gia: number }) => ({
-            id,
-            ten,
-            gia
+        const serviceInfo = services.value.map((service: DichVu) => ({
+            id: service.id,
+            ten: service.tendichvu,
+            gia: getLowestPrice(service)
         }));
-        const voucherInfo = vouchers.value.map(({id, phantramgiam, ngaybatdau, ngayketthuc}: {
-            id: number;
-            phantramgiam: number;
-            ngaybatdau: Date;
-            ngayketthuc: Date;
-        }) => ({id, phantramgiam, ngaybatdau, ngayketthuc}));
+
+        const voucherInfo = vouchers.value.map(({ id, phantramgiam, ngaybatdau, ngayketthuc }) => 
+            ({ id, phantramgiam, ngaybatdau, ngayketthuc })
+        );
+
         const appointments = lichHenStore.appointments.value || [];
 
         const statusMap = {
@@ -54,11 +62,12 @@ export const useAIThongKeStore = defineStore('ai', () => {
         const countServices = appointments.reduce((acc, a) => {
             acc[a.dichvu.tendichvu] = (acc[a.dichvu.tendichvu] || 0) + 1;
             return acc;
-        }, {});
+        }, {} as Record<string, number>);
+
         const mostBookedService = Object.entries(countServices).reduce((a, b) => a[1] > b[1] ? a : b);
 
         const totalRevenue = appointments
-            .filter((a: BookingData) => a.trangthai === 3 || a.trangthai === 6) // Đã hoàn thành hoặc thanh toán thành công
+            .filter((a: BookingData) => a.trangthai === 3 || a.trangthai === 6)
             .reduce((sum: number, a: BookingData) => sum + a.dichvu.giatien, 0)
             .toLocaleString();
 
@@ -74,7 +83,7 @@ export const useAIThongKeStore = defineStore('ai', () => {
             7. Nếu không có đủ dữ liệu để đưa ra kết luận chính xác, hãy nêu rõ và đề xuất cách thu thập thêm dữ liệu.
 
             Thống kê dịch vụ:
-            ${serviceInfo.map(service => `- ${service.ten}: ${service.gia} USD`).join('\n')}
+            ${serviceInfo.map(service => `- ${service.ten}: Từ ${service.gia} USD`).join('\n')}
 
             Thống kê khuyến mãi:
             ${voucherInfo.map(voucher => `- Giảm ${voucher.phantramgiam}%: Từ ${voucher.ngaybatdau} đến ${voucher.ngayketthuc}`).join('\n')}
@@ -93,27 +102,25 @@ export const useAIThongKeStore = defineStore('ai', () => {
         `;
     });
 
-    const chatHistory = ref([]);
-
     const loadChatHistory = () => {
         const storedHistory = sessionStorage.getItem('aiChatHistory');
         if (storedHistory) {
             chatHistory.value = JSON.parse(storedHistory);
         } else {
             chatHistory.value = [
-                {role: "user", parts: [{text: context.value}]},
-                {role: "model", parts: [{text: "Xin chào! Tôi là nhân viên tôi sẽ giúp bạn thống kê! 🐶🐱"}]},
+                { role: "user", parts: [{ text: context.value }] },
+                { role: "model", parts: [{ text: "Xin chào! Tôi là nhân viên tôi sẽ giúp bạn thống kê! 🐶🐱" }] },
             ];
         }
     };
 
     watch(chatHistory, (newHistory) => {
         sessionStorage.setItem('aiChatHistory', JSON.stringify(newHistory));
-    }, {deep: true});
+    }, { deep: true });
 
     const sendMessage = async (prompt: string) => {
         try {
-            chatHistory.value.push({role: "user", parts: [{text: context.value + "\n\n" + prompt}]});
+            chatHistory.value.push({ role: "user", parts: [{ text: context.value + "\n\n" + prompt }] });
 
             const chatSession = model.startChat({
                 generationConfig,
@@ -123,7 +130,7 @@ export const useAIThongKeStore = defineStore('ai', () => {
             const result = await chatSession.sendMessage(prompt);
             const responseText = result.response.text();
 
-            chatHistory.value.push({role: "model", parts: [{text: responseText}]});
+            chatHistory.value.push({ role: "model", parts: [{ text: responseText }] });
 
             return responseText;
         } catch (error) {
@@ -141,5 +148,6 @@ export const useAIThongKeStore = defineStore('ai', () => {
         await fetchData();
         console.log("Dữ liệu AI sẽ nhận:", context.value);
     });
-    return {sendMessage, chatHistory};
+
+    return { sendMessage, chatHistory };
 });
