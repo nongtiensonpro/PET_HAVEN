@@ -9,9 +9,9 @@
           </div>
           <template v-if="hasAvailableSlots">
             <div class="col-md-6 mb-3">
-              <label for="time" class="form-label">Thời gian:</label>
+              <label for="time" class="form-label">{{ timeLabel }}</label>
               <select id="time" v-model="selectedTime" class="form-select">
-                <option value="" disabled>Chọn thời gian</option>
+                <option value="" disabled>{{ selectTime }}</option>
                 <option v-for="lichhen in lichhens" :key="lichhen.id" :value="lichhen.id">
                   {{ lichhen.thoigianca }}
                 </option>
@@ -19,7 +19,7 @@
             </div>
             <div class="col-12">
               <button @click="confirmBooking" class="custom-button" :disabled="!isFormValid">
-                Tiếp tục
+                {{ continuetime }}
               </button>
             </div>
           </template>
@@ -51,7 +51,9 @@ const chossdate = computed(() => t('chossdate'));
 const chossdatewrong = computed(() => t('chossdatewrong'));
 const dayNew = computed(() => t('day'));
 const weekNew = computed(() => t('week'));
-
+const timeLabel = computed(() => t('timeLabel'));
+const continuetime = computed(() => t('continue'));
+const selectTime = computed(() => t('selectTime'));
 
 const buttonTextComputed = computed(() => ({
   today: dayNew.value,

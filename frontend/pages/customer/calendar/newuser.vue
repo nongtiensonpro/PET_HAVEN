@@ -2,7 +2,7 @@
   <div v-if="!accessToken || !viewRole" class="container my-5">
     <div class="alert alert-warning" role="alert">
       <i class="fas fa-exclamation-triangle me-2"></i>
-      Vui lòng đăng nhập để sử dụng chức năng này!
+      {{ t('loginRequired') }}
     </div>
   </div>
   <div v-else class="container py-5">
@@ -10,26 +10,26 @@
       <div class="col-lg-6 mb-4">
         <div class="card shadow-sm h-100">
           <div class="card-body">
-            <h4 class="card-title mb-4"><i class="fas fa-info-circle me-2"></i>{{bookinginformation}}</h4>
+            <h4 class="card-title mb-4"><i class="fas fa-info-circle me-2"></i>{{ t('bookinginformation') }}</h4>
             <div v-if="tempData">
               <div class="card mb-3">
                 <div class="card-header bg-light text fs-4">
-                  <i class="fas fa-calendar-check me-2"></i>Chi tiết lịch hẹn
+                  <i class="fas fa-calendar-check me-2"></i>{{ t('appointmentDetails') }}
                 </div>
                 <div class="card-body">
                   <div class="row g-3">
-                    <div v-if=" tempData.idlichhen?.calichhen">
-                      <h5 class="text-muted mb-3"><i class="fas fa-paw text-primary me-2"></i>Thời gian đặt lịch</h5>
+                    <div v-if="tempData.idlichhen?.calichhen">
+                      <h5 class="text-muted mb-3"><i class="fas fa-paw text-primary me-2"></i>{{ t('appointmentTime') }}</h5>
                       <div class="col mb-3">
                         <div class="row">
                           <div class="col-12">
-                            <strong>Thời gian : </strong>
+                            <strong>{{ t('time') }} : </strong>
                             <div class="row">
                               <div class="col">
-                                Giờ : {{ tempData.idlichhen.calichhen.thoigianca }}
+                                {{ t('time') }} : {{ tempData.idlichhen.calichhen.thoigianca }}
                               </div>
                               <div class="col">
-                                Ngày : {{ tempData.idlichhen.date.toLocaleDateString() }}
+                                {{ t('date') }} : {{ tempData.idlichhen.date.toLocaleDateString() }}
                               </div>
                             </div>
                           </div>
@@ -37,47 +37,47 @@
                       </div>
                     </div>
                     <div v-if="tempData && tempData.dichvu">
-                      <h5 class="text-muted mb-3"><i class="fas fa-concierge-bell text-primary me-2"></i>Dịch vụ đã chọn
+                      <h5 class="text-muted mb-3"><i class="fas fa-concierge-bell text-primary me-2"></i>{{ t('selectedService') }}
                       </h5>
                       <div class="col mb-3">
                         <div class="row">
                           <div class="col-12">
-                            <strong>Tên dịch vụ: </strong>{{ tempData.dichvu.tendichvu }}
+                            <strong>{{ t('serviceName') }}: </strong>{{ tempData.dichvu.tendichvu }}
                           </div>
                           <div class="col-12">
-                            <strong>Mô tả: </strong>{{ tempData.dichvu.mota }}
+                            <strong>{{ t('serviceDescription') }}: </strong>{{ tempData.dichvu.mota }}
                           </div>
                           <div class="col-12" v-if="tempData.tuyChonDichVu">
-                            <strong>Tùy chọn dịch vụ: </strong>{{ tempData.tuyChonDichVu.tentuychon }}
+                            <strong>{{ t('serviceOption') }}: </strong>{{ tempData.tuyChonDichVu.tentuychon }}
                           </div>
                           <div class="col-12" v-if="tempData.tuyChonCanNang">
-                            <strong>Tùy chọn cân nặng: </strong>
+                            <strong>{{ t('weightOption') }}: </strong>
                             {{ tempData.tuyChonCanNang.cannangmin }} -
-                            {{ tempData.tuyChonCanNang.cannangmax ? tempData.tuyChonCanNang.cannangmax : 'trở lên' }} kg
+                            {{ tempData.tuyChonCanNang.cannangmax ? tempData.tuyChonCanNang.cannangmax : t('andUp') }} {{ t('kg') }}
                           </div>
                           <div class="col-12" v-if="tempData.tuyChonCanNang">
-                            <strong>Giá tiền: </strong>{{ tempData.tuyChonCanNang.giatien }} USD
+                            <strong>{{ t('price') }}: </strong>{{ tempData.tuyChonCanNang.giatien }} USD
                           </div>
                         </div>
                       </div>
                     </div>
                     <div v-if="tempData.thucung" class="col-12">
-                      <h5 class="text-muted mb-3"><i class="fas fa-paw text-primary me-2"></i>Thông tin thú cưng</h5>
+                      <h5 class="text-muted mb-3"><i class="fas fa-paw text-primary me-2"></i>{{ t('petInfo') }}</h5>
                       <div class="row">
                         <div class="col-md-6 mb-2">
-                          <p class="mb-0"><strong>Tên: </strong> {{ tempData.thucung.ten }}</p>
+                          <p class="mb-0"><strong>{{ t('name') }}: </strong> {{ tempData.thucung.ten }}</p>
                         </div>
                         <div class="col-md-6 mb-2">
-                          <p class="mb-0"><strong>Tuổi:</strong> {{ tempData.thucung.tuoi }}</p>
+                          <p class="mb-0"><strong>{{ t('age') }}:</strong> {{ tempData.thucung.tuoi }}</p>
                         </div>
                         <div class="col-md-6 mb-2">
-                          <p class="mb-0"><strong>Giống:</strong> {{ tempData.thucung.giong }}</p>
+                          <p class="mb-0"><strong>{{ t('breed') }}:</strong> {{ tempData.thucung.giong }}</p>
                         </div>
                         <div class="col-md-6 mb-2">
-                          <p class="mb-0"><strong>Cân nặng:</strong> {{ tempData.thucung.cannang }} kg</p>
+                          <p class="mb-0"><strong>{{ t('weight') }}:</strong> {{ tempData.thucung.cannang }} {{ t('kg') }}</p>
                         </div>
                         <div class="col-12">
-                          <p class="mb-0"><strong>Ghi chú:</strong> {{ tempData.thucung.ghichu || 'Không có' }}</p>
+                          <p class="mb-0"><strong>{{ t('note') }}:</strong> {{ tempData.thucung.ghichu || t('noNote') }}</p>
                         </div>
                       </div>
                     </div>
@@ -86,9 +86,9 @@
               </div>
             </div>
             <div v-else class="text-center">
-              <img src="~/assets/image/cat3.jpg" alt="Chọn dịch vụ" class="img-fluid rounded mb-3"
+              <img src="~/assets/image/cat3.jpg" alt="{{ t('chooseService') }}" class="img-fluid rounded mb-3"
                    style="max-height: 200px;">
-              <p class="lead">{{chossetime}}</p>
+              <p class="lead">{{ t('chossetime') }}</p>
             </div>
           </div>
         </div>
@@ -99,7 +99,7 @@
             <h2 class="accordion-header">
               <button class="accordion-button" type="button" data-bs-toggle="collapse" data-bs-target="#collapseOne"
                       :aria-expanded="!isDateTimeSelected" :class="{ 'collapsed': isDateTimeSelected }">
-                <i class="fas fa-calendar-alt me-2"></i>{{chossedayandtime}}
+                <i class="fas fa-calendar-alt me-2"></i>{{ t('chossedayandtime') }}
               </button>
             </h2>
             <div id="collapseOne" class="accordion-collapse collapse" :class="{ 'show': !isDateTimeSelected }"
@@ -114,7 +114,7 @@
               <button class="accordion-button" type="button" data-bs-toggle="collapse"
                       data-bs-target="#collapseTwo"
                       :aria-expanded="!isServiceSelected" :class="{ 'collapsed': isServiceSelected }">
-                <i class="fas fa-paw me-2"></i>{{chosseservice}}
+                <i class="fas fa-paw me-2"></i>{{ t('chosseservice') }}
               </button>
             </h2>
             <div id="collapseTwo" class="accordion-collapse collapse"
@@ -130,7 +130,7 @@
               <button class="accordion-button" type="button" data-bs-toggle="collapse"
                       data-bs-target="#collapseThree"
                       :aria-expanded="!isPetSelected" :class="{ 'collapsed': isPetSelected }">
-                <i class="fas fa-paw me-2"></i>{{chosspet}}
+                <i class="fas fa-paw me-2"></i>{{ t('chosspet') }}
               </button>
             </h2>
             <div id="collapseThree" class="accordion-collapse collapse"
@@ -148,16 +148,16 @@
       <div class="col">
         <div class="card">
           <div class="card-body">
-            <h4 class="card-title">Bạn có muốn xác nhận đặt lịch</h4>
+            <h4 class="card-title">{{ t('confirmBooking') }}</h4>
             <button
                 class="custom-button"
                 @click="payAtCounter"
                 :disabled="isLoading"
             >
-              <span v-if="!isLoading">Xác nhận</span>
+              <span v-if="!isLoading">{{ t('confirm') }}</span>
               <span v-else>
                   <i class="fas fa-spinner fa-spin me-2"></i>
-                  Đang xử lý... ({{ elapsedTime }}s)
+                  {{ t('processing') }} ({{ elapsedTime }}{{ t('seconds') }})
                 </span>
             </button>
           </div>
@@ -165,8 +165,6 @@
       </div>
     </div>
   </div>
-
-
 </template>
 
 <script setup lang="ts">
@@ -187,7 +185,6 @@ const chossetime = computed(() => t('chossetime'));
 const chossedayandtime = computed(() => t('chossedayandtime'));
 const chosseservice = computed(() => t('chosseservice'));
 const chosspet = computed(() => t('chosspet'));
-
 
 const accessToken = localStorage.getItem('access_token');
 const viewRole = localStorage.getItem('viewRole');
@@ -221,7 +218,6 @@ const isBookingComplete = computed(() => {
       tempData.value.idlichhen?.date;
 });
 
-
 const isLoading = ref(false);
 const elapsedTime = ref(0);
 const toast = useToast();
@@ -233,14 +229,14 @@ async function payAtCounter() {
     elapsedTime.value++;
   }, 1000);
   const result = await Swal.fire({
-    title: 'Xác nhận',
-    text: "Bạn có đặt lịch hẹn không?",
+    title: t('confirmBooking'),
+    text: t('confirmBookingText'),
     icon: 'success',
     showCancelButton: true,
     confirmButtonColor: '#3085d6',
     cancelButtonColor: '#d33',
-    confirmButtonText: 'Có',
-    cancelButtonText: 'Không'
+    confirmButtonText: t('confirm'),
+    cancelButtonText: t('cancel')
   });
   if (result.isConfirmed) {
     try {
@@ -251,14 +247,10 @@ async function payAtCounter() {
     } catch (error) {
       clearInterval(timer);
       isLoading.value = false;
-      toast.error('Xảy ra lỗi khi xác nhận đặt lịch');
+      toast.error(t('errorOccurred'));
     }
   }
 }
-
-
-
-
 </script>
 
 <style scoped>

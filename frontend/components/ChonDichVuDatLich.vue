@@ -1,7 +1,7 @@
 <template>
   <div class="card">
     <div class="card-header">
-      <h2 class="mb-3">Chọn Dịch Vụ</h2>
+      <h2 class="mb-3">{{ t('chooseService') }}</h2>
       <div class="service-buttons-container">
         <button v-for="dichVu in listDichVu"
                 :key="dichVu.id"
@@ -20,7 +20,7 @@
       <p>{{ selectedService.mota }}</p>
       <template v-if="hasTuyChonDichVus">
         <div class="mt-3">
-          <h4>Tùy chọn dịch vụ:</h4>
+          <h4>{{ t('serviceOptions') }}</h4>
           <div class="d-flex flex-wrap">
             <button v-for="option in selectedService.tuyChonDichVus"
                     :key="option.id"
@@ -34,7 +34,7 @@
       </template>
       <template v-if="hasTuyChonCanNangs">
         <div class="mt-3">
-          <h4>Tùy chọn cân nặng:</h4>
+          <h4>{{ t('weightOptions') }}</h4>
           <div class="d-flex flex-wrap">
             <button v-for="option in selectedTuyChonDichVu.tuyChonCanNangs"
                     :key="option.id"
@@ -47,11 +47,11 @@
         </div>
       </template>
       <div v-if="selectedTuyChonDichVu" class="mt-3">
-        <h4>Chi tiết dịch vụ:</h4>
+        <h4>{{ t('serviceDetails') }}</h4>
         <div v-html="selectedTuyChonDichVu.mota"></div>
       </div>
       <button @click="confirmSelection" class="btn btn-primary mt-3" :disabled="!canConfirm">
-        Xác nhận
+        {{ t('confirm') }}
       </button>
     </div>
   </div>
@@ -62,7 +62,9 @@ import { ref, computed } from 'vue'
 import DichVu from "~/models/DichVu";
 import { useServiceStore } from "~/stores/DichVuStores"
 import { useMauKhachDatDichVu } from '~/stores/MauKhachDatDichVu'
+import { useI18n } from 'vue-i18n'
 
+const { t } = useI18n()
 const serviceStore = useServiceStore();
 const mauKhachDatDichVu = useMauKhachDatDichVu();
 const listDichVu = ref<DichVu[]>(serviceStore.services);
@@ -107,9 +109,9 @@ const selectTuyChonCanNang = (option: any) => {
 };
 
 const formatCanNang = (option: any) => {
-  if (option.cannangmin === 0) return `Dưới ${option.cannangmax}kg`;
-  if (option.cannangmax === null) return `Trên ${option.cannangmin}kg`;
-  return `${option.cannangmin}-${option.cannangmax}kg`;
+  if (option.cannangmin === 0) return `${t('under')} ${option.cannangmax}${t('kg')}`;
+  if (option.cannangmax === null) return `${t('over')} ${option.cannangmin}${t('kg')}`;
+  return `${option.cannangmin}-${option.cannangmax}${t('kg')}`;
 };
 
 const confirmSelection = () => {

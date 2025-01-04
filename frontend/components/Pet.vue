@@ -1,15 +1,15 @@
 <template>
   <div class="container py-5">
     <form @submit.prevent="saveData">
-      <label for="pet-select" class="form-label" v-if="listThuCung?.length > 0">Lựa chọn thú cưng đã lưu hoặc thêm thú cưng mới</label>
-      <label for="pet-select" class="form-label" v-else>Hãy nhập thông tin thú cưng đầu tiên của bạn</label>
+      <label for="pet-select" class="form-label" v-if="listThuCung?.length > 0">{{ t('chooseSavedPet') }}</label>
+      <label for="pet-select" class="form-label" v-else>{{ t('enterFirstPet') }}</label>
       <div class="col-md-6">
         <div class="form-group">
-          <label for="pet-select" class="form-label">Số lượng thú cưng bạn đã lưu {{listThuCung?.length}}</label>
+          <label for="pet-select" class="form-label">{{ t('savedPetsCount') }} {{listThuCung?.length}}</label>
           <select v-model="selectedPet" id="pet-select" class="form-select" @change="handlePetSelection">
-            <option value="new">Thú cưng mới</option>
+            <option value="new">{{ t('newPet') }}</option>
             <option v-for="pet in listThuCung" :key="pet.id" :value="pet.id">
-              {{ pet.ten }} ({{ pet.cophaimeokhong ? 'Mèo' : 'Chó' }})
+              {{ pet.ten }} ({{ pet.cophaimeokhong ? t('cat') : t('dog') }})
             </option>
           </select>
         </div>
@@ -20,28 +20,28 @@
           <div class="form-group">
             <div class="row">
               <div class="col-8">
-                <label for="pet-ten" class="form-label">Tên thú cưng</label>
+                <label for="pet-ten" class="form-label">{{ t('petName') }}</label>
               </div>
               <div class="col-4">
                 <TenThuCungLaGi/>
               </div>
             </div>
-            <input v-model="petForm.ten" type="text" id="pet-ten" class="form-control" :class="{ 'is-invalid': errors.ten }" placeholder="Nhập tên thú cưng">
-            <div v-if="errors.ten" class="invalid-feedback">{{ errors.ten }}</div>
+            <input v-model="petForm.ten" type="text" id="pet-ten" class="form-control" :class="{ 'is-invalid': errors.ten }" :placeholder="t('enterPetName')">
+            <div v-if="errors.ten" class="invalid-feedback">{{ t('pleaseEnterPetName') }}</div>
           </div>
         </div>
         <div class="col-md-6">
           <div class="form-group">
             <div class="row">
               <div class="col-8">
-                <label for="pet-tuoi" class="form-label">Tuổi</label>
+                <label for="pet-tuoi" class="form-label">{{ t('age') }}</label>
               </div>
               <div class="col-4">
                 <ThongTinVeTuoi/>
               </div>
             </div>
-            <input v-model="petForm.tuoi" type="number" id="pet-tuoi" class="form-control" :class="{ 'is-invalid': errors.tuoi }" placeholder="Nhập tuổi">
-            <div v-if="errors.tuoi" class="invalid-feedback">{{ errors.tuoi }}</div>
+            <input v-model="petForm.tuoi" type="number" id="pet-tuoi" class="form-control" :class="{ 'is-invalid': errors.tuoi }" :placeholder="t('enterAge')">
+            <div v-if="errors.tuoi" class="invalid-feedback">{{ errors.tuoi === 'Vui lòng nhập tuổi' ? t('pleaseEnterAge') : t('ageMustBePositive') }}</div>
           </div>
         </div>
       </div>
@@ -51,28 +51,28 @@
           <div class="form-group">
             <div class="row">
               <div class="col-8">
-                <label for="pet-giong" class="form-label">Giống</label>
+                <label for="pet-giong" class="form-label">{{ t('breed') }}</label>
               </div>
               <div class="col-4">
                 <ThongTinVeGiongCho/>
               </div>
             </div>
-            <input v-model="petForm.giong" type="text" id="pet-giong" class="form-control" :class="{ 'is-invalid': errors.giong }" placeholder="Nhập giống">
-            <div v-if="errors.giong" class="invalid-feedback">{{ errors.giong }}</div>
+            <input v-model="petForm.giong" type="text" id="pet-giong" class="form-control" :class="{ 'is-invalid': errors.giong }" :placeholder="t('enterBreed')">
+            <div v-if="errors.giong" class="invalid-feedback">{{ t('pleaseEnterBreed') }}</div>
           </div>
         </div>
         <div class="col-md-6">
           <div class="form-group">
             <div class="row">
               <div class="col-8">
-                <label for="pet-cannang" class="form-label">Cân nặng (kg)</label>
+                <label for="pet-cannang" class="form-label">{{ t('weight') }}</label>
               </div>
               <div class="col-4">
                 <CanNangChoMeo/>
               </div>
             </div>
-            <input v-model="petForm.cannang" type="number" id="pet-cannang" class="form-control" :class="{ 'is-invalid': errors.cannang }" placeholder="Nhập cân nặng">
-            <div v-if="errors.cannang" class="invalid-feedback">{{ errors.cannang }}</div>
+            <input v-model="petForm.cannang" type="number" id="pet-cannang" class="form-control" :class="{ 'is-invalid': errors.cannang }" :placeholder="t('enterWeight')">
+            <div v-if="errors.cannang" class="invalid-feedback">{{ errors.cannang === 'Vui lòng nhập cân nặng' ? t('pleaseEnterWeight') : t('weightMustBePositive') }}</div>
           </div>
         </div>
       </div>
@@ -80,22 +80,22 @@
       <div class="row mb-3">
         <div class="col-md-6">
           <div class="form-group">
-            <label for="pet-gioitinh" class="form-label">Giới tính</label>
+            <label for="pet-gioitinh" class="form-label">{{ t('gender') }}</label>
             <select v-model="petForm.gioitinh" id="pet-gioitinh" class="form-select" :class="{ 'is-invalid': errors.gioitinh }">
-              <option :value="true">Đực</option>
-              <option :value="false">Cái</option>
+              <option :value="true">{{ t('male') }}</option>
+              <option :value="false">{{ t('female') }}</option>
             </select>
-            <div v-if="errors.gioitinh" class="invalid-feedback">{{ errors.gioitinh }}</div>
+            <div v-if="errors.gioitinh" class="invalid-feedback">{{ t('pleaseSelectGender') }}</div>
           </div>
         </div>
         <div class="col-md-6">
           <div class="form-group">
-            <label for="pet-loai" class="form-label">Loại thú cưng</label>
+            <label for="pet-loai" class="form-label">{{ t('petType') }}</label>
             <select v-model="petForm.cophaimeokhong" id="pet-loai" class="form-select" :class="{ 'is-invalid': errors.cophaimeokhong }">
-              <option :value="true">Mèo</option>
-              <option :value="false">Chó</option>
+              <option :value="true">{{ t('cat') }}</option>
+              <option :value="false">{{ t('dog') }}</option>
             </select>
-            <div v-if="errors.cophaimeokhong" class="invalid-feedback">{{ errors.cophaimeokhong }}</div>
+            <div v-if="errors.cophaimeokhong" class="invalid-feedback">{{ t('pleaseSelectPetType') }}</div>
           </div>
         </div>
       </div>
@@ -103,31 +103,37 @@
       <div class="row mb-3">
         <div class="col-md-6">
           <div class="form-group">
-            <label for="pet-tinhtrangsuckhoe" class="form-label">Tình trạng sức khỏe</label>
-            <input v-model="petForm.tinhtrangsuckhoe" type="text" id="pet-tinhtrangsuckhoe" class="form-control" placeholder="Nhập tình trạng sức khỏe">
+            <label for="pet-tinhtrangsuckhoe" class="form-label">{{ t('healthStatus') }}</label>
+            <input v-model="petForm.tinhtrangsuckhoe" type="text" id="pet-tinhtrangsuckhoe" class="form-control" :placeholder="t('enterHealthStatus')">
           </div>
         </div>
         <div class="col-md-6">
           <div class="form-group">
-            <label for="pet-mota" class="form-label">Mô tả</label>
-            <textarea v-model="petForm.mota" id="pet-mota" rows="3" class="form-control" placeholder="Nhập mô tả"></textarea>
+            <label for="pet-mota" class="form-label">{{ t('description') }}</label>
+            <textarea v-model="petForm.mota" id="pet-mota" rows="3" class="form-control" :placeholder="t('enterDescription')"></textarea>
           </div>
         </div>
       </div>
 
       <div class="text-end">
-        <button type="submit" class="custom-button">Lưu thông tin</button>
+        <button type="submit" class="custom-button">{{ t('saveInfo') }}</button>
       </div>
     </form>
   </div>
 </template>
 
 <script setup lang="ts">
-import { ref, reactive, computed, watch } from 'vue';
+import { ref, reactive, computed, watch, onMounted } from 'vue';
 import { useMauKhachDatDichVu } from '~/stores/MauKhachDatDichVu';
-import { useDatLichStore } from '~/stores/DatLichStores'
+import { useDatLichStore } from '~/stores/DatLichStores';
+import { useI18n } from 'vue-i18n';
 import ThuCungKhachHang from "~/models/ThuCungKhachHang";
 import ThongTinVeTuoi from "~/components/ThongTinVeTuoi.vue";
+import ThongTinVeGiongCho from "~/components/ThongTinVeGiongCho.vue";
+import CanNangChoMeo from "~/components/CanNangChoMeo.vue";
+import TenThuCungLaGi from "~/components/TenThuCungLaGi.vue";
+
+const { t } = useI18n();
 
 const datLichStore = useDatLichStore()
 const { saveTempData, getTempData, updateDataAfterBooking } = useMauKhachDatDichVu();
@@ -160,20 +166,20 @@ const errors = ref({});
 
 const validateForm = () => {
   errors.value = {};
-  if (!petForm.ten) errors.value.ten = 'Vui lòng nhập tên thú cưng';
+  if (!petForm.ten) errors.value.ten = t('pleaseEnterPetName');
   if (!petForm.tuoi) {
-    errors.value.tuoi = 'Vui lòng nhập tuổi';
+    errors.value.tuoi = t('pleaseEnterAge');
   } else if (isNaN(petForm.tuoi) || Number(petForm.tuoi) <= 0) {
-    errors.value.tuoi = 'Tuổi phải là số dương';
+    errors.value.tuoi = t('ageMustBePositive');
   }
-  if (!petForm.giong) errors.value.giong = 'Vui lòng nhập giống';
+  if (!petForm.giong) errors.value.giong = t('pleaseEnterBreed');
   if (!petForm.cannang) {
-    errors.value.cannang = 'Vui lòng nhập cân nặng';
+    errors.value.cannang = t('pleaseEnterWeight');
   } else if (isNaN(petForm.cannang) || Number(petForm.cannang) <= 0) {
-    errors.value.cannang = 'Cân nặng phải là số dương';
+    errors.value.cannang = t('weightMustBePositive');
   }
-  if (petForm.gioitinh === undefined) errors.value.gioitinh = 'Vui lòng chọn giới tính';
-  if (petForm.cophaimeokhong === undefined) errors.value.cophaimeokhong = 'Vui lòng chọn loại thú cưng';
+  if (petForm.gioitinh === undefined) errors.value.gioitinh = t('pleaseSelectGender');
+  if (petForm.cophaimeokhong === undefined) errors.value.cophaimeokhong = t('pleaseSelectPetType');
   return Object.keys(errors.value).length === 0;
 };
 
@@ -212,7 +218,6 @@ watch(selectedPet, (newValue) => {
 });
 
 watch(selectedExistingPet, loadExistingPet);
-
 
 const handlePetSelection = () => {
   if (selectedPet.value === 'new') {
