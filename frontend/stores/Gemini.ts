@@ -15,7 +15,7 @@ export const useAIStore = defineStore('ai', () => {
 
     const apiKey = 'AIzaSyAngio9lHhhKrSYBeh_RBYxnQvkflv8CXQ';
     const genAI = new GoogleGenerativeAI(apiKey);
-    const model = genAI.getGenerativeModel({model: 'gemini-2.0-flash-exp'});
+    const model = genAI.getGenerativeModel({model: 'gemini-1.5-flash'});
 
     const generationConfig = {
         temperature: 1,

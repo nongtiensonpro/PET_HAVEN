@@ -34,11 +34,11 @@ onMounted(async () => {
     let prompt
     if (userInfo.value) {
       prompt = `Chào mừng ${userInfo.value.name} ${userInfo.value.petInfo} đến với PetHaven.
-      Bạn đang xem dịch vụ "${props.service.tendichvu}" với giá ${props.service.giatien} USD.
+      Bạn đang xem dịch vụ "${props.service.tendichvu}".
       Hãy tạo một lời chào ngắn gọn, thân thiện và dễ thương, đề cập đến cả thú cưng (nếu có) và dịch vụ đang xem.`
     } else {
       prompt = `Chào mừng quý khách đến với PetHaven.
-      Bạn đang xem dịch vụ "${props.service.tendichvu}" với giá ${props.service.giatien} USD.
+      Bạn đang xem dịch vụ "${props.service.tendichvu}".
       Hãy tạo một lời chào chung chung, thân thiện và dễ thương cho khách hàng mới, đề cập đến dịch vụ đang xem.`
     }
     greeting.value = await aiStore.sendMessage(prompt)

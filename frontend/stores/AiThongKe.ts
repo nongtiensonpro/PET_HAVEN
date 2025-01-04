@@ -4,20 +4,18 @@ import { useVoucherStore } from '~/stores/VorchersStores';
 import { useUserStore } from '~/stores/user';
 import { computed, onMounted, ref, watch } from 'vue';
 import { useQuanLyLichHenKhachHang } from '~/stores/QuanLyLichHenKhachHang';
-import type { BookingData } from './MauKhachDatDichVu';
+import type BookingData  from './MauKhachDatDichVu';
 import DichVu from '~/models/DichVu';
 
 export const useAIThongKeStore = defineStore('ai', () => {
     const serviceStore = useServiceStore();
     const voucherStore = useVoucherStore();
-    const userStore = useUserStore();
     const lichHenStore = useQuanLyLichHenKhachHang();
-    const refreshInterval = ref(null);
     const chatHistory = ref([]);
 
-    const apiKey = 'AIzaSyAngio9lHhhKrSYBeh_RBYxnQvkflv8CXQ';
+    const apiKey = 'AIzaSyClcxWPh0hpZrh9Cf996fL3X0dUPjwYuOQ';
     const genAI = new GoogleGenerativeAI(apiKey);
-    const model = genAI.getGenerativeModel({ model: 'gemini-2.0-exp-flash' });
+    const model = genAI.getGenerativeModel({ model: 'gemini-1.5-flash' });
 
     const generationConfig = {
         temperature: 1,
@@ -58,18 +56,15 @@ export const useAIThongKeStore = defineStore('ai', () => {
             4: 'Chờ xác nhận', 5: 'Rỗng', 6: 'Thanh toán thành công',
             7: 'Đã hoàn tiền', 8: 'Chờ sử dụng'
         };
-
-        const countServices = appointments.reduce((acc, a) => {
+        
+        const countServices = appointments.reduce((acc, a: any) => {
             acc[a.dichvu.tendichvu] = (acc[a.dichvu.tendichvu] || 0) + 1;
             return acc;
         }, {} as Record<string, number>);
 
-        const mostBookedService = Object.entries(countServices).reduce((a, b) => a[1] > b[1] ? a : b);
-
-        const totalRevenue = appointments
-            .filter((a: BookingData) => a.trangthai === 3 || a.trangthai === 6)
-            .reduce((sum: number, a: BookingData) => sum + a.dichvu.giatien, 0)
-            .toLocaleString();
+        const mostBookedService = Object.entries(countServices).length > 0
+            ? Object.entries(countServices).reduce((a, b) => a[1] > b[1] ? a : b)
+            : ['Không có dịch vụ nào', 0];
 
         return `
             Bạn là một chuyên gia phân tích dữ liệu cho cửa hàng thú cưng PetHaven. Hãy tuân thủ các quy tắc sau:
