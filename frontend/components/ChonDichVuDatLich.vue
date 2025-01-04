@@ -9,7 +9,8 @@
                 class="custom-button"
                 :class="{ 'selected': isServiceSelected(dichVu) }"
                 @click="selectService(dichVu)">
-          <img :src="dichVu.anh" :alt="dichVu.tendichvu" class="service-image">
+          <img v-if="dichVu.anh" :src="dichVu.anh" :alt="dichVu.tendichvu" class="service-image">
+          <img v-else="dichVu.anh" src="../assets/image/LogoPetHaven.png" :alt="dichVu.tendichvu" class="service-image">
           <span>{{ dichVu.tendichvu }}</span>
         </button>
       </div>

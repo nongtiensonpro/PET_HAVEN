@@ -29,7 +29,7 @@
             <div v-else>
               <button class="custom-button btn-equal" type="button" data-bs-toggle="offcanvas"
                       data-bs-target="#offcanvasWithBothOptions" aria-controls="offcanvasWithBothOptions" style="border: none !important;">
-                Tài khoản
+                {{account}}
               </button>
 
               <!-- Offcanvas quản lý tài khoản -->
@@ -175,7 +175,7 @@
                   <li class="nav-item">
                     <div v-if="services.length > 0">
                       <Nuxt-link class="nav-link" :to="`/customer/calendar/newuser`" aria-current="page">
-                        <div style="font-size: medium;">Đặt lịch</div>
+                        <div style="font-size: medium;">{{book}}</div>
                       </Nuxt-link>
                     </div>
                   </li>
@@ -189,7 +189,7 @@
             <div class="container-fluid">
               <nuxt-link v-if="userInfo?.role && userInfo.role.includes('admin')" class="nav-link"
                          :to="`/admin/adminhome`">
-                Trang chủ
+                {{home}}
               </nuxt-link>
               <div v-else>
                 Nhân viên
@@ -389,7 +389,6 @@ const switchToEnglish = computed(() => t('switchToEnglish'));
 const switchToVietnamese = computed(() => t('switchToVietnamese'));
 const aboutUs = computed(() => t('aboutUs'));
 const introductionText = computed(() => t('introductionText'));
-const moreInfo = computed(() => t('moreInfo'));
 const servicesTitle = computed(() => t('services'));
 const contact = computed(() => t('contact'));
 const phone = computed(() => t('phone'));
@@ -398,6 +397,10 @@ const facebook = computed(() => t('facebook'));
 const footerCopyright = computed(() => t('footerCopyright'));
 const serviceNotAvailable = computed(() => t('serviceNotAvailable'));
 const login = computed(() => t('login'));
+const account = computed(() => t('account'));
+const book = computed(() => t('book'));
+
+
 
 const changeLanguage = () => {
   currentLanguage.value = currentLanguage.value === 'vi' ? 'en' : 'vi';

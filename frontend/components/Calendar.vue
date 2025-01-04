@@ -5,7 +5,7 @@
       <div class="card-body">
         <div class="row">
           <div class="col-12 mb-3">
-            <p class="selected-date">Bạn đã chọn ngày: <strong>{{ formattedSelectedDate }}</strong></p>
+            <p class="selected-date">{{chossdate}} <strong>{{ formattedSelectedDate }}</strong></p>
           </div>
           <template v-if="hasAvailableSlots">
             <div class="col-md-6 mb-3">
@@ -24,7 +24,7 @@
             </div>
           </template>
           <div v-else class="col-12">
-            <p class="text-danger">Ngày bạn đã chọn không khả dụng. Vui lòng chọn lại ngày khác.</p>
+            <p class="text-danger">{{chossdatewrong}}</p>
           </div>
         </div>
       </div>
@@ -43,7 +43,21 @@ import { useToast } from 'vue-toastification'
 import { useDatLichStore } from '~/stores/DatLichStores'
 import { useMauKhachDatDichVu } from '~/stores/MauKhachDatDichVu'
 import DichVuKhachDat from "~/models/DichVuKhachDat"
+import {useI18n} from 'vue-i18n';
 
+const {t, locale} = useI18n();
+
+const chossdate = computed(() => t('chossdate'));
+const chossdatewrong = computed(() => t('chossdatewrong'));
+const dayNew = computed(() => t('day'));
+const weekNew = computed(() => t('week'));
+
+
+const buttonTextComputed = computed(() => ({
+  today: dayNew.value,
+  week: '7 ngày',
+  dayGridWeek: weekNew.value
+}))
 const { saveTempData, getTempData } = useMauKhachDatDichVu()
 const datLichStore = useDatLichStore()
 const toast = useToast()
@@ -85,7 +99,7 @@ const calendarOptions = computed(() => ({
   eventClick: () => {},
   dateClick: handleDateClick,
   locale: viLocale,
-  buttonText: { today: 'Hôm nay', week: '7 ngày', dayGridWeek: 'Tuần' },
+  buttonText: buttonTextComputed,
   validRange: { start: today, end: endDate },
   visibleRange: { start: today, end: endDate },
   duration: { days: 7 },

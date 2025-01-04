@@ -1,12 +1,15 @@
 <script setup lang="ts">
+import {useI18n} from 'vue-i18n';
 import { useServiceStore } from '~/stores/DichVuStores';
 import { computed, ref, watch } from 'vue';
 import Fuse from 'fuse.js';
 
+const {t, locale} = useI18n();
 const serviceStore = useServiceStore();
 const searchQuery = ref('');
 const fuse = ref<Fuse<any> | null>(null);
 
+const searchPlaceholder = computed(() => t('searchPlaceholder'));
 // Khởi tạo Fuse.js khi services thay đổi
 watch(() => serviceStore.services, (services) => {
   fuse.value = new Fuse(services, {
@@ -32,7 +35,7 @@ const searchService = () => {
         class="no-border-input"
         type="text"
         v-model="searchQuery"
-        placeholder="Tìm kiếm dịch vụ..."
+        :placeholder="searchPlaceholder"
         @input="searchService"
     />
     <div class="search-results p-4" v-if="searchQuery">

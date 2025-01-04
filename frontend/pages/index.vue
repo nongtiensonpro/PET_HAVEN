@@ -1,7 +1,7 @@
   <template>
     <div class="container">
       <div v-if="services.length === 0">
-        Dịch vụ không khả dụng, vui lòng thử lại sau!
+        {{serviceNotAvailable}}
       </div>
       <div v-else>
         <div>
@@ -13,7 +13,7 @@
               <VoucherDisplay :vouchers="vouchers" />
             </div>
           </div>
-        <h2 class="text text-center">Dịch vụ của chúng tôi</h2>
+        <h2 class="text text-center">{{wecomehome}}</h2>
 
         <div  class="row ">
           <div
@@ -95,13 +95,16 @@
   import { useVoucherStore } from '~/stores/VorchersStores';
   import Voucher from '~/models/Voucher';
   import VoucherDisplay from "~/components/VoucherDisplay.vue";
+  import {useI18n} from 'vue-i18n';
 
+  const {t, locale} = useI18n();
   const voucherStore = useVoucherStore();
   const serviceStore = useServiceStore();
   const itemsPerPage = 4;
   const currentPage = ref(1);
   const windowWidth = ref(window.innerWidth);
-
+  const wecomehome = computed(() => t('wecomehome'));
+  const serviceNotAvailable = computed(() => t('serviceNotAvailable'));
   onMounted(() => {
     serviceStore.fetchServices();
     voucherStore.fetchVoucher();

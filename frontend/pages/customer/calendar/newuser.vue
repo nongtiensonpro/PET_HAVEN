@@ -10,7 +10,7 @@
       <div class="col-lg-6 mb-4">
         <div class="card shadow-sm h-100">
           <div class="card-body">
-            <h4 class="card-title mb-4"><i class="fas fa-info-circle me-2"></i>Thông tin đặt lịch</h4>
+            <h4 class="card-title mb-4"><i class="fas fa-info-circle me-2"></i>{{bookinginformation}}</h4>
             <div v-if="tempData">
               <div class="card mb-3">
                 <div class="card-header bg-light text fs-4">
@@ -88,7 +88,7 @@
             <div v-else class="text-center">
               <img src="~/assets/image/cat3.jpg" alt="Chọn dịch vụ" class="img-fluid rounded mb-3"
                    style="max-height: 200px;">
-              <p class="lead">Hãy lựa chọn dịch vụ và thời gian để bắt đầu.</p>
+              <p class="lead">{{chossetime}}</p>
             </div>
           </div>
         </div>
@@ -99,7 +99,7 @@
             <h2 class="accordion-header">
               <button class="accordion-button" type="button" data-bs-toggle="collapse" data-bs-target="#collapseOne"
                       :aria-expanded="!isDateTimeSelected" :class="{ 'collapsed': isDateTimeSelected }">
-                <i class="fas fa-calendar-alt me-2"></i>Chọn ngày và giờ hẹn
+                <i class="fas fa-calendar-alt me-2"></i>{{chossedayandtime}}
               </button>
             </h2>
             <div id="collapseOne" class="accordion-collapse collapse" :class="{ 'show': !isDateTimeSelected }"
@@ -114,7 +114,7 @@
               <button class="accordion-button" type="button" data-bs-toggle="collapse"
                       data-bs-target="#collapseTwo"
                       :aria-expanded="!isServiceSelected" :class="{ 'collapsed': isServiceSelected }">
-                <i class="fas fa-paw me-2"></i>Lựa chọn dịch vụ
+                <i class="fas fa-paw me-2"></i>{{chosseservice}}
               </button>
             </h2>
             <div id="collapseTwo" class="accordion-collapse collapse"
@@ -130,7 +130,7 @@
               <button class="accordion-button" type="button" data-bs-toggle="collapse"
                       data-bs-target="#collapseThree"
                       :aria-expanded="!isPetSelected" :class="{ 'collapsed': isPetSelected }">
-                <i class="fas fa-paw me-2"></i>Lựa chọn thú cưng
+                <i class="fas fa-paw me-2"></i>{{chosspet}}
               </button>
             </h2>
             <div id="collapseThree" class="accordion-collapse collapse"
@@ -178,6 +178,16 @@ import {useDatLichStore} from '~/stores/DatLichStores'
 import ChonDichVuDatLich from "~/components/ChonDichVuDatLich.vue";
 import {ref, computed} from 'vue';
 import Swal from 'sweetalert2';
+import {useI18n} from 'vue-i18n';
+
+const {t, locale} = useI18n();
+
+const bookinginformation = computed(() => t('bookinginformation'));
+const chossetime = computed(() => t('chossetime'));
+const chossedayandtime = computed(() => t('chossedayandtime'));
+const chosseservice = computed(() => t('chosseservice'));
+const chosspet = computed(() => t('chosspet'));
+
 
 const accessToken = localStorage.getItem('access_token');
 const viewRole = localStorage.getItem('viewRole');
