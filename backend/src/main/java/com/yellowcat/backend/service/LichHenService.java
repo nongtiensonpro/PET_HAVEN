@@ -268,17 +268,17 @@ public class LichHenService {
                 return CompletableFuture.completedFuture(ResponseEntity.badRequest().build());
             }
 
+            lichhenRepository.save(lichhenNew);
+            lichhenRepository.save(lichhen);
             if (hoadonOptional.isPresent()){
                 System.out.println(3);
                 if (hoadonOptional.get().getTrangthai() == 1){
                     Hoadon hoadon = hoadonOptional.get();
+                    hoadon.setIdlichhen(lichhenNew);
                     hoadon.setTrangthai(3);
                     hoaDonService.addOrUpdate(hoadon);
                 }
             }
-
-            lichhenRepository.save(lichhenNew);
-            lichhenRepository.save(lichhen);
             return CompletableFuture.completedFuture(ResponseEntity.ok("Lịch hẹn đã được hủy thành công."));
         } else if (lichhen1.getTrangthai() == 6) {
             System.out.println(4);

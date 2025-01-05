@@ -117,8 +117,24 @@ CREATE TABLE HoaDon
 -- Quy ước:
 -- 1: Chờ thanh toán
 -- 2: Thành công
--- 3: Đã hoàn tiền
+-- 3: Thất bại
+-- 4: Đã hoàn tiền
 
+CREATE TABLE HoaDonDoiDichVu
+(
+    ID                  SERIAL PRIMARY KEY,
+    MaGiaoDich          VARCHAR(255)   Not null UNIQUE,
+    IdHoaDOn            INT REFERENCES HoaDon (ID),
+    IDTuyChonCanNang    INT REFERENCES  TuyChonCanNang(ID),
+    SoTien              DECIMAL(10, 2) NOT NULL,
+    NgayThanhToan       TIMESTAMP,
+    GhiChu              VARCHAR(1000),
+    TrangThai           INT            not null,
+    NguoiThanhToan      VARCHAR(255),
+    TrangThaiThanhToan         BOOLEAN
+);
+-- 1: Hoàn tiền
+-- 2: Nhận tiền
 
 CREATE TABLE DanhGia
 (

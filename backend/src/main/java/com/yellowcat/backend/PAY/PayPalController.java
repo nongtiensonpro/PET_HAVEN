@@ -5,7 +5,9 @@ import com.paypal.api.payments.Payment;
 import com.paypal.api.payments.Sale;
 import com.paypal.base.rest.PayPalRESTException;
 import com.yellowcat.backend.model.Hoadon;
+import com.yellowcat.backend.model.Hoadondoidichvu;
 import com.yellowcat.backend.model.Lichhen;
+import com.yellowcat.backend.service.HoaDonDoiDichVuService;
 import com.yellowcat.backend.service.HoaDonService;
 import com.yellowcat.backend.service.LichHenService;
 import com.yellowcat.backend.service.PdfExportService;
@@ -31,6 +33,8 @@ public class PayPalController {
     private LichHenService lichHenService;
     @Autowired
     private PdfExportService pdfExportService;
+    @Autowired
+    private HoaDonDoiDichVuService hoaDonDoiDichVuService;
 
     @PostMapping("/payment/create")
     public ResponseEntity<String> createPayment(@RequestHeader String idLichHen) {
@@ -56,6 +60,39 @@ public class PayPalController {
                 if (links.getRel().equals("approval_url")) {
                     hoadon.setMagiaodich(payment.getId());
                     hoaDonService.addOrUpdate(hoadon);
+                    return ResponseEntity.ok(links.getHref());
+                }
+            }
+        }catch (PayPalRESTException e) {
+            e.printStackTrace();
+        }
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Không thể tạo thanh toán");
+    }
+
+    @PostMapping("/payment/create/thanh-toan-hdDoiDVOnline")
+    public ResponseEntity<String> createPaymentHDDV(@RequestHeader String idHoaDonDoiDV) {
+        Optional<Hoadondoidichvu> hoadonOptional = hoaDonDoiDichVuService.findHoadondoidichvuById(Integer.parseInt(idHoaDonDoiDV));
+
+        if (!hoadonOptional.isPresent()) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Hóa đơn không tồn tại");
+        }
+        Hoadondoidichvu hoadon = hoadonOptional.get();
+        try {
+            String cancelUrl = "http://localhost:8080/api/payPal/payment/cancel/" + hoadon.getIdhoadon().getIdlichhen().getId();
+            String successUrl = "http://localhost:8080/api/payPal/payment/success/hoadondoidv/"+hoadon.getIdhoadon().getIdlichhen().getId();
+            Payment payment = payPalService.createPayment(
+                    Double.valueOf(hoadon.getSotien()),
+                    "USD",
+                    "paypal",
+                    "sale",
+                    "Thanh toán hóa đơn ",
+                    cancelUrl,
+                    successUrl
+            );
+            for (Links links : payment.getLinks()) {
+                if (links.getRel().equals("approval_url")) {
+                    hoadon.setMagiaodich(payment.getId());
+                    hoaDonDoiDichVuService.addOrUpdateHoadon(hoadon);
                     return ResponseEntity.ok(links.getHref());
                 }
             }
@@ -128,5 +165,46 @@ public class PayPalController {
         HttpHeaders headers = new HttpHeaders();
         headers.setLocation(URI.create(redirectUrl));
         return new ResponseEntity<>(headers, HttpStatus.FOUND);
+    }
+
+    @GetMapping("/payment/success/hoadondoidv/{id}")
+    public ResponseEntity<String> successHdDoi(@RequestParam("paymentId") String paymentId,
+                                                 @RequestParam("PayerID") String payerId,
+                                                 @PathVariable Integer id
+    ) {
+        try {
+            // Thực hiện thanh toán
+            Payment payment = payPalService.executePayment(paymentId, payerId);
+            Sale sale = new Sale();
+            sale.setId(payment.getTransactions().get(0).getRelatedResources().get(0).getSale().getId());
+            // Kiểm tra nếu thanh toán thành công
+            if (payment != null && payment.getState().equals("approved")) {
+                System.out.println("xin chao");
+                hoaDonDoiDichVuService.thanhToanHDDoiDV(id);
+                Optional<Hoadondoidichvu> hoadondoidichvuOptional = hoaDonDoiDichVuService.findHoadondoidichvuById(id);
+                if (!hoadondoidichvuOptional.isPresent()) {
+                    return ResponseEntity.notFound().build();
+                }
+                Hoadondoidichvu hoadondoidichvu = hoadondoidichvuOptional.get();
+
+                String thoiGian = hoadondoidichvu.getIdhoadon().getIdlichhen().getDate().toString()+ ' ' + hoadondoidichvu.getIdhoadon().getIdlichhen().getIdcalichhen().getThoigianca();
+                String tenDichVu = hoadondoidichvu.getIdhoadon().getIdlichhen().getTuyChonCanNang().getTuyChonDichVu().getDichvu().getTendichvu() + " -> " + hoadondoidichvu.getIdhoadon().getIdlichhen().getTuyChonCanNang().getTuyChonDichVu().getTentuychon();
+                byte[] pdfBytes = pdfExportService.generateInvoice(hoadondoidichvu.getIdhoadon().getNgaythanhtoan().toString(),hoadondoidichvu.getIdhoadon().getMagiaodich(),hoadondoidichvu.getIdhoadon().getPhuongthucthanhtoan(),tenDichVu,hoadondoidichvu.getIdhoadon().getSotienbandau(),hoadondoidichvu.getSotien(),thoiGian);
+
+                hoaDonService.sendHoaDonSauThanhToan(hoadondoidichvu.getIdhoadon().getIdlichhen(),pdfBytes);
+
+                String redirectUrl = "http://localhost:3000/chi-tiet-lich/" + hoadondoidichvu.getIdhoadon().getIdlichhen().getId();
+                HttpHeaders headers = new HttpHeaders();
+                headers.setLocation(URI.create(redirectUrl));
+                return ResponseEntity.ok().build();
+            } else {
+                // Trả về lỗi nếu thanh toán không thành công
+                return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Thanh toán không thành công.");
+            }
+        } catch (PayPalRESTException e) {
+            // Ghi log lỗi và trả về phản hồi lỗi chi tiết
+            e.printStackTrace();
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Lỗi khi xử lý thanh toán.");
+        }
     }
 }

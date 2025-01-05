@@ -217,7 +217,7 @@ public class DatLichController {
                 Refund refund = payPalService.refundPayment(hoadonOptional.getMagiaodich(), hoadonOptional.getSotien(), "USD");
                 System.out.println(refund);
                 if ("completed".equals(refund.getState())) {
-                    hoadonOptional.setTrangthai(3); // Trạng thái: thất bại
+                    hoadonOptional.setTrangthai(4); // Trạng thái: Đã hoàn tiền
                     hoaDonService.addOrUpdate(hoadonOptional);
                     lichhenNew.setTrangthai(7); // Trạng thái: Đã hoàn tiền
                     lichHenService.addOrUpdate(lichhenNew);
@@ -231,13 +231,16 @@ public class DatLichController {
 //            Xóa hóa đơn chờ
             if (hoadonOptional.getTrangthai() == 1) {
                 System.out.println("hello");
-                hoaDonService.deleteHoadonById(hoadonOptional.getId());
+                hoadonOptional.setTrangthai(3); //Thất bại
+                hoaDonService.addOrUpdate(hoadonOptional);
             }
 
-            // Cập nhật lịch gốc với trạng thái đã hủy
+            // Cập nhật lịch gốc với trạng thái rỗng
             lichhen.setIdkhachhang("demo");
             lichhen.setTrangthai(5);
             lichhen.setEmailNguoiDat("default-email@example.com");
+            lichhen.setThucung(null);
+            lichhen.setTuyChonCanNang(null);
             if (lichhen.getTrangthaica()) {
                 lichhen.setTrangthaica(false);
             } else {
