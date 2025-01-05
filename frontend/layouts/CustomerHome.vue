@@ -417,6 +417,9 @@ const time_management = computed(() => t('time_management'));
 const statistical = computed(() => t('statistical'));
 const vouchers = computed(() => t('vouchers'));
 const pay_at_the_counter = computed(() => t('pay_at_the_counter'));
+const changeViewCustomer = computed(() => t('changeViewCustomer'));
+const changeViewAdmin = computed(() => t('changeViewAdmin'));
+
 
 const changeLanguage = () => {
   currentLanguage.value = currentLanguage.value === 'vi' ? 'en' : 'vi';
@@ -471,14 +474,12 @@ const changeRole = () => {
     if (viewRole.value === 0) {
       viewRole.value = 1;
       localStorage.setItem('viewRole', '1');
-      addNotification('Đã chuyển sang giao diện Nhân viên', 'system');
-      toast.success('Đã chuyển sang giao diện Nhân viên');
+      addNotification(changeViewAdmin, 'system');
       return navigateTo('/admin/adminhome');
     } else {
       viewRole.value = 0;
       localStorage.setItem('viewRole', '0');
-      addNotification('Đã chuyển sang giao diện Khách hàng', 'system');
-      toast.success('Đã chuyển sang giao diện Khách hàng')
+      addNotification(changeViewCustomer, 'system');
       return navigateTo('/');
     }
   }
