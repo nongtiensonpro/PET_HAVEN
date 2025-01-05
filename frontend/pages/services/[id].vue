@@ -29,11 +29,11 @@
           </div>
         </div>
       </div>
-      <div v-else class="text-danger p-4">{{ errorMessage }}</div>
+      <div v-else class="text-danger p-4">{{ t('errorOccurred') }}</div>
     </div>
 
     <div class="mt-5 card p-4">
-      <h3 class="mb-4 card-header">Đánh giá và nhận xét</h3>
+      <h3 class="mb-4 card-header">{{ t('reviewsAndComments') }}</h3>
       <div v-if="danhGias.length > 0">
         <div style="padding-bottom: 10px">
           <TongHopBinhLuanGemini :danhGias="danhGias"/>
@@ -42,7 +42,7 @@
           <div class="card-body">
             <div class="d-flex justify-content-between align-items-center mb-3">
               <div>
-                <strong class="me-2">Đánh giá:</strong>
+                <strong class="me-2">{{ t('rating') }}:</strong>
                 <span v-for="n in 5" :key="n" class="star-rating">
                   <i :class="n <= danhGia.sosao ? 'fas fa-star text-warning' : 'far fa-star text-muted'">
                     <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor"
@@ -57,27 +57,27 @@
               <div
                   v-if="Array.isArray(userInfo.role) && userInfo.role.includes('admin') || userInfo.role.includes('manager') || danhGia.idhoadon.idlichhen.emailNguoiDat === userInfo?.name">
                 <div @click="anDanhGia(danhGia.id)">
-                  Ẩn bình luận
+                  {{ t('hideComment') }}
                 </div>
               </div>
             </div>
-            <p class="card-text mb-3"><strong>Nội dung:</strong> {{ danhGia.mota }}</p>
+            <p class="card-text mb-3"><strong>{{ t('content') }}:</strong> {{ danhGia.mota }}</p>
 
             <div class="row">
               <div class="col-md-6">
-                <h6 class="mb-2">Thông tin khách hàng:</h6>
+                <h6 class="mb-2">{{ t('customerInfo') }}:</h6>
                 <p class="mb-1"><small class="text-muted">Email: {{ danhGia.idhoadon.idlichhen.emailNguoiDat }}</small>
                 </p>
               </div>
               <div class="col-md-6">
-                <h6 class="mb-2">Thông tin thú cưng:</h6>
-                <p class="mb-1"><small class="text-muted">Tên: {{ danhGia.idhoadon.idlichhen.thucung.ten }}</small></p>
-                <p class="mb-1"><small class="text-muted">Giống: {{ danhGia.idhoadon.idlichhen.thucung.giong }}</small>
+                <h6 class="mb-2">{{ t('petInfo') }}:</h6>
+                <p class="mb-1"><small class="text-muted">{{ t('name') }}: {{ danhGia.idhoadon.idlichhen.thucung.ten }}</small></p>
+                <p class="mb-1"><small class="text-muted">{{ t('breed') }}: {{ danhGia.idhoadon.idlichhen.thucung.giong }}</small>
                 </p>
-                <p class="mb-1"><small class="text-muted">Cân nặng: {{ danhGia.idhoadon.idlichhen.thucung.cannang }}
+                <p class="mb-1"><small class="text-muted">{{ t('weight') }}: {{ danhGia.idhoadon.idlichhen.thucung.cannang }}
                   kg</small></p>
-                <p class="mb-1"><small class="text-muted">Tuổi: {{ danhGia.idhoadon.idlichhen.thucung.tuoi }}
-                  tuổi</small></p>
+                <p class="mb-1"><small class="text-muted">{{ t('age') }}: {{ danhGia.idhoadon.idlichhen.thucung.tuoi }}
+                  {{ t('years') }}</small></p>
               </div>
             </div>
           </div>
@@ -90,12 +90,11 @@
       </div>
       <div v-else class="alert alert-light">
         <i class="fas fa-info-circle me-2"></i>
-        Chưa có đánh giá nào cho dịch vụ này.
+        {{ t('noReviews') }}
       </div>
     </div>
-    <a class="custom-button p-4" href="/" role="button">Trở về trang chủ</a>
+    <a class="custom-button p-4" href="/" role="button">{{ t('backToHome') }}</a>
   </div>
-
 </template>
 
 <script setup lang="ts">
@@ -113,7 +112,9 @@ import CapNhatCaHen from "~/components/CapNhatCaLichHen.vue";
 import DichVu from "~/models/DichVu";
 import ChonDichVu from "~/components/ChonDichVu.vue";
 import CapNhatDanhGiaTrangChu from "~/components/CapNhatDanhGiaTrangChu.vue";
+import { useI18n } from 'vue-i18n';
 
+const { t } = useI18n();
 const toast = useToast();
 const userStore = useUserStore()
 const userInfo = computed(() => userStore.userInfo);
@@ -121,7 +122,7 @@ const serviceStore = useServiceStore();
 const danhGiaStore = useDanhGiaStore();
 const route = useRoute();
 const service = ref<DichVu | null>(null);
-const errorMessage = ref('Có lỗi đã xảy ra vui lòng thử lại !');
+const errorMessage = ref(t('errorOccurred'));
 const danhGias = ref<DanhGia[]>([]);
 const refreshInterval = ref<number | null>(null);
 
@@ -130,7 +131,7 @@ const fetchData = async () => {
   service.value = serviceStore.services.find(s => s.id === serviceId) || null;
 
   if (!service.value) {
-    errorMessage.value = 'Dịch vụ không tồn tại hoặc đã bị xóa.';
+    errorMessage.value = t('serviceNotFound');
   } else {
     await danhGiaStore.fetchDanhGiaByDichVu(serviceId);
     danhGias.value = danhGiaStore.danhGias;
@@ -180,23 +181,23 @@ const updateReview = (updatedReview: { id: number; sosao: number; mota: string }
 async function anDanhGia(idDanhGia: number) {
   try {
     const result = await Swal.fire({
-      title: 'Xác nhận',
-      text: "Bạn có muốn ẩn đánh giá không?",
+      title: t('confirmHideReview'),
+      text: t('confirmHideReviewText'),
       icon: 'success',
       showCancelButton: true,
       confirmButtonColor: '#3085d6',
       cancelButtonColor: '#d33',
-      confirmButtonText: 'Có',
-      cancelButtonText: 'Không'
+      confirmButtonText: t('yes'),
+      cancelButtonText: t('no')
     });
     if (result.isConfirmed) {
       await danhGiaStore.anDanhGia(idDanhGia);
       danhGias.value = danhGias.value.filter(dg => dg.id !== idDanhGia);
-      toast.success('Đã ẩn bình luận thành công!', {})
+      toast.success(t('hideReviewSuccess'), {})
       await fetchData();
     }
   } catch (error) {
-    toast.error('Lỗi ẩn bình luận! Vui lòng thử lại.', {})
+    toast.error(t('hideReviewError'), {})
   }
 }
 
@@ -210,6 +211,5 @@ async function anDanhGia(idDanhGia: number) {
 .star-rating {
   font-size: 1.2rem;
 }
-
 
 </style>

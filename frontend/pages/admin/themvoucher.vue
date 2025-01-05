@@ -21,7 +21,7 @@
       <div class="invalid-feedback" v-if="errors.ngayketthuc">{{ errors.ngayketthuc }}</div>
     </div>
     <div class="d-flex justify-content-end">
-      <button type="submit" class="custom-button">Thêm Voucher</button>
+      <button type="submit" class="custom-button" @click="submitVoucher">Thêm Voucher</button>
     </div>
   </form>
 </template>

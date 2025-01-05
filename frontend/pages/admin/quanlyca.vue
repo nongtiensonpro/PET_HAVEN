@@ -7,8 +7,10 @@ import ThemCa from '~/pages/admin/themthoigian.vue'
 import CapNhatCaHen from '~/components/CapNhatCaLichHen.vue'
 import CapNhatNgayNghi from "~/pages/admin/capnhatngaynghi.vue";
 import Swal from 'sweetalert2';
-import { useToast } from 'vue-toastification'
+import { useToast } from 'vue-toastification';
+import { useI18n } from 'vue-i18n';
 
+const { t } = useI18n();
 const caLichHenStore = useCaLichHenStore();
 const caLichHens = ref<CaLichHen[]>([]);
 const listNgayNghi = ref<NgayNghi[]>([]);
@@ -59,7 +61,7 @@ const fetchData = async () => {
     currentPageCaLichHen.value = 1;
     currentPageNgayNghi.value = 1;
   } catch (e) {
-    toast.error('Lấy dữ liệu thất bại!');
+    toast.error(t('fetchDataFailed'));
   }
 }
 
@@ -75,24 +77,25 @@ onUnmounted(() => {
 });
 
 async function capNhatTrangThai(ca: CaLichHen) {
+  const action = ca.trangthai ? t('hideTime') : t('showTime');
   const result = await Swal.fire({
-    title: 'Xác nhận',
-    text: `Bạn có chắc chắn ${ca.trangthai ? 'ẩn' : 'hiện'} ${ca.thoigianca} thời gian chứ?`,
+    title: t('confirmTitle'),
+    text: t('confirmHideTime', { action: action.toLowerCase(), time: ca.thoigianca }),
     icon: 'warning',
     showCancelButton: true,
     confirmButtonColor: '#3085d6',
     cancelButtonColor: '#d33',
-    confirmButtonText: 'Có',
-    cancelButtonText: 'Không'
+    confirmButtonText: t('yes'),
+    cancelButtonText: t('no')
   });
 
   if (result.isConfirmed) {
     try {
       await caLichHenStore.capNhatTrangThaiCa(ca);
       await fetchData();
-      toast.success('Cập nhật ca lịch hẹn thành công!')
+      toast.success(t('updateTimeSlotSuccess'));
     } catch (e) {
-      toast.error('Cập nhật ca lịch hẹn thất bại!')
+      toast.error(t('updateTimeSlotFailed'));
     }
   }
 }
@@ -107,23 +110,24 @@ function lammoi() {
 }
 
 async function huyNgayNghi(ngayNghi: NgayNghi) {
+  const action = ngayNghi.trangthai ? t('deactivate') : t('activate');
   const result = await Swal.fire({
-    title: 'Xác nhận',
-    text: `Bạn có chắc chắn ${ngayNghi.trangthai?'Hủy':'Kích hoạt'} ngày nghỉ ${ngayNghi.ngaynghi} không ?`,
+    title: t('confirmTitle'),
+    text: t('confirmHoliday', { action: action.toLowerCase(), date: ngayNghi.ngaynghi }),
     icon: 'warning',
     showCancelButton: true,
     confirmButtonColor: '#3085d6',
     cancelButtonColor: '#d33',
-    confirmButtonText: 'Có',
-    cancelButtonText: 'Không'
+    confirmButtonText: t('yes'),
+    cancelButtonText: t('no')
   });
   if (result.isConfirmed) {
     try {
       await caLichHenStore.huyNgayNghi(ngayNghi);
       await fetchData();
-      toast.success('Thay đổi trạng thái ngày nghỉ thành công!')
+      toast.success(t('holidayStatusChangeSuccess'));
     } catch (e) {
-      toast.error('Thay đổi trạng thái  ngày nghỉ thất bại!')
+      toast.error(t('holidayStatusChangeFailed'));
     }
   }
 }
@@ -140,18 +144,18 @@ function capNhatNgayNghi() {
 <template>
   <div class="card p-4" style="border-radius: 25px">
     <div class="text fs-1">
-      Quản lý thời gian
+      {{ t('timeManagement') }}
     </div>
     <div class="card-body">
       <div class="row">
         <div class="col-2">
-          <button type="button" class="custom-button" @click="themThoiGian">Thêm thời gian</button>
+          <button type="button" class="custom-button" @click="themThoiGian">{{ t('addTime') }}</button>
         </div>
         <div class="col-3">
-          <button type="button" class="custom-button" @click="capNhatNgayNghi">Cập nhật ngày </button>
+          <button type="button" class="custom-button" @click="capNhatNgayNghi">{{ t('updateDate') }}</button>
         </div>
         <div class="col-3">
-          <button type="button" @click="lammoi()" class="custom-button">
+          <button type="button" @click="lammoi()" class="custom-button" :title="t('refresh')">
             <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-arrow-clockwise" viewBox="0 0 16 16">
               <path fill-rule="evenodd" d="M8 3a5 5 0 1 0 4.546 2.914.5.5 0 0 1 .908-.417A6 6 0 1 1 8 2z"/>
               <path d="M8 4.466V.534a.25.25 0 0 1 .41-.192l2.36 1.966c.12.1.12.284 0 .384L8.41 4.658A.25.25 0 0 1 8 4.466"/>
@@ -167,9 +171,9 @@ function capNhatNgayNghi() {
         <thead>
           <tr>
             <th>ID</th>
-            <th>Thời gian</th>
-            <th>Trạng thái</th>
-            <th>Thao tác</th>
+            <th>{{ t('time') }}</th>
+            <th>{{ t('status') }}</th>
+            <th>{{ t('actions') }}</th>
           </tr>
         </thead>
         <tbody>
@@ -178,12 +182,12 @@ function capNhatNgayNghi() {
             <td>{{ ca.thoigianca }}</td>
             <td>
               <span :class="ca.trangthai ? 'active' : 'inactive'">
-                {{ ca.trangthai ? 'Hoạt động' : 'Không hoạt động' }}
+                {{ ca.trangthai ? t('active') : t('inactive') }}
               </span>
             </td>
             <td>
               <button type="button" @click="capNhatTrangThai(ca)" class="btn btn-sm btn-outline-warning m-1">
-                {{ca.trangthai ? 'Ẩn ca' : 'Hiện ca'}}
+                {{ ca.trangthai ? t('hideTime') : t('showTime') }}
               </button>
               <CapNhatCaHen :ca="ca" @cap-nhat="capNhat" />
             </td>
@@ -194,18 +198,15 @@ function capNhatNgayNghi() {
       <div class="pagination d-flex justify-content-center align-items-center mt-3">
         <div class="row">
           <div class="col">
-            <button @click="currentPageCaLichHen--" :disabled="currentPageCaLichHen === 1" class="custom-button">Trước</button>
+            <button @click="currentPageCaLichHen--" :disabled="currentPageCaLichHen === 1" class="custom-button">{{ t('previous') }}</button>
           </div>
           <div class="col">
-            <span class="text fs-5">Trang {{ currentPageCaLichHen }} / {{ totalPagesCaLichHen }}</span>
+            <span class="text fs-5">{{ t('page') }} {{ currentPageCaLichHen }} / {{ totalPagesCaLichHen }}</span>
           </div>
           <div class="col">
-            <button @click="currentPageCaLichHen++" :disabled="currentPageCaLichHen === totalPagesCaLichHen" class="custom-button">Sau</button>
+            <button @click="currentPageCaLichHen++" :disabled="currentPageCaLichHen === totalPagesCaLichHen" class="custom-button">{{ t('next') }}</button>
           </div>
         </div>
-
-
-
       </div>
     </div>
     <div class="col container">
@@ -213,18 +214,20 @@ function capNhatNgayNghi() {
         <thead>
           <tr>
             <th>ID</th>
-            <th>Ngày nghỉ</th>
-            <th>Trạng thái</th>
-            <th>Thao tác</th>
+            <th>{{ t('holidayDate') }}</th>
+            <th>{{ t('status') }}</th>
+            <th>{{ t('actions') }}</th>
           </tr>
         </thead>
         <tbody>
           <tr v-for="ngay in paginatedNgayNghi" :key="ngay.id">
             <td>{{ ngay.id }}</td>
             <td>{{ ngay.ngaynghi }}</td>
-            <td>{{ ngay.trangthai ? 'Hoạt động' : 'Không hoạt động' }}</td>
+            <td>{{ ngay.trangthai ? t('active') : t('inactive') }}</td>
             <td>
-              <button type="button" class="btn btn-sm btn-outline-warning m-1" @click="huyNgayNghi(ngay)">{{ngay.trangthai?'Hủy':'Kích hoạt'}}</button>
+              <button type="button" class="btn btn-sm btn-outline-warning m-1" @click="huyNgayNghi(ngay)">
+                {{ ngay.trangthai ? t('deactivate') : t('activate') }}
+              </button>
             </td>
           </tr>
         </tbody>
@@ -233,13 +236,13 @@ function capNhatNgayNghi() {
       <div class="pagination d-flex justify-content-center align-items-center mt-3">
         <div class="row">
           <div class="col">
-            <button @click="currentPageNgayNghi--" :disabled="currentPageNgayNghi === 1" class="custom-button">Trước</button>
+            <button @click="currentPageNgayNghi--" :disabled="currentPageNgayNghi === 1" class="custom-button">{{ t('previous') }}</button>
           </div>
           <div class="col">
-            <span class="text fs-5">Trang {{ currentPageNgayNghi }} / {{ totalPagesNgayNghi }}</span>
+            <span class="text fs-5">{{ t('page') }} {{ currentPageNgayNghi }} / {{ totalPagesNgayNghi }}</span>
           </div>
           <div class="col">
-            <button @click="currentPageNgayNghi++" :disabled="currentPageNgayNghi === totalPagesNgayNghi" class="custom-button">Sau</button>
+            <button @click="currentPageNgayNghi++" :disabled="currentPageNgayNghi === totalPagesNgayNghi" class="custom-button">{{ t('next') }}</button>
           </div>
         </div>
       </div>
