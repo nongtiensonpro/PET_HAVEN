@@ -4,7 +4,7 @@ import { useCaLichHenStore } from "~/stores/QuanLyCaLichHen"
 import type NgayNghi from "~/models/NgayNghi";
 import type CaLichHen from "~/models/CaHen";
 import ThemCa from '~/pages/admin/themthoigian.vue'
-import CapNhatCaHen from '~/pages/admin/capnhatcalichhen.vue'
+import CapNhatCaHen from '~/pages/admin/capnhatcalichhen/[id].vue'
 import CapNhatNgayNghi from "~/pages/admin/capnhatngaynghi.vue";
 import Swal from 'sweetalert2';
 import { useToast } from 'vue-toastification';
@@ -140,7 +140,7 @@ function capNhatNgayNghi() {
 }
 
 function capNhatThoiGian(ca: CaLichHen) {
-  return navigateTo(`/admin/capnhatcalichhen/${ca.id}`);
+  return navigateTo(`/admin/capnhatcalichhen/`+ ca.id);
 }
 
 </script>

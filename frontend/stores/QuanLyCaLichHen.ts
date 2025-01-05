@@ -1,8 +1,8 @@
-import {defineStore} from "pinia";
+import { defineStore } from "pinia";
 import type CaLichHen from "~/models/CaHen";
-import {tr} from "cronstrue/dist/i18n/locales/tr";
-import {ca} from "cronstrue/dist/i18n/locales/ca";
-import {data} from "autoprefixer";
+import { tr } from "cronstrue/dist/i18n/locales/tr";
+import { ca } from "cronstrue/dist/i18n/locales/ca";
+import { data } from "autoprefixer";
 import type NgayNghi from "~/models/NgayNghi"
 
 interface CaLichHenStoreState {
@@ -131,6 +131,7 @@ export const useCaLichHenStore = defineStore('useCalichhen', {
             }
         },
         async capNhatCaLichHen(caHen: CaLichHen) {
+            console.log(caHen + "Gau Gau")
             const token = localStorage.getItem('access_token');
             const formatTimeToHHMM = (time: string | Date): string => {
                 if (time instanceof Date) {

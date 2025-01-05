@@ -109,7 +109,7 @@ import Service from "~/models/DichVu";
 import { useUserStore } from '~/stores/user';
 import { useToast } from 'vue-toastification';
 import Swal from "sweetalert2";
-import CapNhatCaHen from "~/pages/admin/capnhatcalichhen.vue";
+import CapNhatCaHen from "~/pages/admin/capnhatcalichhen/[id].vue";
 import DichVu from "~/models/DichVu";
 import ChonDichVu from "~/components/ChonDichVu.vue";
 import CapNhatDanhGiaTrangChu from "~/components/CapNhatDanhGiaTrangChu.vue";

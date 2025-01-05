@@ -90,6 +90,7 @@
 import { ref, onMounted, watch, computed, onUnmounted } from 'vue';
 import { useThongKeStore } from '~/stores/ThongKeStores';
 import DatePicker from 'vue-datepicker-next';
+import 'vue-datepicker-next/index.css';
 import { useToast } from 'vue-toastification';
 import VChart from 'vue-echarts';
 import { use } from 'echarts/core';
@@ -212,5 +213,34 @@ onMounted(() => {
 <style scoped>
 .chart {
   height: 400px;
+}
+
+:deep(.mx-input) {
+  height: 40px;
+  padding: 0 10px;
+  font-size: 14px;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+  width: 100%;
+}
+
+:deep(.mx-datepicker) {
+  width: 100%;
+}
+
+:deep(.mx-calendar) {
+  color: #400D01;
+  font-family: 'Baloo 2', sans-serif;
+}
+
+:deep(.mx-btn:hover) {
+  color: #400D01;
+  background-color: rgba(246, 246, 234, 0.9);
+}
+
+:deep(.mx-datepicker-main) {
+  border: 1px solid #ddd;
+  border-radius: 4px;
+  box-shadow: 0 2px 12px 0 rgba(0, 0, 0, 0.1);
 }
 </style>
