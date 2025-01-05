@@ -1,6 +1,4 @@
 export default {
-  changeViewCustomer: 'Change view to Customer',
-  changeViewAdmin: 'Change view to Admin',
   pay_at_the_counter: 'Pay at the counter',
   vouchers:'Vouchers',
   statistical:'Statistical',
@@ -272,14 +270,4 @@ export default {
   confirmPaymentMessage: "Do you want to process the payment for this appointment?",
   paymentSuccess: "Payment processed successfully!",
   paymentError: "Error processing payment. Please try again.",
-  loginToViewVouchers: "Login to view vouchers",
-  loginRequiredVoucher: "You need to login to view special promotional vouchers.",
-  loginNow: "Login Now",
-  noVouchers: "No vouchers available.",
-  off: "OFF",
-  ai_language_reply_option:'Try to answer in English',
-  thinking: "I'm thinking",
-  continueChat: "Continue Chat",
-  // Review Summary
-  summary: "AI Review Summary",
 }as const;

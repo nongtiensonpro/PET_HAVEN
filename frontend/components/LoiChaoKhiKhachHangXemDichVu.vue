@@ -1,31 +1,13 @@
-<template>
-  <div class="greeting-container">
-    <div v-if="isLoading" class="loading">
-      <i class="fas fa-spinner fa-spin me-2"></i> {{ t('thinking') }} 🤔💭🧠
-    </div>
-    <div v-else class="greeting">
-      <div class="text fs-4 justify-content-around">
-        {{ greeting }}
-      </div>
-      <button class="custom-button" @click="tiepTucChat">
-        <span class="button-text">{{ t('continueChat') }}</span>
-        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="currentColor" class="bi bi-chat-right-dots-fill" viewBox="0 0 16 16">
-          <path d="M16 2a2 2 0 0 0-2-2H2a2 2 0 0 0-2 2v8a2 2 0 0 0 2 2h9.586a1 1 0 0 1 .707.293l2.853 2.853a.5.5 0 0 0 .854-.353zM4.5 5.5a.5.5 0 0 1 .5-.5h7a.5.5 0 0 1 0 1h-7a.5.5 0 0 1-.5-.5m0 3a.5.5 0 0 1 .5-.5h7a.5.5 0 0 1 0 1h-7a.5.5 0 0 1-.5-.5m0 3a.5.5 0 0 1 .5-.5h4a.5.5 0 0 1 0 1h-4a.5.5 0 0 1-.5-.5"/>
-        </svg>
-      </button>
-    </div>
-  </div>
-</template>
-
 <script setup lang="ts">
+import type Service from "~/models/DichVu";
 import { useUserStore } from '~/stores/user'
 import { useAIStore } from '~/stores/Gemini'
-import { ref, onMounted, computed, watch } from 'vue'
-import { useI18n } from 'vue-i18n';
-import { useRouter } from 'vue-router';
+import { ref, onMounted, computed } from 'vue'
 
-const { t, locale } = useI18n();
-const router = useRouter()
+const props = defineProps<{
+  service: Service
+}>();
+
 const aiStore = useAIStore()
 const userStore = useUserStore()
 
@@ -36,77 +18,73 @@ const userInfo = computed(() => {
   if (!userStore.userInfo) return null
   const pets = userStore.userInfo.listThuCung || []
   let petInfo = ''
-  
   if (pets.length === 1) {
-    petInfo = locale.value === 'en' 
-      ? `and pet ${pets[0].ten} (${pets[0].giong})`
-      : `và thú cưng ${pets[0].ten} (${pets[0].giong})`
+    petInfo = `và thú cưng ${pets[0].ten} (${pets[0].giong})`
   } else if (pets.length > 1) {
-    petInfo = locale.value === 'en'
-      ? `and pets: ${pets.map(pet => `${pet.ten} (${pet.giong})`).join(', ')}`
-      : `và các thú cưng: ${pets.map(pet => `${pet.ten} (${pet.giong})`).join(', ')}`
+    petInfo = `và các thú cưng: ${pets.map(pet => `${pet.ten} (${pet.giong})`).join(', ')}`
   }
-
   return {
     name: userStore.userInfo.name,
     petInfo
   }
 })
 
-const generatePrompt = () => {
-  const language = locale.value === 'en' ? 'English' : 'Vietnamese';
-  if (userInfo.value) {
-    return `Generate a short, friendly, and cute greeting for ${userInfo.value.name} ${userInfo.value.petInfo} who is viewing our pet services at PetHaven. The greeting should be warm, mention their pets if available, and encourage them to explore our services. Please respond in ${language} language only.`
-  }
-  return `Generate a general, friendly, and cute greeting for new customers who are viewing our pet services at PetHaven. The greeting should be warm, welcoming, and encourage them to explore our services. Please respond in ${language} language only.`
-}
-
-const generateGreeting = async () => {
+onMounted(async () => {
   try {
-    const prompt = generatePrompt()
+    let prompt
+    if (userInfo.value) {
+      prompt = `Chào mừng ${userInfo.value.name} ${userInfo.value.petInfo} đến với PetHaven.
+      Bạn đang xem dịch vụ "${props.service.tendichvu}".
+      Hãy tạo một lời chào ngắn gọn, thân thiện và dễ thương, đề cập đến cả thú cưng (nếu có) và dịch vụ đang xem.`
+    } else {
+      prompt = `Chào mừng quý khách đến với PetHaven.
+      Bạn đang xem dịch vụ "${props.service.tendichvu}".
+      Hãy tạo một lời chào chung chung, thân thiện và dễ thương cho khách hàng mới, đề cập đến dịch vụ đang xem.`
+    }
     greeting.value = await aiStore.sendMessage(prompt)
   } catch (error) {
-    console.error('Error generating greeting:', error)
+    console.error('Error fetching AI greeting:', error)
     if (userInfo.value) {
-      greeting.value = locale.value === 'en'
-        ? `Hello ${userInfo.value.name}${userInfo.value.petInfo ? ` ${userInfo.value.petInfo}` : ''}! Welcome to PetHaven's services. We're here to provide the best care for your pets. 🐾`
-        : `Xin chào ${userInfo.value.name}${userInfo.value.petInfo ? ` ${userInfo.value.petInfo}` : ''}! Chào mừng bạn đến với dịch vụ của PetHaven. Chúng tôi luôn sẵn sàng chăm sóc thú cưng của bạn tốt nhất. 🐾`
+      greeting.value = `Xin chào ${userInfo.value.name}${userInfo.value.petInfo ? ` và ${userInfo.value.petInfo}` : ''}!
+      Chào mừng bạn đến với PetHaven. Chúng tôi hy vọng bạn sẽ thích dịch vụ "${props.service.tendichvu}" của chúng tôi. 🐾`
     } else {
-      greeting.value = locale.value === 'en'
-        ? 'Welcome to PetHaven services! We offer a wide range of professional pet care services. Explore our offerings and find the perfect care for your furry friend. 🐾'
-        : 'Chào mừng quý khách đến với dịch vụ của PetHaven! Chúng tôi cung cấp nhiều dịch vụ chăm sóc thú cưng chuyên nghiệp. Hãy khám phá và tìm dịch vụ phù hợp nhất cho thú cưng của bạn. 🐾'
+      greeting.value = `Chào mừng quý khách đến với PetHaven!
+      Chúng tôi rất vui được phục vụ bạn và thú cưng của bạn.
+      Dịch vụ "${props.service.tendichvu}" của chúng tôi đang chờ đón bạn. 🐾`
     }
   } finally {
     isLoading.value = false
   }
-}
-
-onMounted(() => {
-  generateGreeting()
 })
-
-// Tự động cập nhật lời chào khi thay đổi ngôn ngữ
-watch(() => locale.value, () => {
-  isLoading.value = true
-  generateGreeting()
-})
-
 function tiepTucChat() {
-  return router.push('/chat');
+  return navigateTo('/chat');
 }
 </script>
 
+<template>
+  <div class="greeting-container">
+    <div v-if="isLoading" class="loading">
+      Thưa cậu chủ em đang suy nghĩ 🤔💭🧠
+    </div>
+    <div v-else class="greeting">
+      <div class="row">
+        <div class="col-10">
+          {{ greeting }}
+        </div>
+        <div class="col-2 custom-button" @click="tiepTucChat" style="border: none; background: none">
+          Tiếp tục Chat
+          <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="currentColor" class="bi bi-chat-right-dots-fill" viewBox="0 0 16 16">
+            <path d="M16 2a2 2 0 0 0-2-2H2a2 2 0 0 0-2 2v8a2 2 0 0 0 2 2h9.586a1 1 0 0 1 .707.293l2.853 2.853a.5.5 0 0 0 .854-.353zM4.5 5.5a.5.5 0 0 1 .5-.5h7a.5.5 0 0 1 0 1h-7a.5.5 0 0 1-.5-.5m0 3a.5.5 0 0 1 .5-.5h7a.5.5 0 0 1 0 1h-7a.5.5 0 0 1-.5-.5m0 3a.5.5 0 0 1 .5-.5h4a.5.5 0 0 1 0 1h-4a.5.5 0 0 1-.5-.5"/>
+          </svg>
+        </div>
+      </div>
+    </div>
+  </div>
+</template>
+
 <style scoped>
 .greeting-container {
-  display: flex;
-  align-items: center;
-  padding: 25px;
-}
-
-@keyframes pulse {
-  0% { transform: scale(1); }
-  50% { transform: scale(1.1); }
-  100% { transform: scale(1); }
+  padding: 20px;
 }
 
 .loading {
@@ -114,28 +92,8 @@ function tiepTucChat() {
   color: #666;
 }
 
-.greeting-text strong {
-  color: #28a745;
-}
-
-.custom-button {
-  background-color: transparent;
-  border: none;
-  padding: 5px 10px;
-  border-radius: 5px;
-  cursor: pointer;
-  transition: background-color 0.3s ease;
-  display: flex;
-  align-items: center;
-  white-space: nowrap;
-}
-
-.bi {
-  margin-left: 5px;
-}
-
-.button-text {
-  margin-right: 5px;
-  font-size: 14px;
+.greeting {
+  font-size: 1.2em;
+  color: #333;
 }
 </style>

@@ -1,6 +1,4 @@
 export default {
-    changeViewCustomer: 'Đã chuyển sang giao diện Khách hàng',
-    changeViewAdmin: 'Đã chuyển sang giao diện Quản lý',
     pay_at_the_counter: 'Thanh toán tại quầy',
     vouchers: 'Vouchers',
     time_management:'Quản lý thời gian',
@@ -270,13 +268,4 @@ export default {
     confirmPaymentMessage: 'Bạn có muốn xử lý thanh toán cho lịch hẹn này không?',
     paymentSuccess: 'Xử lý thanh toán thành công!',
     paymentError: 'Lỗi khi xử lý thanh toán. Vui lòng thử lại.',
-    loginToViewVouchers: "Đăng nhập để xem voucher",
-    loginRequiredVoucher: "Bạn cần đăng nhập để xem các voucher khuyến mãi đặc biệt.",
-    loginNow: "Đăng nhập ngay",
-    noVouchers: "Không có voucher nào.",
-    off: "GIẢM",
-    thinking: "Thưa cậu chủ em đang suy nghĩ",
-    continueChat: "Tiếp tục Chat",
-    ai_language_reply_option: 'Cố gắng trả lời bằng tiếng Việt Nam',
-    summary: "Tổng hợp đánh giá và nhận xét bởi AI",
 }as const;

@@ -6,7 +6,7 @@
           <div class="voucher">
             <div class="voucher-content">
               <h3>{{ voucher.mota }}</h3>
-              <p class="discount">{{ voucher.phantramgiam }}% {{ t('off') }}</p>
+              <p class="discount">{{ voucher.phantramgiam }}% OFF</p>
               <p class="dates">
                 {{ formatDate(voucher.ngaybatdau) }} - {{ formatDate(voucher.ngayketthuc) }}
               </p>
@@ -18,13 +18,13 @@
     <div v-else-if="vouchers.length > 0 && !accessToken" class="login-message">
       <div class="message-content">
         <i class="fas fa-lock"></i>
-        <h3>{{ t('loginToViewVouchers') }}</h3>
-        <p>{{ t('loginRequiredVoucher') }}</p>
-        <button @click="navigateToLogin" class="custom-button">{{ t('loginNow') }}</button>
+        <h3>Đăng nhập để xem voucher</h3>
+        <p>Bạn cần đăng nhập để xem các voucher khuyến mãi đặc biệt.</p>
+        <button @click="navigateToLogin" class="custom-button">Đăng nhập ngay</button>
       </div>
     </div>
     <div v-else>
-      <p class="text-center">{{ t('noVouchers') }}</p>
+      <p class="text-center">Không có voucher nào.</p>
     </div>
   </div>
 </template>
@@ -32,10 +32,8 @@
 <script setup lang="ts">
 import { ref, onMounted, onUnmounted, computed } from 'vue';
 import { useRouter } from 'vue-router';
-import { useI18n } from 'vue-i18n';
 import Voucher from '~/models/Voucher';
 
-const { t } = useI18n();
 const props = defineProps<{
   vouchers: Voucher[]
 }>();
