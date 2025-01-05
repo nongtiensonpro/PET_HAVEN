@@ -15,7 +15,7 @@
         <div class="col-md-8 d-flex align-items-center justify-content-end">
           <!-- Thanh tìm kiếm -->
           <nav class="navbar bg-body-tertiary flex-grow-1 me-2 " style="flex-basis: 50%;">
-            <TimKiem/>
+            <TimKiem />
           </nav>
 
           <!-- Nút đăng nhập và quản lý tài khoản -->
@@ -28,25 +28,26 @@
 
             <div v-else>
               <button class="custom-button btn-equal" type="button" data-bs-toggle="offcanvas"
-                      data-bs-target="#offcanvasWithBothOptions" aria-controls="offcanvasWithBothOptions" style="border: none !important;">
-                {{account}}
+                data-bs-target="#offcanvasWithBothOptions" aria-controls="offcanvasWithBothOptions"
+                style="border: none !important;">
+                {{ account }}
               </button>
 
               <!-- Offcanvas quản lý tài khoản -->
               <div class="offcanvas offcanvas-start" data-bs-scroll="true" tabindex="-1" id="offcanvasWithBothOptions"
-                   aria-labelledby="offcanvasWithBothOptionsLabel"
-                   style="border-radius: 0 25px 25px 0; background: rgba(246, 246, 234, 0.75); backdrop-filter: blur(5px); box-shadow: 0 0 10px 5px rgba(246, 246, 234, 0.3);">
+                aria-labelledby="offcanvasWithBothOptionsLabel"
+                style="border-radius: 0 25px 25px 0; background: rgba(246, 246, 234, 0.75); backdrop-filter: blur(5px); box-shadow: 0 0 10px 5px rgba(246, 246, 234, 0.3);">
                 <div class="offcanvas-header">
                   <h5 class="offcanvas-title" id="offcanvasWithBothOptionsLabel">
                     <template v-if="Array.isArray(userInfo.role)">
                       <div v-if="userInfo.role.includes('admin')">
-                        Chào mừng Admin {{ userInfo?.name }}
+                        {{ wellcome }} {{ admin }} {{ userInfo?.name }}
                       </div>
                       <div v-else-if="userInfo.role.includes('manager')">
-                        Chào mừng nhân viên {{ userInfo?.name }}
+                        {{ wellcome }} {{ staff }} {{ userInfo?.name }}
                       </div>
                       <div v-else>
-                        Chào mừng chủ nhân {{ userInfo?.name }} !
+                        {{ wellcome }} {{ owner }} {{ userInfo?.name }} !
                       </div>
                     </template>
                   </h5>
@@ -56,10 +57,10 @@
                 <div class="offcanvas-body">
                   <div class="row">
                     <template
-                        v-if="Array.isArray(userInfo.role) && (userInfo.role.includes('admin') || userInfo.role.includes('manager'))">
+                      v-if="Array.isArray(userInfo.role) && (userInfo.role.includes('admin') || userInfo.role.includes('manager'))">
                       <div class="col-12 p-4">
                         <button type="button" class="custom-button btn-menu" @click="changeRole">
-                          Khách hàng/ Nhân Viên
+                          {{ customer_employee }}
                         </button>
                       </div>
                     </template>
@@ -67,7 +68,7 @@
                     <div class="col-12 p-4">
                       <nuxt-link class="nav-link" :to="`/user/infouser`">
                         <button type="button" class="custom-button btn-menu">
-                          Thông tin tài khoản
+                          {{ infoacc }}
                         </button>
                       </nuxt-link>
                     </div>
@@ -75,7 +76,7 @@
                     <div class="col-12 p-4">
                       <nuxt-link class="nav-link" :to="`/user/appointment`">
                         <button type="button" class="custom-button btn-menu">
-                          Quản lý lịch hẹn
+                          {{ appointment_management }}
                         </button>
                       </nuxt-link>
                     </div>
@@ -83,14 +84,14 @@
                     <div class="col-12 p-4">
                       <nuxt-link class="nav-link" :to="`/chat`">
                         <button type="button" class="custom-button btn-menu">
-                          Chat
+                          {{ chat_with_ai }}
                         </button>
                       </nuxt-link>
                     </div>
 
                     <div class="col-12 p-4">
                       <button type="button" class="custom-button btn-menu" @click="logout1">
-                        Đăng xuất
+                        {{ log_out }}
                       </button>
                     </div>
                   </div>
@@ -100,34 +101,35 @@
           </div>
 
           <!-- Nút thay đổi ngôn ngữ -->
-          <button type="button" class="custom-button btn-equal m-2 text-center" @click="changeLanguage" style="border: none !important;">
+          <button type="button" class="custom-button btn-equal m-2 text-center" @click="changeLanguage"
+            style="border: none !important;">
             {{ currentLanguage === 'vi' ? switchToEnglish : switchToVietnamese }}
           </button>
 
           <!-- Nút thông báo -->
           <div class="dropdown">
-            <button class="custom-button btn-equal dropdown-toggle position-relative" type="button" style="border: none !important;"
-                    data-bs-toggle="dropdown" aria-expanded="false">
+            <button class="custom-button btn-equal dropdown-toggle position-relative" type="button"
+              style="border: none !important;" data-bs-toggle="dropdown" aria-expanded="false">
               <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-bell-fill"
-                   viewBox="0 0 16 16">
+                viewBox="0 0 16 16">
                 <path
-                    d="M8 16a2 2 0 0 0 2-2H6a2 2 0 0 0 2 2m.995-14.901a1 1 0 1 0-1.99 0A5 5 0 0 0 3 6c0 1.098-.5 6-2 7h14c-1.5-1-2-5.902-2-7 0-2.42-1.72-4.44-4.005-4.901"/>
+                  d="M8 16a2 2 0 0 0 2-2H6a2 2 0 0 0 2 2m.995-14.901a1 1 0 1 0-1.99 0A5 5 0 0 0 3 6c0 1.098-.5 6-2 7h14c-1.5-1-2-5.902-2-7 0-2.42-1.72-4.44-4.005-4.901" />
               </svg>
 
               <!-- Badge hiển thị số lượng thông báo -->
               <span class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger">
-          {{ notifications.length }}
-        </span>
+                {{ notifications.length }}
+              </span>
             </button>
 
             <!-- Danh sách dropdown thông báo -->
             <ul class="dropdown-menu p-4 m-4">
               <li v-if="notifications.length === 0">
-                Không có thông báo nào !
+                {{ notifications_leng_null }} !
               </li>
               <li v-else>
                 <button @click="removeAllNotifications" class="btn btn-link p-0 m-0 text-danger">
-                  Xóa tất cả thông báo
+                  {{ remove_all }}
                 </button>
               </li>
               <li v-for="notification in notifications" :key="notification.id">
@@ -135,7 +137,7 @@
                 <a class="dropdown-item">
                   {{ notification.message }}
                   <button @click="handleRemoveNotification(notification.id - 1)"
-                          class="btn btn-link p-0 m-0 text-danger">
+                    class="btn btn-link p-0 m-0 text-danger">
                     X
                   </button>
                 </a>
@@ -148,13 +150,13 @@
 
 
       <!-- Navbar -->
-      <div class="text fs-4">
+      <div class="text fs-5">
         <div v-if="viewRole === 0">
           <nav class="navbar navbar-expand-lg bg-body-tertiary">
             <div class="container-fluid">
               <NuxtLink class="nav-link active" aria-current="page" to="/">{{ home }}</NuxtLink>
               <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav"
-                      aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+                aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
                 <span class="navbar-toggler-icon"></span>
               </button>
               <div class="collapse navbar-collapse" id="navbar">
@@ -166,8 +168,8 @@
                     <div v-else>
                       <NuxtLink class="nav-link" :to="`/services/${service.id}`" aria-current="page">
                         <div v-if="service.hien && service.trangthai" style="font-size: medium;">{{
-                            service.tendichvu
-                          }}
+                          service.tendichvu
+                        }}
                         </div>
                       </NuxtLink>
                     </div>
@@ -175,7 +177,7 @@
                   <li class="nav-item">
                     <div v-if="services.length > 0">
                       <Nuxt-link class="nav-link" :to="`/customer/calendar/newuser`" aria-current="page">
-                        <div style="font-size: medium;">{{book}}</div>
+                        <div style="font-size: medium;">{{ book }}</div>
                       </Nuxt-link>
                     </div>
                   </li>
@@ -188,42 +190,39 @@
           <nav class="navbar navbar-expand-lg bg-body-tertiary">
             <div class="container-fluid">
               <nuxt-link v-if="userInfo?.role && userInfo.role.includes('admin')" class="nav-link"
-                         :to="`/admin/adminhome`">
-                {{home}}
+                :to="`/admin/adminhome`">
+                {{ home }}
               </nuxt-link>
               <div v-else>
                 Nhân viên
               </div>
               <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav"
-                      aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+                aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
                 <span class="navbar-toggler-icon"></span>
               </button>
               <div class="collapse navbar-collapse" id="navbarNav">
                 <ul class="navbar-nav">
-                  <!--                  <li class="nav-item" v-if="userInfo?.role && userInfo.role.includes('admin')">-->
-                  <!--                    <NuxtLink class="nav-link" :to="`/admin/quanlyhoadon`">Quản lý hóa đơn</NuxtLink>-->
-                  <!--                  </li>-->
                   <li class="nav-item" v-if="userInfo?.role && userInfo.role.includes('admin')">
-                    <NuxtLink class="nav-link" :to="`/admin/service/servicelist`" >Dịch vụ</NuxtLink>
+                    <NuxtLink class="nav-link" :to="`/admin/service/servicelist`">{{ service }}</NuxtLink>
                   </li>
                   <li class="nav-item" v-if="userInfo?.role && userInfo.role.includes('admin')">
-                    <NuxtLink class="nav-link" :to="`/admin/quanlytaikhoan`">Tài khoản</NuxtLink>
+                    <NuxtLink class="nav-link" :to="`/admin/quanlytaikhoan`">{{ account }}</NuxtLink>
                   </li>
                   <li class="nav-item" v-if="userInfo?.role && userInfo.role.includes('admin')">
-                    <NuxtLink class="nav-link" :to="`/admin/quanlyca`">Quản lý thời gian</NuxtLink>
+                    <NuxtLink class="nav-link" :to="`/admin/quanlyca`">{{ time_management }}</NuxtLink>
                   </li>
                   <li class="nav-item" v-if="userInfo?.role && userInfo.role.includes('admin')">
-                    <NuxtLink class="nav-link" :to="`/admin/thongke`">Thống kê</NuxtLink>
+                    <NuxtLink class="nav-link" :to="`/admin/thongke`">{{ statistical }}</NuxtLink>
                   </li>
                   <li class="nav-item" v-if="userInfo?.role && userInfo.role.includes('admin')">
-                    <NuxtLink class="nav-link" :to="`/admin/vouchers`">Vouchers</NuxtLink>
+                    <NuxtLink class="nav-link" :to="`/admin/vouchers`">{{ vouchers }}</NuxtLink>
                   </li>
                   <li class="nav-item" v-if="userInfo?.role && userInfo.role.includes('admin')">
-                    <NuxtLink class="nav-link" :to="`/admin/quanlylichhen`">Quản lý lịch hẹn</NuxtLink>
+                    <NuxtLink class="nav-link" :to="`/admin/quanlylichhen`">{{ appointment_management }}</NuxtLink>
                   </li>
                   <li class="nav-item"
-                      v-if="userInfo?.role && (userInfo.role.includes('admin') || userInfo.role.includes('manager'))">
-                    <NuxtLink class="nav-link" :to="`/nhanvien/checkin`">Thanh toán tại quầy</NuxtLink>
+                    v-if="userInfo?.role && (userInfo.role.includes('admin') || userInfo.role.includes('manager'))">
+                    <NuxtLink class="nav-link" :to="`/nhanvien/checkin`">{{ pay_at_the_counter }}</NuxtLink>
                   </li>
                 </ul>
               </div>
@@ -233,14 +232,14 @@
       </div>
 
       <div class="container h-100 w-100 p-4 bg-opacity-75"
-           style="border-radius: 25px; margin-top: 5px; background: rgba(246, 246, 234, 0.62); backdrop-filter: blur(5px); box-shadow: 0 0 10px 5px rgba(246, 246, 234, 0.3);">
-        <NuxtPage/>
+        style="border-radius: 25px; margin-top: 5px; background: rgba(246, 246, 234, 0.62); backdrop-filter: blur(5px); box-shadow: 0 0 10px 5px rgba(246, 246, 234, 0.3);">
+        <NuxtPage />
       </div>
 
       <footer>
         <div v-if="viewRole == 0">
           <div class="container h-100 w-100 p-4 bg-opacity-75"
-               style="border-radius: 25px; margin-top: 5px; background: rgba(246, 246, 234, 0.62); backdrop-filter: blur(5px); box-shadow: 0 0 10px 5px rgba(246, 246, 234, 0.3);">
+            style="border-radius: 25px; margin-top: 5px; background: rgba(246, 246, 234, 0.62); backdrop-filter: blur(5px); box-shadow: 0 0 10px 5px rgba(246, 246, 234, 0.3);">
             <div class="row">
               <div class="col">
                 <div class="row">
@@ -295,15 +294,18 @@
               </div>
               <div class="col">
                 <iframe
-                    src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3413.541940628307!2d105.74466886584491!3d21.038129618650437!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x313455e940879933%3A0xcf10b34e9f1a03df!2zVHLGsOG7nW5nIENhbyDEkeG6s25nIEZQVCBQb2x5dGVjaG5pYw!5e1!3m2!1svi!2s!4v1681224799580!5m2!1svi!2s"
-                    width="100%" height="100%" style="border:0;" loading="lazy"></iframe>
+                  src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3413.541940628307!2d105.74466886584491!3d21.038129618650437!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x313455e940879933%3A0xcf10b34e9f1a03df!2zVHLGsOG7nW5nIENhbyDEkeG6s25nIEZQVCBQb2x5dGVjaG5pYw!5e1!3m2!1svi!2s!4v1681224799580!5m2!1svi!2s"
+                  width="100%" height="100%" style="border:0;" loading="lazy"></iframe>
               </div>
             </div>
             <div>
               <p class="text-center">{{ footerCopyright }}
-                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-heart-fill" viewBox="0 0 16 16">
-                  <path fill-rule="evenodd" d="M8 1.314C12.438-3.248 23.534 4.735 8 15-7.534 4.736 3.562-3.248 8 1.314"/>
-                </svg></p>
+                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor"
+                  class="bi bi-heart-fill" viewBox="0 0 16 16">
+                  <path fill-rule="evenodd"
+                    d="M8 1.314C12.438-3.248 23.534 4.735 8 15-7.534 4.736 3.562-3.248 8 1.314" />
+                </svg>
+              </p>
             </div>
           </div>
         </div>
@@ -316,15 +318,15 @@
 </template>
 
 <script setup lang="ts">
-import {useServiceStore} from '~/stores/DichVuStores';
-import {computed, ref, onMounted, onUnmounted} from 'vue';
+import { useServiceStore } from '~/stores/DichVuStores';
+import { computed, ref, onMounted, onUnmounted } from 'vue';
 import DichVu from '~/models/DichVu';
 import logoImage from '@/image/LogoPetHaven.png';
-import {useI18n} from 'vue-i18n';
-import {useUserStore} from '~/stores/user';
-import {useNotificationStore} from '~/stores/useNotificationStore';
-import {useToast} from 'vue-toastification';
-import {useRoute, useRouter} from 'vue-router';
+import { useI18n } from 'vue-i18n';
+import { useUserStore } from '~/stores/user';
+import { useNotificationStore } from '~/stores/useNotificationStore';
+import { useToast } from 'vue-toastification';
+import { useRoute, useRouter } from 'vue-router';
 
 let refreshInterval: number | null = null;
 const toast = useToast();
@@ -332,7 +334,7 @@ const route = useRoute();
 const router = useRouter();
 
 const notificationStore = useNotificationStore();
-const {addNotification, removeNotification} = notificationStore;
+const { addNotification, removeNotification } = notificationStore;
 
 const notifications = computed(() => notificationStore.notifications);
 
@@ -348,7 +350,7 @@ const handleRemoveNotification = (index: number) => {
   removeNotification(index);
 };
 
-const {t, locale} = useI18n();
+const { t, locale } = useI18n();
 const serviceStore = useServiceStore();
 
 const services = computed((): DichVu[] => {
@@ -399,8 +401,22 @@ const serviceNotAvailable = computed(() => t('serviceNotAvailable'));
 const login = computed(() => t('login'));
 const account = computed(() => t('account'));
 const book = computed(() => t('book'));
-
-
+const customer_employee = computed(() => t('customer_employee'));
+const infoacc = computed(() => t('infoacc'));
+const appointment_management = computed(() => t('appointment_management'));
+const chat_with_ai = computed(() => t('chat_with_ai'));
+const log_out = computed(() => t('log_out'));
+const wellcome = computed(() => t('wellcome'));
+const admin = computed(() => t('admin'));
+const staff = computed(() => t('staff'));
+const owner = computed(() => t('owner'));
+const notifications_leng_null = computed(() => t('notifications_leng_null'));
+const remove_all = computed(() => t('remove_all'));
+const service = computed(() => t('service'));
+const time_management = computed(() => t('time_management'));
+const statistical = computed(() => t('statistical'));
+const vouchers = computed(() => t('vouchers'));
+const pay_at_the_counter = computed(() => t('pay_at_the_counter'));
 
 const changeLanguage = () => {
   currentLanguage.value = currentLanguage.value === 'vi' ? 'en' : 'vi';
@@ -648,5 +664,4 @@ onMounted(() => {
   text-overflow: ellipsis;
   border: none;
 }
-
 </style>
