@@ -75,9 +75,9 @@ function tiepTucChat() {
   display: flex;
   align-items: center;
   padding: 25px;
-  //background-color: rgba(246, 246, 234, 0.62);
+  /* //background-color: rgba(246, 246, 234, 0.62);
   //border-radius: 15px;
-  //box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  //box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1); */
 }
 
 

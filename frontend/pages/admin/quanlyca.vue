@@ -4,7 +4,7 @@ import { useCaLichHenStore } from "~/stores/QuanLyCaLichHen"
 import type NgayNghi from "~/models/NgayNghi";
 import type CaLichHen from "~/models/CaHen";
 import ThemCa from '~/pages/admin/themthoigian.vue'
-import CapNhatCaHen from '~/components/CapNhatCaLichHen.vue'
+import CapNhatCaHen from '~/pages/admin/capnhatcalichhen.vue'
 import CapNhatNgayNghi from "~/pages/admin/capnhatngaynghi.vue";
 import Swal from 'sweetalert2';
 import { useToast } from 'vue-toastification';
@@ -139,6 +139,10 @@ function capNhatNgayNghi() {
   return navigateTo('/admin/capnhatngaynghi');
 }
 
+function capNhatThoiGian(ca: CaLichHen) {
+  return navigateTo(`/admin/capnhatcalichhen/${ca.id}`);
+}
+
 </script>
 
 <template>
@@ -156,103 +160,113 @@ function capNhatNgayNghi() {
         </div>
         <div class="col-3">
           <button type="button" @click="lammoi()" class="custom-button" :title="t('refresh')">
-            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-arrow-clockwise" viewBox="0 0 16 16">
-              <path fill-rule="evenodd" d="M8 3a5 5 0 1 0 4.546 2.914.5.5 0 0 1 .908-.417A6 6 0 1 1 8 2z"/>
-              <path d="M8 4.466V.534a.25.25 0 0 1 .41-.192l2.36 1.966c.12.1.12.284 0 .384L8.41 4.658A.25.25 0 0 1 8 4.466"/>
+            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor"
+              class="bi bi-arrow-clockwise" viewBox="0 0 16 16">
+              <path fill-rule="evenodd" d="M8 3a5 5 0 1 0 4.546 2.914.5.5 0 0 1 .908-.417A6 6 0 1 1 8 2z" />
+              <path
+                d="M8 4.466V.534a.25.25 0 0 1 .41-.192l2.36 1.966c.12.1.12.284 0 .384L8.41 4.658A.25.25 0 0 1 8 4.466" />
             </svg>
           </button>
         </div>
       </div>
     </div>
 
-  <div class="row">
-    <div class="col container">
-      <table class="table">
-        <thead>
-          <tr>
-            <th>ID</th>
-            <th>{{ t('time') }}</th>
-            <th>{{ t('status') }}</th>
-            <th>{{ t('actions') }}</th>
-          </tr>
-        </thead>
-        <tbody>
-          <tr v-for="ca in paginatedCaLichHens" :key="ca.id">
-            <td>{{ ca.id }}</td>
-            <td>{{ ca.thoigianca }}</td>
-            <td>
-              <span :class="ca.trangthai ? 'active' : 'inactive'">
-                {{ ca.trangthai ? t('active') : t('inactive') }}
-              </span>
-            </td>
-            <td>
-              <button type="button" @click="capNhatTrangThai(ca)" class="btn btn-sm btn-outline-warning m-1">
-                {{ ca.trangthai ? t('hideTime') : t('showTime') }}
-              </button>
-              <CapNhatCaHen :ca="ca" @cap-nhat="capNhat" />
-            </td>
-          </tr>
-        </tbody>
-      </table>
-      <!-- Pagination for Ca Lich Hen -->
-      <div class="pagination d-flex justify-content-center align-items-center mt-3">
-        <div class="row">
-          <div class="col">
-            <button @click="currentPageCaLichHen--" :disabled="currentPageCaLichHen === 1" class="custom-button">{{ t('previous') }}</button>
+    <div class="row">
+      <div class="col container">
+        <table class="table">
+          <thead>
+            <tr>
+              <th>ID</th>
+              <th>{{ t('time') }}</th>
+              <th>{{ t('status') }}</th>
+              <th>{{ t('actions') }}</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr v-for="ca in paginatedCaLichHens" :key="ca.id">
+              <td>{{ ca.id }}</td>
+              <td>{{ ca.thoigianca }}</td>
+              <td>
+                <span :class="ca.trangthai ? 'active' : 'inactive'">
+                  {{ ca.trangthai ? t('active') : t('inactive') }}
+                </span>
+              </td>
+              <td>
+                <button type="button" @click="capNhatTrangThai(ca)" class="btn btn-sm btn-outline-warning m-1">
+                  {{ ca.trangthai ? t('hideTime') : t('showTime') }}
+                </button>
+                <button type="button" class="btn btn-sm btn-outline-info m-1" @click="capNhatThoiGian(ca)">
+                  {{ t('update') }}
+                </button>
+
+              </td>
+            </tr>
+          </tbody>
+        </table>
+        <!-- Pagination for Ca Lich Hen -->
+        <div class="pagination d-flex justify-content-center align-items-center mt-3">
+          <div class="row">
+            <div class="col">
+              <button @click="currentPageCaLichHen--" :disabled="currentPageCaLichHen === 1" class="custom-button">{{
+                t('previous') }}</button>
+            </div>
+            <div class="col">
+              <span class="text fs-5">{{ t('page') }} {{ currentPageCaLichHen }} / {{ totalPagesCaLichHen }}</span>
+            </div>
+            <div class="col">
+              <button @click="currentPageCaLichHen++" :disabled="currentPageCaLichHen === totalPagesCaLichHen"
+                class="custom-button">{{ t('next') }}</button>
+            </div>
           </div>
-          <div class="col">
-            <span class="text fs-5">{{ t('page') }} {{ currentPageCaLichHen }} / {{ totalPagesCaLichHen }}</span>
-          </div>
-          <div class="col">
-            <button @click="currentPageCaLichHen++" :disabled="currentPageCaLichHen === totalPagesCaLichHen" class="custom-button">{{ t('next') }}</button>
+        </div>
+      </div>
+      <div class="col container">
+        <table class="table">
+          <thead>
+            <tr>
+              <th>ID</th>
+              <th>{{ t('holidayDate') }}</th>
+              <th>{{ t('status') }}</th>
+              <th>{{ t('actions') }}</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr v-for="ngay in paginatedNgayNghi" :key="ngay.id">
+              <td>{{ ngay.id }}</td>
+              <td>{{ ngay.ngaynghi }}</td>
+              <td>{{ ngay.trangthai ? t('active') : t('inactive') }}</td>
+              <td>
+                <button type="button" class="btn btn-sm btn-outline-warning m-1" @click="huyNgayNghi(ngay)">
+                  {{ ngay.trangthai ? t('deactivate') : t('activate') }}
+                </button>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+        <!-- Pagination for Ngay Nghi -->
+        <div class="pagination d-flex justify-content-center align-items-center mt-3">
+          <div class="row">
+            <div class="col">
+              <button @click="currentPageNgayNghi--" :disabled="currentPageNgayNghi === 1" class="custom-button">{{
+                t('previous') }}</button>
+            </div>
+            <div class="col">
+              <span class="text fs-5">{{ t('page') }} {{ currentPageNgayNghi }} / {{ totalPagesNgayNghi }}</span>
+            </div>
+            <div class="col">
+              <button @click="currentPageNgayNghi++" :disabled="currentPageNgayNghi === totalPagesNgayNghi"
+                class="custom-button">{{ t('next') }}</button>
+            </div>
           </div>
         </div>
       </div>
     </div>
-    <div class="col container">
-      <table class="table">
-        <thead>
-          <tr>
-            <th>ID</th>
-            <th>{{ t('holidayDate') }}</th>
-            <th>{{ t('status') }}</th>
-            <th>{{ t('actions') }}</th>
-          </tr>
-        </thead>
-        <tbody>
-          <tr v-for="ngay in paginatedNgayNghi" :key="ngay.id">
-            <td>{{ ngay.id }}</td>
-            <td>{{ ngay.ngaynghi }}</td>
-            <td>{{ ngay.trangthai ? t('active') : t('inactive') }}</td>
-            <td>
-              <button type="button" class="btn btn-sm btn-outline-warning m-1" @click="huyNgayNghi(ngay)">
-                {{ ngay.trangthai ? t('deactivate') : t('activate') }}
-              </button>
-            </td>
-          </tr>
-        </tbody>
-      </table>
-      <!-- Pagination for Ngay Nghi -->
-      <div class="pagination d-flex justify-content-center align-items-center mt-3">
-        <div class="row">
-          <div class="col">
-            <button @click="currentPageNgayNghi--" :disabled="currentPageNgayNghi === 1" class="custom-button">{{ t('previous') }}</button>
-          </div>
-          <div class="col">
-            <span class="text fs-5">{{ t('page') }} {{ currentPageNgayNghi }} / {{ totalPagesNgayNghi }}</span>
-          </div>
-          <div class="col">
-            <button @click="currentPageNgayNghi++" :disabled="currentPageNgayNghi === totalPagesNgayNghi" class="custom-button">{{ t('next') }}</button>
-          </div>
-        </div>
-      </div>
-    </div>
-  </div>
   </div>
 </template>
 
 <style scoped>
-.ca-lich-hen-table th, .ca-lich-hen-table td {
+.ca-lich-hen-table th,
+.ca-lich-hen-table td {
   border: 1px solid #ddd;
   padding: 12px;
   text-align: left;

@@ -1,8 +1,10 @@
 <script setup lang="ts">
 import { ref } from "vue";
+import { useI18n } from 'vue-i18n';
 import CaLichHen from "~/models/CaHen";
 import { useToast } from 'vue-toastification';
 
+const { t } = useI18n();
 const toast = useToast();
 const caLichHenStore = useCaLichHenStore();
 const thoigianca = ref("");
@@ -22,11 +24,11 @@ const themCaHen = async () => {
     await caLichHenStore.themCaLichHen(newCaHen);
 
     thoigianca.value = "";
-    toast.success('Thêm ca hẹn thành công');
+    toast.success(t('addTimeSlotSuccess'));
     isFormVisible.value = false;
     return navigateTo('/admin/quanlyca')
   } catch (e) {
-    toast.error('Thêm ca hẹn thất bại');
+    toast.error(t('addTimeSlotFailed'));
   }
 };
 </script>
@@ -35,7 +37,7 @@ const themCaHen = async () => {
   <div class="card">
     <form @submit.prevent="themCaHen">
       <div class="mb-3">
-        <label for="thoigianca" class="form-label">Thời gian ca:</label>
+        <label for="thoigianca" class="form-label">{{ t('timeSlotLabel') }}</label>
         <input
             id="thoigianca"
             v-model="thoigianca"
@@ -45,7 +47,7 @@ const themCaHen = async () => {
         />
       </div>
       <div class="d-flex justify-content-end">
-        <button type="submit" class="btn btn-success me-2">Thêm</button>
+        <button type="submit" class="btn btn-success me-2">{{ t('addTimeSlot') }}</button>
       </div>
     </form>
   </div>

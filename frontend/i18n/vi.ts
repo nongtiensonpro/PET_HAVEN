@@ -268,4 +268,12 @@ export default {
     confirmPaymentMessage: 'Bạn có muốn xử lý thanh toán cho lịch hẹn này không?',
     paymentSuccess: 'Xử lý thanh toán thành công!',
     paymentError: 'Lỗi khi xử lý thanh toán. Vui lòng thử lại.',
+    noVouchers: 'Không có voucher',
+    loginNow: 'Đăng nhập ngay',
+    loginToViewVouchers: 'Đăng nhập để xem Voucher',
+    loginRequiredVoucher: 'Vui lòng đăng nhập để sử dụng chức năng nay!',
+    addTimeSlotSuccess: 'Thêm ca hẹn thành công',
+    addTimeSlotFailed: 'Thêm ca hẹn thất bại',
+    timeSlotLabel: 'Thời gian:',
+    addTimeSlot: 'Thêm',
 }as const;

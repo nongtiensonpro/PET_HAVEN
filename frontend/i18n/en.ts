@@ -270,4 +270,12 @@ export default {
   confirmPaymentMessage: "Do you want to process the payment for this appointment?",
   paymentSuccess: "Payment processed successfully!",
   paymentError: "Error processing payment. Please try again.",
+  noVouchers: 'No Vouchers',
+  loginNow :'Login Now',
+  loginToViewVouchers: 'Login to view Vouchers',
+  loginRequiredVoucher: 'Please login to use this feature!',
+  addTimeSlotSuccess: 'Time slot added successfully',
+  addTimeSlotFailed: 'Failed to add time slot',
+  timeSlotLabel: 'Time slot:',
+  addTimeSlot: 'Add',
 }as const;

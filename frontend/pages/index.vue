@@ -7,84 +7,77 @@
         <div>
           <div class="row">
             <div class="col">
-              <LoiChaoKhiDangNhap  />
+              <LoiChaoKhiDangNhap />
             </div>
             <div class="col">
               <VoucherDisplay :vouchers="vouchers" />
             </div>
           </div>
-        <h2 class="text text-center">{{wecomehome}}</h2>
+          <h2 class="text text-center">{{wecomehome}}</h2>
 
-        <div  class="row ">
-          <div
-              v-for="service in paginatedServices"
-              :key="service.id"
-              class="card col m-1"
-              :style="{
+          <div class="row ">
+            <div v-for="service in paginatedServices" :key="service.id" class="card col m-1" :style="{
               '--card-width': calculateCardWidth(),
               '--card-height': calculateCardHeight(service)
-            }"
-          >
-            <nuxt-link class="nav-link" :to="`/services/${service.id}`">
-              <div class="card-container">
-                <div class="card-body">
-                  <div class="row">
-                    <div class="col">
-                      <div class="card-image-wrapper">
-                        <img
-                            v-if="!service.anh"
-                            src="~/assets/image/cat1.jpg"
-                            class="card-img-top"
-                            alt="Ảnh mặc định nè"
-                        />
+            }">
+              <nuxt-link class="nav-link" :to="`/services/${service.id}`">
+                <div class="card-container">
+                  <div class="card-body">
+                    <div class="row">
+                      <div class="col">
+                        <div class="card-image-wrapper">
+                          <img v-if="!service.anh" src="~/assets/image/cat1.jpg" class="card-img-top"
+                            alt="Ảnh mặc định nè" />
 
-                        <img
-                            v-else
-                            :src="service.anh"
-                            class="card-img-top"
-                            alt="..."
-                            :style="{ objectFit: calculateImageFit(service) }"
-                        />
+                          <img v-else :src="service.anh" class="card-img-top" alt="..."
+                            :style="{ objectFit: calculateImageFit(service) }" />
+                        </div>
+                      </div>
+                      <div class="col">
+                        <p class="text fs-5 text-lg-start">
+                          {{service.mota}}
+                        </p>
+                      </div>
+                      <div class="card-header ">
+                        <h2 class="mb-0 fs-4">{{ service.tendichvu }}</h2>
                       </div>
                     </div>
-                    <div class="col">
-                       <p class="text fs-5 text-lg-start">
-                         {{service.mota}}
-                       </p>
-                    </div>
-                  </div>
-                  <div class="card-header">
-                    <h2 class="mb-0 fs-4">{{ service.tendichvu }}</h2>
+
                   </div>
                 </div>
-              </div>
-            </nuxt-link>
+              </nuxt-link>
+            </div>
           </div>
-        </div>
 
-        <div class="pagination d-flex justify-content-center align-items-center mt-3">
-          <div class="row">
-            <div class="col">
-              <button @click="prevPage" :disabled="currentPage === 1" class="custom-button" style="background: none;border: none">
-                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-arrow-left-circle-fill" viewBox="0 0 16 16">
-                  <path d="M8 0a8 8 0 1 0 0 16A8 8 0 0 0 8 0m3.5 7.5a.5.5 0 0 1 0 1H5.707l2.147 2.146a.5.5 0 0 1-.708.708l-3-3a.5.5 0 0 1 0-.708l3-3a.5.5 0 1 1 .708.708L5.707 7.5z"/>
-                </svg>
-              </button>
-            </div>
-            <div class="col text fs-4">
-                 {{ currentPage }} / {{ totalPages }}
-            </div>
-            <div class="col">
-              <button @click="nextPage" :disabled="currentPage === totalPages" class="custom-button" style="background: none;border: none">
-                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-arrow-right-circle-fill" viewBox="0 0 16 16">
-                  <path d="M8 0a8 8 0 1 1 0 16A8 8 0 0 1 8 0M4.5 7.5a.5.5 0 0 0 0 1h5.793l-2.147 2.146a.5.5 0 0 0 .708.708l3-3a.5.5 0 0 0 0-.708l-3-3a.5.5 0 1 0-.708.708L10.293 7.5z"/>
-                </svg>
-              </button>
+          <div class="pagination d-flex justify-content-center align-items-center mt-3">
+            <div class="row">
+              <div class="col">
+                <button @click="prevPage" :disabled="currentPage === 1" class="custom-button"
+                  style="background: none;border: none">
+                  <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor"
+                    class="bi bi-arrow-left-circle-fill" viewBox="0 0 16 16">
+                    <path
+                      d="M8 0a8 8 0 1 0 0 16A8 8 0 0 0 8 0m3.5 7.5a.5.5 0 0 1 0 1H5.707l2.147 2.146a.5.5 0 0 1-.708.708l-3-3a.5.5 0 0 1 0-.708l3-3a.5.5 0 1 1 .708.708L5.707 7.5z" />
+                  </svg>
+                </button>
+              </div>
+              <div class="col text fs-4">
+                {{ currentPage }} / {{ totalPages }}
+              </div>
+              <div class="col">
+                <button @click="nextPage" :disabled="currentPage === totalPages" class="custom-button"
+                  style="background: none;border: none">
+                  <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor"
+                    class="bi bi-arrow-right-circle-fill" viewBox="0 0 16 16">
+                    <path
+                      d="M8 0a8 8 0 1 1 0 16A8 8 0 0 1 8 0M4.5 7.5a.5.5 0 0 0 0 1h5.793l-2.147 2.146a.5.5 0 0 0 .708.708l3-3a.5.5 0 0 0 0-.708l-3-3a.5.5 0 1 0-.708.708L10.293 7.5z" />
+                  </svg>
+                </button>
+              </div>
             </div>
           </div>
         </div>
       </div>
-    </div>
     </div>
   </template>
 

@@ -43,13 +43,11 @@ import CaHen from "~/models/CaHen"
 import { useDatLichStore } from '~/stores/DatLichStores'
 import { useQuanLyLichHenAdminStore } from '~/stores/QuanLyLichHenAdmin'
 import Swal from 'sweetalert2';
+import { useRoute } from 'vue-router'
 
-const props = defineProps({
-  id: {
-    type: String,
-    required: true
-  }
-})
+const route = useRoute()
+const id = route.params.id
+
 const quanLyAdmin = useQuanLyLichHenAdminStore()
 
 const datLichStore = useDatLichStore()
@@ -167,11 +165,11 @@ async function confirmBooking() {
 
     if (result.isConfirmed) {
       try {
-        await quanLyAdmin.thayDoiLichHenAdmin(props.id, newDate, String(newCaLichHenId));
+        await quanLyAdmin.thayDoiLichHenAdmin(id, newDate, String(newCaLichHenId));
         toast.success('Đã thay đổi lịch hẹn thành công', { timeout: 3000 });
         navigateTo(`/admin/quanlylichhen`);
       } catch (error) {
-        toast.error('Không thể thay đổi lịch hẹn. Vui lòng thử lại. ' + error, { timeout: 3000 });
+        toast.error('Không thể thay đổi lịch hẹn. Vui lòng thử lại . ' + id+'Meo' + error, { timeout: 3000 });
       }
     }
   } else {

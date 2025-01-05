@@ -74,6 +74,7 @@ export const useQuanLyLichHenAdminStore = defineStore('quanLyLichHenAdminStore',
             }
         },
         async thayDoiLichHenAdmin(id: string, date: string, idCalichHen: string) {
+            console.log('id' + id + 'thay doi thoi gian' + date + 'idcalichhen' + idCalichHen);
             const token = localStorage.getItem('access_token');
             if (!token) {
                 console.error('No access token found');
@@ -88,6 +89,7 @@ export const useQuanLyLichHenAdminStore = defineStore('quanLyLichHenAdminStore',
                         'Content-Type': 'application/json',
                     },
                     body: JSON.stringify({
+                        id: id,
                         date: date,
                         idcalichhen: idCalichHen
                     })
