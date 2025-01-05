@@ -3,10 +3,10 @@
     <div class="row">
       <div class="col-12 mb-4">
         <div class="card shadow">
-          <div class="card-header  text d-flex justify-content-between align-items-center">
-            <h5 class="mb-0">Lịch hẹn hôm nay </h5>
+          <div class="card-header text d-flex justify-content-between align-items-center">
+            <h5 class="mb-0">{{ t('todayAppointments') }}</h5>
             <button @click="fetchHoaDon" class="btn btn-light btn-sm">
-              <i class="fas fa-sync-alt me-1"></i> Làm mới
+              <i class="fas fa-sync-alt me-1"></i> {{ t('refresh') }}
             </button>
           </div>
           <div class="card-body">
@@ -14,15 +14,14 @@
               <table class="table table-hover">
                 <thead class="table-light">
                 <tr>
-                  <th>Thời gian</th>
-                  <th>ID Lịch Hẹn</th>
-                  <th>Email KH</th>
-                  <th>Tên Thú Cưng</th>
-
-                  <th>Ngày Hẹn</th>
-                  <th>Số Tiền</th>
-                  <th>Trạng Thái</th>
-                  <th>Thao Tác</th>
+                  <th>{{ t('time') }}</th>
+                  <th>{{ t('appointmentId') }}</th>
+                  <th>{{ t('customerEmail') }}</th>
+                  <th>{{ t('petName') }}</th>
+                  <th>{{ t('appointmentDate') }}</th>
+                  <th>{{ t('amount') }}</th>
+                  <th>{{ t('status') }}</th>
+                  <th>{{ t('actions') }}</th>
                 </tr>
                 </thead>
                 <tbody>
@@ -35,24 +34,22 @@
                   <td>{{ formatCurrency(hoaDon.sotien) }}</td>
                   <td><span class="badge bg-warning">{{ getTrangThai(hoaDon.idlichhen.trangthai) }}</span></td>
                   <td>
-
                     <button
-                        v-if="hoaDon.idlichhen.trangthai === 3 || hoaDon.idlichhen.trangthai === 4 "
+                        v-if="hoaDon.idlichhen.trangthai === 3 || hoaDon.idlichhen.trangthai === 4"
                         @click="thanhToanHoaDon(hoaDon.idlichhen.id)"
                         class="btn btn-sm btn-outline-primary m-1">
-                      Thanh toán
+                      {{ t('pay') }}
                     </button>
-
                     <button
-                        v-if="hoaDon.idlichhen.trangthai === 8 "
+                        v-if="hoaDon.idlichhen.trangthai === 8"
                         @click="thanhToanHoaDon(hoaDon.idlichhen.id)"
                         class="btn btn-sm btn-outline-primary m-1">
-                      Checkin
+                      {{ t('checkin') }}
                     </button>
                     <button
                         @click="viewHoaDon(hoaDon.idlichhen.id)"
                         class="btn btn-sm btn-outline-primary m-1">
-                      Chi tiết
+                      {{ t('viewDetails') }}
                     </button>
                   </td>
                 </tr>
@@ -61,14 +58,14 @@
               <nav aria-label="Page navigation">
                 <ul class="pagination justify-content-center">
                   <li class="page-item" :class="{ disabled: currentPage1 === 1 }">
-                    <a class="page-link" href="#" @click.prevent="changePage(currentPage1 - 1, 1)">Trước</a>
+                    <a class="page-link" href="#" @click.prevent="changePage(currentPage1 - 1, 1)">{{ t('previous') }}</a>
                   </li>
                   <li v-for="page in totalPages1" :key="page" class="page-item"
                       :class="{ active: currentPage1 === page }">
                     <a class="page-link" href="#" @click.prevent="changePage(page, 1)">{{ page }}</a>
                   </li>
                   <li class="page-item" :class="{ disabled: currentPage1 === totalPages1 }">
-                    <a class="page-link" href="#" @click.prevent="changePage(currentPage1 + 1, 1)">Sau</a>
+                    <a class="page-link" href="#" @click.prevent="changePage(currentPage1 + 1, 1)">{{ t('next') }}</a>
                   </li>
                 </ul>
               </nav>
@@ -79,10 +76,10 @@
 
       <div class="col-12">
         <div class="card shadow">
-          <div class="card-header  text d-flex justify-content-between align-items-center">
-            <h5 class="mb-0">Hóa đơn đã thanh toán</h5>
+          <div class="card-header text d-flex justify-content-between align-items-center">
+            <h5 class="mb-0">{{ t('paidInvoices') }}</h5>
             <button @click="fetchHoaDonThanhToan" class="btn btn-light btn-sm">
-              <i class="fas fa-sync-alt me-1"></i> Làm mới
+              <i class="fas fa-sync-alt me-1"></i> {{ t('refresh') }}
             </button>
           </div>
           <div class="card-body">
@@ -90,14 +87,14 @@
               <table class="table table-hover">
                 <thead class="table-light">
                 <tr>
-                  <th>ID Hóa Đơn</th>
-                  <th>ID Lịch Hẹn</th>
-                  <th>Email KH</th>
-                  <th>Tên Thú Cưng</th>
-                  <th>Ngày Hẹn</th>
-                  <th>Số Tiền</th>
-                  <th>Trạng Thái</th>
-                  <th>Thao Tác</th>
+                  <th>{{ t('invoiceId') }}</th>
+                  <th>{{ t('appointmentId') }}</th>
+                  <th>{{ t('customerEmail') }}</th>
+                  <th>{{ t('petName') }}</th>
+                  <th>{{ t('appointmentDate') }}</th>
+                  <th>{{ t('amount') }}</th>
+                  <th>{{ t('status') }}</th>
+                  <th>{{ t('actions') }}</th>
                 </tr>
                 </thead>
                 <tbody>
@@ -108,15 +105,15 @@
                   <td>{{ hoaDon.idlichhen.thucung.ten }}</td>
                   <td>{{ formatDate(hoaDon.date) }}</td>
                   <td>{{ formatCurrency(hoaDon.sotien) }}</td>
-                  <td><span class="badge bg-success">{{ getTrangThaiHoaDon(hoaDon.trangthai) }} </span></td>
+                  <td><span class="badge bg-success">{{ getTrangThaiHoaDon(hoaDon.trangthai) }}</span></td>
                   <td>
                     <button @click="taiHoaDon(hoaDon.id)" class="btn btn-sm btn-outline-success">
-                      <i class="fas fa-check-circle me-1"></i> Tải hóa đơn
+                      <i class="fas fa-check-circle me-1"></i> {{ t('downloadInvoice') }}
                     </button>
                     <button
                         @click="viewHoaDon(hoaDon.idlichhen.id)"
                         class="btn btn-sm btn-outline-primary m-1">
-                      Chi tiết
+                      {{ t('viewDetails') }}
                     </button>
                   </td>
                 </tr>
@@ -125,14 +122,14 @@
               <nav aria-label="Page navigation">
                 <ul class="pagination justify-content-center">
                   <li class="page-item" :class="{ disabled: currentPage2 === 1 }">
-                    <a class="page-link" href="#" @click.prevent="changePage(currentPage2 - 1, 2)">Trước</a>
+                    <a class="page-link" href="#" @click.prevent="changePage(currentPage2 - 1, 2)">{{ t('previous') }}</a>
                   </li>
                   <li v-for="page in totalPages2" :key="page" class="page-item"
                       :class="{ active: currentPage2 === page }">
                     <a class="page-link" href="#" @click.prevent="changePage(page, 2)">{{ page }}</a>
                   </li>
                   <li class="page-item" :class="{ disabled: currentPage2 === totalPages2 }">
-                    <a class="page-link" href="#" @click.prevent="changePage(currentPage2 + 1, 2)">Sau</a>
+                    <a class="page-link" href="#" @click.prevent="changePage(currentPage2 + 1, 2)">{{ t('next') }}</a>
                   </li>
                 </ul>
               </nav>
@@ -145,13 +142,15 @@
 </template>
 
 <script setup lang="ts">
-import {useCheckInStore} from '~/stores/CheckInStores'
-import {ref, onMounted, onUnmounted} from "vue";
-import {useQuanLyHoaDonStore} from '~/stores/QuanLyHoaDon';
+import { useCheckInStore } from '~/stores/CheckInStores'
+import { ref, onMounted, onUnmounted, computed } from "vue";
+import { useQuanLyHoaDonStore } from '~/stores/QuanLyHoaDon';
+import { useI18n } from 'vue-i18n';
 import Swal from 'sweetalert2';
 import HoaDonKhachHang from "~/models/HoaDonKhachHang";
-import {useToast} from 'vue-toastification'
+import { useToast } from 'vue-toastification'
 
+const { t } = useI18n();
 const toast = useToast();
 const useQuanLyHoaDon = useQuanLyHoaDonStore();
 const checkInStore = useCheckInStore()
@@ -184,7 +183,6 @@ const changePage = (newPage: number, tableNumber: number) => {
   }
 };
 
-
 let refreshInterval: NodeJS.Timeout;
 
 const fetchHoaDon = async () => {
@@ -202,67 +200,66 @@ const refreshData = () => {
   fetchHoaDonThanhToan();
 };
 
-const formatDate = (dateString) => {
+const formatDate = (dateString: string): string => {
   const date = new Date(dateString);
   return date.toLocaleDateString('vi-VN');
 };
 
-const formatCurrency = (amount) => {
-  return new Intl.NumberFormat('vi-VN', {style: 'currency', currency: 'USD'}).format(amount);
+const formatCurrency = (amount: number): string => {
+  return new Intl.NumberFormat('vi-VN', { style: 'currency', currency: 'USD' }).format(amount);
 };
 
 const getTrangThai = (status: number): string => {
-  const statusMap = {
-    0: 'Thành công',
-    1: 'Đã đổi',
-    2: 'Đã hủy',
-    3: 'Chờ thanh toán',
-    4: 'Chờ xác nhận',
-    5: 'Rỗng',
-    6: 'Thanh toán thành công',
-    7: 'Đã hoàn tiền',
-    8: 'Chờ sử dụng'
+  const trangThaiMap: { [key: number]: string } = {
+    0: t('statusSuccess'),
+    1: t('statusChanged'),
+    2: t('statusCancelled'),
+    3: t('statusPendingPayment'),
+    4: t('statusPendingConfirmation'),
+    5: t('statusEmpty'),
+    6: t('statusPaymentSuccess'),
+    7: t('statusRefunded'),
+    8: t('statusPendingService')
   };
-  return statusMap[status] || 'Không xác định';
+  return trangThaiMap[status] || t('statusUnknown');
 };
 
 const getTrangThaiHoaDon = (status: number): string => {
-  const statusMap = {
-    1: 'Chờ thanh toán',
-    2: 'Thành công',
-    3: 'Đã hoàn tiền'
+  const trangThaiMap: { [key: number]: string } = {
+    0: t('invoicePaid'),
+    1: t('invoicePending'),
+    2: t('invoiceCancelled'),
+    3: t('invoiceRefunded')
   };
-  return statusMap[status] || 'Không xác định';
+  return trangThaiMap[status] || t('statusUnknown');
 };
 
-function taiHoaDon(id: string) {
-  useQuanLyHoaDon.inHoaDon(id);
-  refreshData();
-}
+const taiHoaDon = async (id: string) => {
+  window.open(`/api/hoadon/download/${id}`, '_blank');
+};
 
-async function thanhToanHoaDon(id: string) {
+const thanhToanHoaDon = async (id: string) => {
   const result = await Swal.fire({
-    title: 'Xác nhận',
-    text: "Bạn có chắc chắn muốn Checkin cho lịch này chứ?",
+    title: t('confirmPayment'),
+    text: t('confirmPaymentMessage'),
     icon: 'warning',
     showCancelButton: true,
     confirmButtonColor: '#3085d6',
     cancelButtonColor: '#d33',
-    confirmButtonText: 'Có',
-    cancelButtonText: 'Không'
+    confirmButtonText: t('yes'),
+    cancelButtonText: t('no')
   });
+
   if (result.isConfirmed) {
     try {
-      await checkInStore.checkIn(id);
+      await useQuanLyHoaDon.thanhToanHoaDon(id);
+      toast.success(t('paymentSuccess'));
       refreshData();
-      toast.success('Check in thành công');
-      return navigateTo(`/nhanvien/checkin`);
-    }catch (error) {
-      toast.error('Check in thất bại');
-      return navigateTo(`/nhanvien/checkin`);
+    } catch (error) {
+      toast.error(t('paymentError'));
     }
   }
-}
+};
 
 onMounted(() => {
   refreshData();
@@ -274,7 +271,7 @@ onUnmounted(() => {
 });
 
 const viewHoaDon = (id: number) => {
-  navigateTo(`/admin/chitiethoadon/${id}`);
+  navigateTo(`/nhanvien/chitiethoadon/${id}`);
 };
 </script>
 
