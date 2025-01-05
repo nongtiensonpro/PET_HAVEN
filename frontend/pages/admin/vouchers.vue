@@ -1,10 +1,10 @@
 <template>
   <div class="voucher-list card container mt-5 p-4" style="border-radius: 25px">
-    <h1 class="title mb-4">Quản lý Voucher</h1>
+    <h1 class="title mb-4">{{ t('voucherManagement') }}</h1>
     <div class="row mb-4">
       <div class="col-md-4 d-flex align-items-center">
         <button type="button" class="custom-button me-2" @click="themVoucher">
-          <span class="me-2">Thêm</span>
+          <span class="me-2">{{ t('add') }}</span>
         </button>
       </div>
       <div class="col-md-4">
@@ -12,18 +12,17 @@
             v-model="searchTerm"
             type="text"
             class="form-control"
-            placeholder="Tìm kiếm voucher..."
+            :placeholder="t('searchVoucherPlaceholder')"
             @input="handleSearch"
         >
       </div>
       <div class="col-md-4 d-flex align-items-center justify-content-end">
-
-        <button class="custom-button" type="button" @click="handleSearch" title="Tìm kiếm">
+        <button class="custom-button" type="button" @click="handleSearch" :title="t('search')">
           <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-search" viewBox="0 0 16 16">
             <path d="M11.742 10.344a6.5 6.5 0 1 0-1.397 1.398h-.001q.044.06.098.115l3.85 3.85a1 1 0 0 0 1.415-1.414l-3.85-3.85a1 1 0 0 0-.115-.1zM12 6.5a5.5 5.5 0 1 1-11 0 5.5 5.5 0 0 1 11 0"/>
           </svg>
         </button>
-        <button @click="refreshVouchers" class="custom-button me-2" title="Làm mới">
+        <button @click="refreshVouchers" class="custom-button me-2" :title="t('refresh')">
           <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-arrow-clockwise" viewBox="0 0 16 16">
             <path fill-rule="evenodd" d="M8 3a5 5 0 1 0 4.546 2.914.5.5 0 0 1 .908-.417A6 6 0 1 1 8 2z"/>
             <path d="M8 4.466V.534a.25.25 0 0 1 .41-.192l2.36 1.966c.12.1.12.284 0 .384L8.41 4.658A.25.25 0 0 1 8 4.466"/>
@@ -37,12 +36,12 @@
         <thead class="table-light">
         <tr>
           <th scope="col">ID</th>
-          <th scope="col">Mô tả</th>
-          <th scope="col">Giảm giá</th>
-          <th scope="col">Ngày bắt đầu</th>
-          <th scope="col">Ngày kết thúc</th>
-          <th scope="col">Trạng thái</th>
-          <th scope="col">Thao tác</th>
+          <th scope="col">{{ t('description') }}</th>
+          <th scope="col">{{ t('discount') }}</th>
+          <th scope="col">{{ t('startDate') }}</th>
+          <th scope="col">{{ t('endDate') }}</th>
+          <th scope="col">{{ t('status') }}</th>
+          <th scope="col">{{ t('actions') }}</th>
         </tr>
         </thead>
         <tbody>
@@ -58,13 +57,13 @@
           <td>{{ formatDate(voucher.ngayketthuc) }}</td>
           <td>
               <span :class="['badge', voucher.trangthai ? 'bg-success' : 'bg-warning text-dark']">
-                {{ voucher.trangthai ? 'Hoạt động' : 'Không hoạt động' }}
+                {{ voucher.trangthai ? t('active') : t('inactive') }}
               </span>
           </td>
           <td>
             <div class="d-flex">
               <button type="button" class="btn btn-sm btn-outline-primary me-2" @click="capNhatVoucher(voucher)">
-                  Cập nhật
+                  {{ t('update') }}
               </button>
               <button
                   @click="updateTrangThaiVoucher(voucher.id)"
@@ -72,7 +71,7 @@
                   class="btn btn-sm"
                   :class="voucher.trangthai ? 'btn-outline-danger' : 'btn-outline-success'"
               >
-                  Đổi trạng thái
+                  {{ t('changeStatus') }}
               </button>
             </div>
           </td>
@@ -90,11 +89,11 @@
                 :disabled="currentPage === 1"
                 class="page-link custom-button"
             >
-              Trước
+              {{ t('previous') }}
             </button>
           </li>
           <li class="page-item container disabled">
-            {{ currentPage }} / {{ totalPages }}
+            {{ t('page') }} {{ currentPage }} / {{ totalPages }}
           </li>
           <li class="page-item">
             <button
@@ -102,7 +101,7 @@
                 :disabled="currentPage === totalPages"
                 class="page-link custom-button"
             >
-              Sau
+              {{ t('next') }}
             </button>
           </li>
         </ul>
@@ -117,7 +116,9 @@ import { useVoucherStore } from '~/stores/VorchersStores';
 import type Voucher from "~/models/Voucher";
 import { useToast } from 'vue-toastification';
 import Swal from "sweetalert2";
+import { useI18n } from 'vue-i18n';
 
+const { t } = useI18n();
 const toast = useToast();
 const voucherStore = useVoucherStore();
 
@@ -170,9 +171,9 @@ async function refreshVouchers() {
     await refresh();
     currentPage.value = 1; // Reset to first page after refresh
     handleSearch(); // Re-apply search after refresh
-    toast.success('Làm mới vouchers thành công!');
+    toast.success(t('refreshVouchersSuccess'));
   } catch (e) {
-    toast.error('Làm mới vouchers thất bại!');
+    toast.error(t('refreshVouchersFailed'));
   }
 }
 
@@ -185,56 +186,56 @@ function formatDate(date: Date | string) {
 
 async function updateTrangThaiVoucher(id: number) {
   const result = await Swal.fire({
-    title: 'Xác nhận',
-    text: "Bạn có muốn cập nhật trạng thái Voucher không?",
+    title: t('confirmTitle'),
+    text: t('confirmUpdateVoucherStatus'),
     icon: 'warning',
     showCancelButton: true,
     confirmButtonColor: '#3085d6',
     cancelButtonColor: '#d33',
-    confirmButtonText: 'Có',
-    cancelButtonText: 'Không'
+    confirmButtonText: t('yes'),
+    cancelButtonText: t('no')
   });
   if (result.isConfirmed) {
     try {
       await voucherStore.updateTrangThaiVoucher(id);
       await refresh();
       handleSearch(); // Re-apply search after update
-      toast.success('Cập nhật trạng thái voucher thành công!');
-    } catch (error) {
-      toast.error('Cập nhật trạng thái voucher thất bại!');
+      toast.success(t('updateVoucherStatusSuccess'));
+    } catch (e) {
+      toast.error(t('updateVoucherStatusFailed'));
     }
   }
 }
 
 function handleSearch() {
-  if (!voucherData.value) return;
+  if (!voucherData.value) {
+    filteredVouchers.value = [];
+    return;
+  }
 
+  const searchTermLower = searchTerm.value.toLowerCase();
   filteredVouchers.value = voucherData.value.filter(voucher =>
-    voucher.id.toString().includes(searchTerm.value) ||
-    voucher.mota.toLowerCase().includes(searchTerm.value.toLowerCase()) ||
-    voucher.phantramgiam.toString().includes(searchTerm.value) ||
-    formatDate(voucher.ngaybatdau).includes(searchTerm.value) ||
-    formatDate(voucher.ngayketthuc).includes(searchTerm.value) ||
-    (voucher.trangthai ? 'hoạt động' : 'không hoạt động').includes(searchTerm.value.toLowerCase())
+    voucher.mota.toLowerCase().includes(searchTermLower) ||
+    voucher.id.toString().includes(searchTermLower)
   );
-  currentPage.value = 1; // Reset to first page after search
+  currentPage.value = 1; // Reset to first page when searching
 }
-
 
 watch([voucherData, searchTerm], () => {
   handleSearch();
 }, { immediate: true });
 
-function themVoucher(){
+function themVoucher() {
   return navigateTo('/admin/themvoucher');
 }
 
-function capNhatVoucher(voucher: Voucher){
-  return navigateTo(`/admin/chitietvoucher/${voucher.id}`);
+function capNhatVoucher(voucher: Voucher) {
+  return navigateTo(`/admin/capnhatvoucher/${voucher.id}`);
 }
-
 </script>
 
 <style scoped>
-
+.chart {
+  height: 400px;
+}
 </style>
