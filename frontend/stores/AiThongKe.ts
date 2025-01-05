@@ -4,7 +4,7 @@ import { useVoucherStore } from '~/stores/VorchersStores';
 import { useUserStore } from '~/stores/user';
 import { computed, onMounted, ref, watch } from 'vue';
 import { useQuanLyLichHenKhachHang } from '~/stores/QuanLyLichHenKhachHang';
-import type BookingData  from './MauKhachDatDichVu';
+import type BookingData from './MauKhachDatDichVu';
 import DichVu from '~/models/DichVu';
 
 export const useAIThongKeStore = defineStore('ai', () => {
@@ -38,6 +38,45 @@ export const useAIThongKeStore = defineStore('ai', () => {
             .reduce((min, canNang) => Math.min(min, canNang.giaTien), Infinity);
     };
 
+    const detailedStats = ref({
+        doanhThuTheoDichVu: [],
+        thuCungTheoLoai: {},
+        tyLeHuyLich: {},
+        gioDatLichPhoBien: []
+    });
+
+    const fetchDetailedStats = async (startDate: string, endDate: string) => {
+        try {
+            const [doanhThuRes, thuCungRes, tyLeHuyRes, gioDatLichRes] = await Promise.all([
+                $fetch('/api/thong-ke/doanh-thu-theo-dich-vu', {
+                    method: 'POST',
+                    body: { startDate, endDate }
+                }),
+                $fetch('/api/thong-ke/thong-ke-thu-cung', {
+                    method: 'POST',
+                    body: { startDate, endDate }
+                }),
+                $fetch('/api/thong-ke/ty-le-huy-lich', {
+                    method: 'POST',
+                    body: { startDate, endDate }
+                }),
+                $fetch('/api/thong-ke/gio-dat-lich-pho-bien', {
+                    method: 'POST',
+                    body: { startDate, endDate }
+                })
+            ]);
+
+            detailedStats.value = {
+                doanhThuTheoDichVu: doanhThuRes.data.data,
+                thuCungTheoLoai: thuCungRes.data.data,
+                tyLeHuyLich: tyLeHuyRes.data.data,
+                gioDatLichPhoBien: gioDatLichRes.data.data
+            };
+        } catch (error) {
+            console.error('Lỗi khi lấy dữ liệu thống kê chi tiết:', error);
+        }
+    };
+
     const context = computed(() => {
         const serviceInfo = services.value.map((service: DichVu) => ({
             id: service.id,
@@ -56,7 +95,7 @@ export const useAIThongKeStore = defineStore('ai', () => {
             4: 'Chờ xác nhận', 5: 'Rỗng', 6: 'Thanh toán thành công',
             7: 'Đã hoàn tiền', 8: 'Chờ sử dụng'
         };
-        
+
         const countServices = appointments.reduce((acc, a: any) => {
             acc[a.dichvu.tendichvu] = (acc[a.dichvu.tendichvu] || 0) + 1;
             return acc;
@@ -65,6 +104,8 @@ export const useAIThongKeStore = defineStore('ai', () => {
         const mostBookedService = Object.entries(countServices).length > 0
             ? Object.entries(countServices).reduce((a, b) => a[1] > b[1] ? a : b)
             : ['Không có dịch vụ nào', 0];
+
+        const detailedStatsInfo = detailedStats.value;
 
         return `
             Bạn là một chuyên gia phân tích dữ liệu cho cửa hàng thú cưng PetHaven. Hãy tuân thủ các quy tắc sau:
@@ -92,6 +133,25 @@ export const useAIThongKeStore = defineStore('ai', () => {
             Dịch vụ được đặt nhiều nhất: ${mostBookedService[0]} (${mostBookedService[1]} lần)
             Tổng doanh thu từ lịch hẹn đã hoàn thành: ${totalRevenue} USD
             ` : 'Chưa có dữ liệu lịch hẹn.'}
+
+            Thống kê chi tiết:
+            1. Doanh thu theo dịch vụ:
+            ${detailedStatsInfo.doanhThuTheoDichVu.map(item => 
+                `- ${item[0]}: ${item[2]} VND (${item[1]} lượt)`
+            ).join('\n')}
+
+            2. Thống kê thú cưng:
+            - Mèo: ${detailedStatsInfo.thuCungTheoLoai.Mèo || 0} lượt
+            - Chó: ${detailedStatsInfo.thuCungTheoLoai.Chó || 0} lượt
+
+            3. Tỷ lệ hủy lịch:
+            - Tỷ lệ hủy: ${detailedStatsInfo.tyLeHuyLich.tyLeHuy || 0}%
+            - Tổng số lịch: ${detailedStatsInfo.tyLeHuyLich.tongSoLich || 0}
+
+            4. Giờ đặt lịch phổ biến:
+            ${detailedStatsInfo.gioDatLichPhoBien.map(item => 
+                `- ${item[0]}h: ${item[1]} lượt`
+            ).join('\n')}
 
             Hãy phân tích dữ liệu trên và đưa ra các nhận xét, xu hướng, và đề xuất để cải thiện hiệu suất kinh doanh của PetHaven.
         `;
@@ -144,5 +204,12 @@ export const useAIThongKeStore = defineStore('ai', () => {
         console.log("Dữ liệu AI sẽ nhận:", context.value);
     });
 
-    return { sendMessage, chatHistory };
+    return {
+        chatHistory,
+        sendMessage,
+        context,
+        fetchData,
+        fetchDetailedStats,
+        detailedStats
+    };
 });
