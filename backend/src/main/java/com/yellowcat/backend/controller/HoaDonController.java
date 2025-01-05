@@ -1,7 +1,10 @@
 package com.yellowcat.backend.controller;
 
+import com.yellowcat.backend.DTO.DoiDichVuDTO;
 import com.yellowcat.backend.model.Hoadon;
+import com.yellowcat.backend.model.Hoadondoidichvu;
 import com.yellowcat.backend.model.Lichhen;
+import com.yellowcat.backend.service.HoaDonDoiDichVuService;
 import com.yellowcat.backend.service.HoaDonService;
 import com.yellowcat.backend.service.LichHenService;
 import com.yellowcat.backend.service.PdfExportService;
@@ -33,6 +36,9 @@ public class HoaDonController {
     PdfExportService pdfExportService;
     @Autowired
     LichHenService lichHenService;
+    @Autowired
+    HoaDonDoiDichVuService hoaDonDoiDichVuService;
+
 
     @PreAuthorize("hasAnyRole('admin', 'manager')")
     @GetMapping("/all-chuaTT")
@@ -86,5 +92,38 @@ public class HoaDonController {
         headers.setContentDispositionFormData("inline", "invoice.pdf");
 
         return ResponseEntity.ok().headers(headers).body(pdfBytes);
+    }
+
+    @GetMapping("/in-hoa-don-doi-dich-vu")
+    public ResponseEntity<byte[]> getInvoice2(@RequestParam Integer id) {
+        Optional<Hoadondoidichvu> hoadonOptional = hoaDonDoiDichVuService.findHoadondoidichvuById(id);
+        if (!hoadonOptional.isPresent()) {
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        }
+        Hoadondoidichvu hoadon = hoadonOptional.get();
+        String thoiGian = hoadon.getIdhoadon().getIdlichhen().getDate().toString()+ ' ' + hoadon.getIdhoadon().getIdlichhen().getIdcalichhen().getThoigianca();
+        String tenDichVu = hoadon.getIdhoadon().getIdlichhen().getTuyChonCanNang().getTuyChonDichVu().getDichvu().getTendichvu() + " -> " + hoadon.getIdhoadon().getIdlichhen().getTuyChonCanNang().getTuyChonDichVu().getTentuychon();
+        byte[] pdfBytes = pdfExportService.generateInvoice(hoadon.getNgaythanhtoan().toString(),hoadon.getMagiaodich(),hoadon.getIdhoadon().getPhuongthucthanhtoan(),tenDichVu,hoadon.getSotien(),hoadon.getSotien(),thoiGian);
+
+        HttpHeaders headers = new HttpHeaders();
+        headers.setContentType(MediaType.APPLICATION_PDF);
+        headers.setContentDispositionFormData("inline", "invoice.pdf");
+
+        return ResponseEntity.ok().headers(headers).body(pdfBytes);
+    }
+
+    @PutMapping("/doi-dich-vu")
+    public ResponseEntity<?> doiDichVu(@RequestBody DoiDichVuDTO dto){
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        Jwt jwt = (Jwt) authentication.getPrincipal();
+        String username = jwt.getClaimAsString("preferred_username");
+        ResponseEntity<?> hoadondoidichvu = hoaDonDoiDichVuService.DoiDichVu(dto,username);
+        return ResponseEntity.ok(hoadondoidichvu);
+    }
+
+    @PutMapping("/thanh-toan-hoa-don-doiDV/{id}")
+    public ResponseEntity<?> ThanhToanDoiDV(@PathVariable Integer id){
+        ResponseEntity<?> hoadondoiDV = hoaDonDoiDichVuService.thanhToanHDDoiDV(id);
+        return ResponseEntity.ok(hoadondoiDV);
     }
 }
