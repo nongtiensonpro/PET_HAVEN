@@ -143,7 +143,7 @@ public class DatLichController {
         hoadon.setIdlichhen(lichhen);
         hoadon.setPhuongthucthanhtoan("Offline");
         hoadon.setTrangthai(1);
-        Double SoTien = hoaDonService.TinhGiaTien(datLichDTO.getIdDichVu(), hoadon);
+        Double SoTien = hoaDonService.TinhGiaTien(datLichDTO.getIdTuyChonCanNang(), hoadon);
         hoadon.setSotienbandau(Double.valueOf(String.valueOf(tuyChonCanNang.getGiatien())));
         hoadon.setSotien(SoTien);
         hoadon.setMagiaodich(hoaDonService.MaGiaoDichRandom());

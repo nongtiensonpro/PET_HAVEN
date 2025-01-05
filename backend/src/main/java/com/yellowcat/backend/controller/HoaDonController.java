@@ -1,5 +1,6 @@
 package com.yellowcat.backend.controller;
 
+import com.paypal.base.rest.PayPalRESTException;
 import com.yellowcat.backend.DTO.DoiDichVuDTO;
 import com.yellowcat.backend.model.Hoadon;
 import com.yellowcat.backend.model.Hoadondoidichvu;
@@ -122,7 +123,7 @@ public class HoaDonController {
     }
 
     @PutMapping("/thanh-toan-hoa-don-doiDV/{id}")
-    public ResponseEntity<?> ThanhToanDoiDV(@PathVariable Integer id){
+    public ResponseEntity<?> ThanhToanDoiDV(@PathVariable Integer id) throws PayPalRESTException {
         ResponseEntity<?> hoadondoiDV = hoaDonDoiDichVuService.thanhToanHDDoiDV(id);
         return ResponseEntity.ok(hoadondoiDV);
     }

@@ -82,6 +82,7 @@ export const useQuanLyLichHenAdminStore = defineStore('quanLyLichHenAdminStore',
             }
 
             try {
+                console.log(id);
                 const response = await fetch(`http://localhost:8080/api/lich-hen/update-time/${id}`, {
                     method: 'PUT',
                     headers: {

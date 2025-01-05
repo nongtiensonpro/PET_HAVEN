@@ -53,38 +53,45 @@ public class HoaDonService {
                 .stream()
                 .max(Comparator.comparing(Giamgia::getPhantramgiam));
         float phanTramGiam = 0;
-        phanTramGiam = Math.max(0, Math.min(phanTramGiam, 90));
 
         String id = authentication.getName();
         List<Hoadon> hoadonList = hoadonRepository.findByIdlichhen_TrangthaicaAndIdlichhen_IdkhachhangAndTrangthai(true, id);
+
         if (maxGiamGia.isPresent()) {
+            float giamGiaPhanTram = maxGiamGia.get().getPhantramgiam();
             if (!hoadonList.isEmpty()) {
                 for (Hoadon hoadon1 : hoadonList) {
-                    if (hoadon1.getIdgiamgia() != null && hoadon1.getIdgiamgia().getId() == (maxGiamGia.get().getId())) {
+                    if (hoadon1.getIdgiamgia() != null && hoadon1.getIdgiamgia().getId().equals(maxGiamGia.get().getId())) {
                         phanTramGiam = 0;
-                        System.out.println(1);
                         break;
                     } else {
-                        phanTramGiam = maxGiamGia.get().getPhantramgiam();
+                        phanTramGiam = giamGiaPhanTram;
                         hoadon.setIdgiamgia(maxGiamGia.get());
-                        System.out.println(2);
                         break;
                     }
                 }
             } else {
-                phanTramGiam = maxGiamGia.get().getPhantramgiam();
+                phanTramGiam = giamGiaPhanTram;
                 hoadon.setIdgiamgia(maxGiamGia.get());
             }
         }
 
+        if (phanTramGiam == 0 && !maxGiamGia.isPresent()) {
+            phanTramGiam = 0; // Không có giảm giá
+        }
+
+        System.out.println("Phần trăm giảm giá: " + phanTramGiam);
+
         if (giaDichVuOptional.isPresent()) {
             TuyChonCanNang giaDichVu = giaDichVuOptional.get();
-            Double giaTien = (double) (giaDichVu.getGiatien() * (1 - phanTramGiam / 100));
+            Double giaTien = giaDichVu.getGiatien() * (1 - phanTramGiam / 100);
+            System.out.println("Giá tiền: " + giaTien);
             return giaTien;
         } else {
             throw new IllegalArgumentException("Invalid idDichVu: " + idDichVu);
         }
     }
+
 
     public List<Hoadon> getAllHoaDonChuaThanhToan() {
         return hoadonRepository.findByIdlichhen_DateAndIdlichhen_Trangthaica(LocalDate.now(),true);
