@@ -35,7 +35,7 @@ public class Hoadondoidichvu {
     @JsonProperty
     @NotNull
     @Column(name = "sotien", nullable = false)
-    private Float sotien;
+    private Double sotien;
 
     @JsonProperty
     @Column(name = "ngaythanhtoan")
@@ -100,11 +100,11 @@ public class Hoadondoidichvu {
         this.idtuychoncannang = idtuychoncannang;
     }
 
-    public Float getSotien() {
+    public Double getSotien() {
         return sotien;
     }
 
-    public void setSotien(Float sotien) {
+    public void setSotien(Double sotien) {
         this.sotien = sotien;
     }
 
