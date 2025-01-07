@@ -18,7 +18,16 @@ export default defineNuxtRouteMiddleware(async (to) => {
 
         if (to.path.includes('/admin') && userStore.userInfo && !(userStore.userInfo.role?.includes('admin'))) {
             toast.error('Bạn không có quyền truy cập trang này! ');
-            return navigateTo('/');
+            return navigateTo('/unauthorized');
+        }
+        if (to.path.includes('/customer/calendar/newuser') && userStore.userInfo) {
+            toast.error('Vui lòng đăng nhập để sử dụng tính năng này.');
+            return navigateTo('/unauthorized');
+        }
+
+        if (to.path.includes('/nhanvien') && userStore.userInfo && !(userStore.userInfo.role?.includes('manager') || userStore.userInfo.role?.includes('admin'))) {
+            toast.error('Bạn không có quyền truy cập trang này.');
+            return navigateTo('/unauthorized');
         }
         if (!userStore.userInfo) {
             const refreshToken = localStorage .getItem('refresh_token');
