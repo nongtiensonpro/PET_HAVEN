@@ -79,7 +79,6 @@
           <div v-else class="mt-8 text-center">
             <p class="text-gray-600">{{ t('noData') }}</p>
           </div>
-          <ThongKeVoiGemini/>
         </div>
       </div>
     </div>

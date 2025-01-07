@@ -276,4 +276,5 @@ export default {
     addTimeSlotFailed: 'Thêm ca hẹn thất bại',
     timeSlotLabel: 'Thời gian:',
     addTimeSlot: 'Thêm',
+    confirmBookingText: 'Vui lòng xác nhận lịch hẹn?',
 }as const;

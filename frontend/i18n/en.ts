@@ -278,4 +278,5 @@ export default {
   addTimeSlotFailed: 'Failed to add time slot',
   timeSlotLabel: 'Time slot:',
   addTimeSlot: 'Add',
+  confirmBookingText: 'Are you sure you want to confirm the booking?',
 }as const;

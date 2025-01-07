@@ -26,7 +26,7 @@ const getInitialSummary = async () => {
 
   try {
     const dataForAnalysis = JSON.stringify(lichhen.value);
-    const prompt = `Phân tích dữ liệu cuộc hẹn sau đây và cung cấp bản tóm tắt ngắn gọn về các số liệu thống kê chính: ${dataForAnalysis}`;
+    const prompt = `Phân tích dữ liệu sau đây và cung cấp bản tóm tắt ngắn gọn về các số liệu kinh doanh chính: ${dataForAnalysis}`;
 
     const response = await aiStore.sendMessage(prompt);
     chatHistory.value.pop(); // Remove the thinking message
@@ -56,7 +56,7 @@ const sendMessageToAI = async () => {
 
     // Prepare the data for AI analysis
     const dataForAnalysis = JSON.stringify(lichhen.value);
-    const prompt = `Phân tích dữ liệu cuộc hẹn sau đây và cung cấp số liệu thống kê: ${dataForAnalysis}\n\nUser question: ${userMessage}`;
+    const prompt = `Phân tích dữ liệu sau đây và cung cấp số liệu kinh doanh: ${dataForAnalysis}\n\nUser question: ${userMessage}`;
 
     const response = await aiStore.sendMessage(prompt);
     chatHistory.value.pop(); // Remove the thinking message
@@ -74,7 +74,7 @@ const sendMessageToAI = async () => {
 
 <template>
   <div class="container p-4">
-    <h2 class="mb-4">Thống kê với AI</h2>
+    <h2 class="mb-4">Phân tích dữ liệu cửa hàng với AI</h2>
     <div class="chat-container">
       <div class="chat-history">
         <div v-for="(message, index) in chatHistory" :key="index" class="message-wrapper">
@@ -87,12 +87,8 @@ const sendMessageToAI = async () => {
         </div>
       </div>
       <div class="input-container row p-3">
-        <input class="col-10"
-          v-model="userInput"
-          @keyup.enter="sendMessageToAI"
-          placeholder="Nhập câu hỏi thống kê của bạn..."
-          :disabled="isLoading"
-        />
+        <input class="col-10" v-model="userInput" @keyup.enter="sendMessageToAI" placeholder="Nhập câu hỏi của bạn..."
+          :disabled="isLoading" />
         <button @click="sendMessageToAI" :disabled="isLoading" class="custom-button col-2">
           {{ isLoading ? 'Đang xử lý...' : 'Gửi' }}
         </button>
