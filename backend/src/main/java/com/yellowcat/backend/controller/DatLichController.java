@@ -2,14 +2,11 @@ package com.yellowcat.backend.controller;
 
 import com.paypal.api.payments.Refund;
 import com.paypal.base.rest.PayPalRESTException;
-import com.yellowcat.backend.DTO.DatLichDTO;
 import com.yellowcat.backend.DTO.DatLichMoiDTO;
 import com.yellowcat.backend.DTO.DoiLichDTO;
 import com.yellowcat.backend.PAY.PayPalService;
 import com.yellowcat.backend.model.*;
 import com.yellowcat.backend.service.*;
-import jakarta.persistence.EntityManager;
-import jakarta.persistence.PersistenceContext;
 import jakarta.transaction.Transactional;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -22,42 +19,35 @@ import org.springframework.web.bind.annotation.*;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
-import java.time.format.DateTimeFormatter;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
-import java.util.concurrent.atomic.AtomicBoolean;
-
-import com.yellowcat.backend.repository.TuyChonCanNangRepository;
 
 
 @RestController
 @RequestMapping("/api/dat-lich")
 public class DatLichController {
-    @Autowired
-    public LichHenService lichHenService;
 
-    @Autowired
-    private CaLichHenService caLichHenService;
+    private final LichHenService lichHenService;
+    private final CaLichHenService caLichHenService;
+    private final DichVuService dichVuService;
+    private final ThuCungService thuCungService;
+    private final HoaDonService hoaDonService;
+    private final NgayNghiService ngayNghiService;
+    private final PayPalService payPalService;
+    private final TuyChonCanNangService tuyChonCanNangService;
 
-    @Autowired
-    private DichVuService dichVuService;
-
-    @Autowired
-    private ThuCungService thuCungService;
-
-    @Autowired
-    private HoaDonService hoaDonService;
-
-    @Autowired
-    private NgayNghiService ngayNghiService;
-
-    @Autowired
-    private PayPalService payPalService;
-
-    @Autowired
-    private TuyChonCanNangService tuyChonCanNangService;
+    public DatLichController(LichHenService lichHenService, CaLichHenService caLichHenService, DichVuService dichVuService, ThuCungService thuCungService, HoaDonService hoaDonService, NgayNghiService ngayNghiService, PayPalService payPalService, TuyChonCanNangService tuyChonCanNangService) {
+        this.lichHenService = lichHenService;
+        this.caLichHenService = caLichHenService;
+        this.dichVuService = dichVuService;
+        this.thuCungService = thuCungService;
+        this.hoaDonService = hoaDonService;
+        this.ngayNghiService = ngayNghiService;
+        this.payPalService = payPalService;
+        this.tuyChonCanNangService = tuyChonCanNangService;
+    }
 
     @GetMapping("/dat-lich-info")
     public ResponseEntity<Map<String, Object>> getDatLichInfo(@RequestParam("ngay") LocalDate ngay) {

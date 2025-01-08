@@ -15,22 +15,25 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
-import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.util.Optional;
 
 @Service
 public class HoaDonDoiDichVuService {
-    @Autowired
-    HoadondoidichvuRepository hoadondoidichvuRepository;
-    @Autowired
-    HoaDonService hoaDonService;
-    @Autowired
-    TuyChonCanNangService tuyChonCanNangService;
-    @Autowired
-    LichHenService lichHenService;
-    @Autowired
-    PayPalService  payPalService;
+
+    private final HoadondoidichvuRepository hoadondoidichvuRepository;
+    private final HoaDonService hoaDonService;
+    private final TuyChonCanNangService tuyChonCanNangService;
+    private final LichHenService lichHenService;
+    private final PayPalService  payPalService;
+
+    public HoaDonDoiDichVuService(HoadondoidichvuRepository hoadondoidichvuRepository, HoaDonService hoaDonService, TuyChonCanNangService tuyChonCanNangService, LichHenService lichHenService, PayPalService payPalService) {
+        this.hoadondoidichvuRepository = hoadondoidichvuRepository;
+        this.hoaDonService = hoaDonService;
+        this.tuyChonCanNangService = tuyChonCanNangService;
+        this.lichHenService = lichHenService;
+        this.payPalService = payPalService;
+    }
 
     public void addOrUpdateHoadon(Hoadondoidichvu hoadondoidichvu) {
          hoadondoidichvuRepository.save(hoadondoidichvu);

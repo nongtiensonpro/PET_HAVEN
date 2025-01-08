@@ -6,7 +6,6 @@ import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.event.ContextRefreshedEvent;
 import org.springframework.context.event.EventListener;
-import org.springframework.scheduling.annotation.Async;
 import org.springframework.scheduling.annotation.EnableAsync;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
@@ -18,8 +17,12 @@ import java.util.Optional;
 @Service
 @EnableAsync
 public class NgayNghiService {
-    @Autowired
-    NgaynghiRepository ngaynghiRepository;
+
+    private final NgaynghiRepository ngaynghiRepository;
+
+    public NgayNghiService(NgaynghiRepository ngaynghiRepository) {
+        this.ngaynghiRepository = ngaynghiRepository;
+    }
 
     public void addOrUpdate(Ngaynghi ngaynghi) {
         ngaynghiRepository.save(ngaynghi);

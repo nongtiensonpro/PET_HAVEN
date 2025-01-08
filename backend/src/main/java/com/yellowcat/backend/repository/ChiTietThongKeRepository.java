@@ -11,25 +11,24 @@ import java.util.List;
 @Repository
 public interface ChiTietThongKeRepository extends JpaRepository<Hoadon, Long> {
     
-    // Thống kê doanh thu theo dịch vụ
     @Query("SELECT dv.tendichvu, COUNT(h), SUM(h.sotien) " +
-           "FROM Hoadon h " +
-           "JOIN h.idlichhen l " +
-           "JOIN l.idtuychoncannang tc " +
-           "JOIN tc.idtuychondichvu tdv " +
-           "JOIN tdv.iddichvu dv " +
-           "WHERE h.date BETWEEN :startDate AND :endDate " +
-           "AND h.trangthai = 2 " +
-           "GROUP BY dv.tendichvu")
-    List<Object[]> thongKeDoanhThuTheoDichVu(@Param("startDate") LocalDate startDate, 
-                                            @Param("endDate") LocalDate endDate);
+       "FROM Hoadon h " +
+       "JOIN h.idlichhen l " +
+       "JOIN l.tuyChonCanNang tc " +
+       "JOIN tc.tuyChonDichVu tdv " +
+       "JOIN tdv.dichvu dv " +
+       "WHERE h.date BETWEEN :startDate AND :endDate " +
+       "AND h.trangthai = 2 " +
+       "GROUP BY dv.tendichvu")
+List<Object[]> thongKeDoanhThuTheoDichVu(@Param("startDate") LocalDate startDate, 
+                                        @Param("endDate") LocalDate endDate);
 
     // Thống kê số lượng thú cưng theo loại (mèo/chó)
-    @Query("SELECT tc.cophaimeocuakhong, COUNT(tc) " +
+    @Query("SELECT tc.cophaimeokhong, COUNT(tc) " +
            "FROM Lichhen l " +
-           "JOIN l.idthucung tc " +
+           "JOIN l.thucung tc " +
            "WHERE l.date BETWEEN :startDate AND :endDate " +
-           "GROUP BY tc.cophaimeocuakhong")
+           "GROUP BY tc.cophaimeokhong")
     List<Object[]> thongKeThuCungTheoLoai(@Param("startDate") LocalDate startDate, 
                                          @Param("endDate") LocalDate endDate);
 

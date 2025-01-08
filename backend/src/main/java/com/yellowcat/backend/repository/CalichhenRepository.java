@@ -1,16 +1,13 @@
 package com.yellowcat.backend.repository;
 
 import com.yellowcat.backend.model.Calichhen;
-import jakarta.transaction.Transactional;
 import org.springframework.data.jpa.repository.JpaRepository;
-import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 
 import java.time.LocalDate;
 import java.time.LocalTime;
 import java.util.List;
-import java.util.Optional;
 
 public interface CalichhenRepository extends JpaRepository<Calichhen, Integer> {
 

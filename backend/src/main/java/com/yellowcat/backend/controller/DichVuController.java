@@ -1,13 +1,10 @@
 package com.yellowcat.backend.controller;
 
 
-import com.cloudinary.Cloudinary;
 import com.yellowcat.backend.DTO.DichVuDTO;
 import com.yellowcat.backend.model.Dichvu;
 import com.yellowcat.backend.service.CloudinaryService;
 import com.yellowcat.backend.service.DichVuService;
-import jakarta.validation.Valid;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
@@ -15,13 +12,9 @@ import org.springframework.data.domain.Sort;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
-import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.multipart.MultipartFile;
 
 
-import java.io.File;
-import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Optional;

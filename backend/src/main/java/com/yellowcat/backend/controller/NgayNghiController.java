@@ -16,8 +16,12 @@ import java.util.Optional;
 @RestController
 @RequestMapping("/api/ngay-nghi")
 public class NgayNghiController {
-    @Autowired
-    private NgayNghiService ngayNghiService;
+
+    private final NgayNghiService ngayNghiService;
+
+    public NgayNghiController(NgayNghiService ngayNghiService) {
+        this.ngayNghiService = ngayNghiService;
+    }
 
     @PreAuthorize("hasAnyRole('admin')")
     @GetMapping("/all")

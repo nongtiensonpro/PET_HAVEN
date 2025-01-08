@@ -2,7 +2,6 @@ package com.yellowcat.backend.controller;
 
 import com.yellowcat.backend.DTO.ThongKeDTO;
 import com.yellowcat.backend.DTO.ThongKeResponDTO;
-import com.yellowcat.backend.DTO.ThongKeTimeDTO;
 import com.yellowcat.backend.service.HoaDonService;
 import com.yellowcat.backend.service.ChiTietThongKeService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -18,11 +17,14 @@ import java.util.Map;
 @PreAuthorize("hasRole('admin')")
 @RequestMapping("/api/thong-ke")
 public class ThongKeController {
-    @Autowired
-    private HoaDonService hoaDonService;
-    
-    @Autowired
-    private ChiTietThongKeService chiTietThongKeService;
+
+    private final HoaDonService hoaDonService;
+    private final ChiTietThongKeService chiTietThongKeService;
+
+    public ThongKeController(HoaDonService hoaDonService, ChiTietThongKeService chiTietThongKeService) {
+        this.hoaDonService = hoaDonService;
+        this.chiTietThongKeService = chiTietThongKeService;
+    }
 
     @PostMapping("/ngay")
     public ResponseEntity<Map<String, Object>> thongKeTheoNgay(@RequestBody ThongKeDTO dto) {

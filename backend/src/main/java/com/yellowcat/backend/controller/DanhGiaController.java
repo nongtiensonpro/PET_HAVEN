@@ -15,23 +15,23 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
 
-import java.time.LocalDate;
 import java.time.LocalDateTime;
-import java.time.LocalTime;
 import java.util.List;
 import java.util.Optional;
 
 @RestController
 @RequestMapping("/api/danh-gia")
 public class DanhGiaController {
-    @Autowired
-    DanhGiaService danhGiaService;
 
-    @Autowired
-    LichHenService lichHenService;
+    private final DanhGiaService danhGiaService;
+    private final LichHenService lichHenService;
+    private final HoaDonService hoaDonService;
 
-    @Autowired
-    HoaDonService hoaDonService;
+    public DanhGiaController(DanhGiaService danhGiaService, LichHenService lichHenService, HoaDonService hoaDonService) {
+        this.danhGiaService = danhGiaService;
+        this.lichHenService = lichHenService;
+        this.hoaDonService = hoaDonService;
+    }
 
     @PostMapping("/add")
     public ResponseEntity<?> vietDanhGia(@Valid @RequestBody VietDanhGiaDTO dto){

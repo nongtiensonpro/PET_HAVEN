@@ -17,8 +17,11 @@ public class ImageUploadController {
 
     private static final long MAX_FILE_SIZE = 5 * 1024 * 1024; // 5MB
 
-    @Autowired
-    private CloudinaryService cloudinaryService;
+    private final CloudinaryService cloudinaryService;
+
+    public ImageUploadController(CloudinaryService cloudinaryService) {
+        this.cloudinaryService = cloudinaryService;
+    }
 
     // Hàm kiểm tra tên file hợp lệ
     public boolean isValidFileName(String fileName) {

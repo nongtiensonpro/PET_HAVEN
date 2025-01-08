@@ -3,8 +3,6 @@ package com.yellowcat.backend.DTO;
 import com.yellowcat.backend.model.Thucung;
 import jakarta.validation.constraints.NotNull;
 
-import java.time.LocalDate;
-
 public class DatLichDTO {
     @NotNull
     private Thucung idThuCung;

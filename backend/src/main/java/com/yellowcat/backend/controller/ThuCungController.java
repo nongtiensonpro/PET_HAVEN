@@ -2,7 +2,6 @@ package com.yellowcat.backend.controller;
 
 import com.yellowcat.backend.model.Thucung;
 import com.yellowcat.backend.service.ThuCungService;
-import org.apache.tomcat.util.http.parser.Authorization;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -19,8 +18,12 @@ import java.util.Optional;
 @RestController
 @RequestMapping("/api/thu-cung")
 public class ThuCungController {
-    @Autowired
-    private ThuCungService thuCungService;
+
+    private final ThuCungService thuCungService;
+
+    public ThuCungController(ThuCungService thuCungService) {
+        this.thuCungService = thuCungService;
+    }
 
     @PreAuthorize("hasAnyRole('admin', 'manager')")
     @GetMapping("/all")

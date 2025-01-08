@@ -10,8 +10,12 @@ import java.util.Optional;
 
 @Service
 public class ThongTinCaNhanService {
-    @Autowired
-    ThongtincanhanRepository thongtincanhanRepository;
+
+    private final ThongtincanhanRepository thongtincanhanRepository;
+
+    public ThongTinCaNhanService(ThongtincanhanRepository thongtincanhanRepository) {
+        this.thongtincanhanRepository = thongtincanhanRepository;
+    }
 
     public void addOrUpdate(Thongtincanhan thongtincanhan) {
         thongtincanhanRepository.save(thongtincanhan);

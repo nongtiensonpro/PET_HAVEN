@@ -1,14 +1,10 @@
 package com.yellowcat.backend.service;
 
 import com.yellowcat.backend.DTO.ThongKeResponDTO;
-import com.yellowcat.backend.DTO.ThongKeTimeDTO;
 import com.yellowcat.backend.model.*;
 import com.yellowcat.backend.repository.HoadonRepository;
 import com.yellowcat.backend.repository.TuyChonCanNangRepository;
-import jakarta.mail.internet.MimeMessage;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.core.io.ByteArrayResource;
-import org.springframework.mail.javamail.MimeMessageHelper;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -22,24 +18,23 @@ import java.util.*;
 
 @Service
 public class HoaDonService {
-    @Autowired
-    HoadonRepository hoadonRepository;
-
-    @Autowired
-    DichVuService dichVuService;
-
-    @Autowired
-    GiamGiaService giamGiaService;
-
-    @Autowired
-    EmailService emailService;
-
-    @Autowired
-    private TuyChonCanNangRepository tuyChonCanNangRepository;
+    private final HoadonRepository hoadonRepository;
+    private final DichVuService dichVuService;
+    private final GiamGiaService giamGiaService;
+    private final EmailService emailService;
+    private final TuyChonCanNangRepository tuyChonCanNangRepository;
 
     private static final String CHARACTERS = "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
     private static final int LENGTH = 17;
     private static final SecureRandom RANDOM = new SecureRandom();
+
+    public HoaDonService(HoadonRepository hoadonRepository, DichVuService dichVuService, GiamGiaService giamGiaService, EmailService emailService, TuyChonCanNangRepository tuyChonCanNangRepository) {
+        this.hoadonRepository = hoadonRepository;
+        this.dichVuService = dichVuService;
+        this.giamGiaService = giamGiaService;
+        this.emailService = emailService;
+        this.tuyChonCanNangRepository = tuyChonCanNangRepository;
+    }
 
     public void addOrUpdate(Hoadon hoadon) {
         hoadonRepository.save(hoadon);

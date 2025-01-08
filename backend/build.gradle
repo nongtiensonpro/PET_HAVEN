@@ -23,27 +23,15 @@ dependencies {
 	implementation 'org.postgresql:postgresql:42.6.0'
 	implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
 	implementation 'org.springframework.boot:spring-boot-starter-mail'
-	testImplementation 'org.testcontainers:junit-jupiter'
-	testImplementation 'org.springframework.boot:spring-boot-testcontainers'
-	testImplementation 'org.testcontainers:postgresql'
 	implementation 'org.flywaydb:flyway-core:9.20.0'
 	implementation 'org.springframework.boot:spring-boot-starter-security'
 	implementation 'org.springframework.boot:spring-boot-starter-oauth2-resource-server'
-	testImplementation 'org.springframework.boot:spring-boot-starter-test'
-	testImplementation 'org.springframework.security:spring-security-test'
-	testRuntimeOnly 'org.junit.platform:junit-platform-launcher'
 	implementation 'org.springframework.security:spring-security-oauth2-resource-server'
 	implementation 'org.springframework.security:spring-security-oauth2-jose'
 	implementation 'org.springframework.boot:spring-boot-starter-oauth2-client'
 	implementation 'com.cloudinary:cloudinary-http44:1.29.0'
-	// https://mvnrepository.com/artifact/com.paypal.sdk/paypal-core
 	implementation group: 'com.paypal.sdk', name: 'paypal-core', version: '1.7.2'
-	// https://mvnrepository.com/artifact/com.paypal.sdk/rest-api-sdk
 	implementation group: 'com.paypal.sdk', name: 'rest-api-sdk', version: '1.14.0'
 	implementation 'com.itextpdf:itext7-core:7.2.5'
-//	implementation 'com.payos:payos-sdk:1.0.0'
 }
 
-tasks.named('test') {
-	useJUnitPlatform()
-}

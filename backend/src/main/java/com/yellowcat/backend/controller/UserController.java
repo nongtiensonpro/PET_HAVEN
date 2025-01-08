@@ -1,6 +1,5 @@
 package com.yellowcat.backend.controller;
 
-import com.yellowcat.backend.DTO.UserDTO;
 import com.yellowcat.backend.model.Thongtincanhan;
 import com.yellowcat.backend.model.Thucung;
 import com.yellowcat.backend.service.ThongTinCaNhanService;
@@ -8,10 +7,6 @@ import com.yellowcat.backend.service.ThuCungService;
 import org.keycloak.OAuth2Constants;
 import org.keycloak.admin.client.Keycloak;
 import org.keycloak.admin.client.KeycloakBuilder;
-import org.keycloak.admin.client.resource.UserResource;
-import org.keycloak.representations.idm.ClientRepresentation;
-import org.keycloak.representations.idm.RoleRepresentation;
-import org.keycloak.representations.idm.UserRepresentation;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.ResponseEntity;
@@ -21,19 +16,19 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.oauth2.jwt.Jwt;
 import org.springframework.web.bind.annotation.*;
 
-import java.time.Instant;
 import java.util.*;
-import java.util.stream.Collectors;
 
 @RestController
 @CrossOrigin(origins = "http://localhost:3000")
 public class UserController {
 
-    @Autowired
-    ThuCungService thuCungService;
+    private final ThuCungService thuCungService;
+    private final ThongTinCaNhanService thongTinCaNhanService;
 
-    @Autowired
-    ThongTinCaNhanService thongTinCaNhanService;
+    public UserController(ThuCungService thuCungService, ThongTinCaNhanService thongTinCaNhanService) {
+        this.thuCungService = thuCungService;
+        this.thongTinCaNhanService = thongTinCaNhanService;
+    }
 
     @GetMapping("/debug")
     public ResponseEntity<?> debug() {

@@ -4,7 +4,6 @@ import com.paypal.base.rest.PayPalRESTException;
 import com.yellowcat.backend.DTO.DoiDichVuDTO;
 import com.yellowcat.backend.model.Hoadon;
 import com.yellowcat.backend.model.Hoadondoidichvu;
-import com.yellowcat.backend.model.Lichhen;
 import com.yellowcat.backend.service.HoaDonDoiDichVuService;
 import com.yellowcat.backend.service.HoaDonService;
 import com.yellowcat.backend.service.LichHenService;
@@ -21,24 +20,25 @@ import org.springframework.security.oauth2.jwt.Jwt;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 
-import java.time.LocalDateTime;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 import java.util.Optional;
 
 @Controller
 @RestController
 @RequestMapping("/api/hoa-don")
 public class HoaDonController {
-    @Autowired
-    HoaDonService hoaDonService;
-    @Autowired
-    PdfExportService pdfExportService;
-    @Autowired
-    LichHenService lichHenService;
-    @Autowired
-    HoaDonDoiDichVuService hoaDonDoiDichVuService;
+
+    private final HoaDonService hoaDonService;
+    private final PdfExportService pdfExportService;
+    private final LichHenService lichHenService;
+    private final HoaDonDoiDichVuService hoaDonDoiDichVuService;
+
+    public HoaDonController(HoaDonService hoaDonService, PdfExportService pdfExportService, LichHenService lichHenService, HoaDonDoiDichVuService hoaDonDoiDichVuService) {
+        this.hoaDonService = hoaDonService;
+        this.pdfExportService = pdfExportService;
+        this.lichHenService = lichHenService;
+        this.hoaDonDoiDichVuService = hoaDonDoiDichVuService;
+    }
 
 
     @PreAuthorize("hasAnyRole('admin', 'manager')")

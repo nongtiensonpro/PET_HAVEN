@@ -13,11 +13,13 @@ import java.util.List;
 @Service
 public class LichHenManager {
 
-    @Autowired
-    private LichhenRepository lichhenRepository;
+    private final LichhenRepository lichhenRepository;
+    private final CalichhenRepository calichhenRepository;
 
-    @Autowired
-    private CalichhenRepository calichhenRepository;
+    public LichHenManager(LichhenRepository lichhenRepository, CalichhenRepository calichhenRepository) {
+        this.lichhenRepository = lichhenRepository;
+        this.calichhenRepository = calichhenRepository;
+    }
 
     public void taoLichHenRong() {
         // Lấy tất cả các ca từ bảng calichhen

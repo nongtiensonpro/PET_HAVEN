@@ -10,8 +10,12 @@ import java.util.Optional;
 
 @Service
 public class DanhGiaService {
-    @Autowired
-    DanhgiaRepository DanhGiaRepository;
+
+    private final DanhgiaRepository DanhGiaRepository;
+
+    public DanhGiaService(DanhgiaRepository danhGiaRepository) {
+        DanhGiaRepository = danhGiaRepository;
+    }
 
     public void addOrUpdateDanhGia(Danhgia danhgia) {
         DanhGiaRepository.save(danhgia);

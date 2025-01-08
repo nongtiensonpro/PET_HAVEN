@@ -1,7 +1,5 @@
 package com.yellowcat.backend.DTO;
 
-import java.time.LocalDate;
-
 public class ThongKeTimeDTO {
     private String ngayBatDau;
     private Double tongTien;

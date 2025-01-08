@@ -1,6 +1,5 @@
 package com.yellowcat.backend.controller;
 
-import com.yellowcat.backend.DTO.DatLichDTO;
 import com.yellowcat.backend.DTO.DoiLichDTO;
 import com.yellowcat.backend.model.Hoadon;
 import com.yellowcat.backend.model.Lichhen;
@@ -8,7 +7,6 @@ import com.yellowcat.backend.service.HoaDonService;
 import com.yellowcat.backend.service.LichHenService;
 import com.yellowcat.backend.service.PdfExportService;
 import jakarta.validation.Valid;
-import org.hibernate.annotations.Parameter;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -24,20 +22,21 @@ import org.springframework.web.bind.annotation.*;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.List;
-import java.util.Map;
 import java.util.Optional;
 
 @RestController
 @RequestMapping("/api/lich-hen")
 public class LichHenController {
-    @Autowired
-    public LichHenService lichHenService;
 
-    @Autowired
-    private HoaDonService hoaDonService;
+    private final LichHenService lichHenService;
+    private final HoaDonService hoaDonService;
+    private final PdfExportService pdfExportService;
 
-    @Autowired
-    private PdfExportService pdfExportService;
+    public LichHenController(LichHenService lichHenService, HoaDonService hoaDonService, PdfExportService pdfExportService) {
+        this.lichHenService = lichHenService;
+        this.hoaDonService = hoaDonService;
+        this.pdfExportService = pdfExportService;
+    }
 
     @PreAuthorize("hasRole('admin')")
     @GetMapping("/all")

@@ -1,15 +1,10 @@
 package com.yellowcat.backend.controller;
 
 import com.yellowcat.backend.model.Giamgia;
-import com.yellowcat.backend.service.DichVuService;
 import com.yellowcat.backend.service.GiamGiaService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -19,8 +14,12 @@ import java.util.Optional;
 //@PreAuthorize("hasRole('admin')")
 @RequestMapping("/api/giam-gia")
 public class GiamGiaController {
-    @Autowired
-    private GiamGiaService giamGiaService;
+
+    private final GiamGiaService giamGiaService;
+
+    public GiamGiaController(GiamGiaService giamGiaService) {
+        this.giamGiaService = giamGiaService;
+    }
 
     @GetMapping("/all")
     public List<Giamgia> getAll() {

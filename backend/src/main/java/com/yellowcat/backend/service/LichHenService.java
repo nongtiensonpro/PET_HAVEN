@@ -3,7 +3,6 @@ package com.yellowcat.backend.service;
 import com.paypal.api.payments.Refund;
 import com.paypal.base.rest.PayPalRESTException;
 import com.yellowcat.backend.PAY.PayPalService;
-import com.yellowcat.backend.model.Calichhen;
 import com.yellowcat.backend.model.Hoadon;
 import com.yellowcat.backend.model.Lichhen;
 import com.yellowcat.backend.repository.LichhenRepository;
@@ -21,8 +20,6 @@ import org.springframework.scheduling.annotation.Async;
 import org.springframework.scheduling.annotation.EnableAsync;
 import org.springframework.scheduling.annotation.EnableScheduling;
 import org.springframework.scheduling.annotation.Scheduled;
-import org.springframework.security.core.Authentication;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
 import java.time.Duration;
@@ -42,21 +39,17 @@ import java.util.concurrent.atomic.AtomicBoolean;
 public class LichHenService {
 
     private final LichhenRepository lichhenRepository;
+    private final LichHenManager lichHenManager;
+    private final EmailService emailService;
+    private final HoaDonService hoaDonService;
+    private final PayPalService payPalService;
 
-    @Autowired
-    LichHenManager lichHenManager;
-
-    @Autowired
-    private EmailService emailService;
-
-    @Autowired
-    private HoaDonService hoaDonService;
-
-    @Autowired
-    private PayPalService payPalService;
-
-    public LichHenService(LichhenRepository lichhenRepository) {
+    public LichHenService(LichhenRepository lichhenRepository, LichHenManager lichHenManager, EmailService emailService, HoaDonService hoaDonService, PayPalService payPalService) {
         this.lichhenRepository = lichhenRepository;
+        this.lichHenManager = lichHenManager;
+        this.emailService = emailService;
+        this.hoaDonService = hoaDonService;
+        this.payPalService = payPalService;
     }
 
     public List<Lichhen> getAllLich() {

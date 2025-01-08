@@ -1,16 +1,11 @@
 package com.yellowcat.backend.service;
 
 import com.yellowcat.backend.model.Calichhen;
-import com.yellowcat.backend.model.Lichhen;
 import com.yellowcat.backend.repository.CalichhenRepository;
-import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.annotation.Lazy;
 import org.springframework.stereotype.Service;
 
-import java.time.Duration;
 import java.time.LocalDate;
-import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.util.List;
 import java.util.Optional;
@@ -18,11 +13,14 @@ import java.util.Optional;
 
 @Service
 public class CaLichHenService {
-    @Autowired
-    private CalichhenRepository caLichHenRepository;
 
-    @Autowired
-    private LichHenManager lichHenManager;
+    private final CalichhenRepository caLichHenRepository;
+    private final LichHenManager lichHenManager;
+
+    public CaLichHenService(CalichhenRepository caLichHenRepository, LichHenManager lichHenManager) {
+        this.caLichHenRepository = caLichHenRepository;
+        this.lichHenManager = lichHenManager;
+    }
 
 
     public void addOrUpdate(Calichhen calichhen){

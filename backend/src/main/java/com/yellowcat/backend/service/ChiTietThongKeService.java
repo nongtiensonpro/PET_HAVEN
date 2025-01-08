@@ -10,9 +10,13 @@ import java.util.HashMap;
 
 @Service
 public class ChiTietThongKeService {
-    
-    @Autowired
-    private ChiTietThongKeRepository chiTietThongKeRepository;
+
+
+    private final ChiTietThongKeRepository chiTietThongKeRepository;
+
+    public ChiTietThongKeService(ChiTietThongKeRepository chiTietThongKeRepository) {
+        this.chiTietThongKeRepository = chiTietThongKeRepository;
+    }
 
     public Map<String, Object> thongKeDoanhThuTheoDichVu(LocalDate startDate, LocalDate endDate) {
         List<Object[]> data = chiTietThongKeRepository.thongKeDoanhThuTheoDichVu(startDate, endDate);
