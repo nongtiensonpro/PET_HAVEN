@@ -244,7 +244,7 @@ const taiHoaDon = async (id: number) => {
 const thanhToanHoaDon = async (id: number) => {
   const result = await Swal.fire({
     title: t('confirmPayment'),
-    text: t('confirmPaymentMessage'),
+    text: t('are_you_sure_you_want_to_change'),
     icon: 'warning',
     showCancelButton: true,
     confirmButtonColor: '#3085d6',

@@ -7,7 +7,7 @@ import { useMauKhachDatDichVu } from '~/stores/MauKhachDatDichVu'
 const aiSummary = ref('');
 const isLoading = ref(true);
 
-const apiKey = 'AIzaSyClcxWPh0hpZrh9Cf996fL3X0dUPjwYuOQ';
+const apiKey = 'AIzaSyCFzzeh0RlPy-8cIvBTPTykIGiRlEwyAgU';
 const genAI = new GoogleGenerativeAI(apiKey);
 const model = genAI.getGenerativeModel({ model: 'gemini-1.5-pro' });
 
@@ -80,7 +80,7 @@ onMounted(async () => {
         aiSummary.value = await generateSummary();
     } catch (error) {
         console.error("Error getting AI summary:", error);
-        aiSummary.value = "Xin lỗi, không thể tạo tóm tắt lúc này. Vui lòng thử lại sau.";
+        aiSummary.value = "Xin lỗi tui đang ngủ. Vui lòng thử lại sau.";
     } finally {
         isLoading.value = false;
     }
