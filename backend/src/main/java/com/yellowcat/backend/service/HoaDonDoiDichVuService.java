@@ -57,11 +57,9 @@ public class HoaDonDoiDichVuService {
         TuyChonCanNang tuyChonCanNang = tuyChonCanNangOptional.get();
         Hoadon hoadon = hoadonOptional.get();
 
-        float SoTienChenhLech = (float) (tuyChonCanNang.getGiatien() - hoadon.getIdlichhen().getTuyChonCanNang().getGiatien());
-        boolean TaoHoaDonDoi = Float.compare(SoTienChenhLech, 0) == 0;
+        Float SoTienChenhLech = (float) (tuyChonCanNang.getGiatien() - hoadon.getIdlichhen().getTuyChonCanNang().getGiatien());
 
 
-        if (!TaoHoaDonDoi){
             Hoadondoidichvu hoadondoidichvu = new Hoadondoidichvu();
             hoadondoidichvu.setIdhoadon(hoadon);
             if (dto.getGhiChu() != null && !dto.getGhiChu().isEmpty()){
@@ -80,13 +78,10 @@ public class HoaDonDoiDichVuService {
                 hoadondoidichvu.setTrangthai(1);
             }
             hoadondoidichvu.setNguoithanhtoan(nguoiThanhToan);
-            hoadondoidichvuRepository.save(hoadondoidichvu);
-            return ResponseEntity.ok(hoadondoidichvu);
-        }else {
             lichhen.setTuyChonCanNang(tuyChonCanNang);
             lichHenService.addOrUpdate(lichhen);
-            return ResponseEntity.ok(hoadon);
-        }
+            hoadondoidichvuRepository.save(hoadondoidichvu);
+            return ResponseEntity.ok(hoadondoidichvu);
     }
 
     public Optional<Hoadondoidichvu> findHoadondoidichvuById(Integer id){

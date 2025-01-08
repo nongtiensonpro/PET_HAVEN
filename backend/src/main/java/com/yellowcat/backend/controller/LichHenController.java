@@ -129,6 +129,7 @@ public class LichHenController {
             lichDoi.setTuyChonCanNang(lichhen.getTuyChonCanNang());
             lichDoi.setTrangthaica(true);
             lichDoi.setSolanthaydoi(lichhen.getSolanthaydoi());
+            lichDoi.setSolannhacnho(0);
 
             Hoadon hoadon = hoadonOptional.get();
             hoadon.setIdlichhen(lichDoi);
@@ -147,11 +148,13 @@ public class LichHenController {
             lichhenNew.setDate(lichhen.getDate());
             lichhenNew.setTrangthaica(true);
             lichhenNew.setSolanthaydoi(lichhen.getSolanthaydoi());
+            lichhenNew.setSolannhacnho(1);
 
 
             lichhen.setIdkhachhang("demo");
             lichhen.setTrangthai(5);
             lichhen.setEmailNguoiDat("default-email@example.com");
+            lichhen.setSolannhacnho(0);
             if (lichhen.getTrangthaica()){
                 lichhen.setTrangthaica(false);
             }else {
