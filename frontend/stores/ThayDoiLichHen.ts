@@ -1,6 +1,3 @@
-import DichVu from '../models/DichVu';
-import CaHen from '../models/CaHen';
-import ThuCungKhachHang from "~/models/ThuCungKhachHang";
 import {useMauKhachDatDichVu} from '~/stores/MauKhachDatDichVu';
 import type LichHenDetails from "~/models/LichHenDetails";
 

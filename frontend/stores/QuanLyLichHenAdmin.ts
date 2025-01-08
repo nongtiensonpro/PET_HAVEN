@@ -1,4 +1,3 @@
-import HoaDonKhachHang from "~/models/HoaDonKhachHang";
 import {Lichhen} from "~/models/LichSuDatLich";
 
 interface QuanLyLichHenAdminState {

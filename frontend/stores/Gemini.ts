@@ -4,7 +4,7 @@ import {useVoucherStore} from '~/stores/VorchersStores';
 import {useUserStore} from '~/stores/user';
 import {computed, onMounted, onUnmounted, ref} from 'vue';
 import {useQuanLyLichHenKhachHang} from '~/stores/QuanLyLichHenKhachHang';
-import type {BookingData} from './MauKhachDatDichVu';
+import type {BookingData} from '~/stores/MauKhachDatDichVu';
 import type { DichVu, TuyChonDichVu, TuyChonCanNang } from '~/models/DichVu';
 export const useAIStore = defineStore('ai', () => {
     const serviceStore = useServiceStore();

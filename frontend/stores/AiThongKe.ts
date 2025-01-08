@@ -1,10 +1,9 @@
 import { GoogleGenerativeAI } from '@google/generative-ai';
 import { useServiceStore } from '~/stores/DichVuStores';
 import { useVoucherStore } from '~/stores/VorchersStores';
-import { useUserStore } from '~/stores/user';
 import { computed, onMounted, ref, watch } from 'vue';
 import { useQuanLyLichHenKhachHang } from '~/stores/QuanLyLichHenKhachHang';
-import type BookingData from './MauKhachDatDichVu';
+import type BookingData from '~/stores/MauKhachDatDichVu';
 import DichVu from '~/models/DichVu';
 
 export const useAIThongKeStore = defineStore('ai', () => {

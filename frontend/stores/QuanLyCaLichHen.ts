@@ -1,7 +1,4 @@
-import { defineStore } from "pinia";
 import type CaLichHen from "~/models/CaHen";
-import { tr } from "cronstrue/dist/i18n/locales/tr";
-import { ca } from "cronstrue/dist/i18n/locales/ca";
 import { data } from "autoprefixer";
 import type NgayNghi from "~/models/NgayNghi"
 

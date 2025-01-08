@@ -1,6 +1,5 @@
-import { defineStore } from 'pinia';
 import { ref, computed } from 'vue';
-import type { BookingData } from './MauKhachDatDichVu';
+import type { BookingData } from '~/stores/MauKhachDatDichVu';
 
 export const useQuanLyLichHenKhachHang = defineStore('quanLyLichHenKhachHang', () => {
   // State

@@ -1,4 +1,4 @@
-import { TuyChonDichVu, TuyChonCanNang } from './DichVu'; // Assuming DichVu.ts is in the same directory
+import { TuyChonDichVu, TuyChonCanNang } from '~/models/DichVu';
 
 interface BookingData {
   date: string;

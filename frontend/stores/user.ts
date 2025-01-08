@@ -1,4 +1,3 @@
-import { defineStore } from 'pinia'
 import ThuCungKhachHang from "~/models/ThuCungKhachHang";
 
 interface UserInfo {

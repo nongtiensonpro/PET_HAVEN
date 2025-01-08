@@ -15,10 +15,6 @@
       <tr v-for="lichhen in lichhenList" :key="lichhen.id">
         <td>{{ lichhen.index + 1 }}</td>
         <td>{{ lichhen.constructor.name }}</td>
-<!--        <td>{{ lichhen.thucung?.tenThucung || "N/A" }}</td>-->
-<!--        <td>{{ lichhen.dichvu?.tenDichVu || "N/A" }}</td>-->
-<!--        <td>{{ lichhen.emailNguoiDat }}</td>-->
-<!--        <td>{{ lichhen.date }}</td>-->
       </tr>
       </tbody>
     </table>
@@ -26,7 +22,6 @@
 </template>
 
 <script>
-import axios from 'axios';
 import API_CONFIG from '../../apiconfig/ApiConfig';
 import {computed} from "vue";
 import {useUserStore} from "~/stores/user.ts";

@@ -1,8 +1,6 @@
 <script setup lang="ts">
 import {useUserStore} from '~/stores/user';
 import {computed} from "vue";
-import ThemThuCung from "~/pages/user/themthucung.vue"
-import CapNhatThuCung from "~/pages/user/capnhatthucung/[id].vue"
 import type {ThuCung} from "~/models/ChiTietDanhGia";
 
 
