@@ -25,16 +25,20 @@ import java.util.Optional;
 @CrossOrigin(origins = "http://localhost:3000")
 @RequestMapping("/api/payPal")
 public class PayPalController {
-    @Autowired
-    private PayPalService payPalService;
-    @Autowired
-    private HoaDonService hoaDonService;
-    @Autowired
-    private LichHenService lichHenService;
-    @Autowired
-    private PdfExportService pdfExportService;
-    @Autowired
-    private HoaDonDoiDichVuService hoaDonDoiDichVuService;
+
+    private final PayPalService payPalService;
+    private final HoaDonService hoaDonService;
+    private final LichHenService lichHenService;
+    private final PdfExportService pdfExportService;
+    private final HoaDonDoiDichVuService hoaDonDoiDichVuService;
+
+    public PayPalController(PayPalService payPalService, HoaDonService hoaDonService, LichHenService lichHenService, PdfExportService pdfExportService, HoaDonDoiDichVuService hoaDonDoiDichVuService) {
+        this.payPalService = payPalService;
+        this.hoaDonService = hoaDonService;
+        this.lichHenService = lichHenService;
+        this.pdfExportService = pdfExportService;
+        this.hoaDonDoiDichVuService = hoaDonDoiDichVuService;
+    }
 
     @PostMapping("/payment/create")
     public ResponseEntity<String> createPayment(@RequestHeader String idLichHen) {
@@ -81,7 +85,7 @@ public class PayPalController {
             String cancelUrl = "http://localhost:8080/api/payPal/payment/cancel/" + hoadon.getIdhoadon().getIdlichhen().getId();
             String successUrl = "http://localhost:8080/api/payPal/payment/success/hoadondoidv/"+hoadon.getIdhoadon().getIdlichhen().getId();
             Payment payment = payPalService.createPayment(
-                    Double.valueOf(hoadon.getSotien()),
+                    hoadon.getSotien(),
                     "USD",
                     "paypal",
                     "sale",
@@ -113,7 +117,7 @@ public class PayPalController {
             Sale sale = new Sale();
             sale.setId(payment.getTransactions().get(0).getRelatedResources().get(0).getSale().getId());
             // Kiểm tra nếu thanh toán thành công
-            if (payment != null && payment.getState().equals("approved")) {
+            if (payment.getState().equals("approved")) {
                 System.out.println("hello");
                 // Lấy hóa đơn từ dịch vụ dựa trên Id
                 Lichhen lichhen = lichHenService.findById(Integer.parseInt(id));
@@ -178,7 +182,7 @@ public class PayPalController {
             Sale sale = new Sale();
             sale.setId(payment.getTransactions().get(0).getRelatedResources().get(0).getSale().getId());
             // Kiểm tra nếu thanh toán thành công
-            if (payment != null && payment.getState().equals("approved")) {
+            if (payment.getState().equals("approved")) {
                 System.out.println("xin chao");
                 hoaDonDoiDichVuService.thanhToanHDDoiDV(id);
                 Optional<Hoadondoidichvu> hoadondoidichvuOptional = hoaDonDoiDichVuService.findHoadondoidichvuById(id);

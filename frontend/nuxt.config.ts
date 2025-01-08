@@ -50,8 +50,8 @@ export default defineNuxtConfig({
         pinia: '/node_modules/@pinia/nuxt/node_modules/pinia/dist/pinia.mjs',
     },
     plugins: [
-        { src: '~/plugins/bootstrap.js', mode: 'client' },
-        { src: '~/plugins/vee-validate.js' },
+        { src: '~/plugins/bootstrap.ts', mode: 'client' },
+        { src: '~/plugins/vee-validate.ts' },
         { src: '~/plugins/vue-toastification.ts', mode: 'client' },
     ],
     ssr: false

@@ -59,6 +59,7 @@ public class HoaDonDoiDichVuService {
 
         Float SoTienChenhLech = (float) (tuyChonCanNang.getGiatien() - hoadon.getIdlichhen().getTuyChonCanNang().getGiatien());
 
+
             Hoadondoidichvu hoadondoidichvu = new Hoadondoidichvu();
             hoadondoidichvu.setIdhoadon(hoadon);
             if (dto.getGhiChu() != null && !dto.getGhiChu().isEmpty()){
