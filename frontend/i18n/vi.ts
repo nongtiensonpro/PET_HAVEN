@@ -277,4 +277,5 @@ export default {
     timeSlotLabel: 'Thời gian:',
     addTimeSlot: 'Thêm',
     confirmBookingText: 'Vui lòng xác nhận lịch hẹn?',
+    statistical: 'Thống kê',
 }as const;

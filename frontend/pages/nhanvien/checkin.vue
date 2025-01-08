@@ -149,7 +149,6 @@
 <script setup lang="ts">
 import { useCheckInStore } from '~/stores/CheckInStores'
 import { ref, onMounted, onUnmounted, computed } from "vue";
-import { useQuanLyHoaDonStore } from '~/stores/QuanLyHoaDon';
 import { useI18n } from 'vue-i18n';
 import Swal from 'sweetalert2';
 import HoaDonKhachHang from "~/models/HoaDonKhachHang";
@@ -157,7 +156,6 @@ import { useToast } from 'vue-toastification'
 
 const { t } = useI18n();
 const toast = useToast();
-const useQuanLyHoaDon = useQuanLyHoaDonStore();
 const checkInStore = useCheckInStore()
 
 const hoaDonList = ref<HoaDonKhachHang[]>([]);
@@ -239,11 +237,11 @@ const getTrangThaiHoaDon = (status: number): string => {
   return trangThaiMap[status] || t('statusUnknown');
 };
 
-const taiHoaDon = async (id: string) => {
+const taiHoaDon = async (id: number) => {
   window.open(`/api/hoadon/download/${id}`, '_blank');
 };
 
-const thanhToanHoaDon = async (id: string) => {
+const thanhToanHoaDon = async (id: number) => {
   const result = await Swal.fire({
     title: t('confirmPayment'),
     text: t('confirmPaymentMessage'),
@@ -257,7 +255,7 @@ const thanhToanHoaDon = async (id: string) => {
 
   if (result.isConfirmed) {
     try {
-      await useQuanLyHoaDon.thanhToanHoaDon(id);
+      await checkInStore.checkIn(id);
       toast.success(t('paymentSuccess'));
       refreshData();
     } catch (error) {
