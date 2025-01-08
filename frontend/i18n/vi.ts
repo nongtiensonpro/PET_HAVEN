@@ -278,4 +278,5 @@ export default {
     addTimeSlot: 'Thêm',
     confirmBookingText: 'Vui lòng xác nhận lịch hẹn?',
     statistical: 'Thống kê',
+    change_service: 'Đổi dịch vụ',
 }as const;

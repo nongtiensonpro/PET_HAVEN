@@ -54,7 +54,7 @@
                     <button
                         @click="DoiDichVu(hoaDon.idlichhen.id)"
                         class="btn btn-sm btn-outline-primary m-1">
-                      hello
+                      {{t('change_service')}}
                     </button>
                   </td>
                 </tr>

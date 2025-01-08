@@ -279,4 +279,5 @@ export default {
   timeSlotLabel: 'Time slot:',
   addTimeSlot: 'Add',
   confirmBookingText: 'Are you sure you want to confirm the booking?',
+  change_service: 'Changed Service',
 }as const;

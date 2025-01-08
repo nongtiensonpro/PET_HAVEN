@@ -77,7 +77,6 @@ import { useQuanLyHoaDonStore } from '~/stores/QuanLyHoaDon';
 import Hoadon from "~/models/Hoadon";
 
 const route = useRoute();
-const router = useRouter();
 const store = useQuanLyHoaDonStore();
 const hoaDon = ref<Hoadon | null>(null);
 const loading = ref(true);
@@ -144,7 +143,7 @@ onMounted(() => {
   fetchHoaDon(id);
 });
 
-function inHoaDon(id: string) {
+function inHoaDon(id: number) {
   store.inHoaDon(id);
 }
 </script>

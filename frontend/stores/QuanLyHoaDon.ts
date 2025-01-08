@@ -24,7 +24,7 @@ export const useQuanLyHoaDonStore = defineStore('quanLyHoaDonStore', {
                 console.error('Error fetching list hoa don:', error);
             }
         },
-        async inHoaDon(id: String) {
+        async inHoaDon(id: number) {
             const token = localStorage.getItem('access_token');
             try {
                 const response = await fetch(`http://localhost:8080/api/hoa-don/in-hoa-don?id=${id}`, {

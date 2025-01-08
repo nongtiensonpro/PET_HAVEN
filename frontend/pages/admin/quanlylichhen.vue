@@ -49,6 +49,13 @@
                       {{ t('viewDetails') }}
                     </button>
                   </div>
+                  <div class="col">
+                    <button
+                        @click="DoiDichVu(lichhen.idcalichhen.id)"
+                        class="btn btn-sm btn-outline-primary m-1">
+                      {{t('change_service')}}
+                    </button>
+                  </div>
                 </div>
               </td>
             </tr>
@@ -187,7 +194,7 @@ async function doiNgayHen(ngayHen: string, idcalichhen: number) {
 }
 
 const viewHoaDon = (id: number) => {
-  navigateTo(`/admin/chitiethoadon/${id}`);
+  navigateTo(`/nhanvien/chitiethoadon/${id}`);
 };
 
 const thayDoiTrangThai = (lichHen: Lichhen) => {
@@ -197,10 +204,12 @@ const thayDoiTrangThai = (lichHen: Lichhen) => {
 const thayDoiThoiGian = (lichHen: Lichhen) => {
   navigateTo(`/admin/thaydoithoigian/${lichHen.id}`);
 }
+
+const DoiDichVu = (id : number) => {
+  navigateTo(`/thaydoidichvu/${id}`)
+}
 </script>
 
 <style scoped>
-.chart {
-  height: 400px;
-}
+
 </style>

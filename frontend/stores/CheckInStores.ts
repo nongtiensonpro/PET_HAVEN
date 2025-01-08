@@ -27,7 +27,7 @@ export const useCheckInStore = defineStore('checkInStore', {
                 console.error('Error fetching data:', error);
             }
         },
-        async checkIn(id: String) {
+        async checkIn(id: Number) {
             const token = localStorage.getItem('access_token');
             try {
                 const response = await fetch(`http://localhost:8080/api/lich-hen/thanh-toan/` + id, {
