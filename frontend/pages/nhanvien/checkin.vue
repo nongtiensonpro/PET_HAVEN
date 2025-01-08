@@ -51,6 +51,11 @@
                         class="btn btn-sm btn-outline-primary m-1">
                       {{ t('viewDetails') }}
                     </button>
+                    <button
+                        @click="DoiDichVu(hoaDon.idlichhen.id)"
+                        class="btn btn-sm btn-outline-primary m-1">
+                      hello
+                    </button>
                   </td>
                 </tr>
                 </tbody>
@@ -273,6 +278,10 @@ onUnmounted(() => {
 const viewHoaDon = (id: number) => {
   navigateTo(`/nhanvien/chitiethoadon/${id}`);
 };
+
+const DoiDichVu = (id : number) => {
+  navigateTo(`/thaydoidichvu/${id}`)
+}
 </script>
 
 <style scoped>
