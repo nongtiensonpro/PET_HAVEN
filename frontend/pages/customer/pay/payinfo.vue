@@ -130,6 +130,12 @@
         </div>
       </div>
     </div>
+    <div v-if="showOverlay" class="overlay">
+      <div class="countdown-container">
+        <p>{{ t('processingPayment') }}</p>
+        <p class="countdown">{{ countdown }}</p>
+      </div>
+    </div>
   </div>
 </template>
 
@@ -149,10 +155,6 @@ const showOverlay = ref(false);
 definePageMeta({
   middleware: ['auth']
 })
-
-function thanhToanTaiQuay() {
-  return navigateTo('/customer/success');
-}
 
 function startCountdown() {
   showOverlay.value = true;
@@ -224,11 +226,9 @@ async function thanhToanOnline() {
   box-shadow: none !important;
 }
 
-.card-img-top {
-  width: 100%;
-  height: auto;
-  max-height: 350px;
-  object-fit: contain;
+.text {
+  font-size: 1.5rem;
+  padding-top: 10px;
 }
 
 .overlay {
@@ -237,22 +237,23 @@ async function thanhToanOnline() {
   left: 0;
   width: 100%;
   height: 100%;
-  background-color: rgba(0, 0, 0, 0.7);
+  background-color: rgba(0, 0, 0, 0.5);
   display: flex;
   justify-content: center;
   align-items: center;
-  z-index: 1000;
+  z-index: 9999;
 }
 
-.overlay-content {
+.countdown-container {
   background-color: white;
   padding: 20px;
-  border-radius: 5px;
+  border-radius: 10px;
   text-align: center;
 }
 
-.text {
-  font-size: 1.5rem;
-  padding-top: 10px;
+.countdown {
+  font-size: 3rem;
+  font-weight: bold;
+  margin-top: 10px;
 }
 </style>

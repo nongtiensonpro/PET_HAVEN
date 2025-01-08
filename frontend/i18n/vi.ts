@@ -281,4 +281,6 @@ export default {
     change_service: 'Đổi dịch vụ',
     services_in_use:'Dịch vụ đang sử dụng',
     are_you_sure_you_want_to_change:'Bạn có chắc chắn muốn đổi ?',
+    cancel: 'Hủy',
+    processingPayment:'Đang xử lý thanh toán...',
 }as const;

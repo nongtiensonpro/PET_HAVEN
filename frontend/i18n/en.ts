@@ -282,4 +282,6 @@ export default {
   change_service: 'Changed Service',
   services_in_use:'Services in use:',
   are_you_sure_you_want_to_change: 'Are you sure you want to change the service ? ',
+  cancel:'Cancel',
+  processingPayment:'Processing Payment...',
 }as const;
