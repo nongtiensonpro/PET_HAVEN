@@ -230,7 +230,7 @@ function themVoucher() {
 }
 
 function capNhatVoucher(voucher: Voucher) {
-  return navigateTo(`/admin/capnhatvoucher/${voucher.id}`);
+  return navigateTo(`/admin/chitietvoucher/${voucher.id}`);
 }
 </script>
 

@@ -48,7 +48,7 @@ public class DichVuController {
     @PostMapping("/add")
     public ResponseEntity<?> createDichVu(
             @RequestBody DichVuDTO request) {
-
+        System.out.println(request.toString());
 //        try {
 //            String imageUrl;
 //

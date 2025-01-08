@@ -1,4 +1,3 @@
-import {defineStore} from 'pinia';
 import DichVu from '../models/DichVu';
 import Pageable from '../models/Pageable';
 import API_ENDPOINTS from '../apiconfig/ApiConfig';
@@ -24,44 +23,45 @@ export const useServiceStore = defineStore('serviceStore', {
             }
         },
         async addDichVu(service: DichVu) {
-    const token = localStorage.getItem('access_token');
-    
-    // Create a DichVuDTO object
-    const dichVuDTO = {
-        tenDichVu: service.tendichvu,
-        moTa: service.mota,
-        anh: service.anh, // Assuming 'anh' is a property of DichVu
-        trangThai: service.trangthai,
-        hien: true, // Set a default value for 'hien'
-        tuyChonDichVu: [] // Initialize as an empty array
-    };
+            const token = localStorage.getItem('access_token');
 
-    try {
-        const response = await fetch(API_ENDPOINTS.API_ENDPOINTS.dichVu.addDichVu, {
-            method: 'POST',
-            headers: {
-                'Authorization': `Bearer ${token}`,
-                'Content-Type': 'application/json'
-            },
-            body: JSON.stringify(dichVuDTO)
-        });
+            // Create a DichVuDTO object
+            const dichVuDTO = {
+                tenDichVu: service.tendichvu,
+                moTa: service.mota,
+                anh: service.anh,
+                trangThai: service.trangthai,
+                hien: true,
+                tuyChonDichVu: service.tuyChonDichVus
+            };
 
-        if (!response.ok) {
-            throw new Error(`HTTP error! Status: ${response.status}`);
-        }
+            console.log("Dịch vụ đã được tạo:", dichVuDTO);
+            try {
+                const response = await fetch(API_ENDPOINTS.API_ENDPOINTS.dichVu.addDichVu, {
+                    method: 'POST',
+                    headers: {
+                        'Authorization': `Bearer ${token}`,
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify(dichVuDTO)
+                });
 
-        const data = await response.json();
-        console.log("Dịch vụ đã được thêm:", data);
+                if (!response.ok) {
+                    throw new Error(`HTTP error! Status: ${response.status}`);
+                }
 
-        // Update the local state if necessary
-        // this.services.push(data);
+                const data = await response.json();
+                console.log("Dịch vụ đã được thêm:", data);
 
-        return { success: true, message: 'Thêm dịch vụ thành công' };
-    } catch (error) {
-        console.error('Lỗi khi thêm dịch vụ:', error);
-        return { success: false, message: 'Lỗi thêm dịch vụ: ' + error.message };
-    }
-},
+                // Update the local state if necessary
+                // this.services.push(data);
+
+                return {success: true, message: 'Thêm dịch vụ thành công'};
+            } catch (error) {
+                console.error('Lỗi khi thêm dịch vụ:', error);
+                return {success: false, message: 'Lỗi thêm dịch vụ: ' + error.message};
+            }
+        },
         async updateDichVu(service: DichVu) {
             const updateDichVuUrl = API_ENDPOINTS.API_ENDPOINTS.dichVu.updateDichVu + service.id;
             const token = localStorage.getItem('access_token');

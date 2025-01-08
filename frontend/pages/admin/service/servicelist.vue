@@ -53,7 +53,7 @@ const findServiceByName = async () => {
   }
 };
 
-const handleServiceAction = async (action, serviceId, successMessage, errorMessage) => {
+const handleServiceAction = async (action, serviceId : String, successMessage : String, errorMessage: String) => {
   try {
     await action(serviceId);
     notificationStore.addNotification(successMessage, user.userInfo.name);
@@ -65,28 +65,28 @@ const handleServiceAction = async (action, serviceId, successMessage, errorMessa
   }
 };
 
-const deleteService = (serviceId) => handleServiceAction(
+const deleteService = (serviceId : String) => handleServiceAction(
   serviceStore.deleteDichVu,
   serviceId,
   t('deleteSuccess'),
   t('deleteError')
 );
 
-const updateTTService = (serviceId) => handleServiceAction(
+const updateTTService = (serviceId : String) => handleServiceAction(
   serviceStore.updateTTDV,
   serviceId,
   t('updateSuccess'),
   t('updateError')
 );
 
-const updateTTHienService = (serviceId) => handleServiceAction(
+const updateTTHienService = (serviceId : String) => handleServiceAction(
   serviceStore.updateTTHien,
   serviceId,
   t('updateSuccess'),
   t('updateError')
 );
 
-const chiTietDV = (serviceId) => navigateTo(`/admin/service/${serviceId}`);
+const chiTietDV = (serviceId : String) => navigateTo(`/admin/service/${serviceId}`);
 
 function themDichVu() {
   navigateTo('/admin/service/themdichvu');

@@ -157,5 +157,15 @@ public class DichVuDTO {
         }
     }
 
-
+    @Override
+    public String toString() {
+        return "DichVuDTO{" +
+                "tenDichVu='" + tenDichVu + '\'' +
+                ", moTa='" + moTa + '\'' +
+                ", anh='" + anh + '\'' +
+                ", trangThai=" + trangThai +
+                ", hien=" + hien +
+                ", tuyChonDichVu=" + tuyChonDichVu.toString() +
+                '}';
+    }
 }

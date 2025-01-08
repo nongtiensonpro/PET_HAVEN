@@ -32,8 +32,9 @@ const saveNewService = async () => {
 const addTuyChon = () => {
   newService.value.tuyChonDichVus.push({
     id: Date.now(),
+    idDichVu: newService.value.id,
     tenTuyChon: '',
-    moTa: '',
+    moTa: null,
     trangThai: true,
     tuyChonCanNangs: []
   });
@@ -132,10 +133,10 @@ const handleFileUpload = async (event: Event) => {
               <h5 class="mb-0">Tùy chọn {{ index + 1 }}</h5>
               <button @click="removeTuyChon(index)" class="btn btn-danger btn-sm">Xóa</button>
             </div>
-            <input v-model="tuyChon.tentuychon" class="form-control mb-2" placeholder="Tên tùy chọn">
-            <textarea v-model="tuyChon.mota" class="form-control mb-2" placeholder="Mô tả"></textarea>
+            <input v-model="tuyChon.tenTuyChon" class="form-control mb-2" placeholder="Tên tùy chọn">
+            <textarea v-model="tuyChon.moTa" class="form-control mb-2" placeholder="Mô tả"></textarea>
             <div class="form-check mb-2">
-              <input v-model="tuyChon.trangthai" type="checkbox" class="form-check-input" :id="'trangThai' + tuyChon.id">
+              <input v-model="tuyChon.trangThai" type="checkbox" class="form-check-input" :id="'trangThai' + tuyChon.id">
               <label class="form-check-label" :for="'trangThai' + tuyChon.id">Hoạt động</label>
             </div>
             <h6 class="mt-3">Tùy chọn cân nặng:</h6>
@@ -143,17 +144,17 @@ const handleFileUpload = async (event: Event) => {
               <li v-for="(canNang, canNangIndex) in tuyChon.tuyChonCanNangs" :key="canNang.id" class="list-group-item">
                 <div class="row align-items-center">
                   <div class="col">
-                    <input v-model="canNang.cannangmin" type="number" class="form-control" placeholder="Cân nặng min">
+                    <input v-model="canNang.canNangMin" type="number" class="form-control" placeholder="Cân nặng min">
                   </div>
                   <div class="col">
-                    <input v-model="canNang.cannangmax" type="number" class="form-control" placeholder="Cân nặng max">
+                    <input v-model="canNang.canNangMax" type="number" class="form-control" placeholder="Cân nặng max">
                   </div>
                   <div class="col">
-                    <input v-model="canNang.giatien" type="number" class="form-control" placeholder="Giá tiền">
+                    <input v-model="canNang.giaTien" type="number" class="form-control" placeholder="Giá tiền">
                   </div>
                   <div class="col">
                     <div class="form-check">
-                      <input v-model="canNang.trangthai" type="checkbox" class="form-check-input" :id="'trangThaiCanNang' + canNang.id">
+                      <input v-model="canNang.trangThai" type="checkbox" class="form-check-input" :id="'trangThaiCanNang' + canNang.id">
                       <label class="form-check-label" :for="'trangThaiCanNang' + canNang.id">Hoạt động</label>
                     </div>
                   </div>
