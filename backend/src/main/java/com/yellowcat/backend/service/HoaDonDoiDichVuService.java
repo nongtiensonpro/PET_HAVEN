@@ -57,7 +57,7 @@ public class HoaDonDoiDichVuService {
         TuyChonCanNang tuyChonCanNang = tuyChonCanNangOptional.get();
         Hoadon hoadon = hoadonOptional.get();
 
-        Float SoTienChenhLech = (float) (tuyChonCanNang.getGiatien() - hoadon.getIdlichhen().getTuyChonCanNang().getGiatien());
+        float SoTienChenhLech = (float) (tuyChonCanNang.getGiatien() - hoadon.getIdlichhen().getTuyChonCanNang().getGiatien());
         boolean TaoHoaDonDoi = Float.compare(SoTienChenhLech, 0) == 0;
 
 
