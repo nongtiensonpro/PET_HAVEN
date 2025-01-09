@@ -1,6 +1,8 @@
 package com.yellowcat.backend.controller;
 
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.yellowcat.backend.DTO.DichVuDTO;
 import com.yellowcat.backend.model.Dichvu;
 import com.yellowcat.backend.service.CloudinaryService;
@@ -10,9 +12,11 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
 
 import java.util.HashMap;
@@ -38,67 +42,21 @@ public class DichVuController {
         return dichVuService.getAllDichVu(pageable);
     }
 
-    //Hàm kiểm tra tên file
-    public boolean isValidFileName(String fileName) {
-        // Kiểm tra tên file không chứa các ký tự như "..", "/", "\", và chỉ chứa ký tự hợp lệ
-        return fileName != null && !fileName.contains("..") && fileName.matches("[a-zA-Z0-9._-]+");
-    }
-
     @PreAuthorize("hasAnyRole('admin')")
-    @PostMapping("/add")
-    public ResponseEntity<?> createDichVu(
-            @RequestBody DichVuDTO request) {
-        System.out.println(request.toString());
-//        try {
-//            String imageUrl;
-//
-//            // Kiểm tra nếu người dùng không upload ảnh
-//            if (file == null || file.isEmpty()) {
-//                imageUrl = "http://localhost:8080/images/AvatarDichVu/default-avatar.jpg";
-//            } else {
-//                // Xác thực tên file và loại bỏ các ký tự nguy hiểm
-//                String fileName = StringUtils.cleanPath(file.getOriginalFilename());
-//
-//                if (!isValidFileName(fileName)) {
-//                    return ResponseEntity
-//                            .status(HttpStatus.BAD_REQUEST)
-//                            .body(Map.of("status", "error", "message", "Tên file không hợp lệ."));
-//                }
-//
-//                // Tạo tệp tạm thời
-//                File tempFile = File.createTempFile("upload_", fileName);
-//                file.transferTo(tempFile);  // Chuyển MultipartFile thành File
-//
-//                // Upload file lên Cloudinary
-//                Map uploadResult = cloudinaryService.uploadFile(tempFile);
-//                imageUrl = uploadResult.get("url").toString();
-//
-//                // Xóa file tạm sau khi upload
-//                tempFile.delete();
-//            }
-//
-//            // Tạo đối tượng Dichvu
-//            Dichvu dichvu = new Dichvu();
-//            dichvu.setTendichvu(tenDichVu);
-//            dichvu.setMota(moTa);
-//            dichvu.setTrangthai(trangThai);
-//            dichvu.setAnh(imageUrl);
-//            dichvu.setHien(false);
-//            // Lưu DichVu vào database
-//            dichVuService.addOrUpdateDichVu(dichvu);
-//
-//            return ResponseEntity
-//                    .status(HttpStatus.OK)
-//                    .body(Map.of("status", "success", "message", "Dịch vụ tạo thành công!", "data", dichvu));
-//        } catch (Exception e) {
-//            e.printStackTrace();
-//            return ResponseEntity
-//                    .status(HttpStatus.INTERNAL_SERVER_ERROR)
-//                    .body(Map.of("status", "error", "message", "Không thể tạo dịch vụ.", "error", e.getMessage()));
-//        }
+    @PostMapping(value = "/add" , consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+    public ResponseEntity<?> themDichVu(@RequestPart("dichVu") String dichVuJson,
+                                        @RequestPart(value = "file", required = false) MultipartFile file) {
+        ObjectMapper objectMapper = new ObjectMapper();
+        DichVuDTO dichVuDTO;
+        try {
+            dichVuDTO = objectMapper.readValue(dichVuJson, DichVuDTO.class);
+        } catch (JsonProcessingException e) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST)
+                    .body(Map.of("message", "Dữ liệu JSON không hợp lệ"));
+        }
+        dichVuService.themDichVu(dichVuDTO, file);
 
-        dichVuService.themDichVu(request);
-        return ResponseEntity.ok("Dịch vụ đã được thêm thành công.");
+        return ResponseEntity.ok(Map.of("message", "Thêm dịch vụ thành công"));
     }
 
 
