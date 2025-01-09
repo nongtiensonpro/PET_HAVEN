@@ -83,14 +83,14 @@
 
   <script setup lang="ts">
   import { useServiceStore } from '~/stores/DichVuStores';
-  import { onMounted, computed, ref, onUpdated } from 'vue';
+  import { onMounted, computed, ref} from 'vue';
   import DichVu from '~/models/DichVu';
   import { useVoucherStore } from '~/stores/VorchersStores';
   import Voucher from '~/models/Voucher';
   import VoucherDisplay from "~/components/VoucherDisplay.vue";
   import {useI18n} from 'vue-i18n';
 
-  const {t, locale} = useI18n();
+  const {t} = useI18n();
   const voucherStore = useVoucherStore();
   const serviceStore = useServiceStore();
   const itemsPerPage = 4;
@@ -104,9 +104,6 @@
     window.addEventListener('resize', handleResize);
   });
 
-  onUpdated(() => {
-    // Cập nhật lại chiều rộng thẻ khi component được cập nhật (ví dụ: thay đổi kích thước cửa sổ)
-  });
 
   const handleResize = () => {
     windowWidth.value = window.innerWidth;
@@ -122,22 +119,19 @@
 
   const totalPages = computed(() => Math.ceil(services.value.length / itemsPerPage));
 
-  // Dynamic card width based on number of columns and available space
+
   const calculateCardWidth = () => {
     const columns = windowWidth.value >= 1200 ? 3 : windowWidth.value >= 992 ? 2 : 1;
-    const containerPadding = 32; // Adjust as needed based on your CSS
+    const containerPadding = 32;
     const availableWidth = windowWidth.value - containerPadding;
     return `${availableWidth / columns}px`;
   };
 
-  // Calculate card height based on image aspect ratio or a fixed value
   const calculateCardHeight = (service: DichVu) => {
     if (service.anh) {
-      // You'll need to fetch the image dimensions to do this properly
-      // This is a placeholder, replace with actual logic
-      return 'auto'; // Or a calculated value based on aspect ratio
+      return 'auto';
     }
-    return '300px'; // Default height if no image
+    return '300px';
   };
 
   const calculateImageFit = (service:DichVu) =>{
@@ -175,27 +169,27 @@
     grid-gap: 1rem;
   }
   .card {
-    width: var(--card-width); /* Dynamic width */
+    width: var(--card-width);
     height: var(--card-height);
-    display: flex; /* Ensure card content fills the height */
+    display: flex;
     flex-direction: column;
   }
   .card-body {
-    flex-grow: 1; /* Allow body to take up available space */
+    flex-grow: 1;
     display: flex;
     flex-direction: column;
   }
   .card-image-wrapper {
-    height: 200px; /* Or a percentage */
-    overflow: hidden; /* Prevent image overflow */
+    height: 200px;
+    overflow: hidden;
     display: flex;
-    align-items: center; /* Center vertically */
-    justify-content: center; /* Center horizontally */
+    align-items: center;
+    justify-content: center;
   }
   .card-img-top {
     width: 100%;
     height: 100%;
-    object-fit: contain; /* Or 'cover' depending on desired behavior */
+    object-fit: contain;
   }
 
   </style>

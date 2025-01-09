@@ -22,7 +22,7 @@ export const useCheckInStore = defineStore('checkInStore', {
                 });
                 const data = await response.json();
                 this.ListHoaDon = data;
-                console.log(this.ListHoaDon);
+                console.log(this.ListHoaDon + "ListHoaDon chưa thanh toán");
             } catch (error) {
                 console.error('Error fetching data:', error);
             }
@@ -58,7 +58,7 @@ export const useCheckInStore = defineStore('checkInStore', {
                 const data = await response.json();
                 console.log(data);
                 this.ListHoaDonDaThanhToan = data;
-                console.log(this.ListHoaDonDaThanhToan);
+                console.log(this.ListHoaDonDaThanhToan.length +'Hóa đơn đã thanh toán');
             } catch (error) {
                 console.error('Error fetching data:', error);
             }

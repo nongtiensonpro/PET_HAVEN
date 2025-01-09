@@ -8,6 +8,7 @@
     <div v-else-if="hoaDon">
       <h2 class="mb-4">Chi tiết hóa đơn</h2>
       <div class="row g-4">
+        <!-- Thông tin hóa đơn -->
         <div class="col-md-6 info-section">
           <h3 class="section-title">Thông tin hóa đơn</h3>
           <p><strong>Mã hóa đơn:</strong> {{ hoaDon.id }}</p>
@@ -16,15 +17,29 @@
           <p><strong>Phương thức thanh toán:</strong> {{ hoaDon.phuongthucthanhtoan }}</p>
           <p><strong>Mã giao dịch:</strong> {{ hoaDon.magiaodich }}</p>
           <p><strong>Người thanh toán:</strong> {{ hoaDon.nguoithanhtoan }}</p>
-          <p v-if="hoaDon.idgiamgia"><strong>Mã giảm giá:</strong> {{ hoaDon.idgiamgia }}</p>
         </div>
+
+        <!-- Thông tin thanh toán -->
         <div class="col-md-6 info-section">
           <h3 class="section-title">Thông tin thanh toán</h3>
           <p><strong>Số tiền ban đầu:</strong> {{ formatCurrency(hoaDon.sotienbandau) }}</p>
           <p><strong>Số tiền thanh toán:</strong> {{ formatCurrency(hoaDon.sotien) }}</p>
           <p><strong>Ngày thanh toán:</strong> {{ formatDate(hoaDon.ngaythanhtoan) }}</p>
         </div>
-        <div class="col-md-12 info-section">
+
+        <!-- Thông tin mã giảm giá -->
+        <div v-if="hoaDon.idgiamgia" class="col-md-6 info-section">
+          <h3 class="section-title">Thông tin mã giảm giá</h3>
+          <p><strong>Mã giảm giá:</strong> {{ hoaDon.idgiamgia.id }}</p>
+          <p><strong>Phần trăm giảm:</strong> {{ hoaDon.idgiamgia.phantramgiam }}%</p>
+          <p><strong>Ngày bắt đầu:</strong> {{ formatDate(hoaDon.idgiamgia.ngaybatdau) }}</p>
+          <p><strong>Ngày kết thúc:</strong> {{ formatDate(hoaDon.idgiamgia.ngayketthuc) }}</p>
+          <p><strong>Mô tả:</strong> {{ hoaDon.idgiamgia.mota }}</p>
+          <p><strong>Trạng thái:</strong> {{ hoaDon.idgiamgia.trangthai ? 'Còn hiệu lực' : 'Hết hiệu lực' }}</p>
+        </div>
+
+        <!-- Thông tin lịch hẹn -->
+        <div class="col-md-6 info-section">
           <h3 class="section-title">Thông tin lịch hẹn</h3>
           <p><strong>Mã lịch hẹn:</strong> {{ hoaDon.idlichhen.id }}</p>
           <p><strong>Mã khách hàng:</strong> {{ hoaDon.idlichhen.idkhachhang }}</p>
@@ -36,6 +51,8 @@
           <p><strong>Số lần thay đổi:</strong> {{ hoaDon.idlichhen.solanthaydoi }}</p>
           <p><strong>Số lần nhắc nhở:</strong> {{ hoaDon.idlichhen.solannhacnho }}</p>
         </div>
+
+        <!-- Thông tin thú cưng -->
         <div class="col-md-6 info-section">
           <h3 class="section-title">Thông tin thú cưng</h3>
           <p><strong>ID:</strong> {{ hoaDon.idlichhen.thucung.id }}</p>
@@ -48,16 +65,34 @@
           <p><strong>Tình trạng sức khỏe:</strong> {{ hoaDon.idlichhen.thucung.tinhtrangsuckhoe }}</p>
           <p><strong>Mô tả:</strong> {{ hoaDon.idlichhen.thucung.mota }}</p>
         </div>
+
+        <!-- Thông tin tùy chọn cân nặng -->
         <div class="col-md-6 info-section">
           <h3 class="section-title">Thông tin tùy chọn cân nặng</h3>
           <p><strong>ID:</strong> {{ hoaDon.idlichhen.tuyChonCanNang.id }}</p>
           <p><strong>Cân nặng tối thiểu:</strong> {{ hoaDon.idlichhen.tuyChonCanNang.cannangmin }} kg</p>
-          <p><strong>Cân nặng tối đa:</strong> {{ hoaDon.idlichhen.tuyChonCanNang.cannangmax ? `${hoaDon.idlichhen.tuyChonCanNang.cannangmax} kg` : 'Không giới hạn' }}</p>
+          <p><strong>Cân nặng tối đa:</strong> {{
+            hoaDon.idlichhen.tuyChonCanNang.cannangmax ? `${hoaDon.idlichhen.tuyChonCanNang.cannangmax} kg` : 'Không giới hạn'
+          }}</p>
           <p><strong>Giá tiền:</strong> {{ formatCurrency(hoaDon.idlichhen.tuyChonCanNang.giatien) }}</p>
-          <p><strong>Trạng thái:</strong> {{ hoaDon.idlichhen.tuyChonCanNang.trangthai ? 'Hoạt động' : 'Không hoạt động' }}</p>
+          <p><strong>Trạng thái:</strong> {{
+            hoaDon.idlichhen.tuyChonCanNang.trangthai ? 'Hoạt động' : 'Không hoạt động'
+          }}</p>
+        </div>
+
+        <!-- Thông tin dịch vụ và tùy chọn -->
+        <div class="col-md-6 info-section">
+          <h3 class="section-title">{{ t('selectedService') }}</h3>
+          <p><strong>{{ t('serviceName') }}:</strong> {{ filteredService.tendichvu }}</p>
+          <p><strong>{{ t('serviceDescription') }}:</strong> {{ filteredService.mota }}</p>
+
+          <h4 class="mt-3">{{ t('serviceOptions') }}</h4>
+          <p><strong>{{ t('serviceOption') }}:</strong> {{ filteredOption?.tentuychon }}</p>
+          <div v-html="filteredOption?.mota"></div>
         </div>
       </div>
 
+      <!-- Nút in hóa đơn -->
       <div class="row mt-4">
         <div class="col-md-6">
           <button @click="inHoaDon(hoaDon.id)" class="btn btn-primary w-100">In hóa đơn</button>
@@ -71,15 +106,46 @@
 </template>
 
 <script setup lang="ts">
-import { ref, onMounted } from 'vue';
-import { useRoute, useRouter } from 'vue-router';
-import { useQuanLyHoaDonStore } from '~/stores/QuanLyHoaDon';
+import {ref, onMounted, computed} from 'vue';
+import {useRoute} from 'vue-router';
+import {useQuanLyHoaDonStore} from '~/stores/QuanLyHoaDon';
 import Hoadon from "~/models/Hoadon";
+import {useServiceStore} from '~/stores/DichVuStores';
+import DichVu from "~/models/DichVu";
+import {useI18n} from "vue-i18n";
 
+const {t} = useI18n()
+
+const serviceStore = useServiceStore();
 const route = useRoute();
 const store = useQuanLyHoaDonStore();
 const hoaDon = ref<Hoadon | null>(null);
+const listServices = ref<DichVu[]>([]);
 const loading = ref(true);
+
+
+const filteredService = computed(() => {
+  if (!hoaDon.value) return null;
+  const tuyChonCanNangId = hoaDon.value.idlichhen.tuyChonCanNang?.id;
+  if (!tuyChonCanNangId) return null;
+  return listServices.value.find(dichVu =>
+      dichVu.tuyChonDichVus.some(tuyChon =>
+          tuyChon.tuyChonCanNangs.some(canNang => canNang.id === tuyChonCanNangId)
+      )
+  );
+});
+
+const filteredOption = computed(() => {
+  if (!hoaDon.value) return null;
+  const tuyChonCanNangId = hoaDon.value.idlichhen.tuyChonCanNang?.id;
+  if (!tuyChonCanNangId) return null;
+  return listServices.value.flatMap(dichVu =>
+    dichVu.tuyChonDichVus.find(tuyChon =>
+      tuyChon.tuyChonCanNangs.some(canNang => canNang.id === tuyChonCanNangId)
+    )
+  ).filter(Boolean)[0] || null;
+});
+
 
 const getTrangThaiLichHen = (trangthai: number) => {
   switch (trangthai) {
@@ -121,7 +187,7 @@ const formatDate = (dateString: string) => {
 };
 
 const formatCurrency = (amount: number) => {
-  return new Intl.NumberFormat('vi-VN', { style: 'currency', currency: 'USD' }).format(amount);
+  return new Intl.NumberFormat('vi-VN', {style: 'currency', currency: 'USD'}).format(amount);
 };
 
 const getTrangThai = (trangthai: number) => {
@@ -141,6 +207,8 @@ const getTrangThai = (trangthai: number) => {
 onMounted(() => {
   const id = Number(route.params.id);
   fetchHoaDon(id);
+  serviceStore.fetchServices();
+  listServices.value = serviceStore.services;
 });
 
 function inHoaDon(id: number) {

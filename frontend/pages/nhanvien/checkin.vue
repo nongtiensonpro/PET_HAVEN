@@ -196,6 +196,7 @@ const fetchHoaDon = async () => {
 const fetchHoaDonThanhToan = async () => {
   await checkInStore.fetchHoaDonDaThanhToan();
   hoaDonThanhToanList.value = checkInStore.ListHoaDonDaThanhToan;
+  console.log(hoaDonThanhToanList.value+' Hóa đơn đã thanh toán')
 };
 
 const refreshData = () => {
@@ -244,7 +245,7 @@ const taiHoaDon = async (id: number) => {
 const thanhToanHoaDon = async (id: number) => {
   const result = await Swal.fire({
     title: t('confirmPayment'),
-    text: t('are_you_sure_you_want_to_change'),
+    text: t('confirmPaymentMessage'),
     icon: 'warning',
     showCancelButton: true,
     confirmButtonColor: '#3085d6',
