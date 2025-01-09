@@ -9,7 +9,6 @@ import com.yellowcat.backend.model.*;
 import com.yellowcat.backend.service.*;
 import jakarta.transaction.Transactional;
 import jakarta.validation.Valid;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
@@ -203,7 +202,7 @@ public class DatLichController {
 
 //            Hoàn tiền
             if (lichhen.getTrangthai() == 6) { // Đã thanh toán
-                System.out.println(hoadonOptional.getMagiaodich());
+                System.out.println(hoadonOptional.getMagiaodich()+ "   " + hoadonOptional.getSotien() + ":    Meo Meo Hoàn tiền");
                 Refund refund = payPalService.refundPayment(hoadonOptional.getMagiaodich(), hoadonOptional.getSotien(), "USD");
                 System.out.println(refund);
                 if ("completed".equals(refund.getState())) {

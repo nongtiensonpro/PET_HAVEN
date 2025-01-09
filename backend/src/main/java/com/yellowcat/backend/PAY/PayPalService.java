@@ -73,16 +73,17 @@ public class PayPalService {
         Sale sale = new Sale();
         sale.setId(saleId);
 
-        // Tạo đối tượng RefundRequest
+
         RefundRequest refundRequest = new RefundRequest();
-        if (refundAmount != null) { // Nếu cần refund một phần
+        if (refundAmount != null) {
             Amount amount = new Amount();
             amount.setCurrency(currency);
-            amount.setTotal(String.format("%.2f", refundAmount));
+
+            amount.setTotal(String.format(Locale.forLanguageTag(currency), "%.2f", refundAmount));
+
             refundRequest.setAmount(amount);
         }
 
-        // Gọi API PayPal để refund
         return sale.refund(apiContext, refundRequest);
     }
 }
