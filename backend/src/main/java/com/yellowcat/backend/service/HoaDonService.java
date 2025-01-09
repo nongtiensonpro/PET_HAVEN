@@ -4,7 +4,6 @@ import com.yellowcat.backend.DTO.ThongKeResponDTO;
 import com.yellowcat.backend.model.*;
 import com.yellowcat.backend.repository.HoadonRepository;
 import com.yellowcat.backend.repository.TuyChonCanNangRepository;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;

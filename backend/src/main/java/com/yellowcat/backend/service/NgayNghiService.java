@@ -3,7 +3,6 @@ package com.yellowcat.backend.service;
 import com.yellowcat.backend.model.Ngaynghi;
 import com.yellowcat.backend.repository.NgaynghiRepository;
 import jakarta.transaction.Transactional;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.event.ContextRefreshedEvent;
 import org.springframework.context.event.EventListener;
 import org.springframework.scheduling.annotation.EnableAsync;

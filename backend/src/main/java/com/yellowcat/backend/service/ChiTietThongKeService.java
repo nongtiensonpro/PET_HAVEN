@@ -1,7 +1,6 @@
 package com.yellowcat.backend.service;
 
 import com.yellowcat.backend.repository.ChiTietThongKeRepository;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import java.time.LocalDate;
 import java.util.List;

@@ -8,7 +8,6 @@ import com.yellowcat.backend.service.HoaDonDoiDichVuService;
 import com.yellowcat.backend.service.HoaDonService;
 import com.yellowcat.backend.service.LichHenService;
 import com.yellowcat.backend.service.PdfExportService;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;

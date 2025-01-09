@@ -4,7 +4,6 @@ import com.yellowcat.backend.model.Calichhen;
 import com.yellowcat.backend.model.Lichhen;
 import com.yellowcat.backend.repository.CalichhenRepository;
 import com.yellowcat.backend.repository.LichhenRepository;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;

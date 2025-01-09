@@ -2,7 +2,6 @@ package com.yellowcat.backend.service;
 
 import com.yellowcat.backend.model.Thongtincanhan;
 import com.yellowcat.backend.repository.ThongtincanhanRepository;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;

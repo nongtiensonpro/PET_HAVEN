@@ -10,7 +10,6 @@ import com.yellowcat.backend.model.Lichhen;
 import com.yellowcat.backend.model.TuyChonCanNang;
 import com.yellowcat.backend.repository.HoadondoidichvuRepository;
 import jakarta.transaction.Transactional;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
