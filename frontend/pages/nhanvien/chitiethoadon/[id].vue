@@ -6,17 +6,17 @@
       </div>
     </div>
     <div v-else-if="hoaDon">
-      <h2 class="mb-4">Chi tiết hóa đơn</h2>
+      <h2 class="mb-4">{{t('bill_details')}}</h2>
       <div class="row g-4">
         <!-- Thông tin hóa đơn -->
         <div class="col-md-6 info-section">
-          <h3 class="section-title">Thông tin hóa đơn</h3>
-          <p><strong>Mã hóa đơn:</strong> {{ hoaDon.id }}</p>
-          <p><strong>Ngày lập:</strong> {{ formatDate(hoaDon.date) }}</p>
-          <p><strong>Trạng thái:</strong> {{ getTrangThai(hoaDon.trangthai) }}</p>
-          <p><strong>Phương thức thanh toán:</strong> {{ hoaDon.phuongthucthanhtoan }}</p>
-          <p><strong>Mã giao dịch:</strong> {{ hoaDon.magiaodich }}</p>
-          <p><strong>Người thanh toán:</strong> {{ hoaDon.nguoithanhtoan }}</p>
+          <h3 class="section-title">{{t('billing_information')}}</h3>
+          <p><strong>{{t('invoice_code')}}:</strong> {{ hoaDon.id }}</p>
+          <p><strong>{{t('date_of_establishment')}}:</strong> {{ formatDate(hoaDon.date) }}</p>
+          <p><strong>{{t('status')}}:</strong> {{ getTrangThai(hoaDon.trangthai) }}</p>
+          <p><strong>{{t('paymentMethod')}}:</strong> {{ hoaDon.phuongthucthanhtoan }}</p>
+          <p><strong>{{t('transaction_code')}}:</strong> {{ hoaDon.magiaodich }}</p>
+          <p><strong>{{t('payer')}}:</strong> {{ hoaDon.nguoithanhtoan }}</p>
         </div>
 
         <!-- Thông tin thanh toán -->

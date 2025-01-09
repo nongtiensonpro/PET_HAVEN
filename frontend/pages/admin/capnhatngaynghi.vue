@@ -1,16 +1,13 @@
 <script setup lang="ts">
 import { ref, computed } from 'vue';
 import { useToast } from 'vue-toastification';
+import { useI18n } from 'vue-i18n';
 
+const { t } = useI18n();
 const caLichHenStore = useCaLichHenStore();
 const toast = useToast();
 const ngayNghi = ref('');
 const isFormVisible = ref(false);
-
-const toggleForm = () => {
-  isFormVisible.value = !isFormVisible.value;
-};
-
 const formattedNgayNghi = computed({
   get() {
     return ngayNghi.value ? new Date(ngayNghi.value).toISOString().split('T')[0] : '';
@@ -23,12 +20,12 @@ const formattedNgayNghi = computed({
 async function themNgayNghi() {
   try {
     await caLichHenStore.themNgayNghi(formattedNgayNghi.value);
-    toast.success('Cập nhật ngày nghỉ thành công');
+    toast.success(t('holiday_update_successful'));
     ngayNghi.value = ''; // Reset form
     isFormVisible.value = false;
     return navigateTo('/admin/quanlyca');
   } catch (error) {
-    toast.error('Cập nhật ngày nghỉ thất bại');
+    toast.error(t('holiday_update_failed'));
   }
 }
 </script>
@@ -37,7 +34,7 @@ async function themNgayNghi() {
   <div class="card">
     <form @submit.prevent="themNgayNghi">
       <div class="mb-3">
-        <label for="ngayNghi" class="form-label">Ngày nghỉ:</label>
+        <label for="ngayNghi" class="form-label">{{t('day_off')}}:</label>
         <input
             id="ngayNghi"
             v-model="formattedNgayNghi"
@@ -47,7 +44,7 @@ async function themNgayNghi() {
         />
       </div>
       <div class="d-flex justify-content-end">
-        <button type="submit" class="btn btn-success me-2">Thêm</button>
+        <button type="submit" class="btn btn-success me-2">{{t('add')}}</button>
       </div>
     </form>
   </div>
