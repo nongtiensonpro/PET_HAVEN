@@ -1,27 +1,27 @@
 <template>
-  <form @submit.prevent="submitVoucher" class="needs-validation" novalidate>
+  <form  class="needs-validation" novalidate>
     <div class="mb-3">
-      <label for="mota" class="form-label">Mô tả:</label>
+      <label for="mota" class="form-label">{{t('description')}}:</label>
       <input type="text" class="form-control" id="mota" v-model="voucher.mota" required>
       <div class="invalid-feedback" v-if="errors.mota">{{ errors.mota }}</div>
     </div>
     <div class="mb-3">
-      <label for="phantramgiamgia" class="form-label">Giảm giá (%):</label>
+      <label for="phantramgiamgia" class="form-label">{{t('discount')}} (%):</label>
       <input type="number" class="form-control" id="phantramgiamgia" v-model="voucher.phantramgiam" required min="1" max="100">
       <div class="invalid-feedback" v-if="errors.phantramgiamgia">{{ errors.phantramgiamgia }}</div>
     </div>
     <div class="mb-3">
-      <label for="ngaybatdau" class="form-label">Ngày bắt đầu:</label>
+      <label for="ngaybatdau" class="form-label">{{t('startDate')}}:</label>
       <input type="date" class="form-control" id="ngaybatdau" v-model="voucher.ngaybatdau" required>
       <div class="invalid-feedback" v-if="errors.ngaybatdau">{{ errors.ngaybatdau }}</div>
     </div>
     <div class="mb-3">
-      <label for="ngayketthuc" class="form-label">Ngày kết thúc:</label>
+      <label for="ngayketthuc" class="form-label">{{t('endDate')}}:</label>
       <input type="date" class="form-control" id="ngayketthuc" v-model="voucher.ngayketthuc" required>
       <div class="invalid-feedback" v-if="errors.ngayketthuc">{{ errors.ngayketthuc }}</div>
     </div>
     <div class="d-flex justify-content-end">
-      <button type="submit" class="custom-button" @click="submitVoucher">Thêm Voucher</button>
+      <button type="button" class="custom-button" @click="submitVoucher">{{t('add')}} Voucher</button>
     </div>
   </form>
 </template>
@@ -31,8 +31,10 @@ import { ref } from 'vue';
 import { useVoucherStore } from '~/stores/VorchersStores';
 import Voucher from '~/models/Voucher';
 import {useToast} from 'vue-toastification';
-import bootstrap from "~/plugins/bootstrap";
+import { useI18n } from 'vue-i18n';
+import Swal from "sweetalert2";
 
+const { t } = useI18n();
 const toast = useToast();
 const voucherStore = useVoucherStore();
 const voucher = ref(new Voucher(0, 0, new Date(), new Date(), '', true));
@@ -59,17 +61,29 @@ function validate() {
 }
 
 async function submitVoucher() {
-  if (validate()) {
-   try {
-     await voucherStore.addVoucher(voucher.value);
-     voucher.value = new Voucher(0, 0, new Date(), new Date(), '', true);
-     const modal = document.getElementById('addVoucherModal');
-     toast.success('Thêm voucher thành công.');
-     return navigateTo('/admin/vouchers');
-   }catch (error) {
-     toast.error('Thêm voucher thất bại, vui lòng thử lại sau.');
-   }
+  const result = await Swal.fire({
+    title: t('confirm'),
+    text: t('do_you_want_to_add_voucher'),
+    icon: 'question',
+    showCancelButton: true,
+    confirmButtonColor: '#3085d6',
+    cancelButtonColor: '#d33',
+    confirmButtonText: t('yes'),
+    cancelButtonText: t('no')
+  });
+  if (result.isConfirmed) {
+    if (validate()) {
+      try {
+        await voucherStore.addVoucher(voucher.value);
+        voucher.value = new Voucher(0, 0, new Date(), new Date(), '', true);
+        toast.success(t('statusSuccess'));
+        return navigateTo('/admin/vouchers');
+      }catch (error) {
+        toast.error(t('failure'));
+      }
+    }
   }
+
 }
 </script>
 

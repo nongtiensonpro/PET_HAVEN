@@ -284,4 +284,8 @@ export default {
   are_you_sure_you_want_to_change: 'Are you sure you want to change the service ? ',
   cancel:'Cancel',
   processingPayment:'Processing Payment...',
+  back:'Back',
+  do_you_want_to_update_voucher: 'Do you want to update the voucher?',
+  do_you_want_to_add_voucher: 'Do you want to add a voucher?',
+  failure:'Failure',
 }as const;

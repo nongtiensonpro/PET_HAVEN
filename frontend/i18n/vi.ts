@@ -283,4 +283,8 @@ export default {
     are_you_sure_you_want_to_change:'Bạn có chắc chắn muốn đổi ?',
     cancel: 'Hủy',
     processingPayment:'Đang xử lý thanh toán...',
+    back:'Quay lại',
+    do_you_want_to_update_voucher:'Bạn có muốn cập nhật trạng thái Voucher không?',
+    do_you_want_to_add_voucher:'Bạn có muốn thêm Voucher không?',
+    failure: 'Thất bại',
 }as const;
