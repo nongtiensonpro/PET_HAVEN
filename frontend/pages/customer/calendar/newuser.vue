@@ -175,23 +175,16 @@ import {useMauKhachDatDichVu} from '~/stores/MauKhachDatDichVu'
 import {useToast} from 'vue-toastification'
 import {useDatLichStore} from '~/stores/DatLichStores'
 import ChonDichVuDatLich from "~/components/ChonDichVuDatLich.vue";
-import LoiChaoKhiKhachHangDatLich from '~/components/LoiChaoKhiKhachHangDatLich.vue';
 import {ref, computed} from 'vue';
 import Swal from 'sweetalert2';
 import {useI18n} from 'vue-i18n';
 
 
-const {t, locale} = useI18n();
-
-const bookinginformation = computed(() => t('bookinginformation'));
-const chossetime = computed(() => t('chossetime'));
-const chossedayandtime = computed(() => t('chossedayandtime'));
-const chosseservice = computed(() => t('chosseservice'));
-const chosspet = computed(() => t('chosspet'));
+const {t} = useI18n();
 
 const accessToken = localStorage.getItem('access_token');
 const viewRole = localStorage.getItem('viewRole');
-
+let timer: NodeJS.Timeout | null = null;
 const {getTempData} = useMauKhachDatDichVu()
 const tempData = computed(() => getTempData())
 
@@ -241,6 +234,8 @@ async function payAtCounter() {
     confirmButtonText: t('confirm'),
     cancelButtonText: t('cancel')
   });
+  clearInterval(timer);
+  isLoading.value = false;
   if (result.isConfirmed) {
     try {
       await datLichStore.xacNhanDatLich();
@@ -254,6 +249,11 @@ async function payAtCounter() {
     }
   }
 }
+onUnmounted(() => {
+  if (timer) {
+    clearInterval(timer);
+  }
+});
 </script>
 
 <style scoped>
