@@ -103,13 +103,10 @@ import { ref, onMounted, computed, onUnmounted, watch } from 'vue';
 import { useServiceStore } from '~/stores/DichVuStores';
 import { useDanhGiaStore } from '~/stores/DanhGiaStores';
 import { useRoute } from 'vue-router';
-import CapNhatDanhGia from '~/components/CapNhatDanhGia.vue';
 import type DanhGia from "~/models/DanhGia";
-import Service from "~/models/DichVu";
 import { useUserStore } from '~/stores/user';
 import { useToast } from 'vue-toastification';
 import Swal from "sweetalert2";
-import CapNhatCaHen from "~/pages/admin/capnhatcalichhen/[id].vue";
 import DichVu from "~/models/DichVu";
 import ChonDichVu from "~/components/ChonDichVu.vue";
 import CapNhatDanhGiaTrangChu from "~/components/CapNhatDanhGiaTrangChu.vue";
@@ -168,16 +165,7 @@ const formatDate = (dateString: string): string => {
   return new Date(dateString).toLocaleDateString('vi-VN', options);
 };
 
-const formatCurrency = (value: number): string => {
-  return value.toLocaleString('vi-VN');
-};
 
-const updateReview = (updatedReview: { id: number; sosao: number; mota: string }) => {
-  const index = danhGias.value.findIndex(dg => dg.id === updatedReview.id);
-  if (index !== -1) {
-    danhGias.value[index] = { ...danhGias.value[index], ...updatedReview };
-  }
-};
 
 async function anDanhGia(idDanhGia: number) {
   try {

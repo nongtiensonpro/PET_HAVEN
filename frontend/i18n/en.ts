@@ -307,4 +307,13 @@ export default {
   save_new_service:'Save New Service',
   new_service_added_successfully:'New Service Added Successfully',
   error_adding_new_service:'Error Adding New Service',
+  service_update:'Service Update',
+  add_options:'Add Option',
+  option_description:'Option Description',
+  add_weight:'Add Weight',
+  minimum_weight:'Minimum weight',
+  maximum_weight:'Maximum weight',
+  lose_weight:'Delete Weight',
+  clear_option:'Delete Option',
+  save_service:'Save Service',
 }as const;

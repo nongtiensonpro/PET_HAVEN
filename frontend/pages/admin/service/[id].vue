@@ -1,11 +1,12 @@
 <script setup lang="ts">
-import {ref, onMounted, computed} from 'vue';
-import {useRoute} from 'vue-router';
-import {useServiceStore} from '~/stores/DichVuStores';
+import { ref, onMounted, computed } from 'vue';
+import { useRoute } from 'vue-router';
+import { useServiceStore } from '~/stores/DichVuStores';
 import DichVu from '~/models/DichVu';
 import { useToast } from 'vue-toastification';
+import { useI18n } from 'vue-i18n';
 
-
+const { t } = useI18n();
 const toast = useToast();
 const route = useRoute();
 const serviceStore = useServiceStore();
@@ -34,12 +35,13 @@ onMounted(async () => {
 
 const saveChanges = async () => {
   if (editedService.value) {
-    try{
-      await serviceStore.updateService(editedService.value);
+    try {
+      await updateService(editedService.value);
       toast.success('Cập nhật dịch vụ thành công!');
       navigateTo('/admin/service/servicelist');
-    }catch (error) {
+    } catch (error) {
       toast.error('Lỗi cập nhật dịch vụ!');
+      console.error('Error updating service:', error);
     }
   }
 };
@@ -47,10 +49,9 @@ const saveChanges = async () => {
 const addTuyChon = () => {
   if (editedService.value) {
     editedService.value.tuyChonDichVus.push({
-      id: Date.now(), // Temporary ID
-      tenTuyChon: '',
-      moTa: '',
-      trangThai: true,
+      tentuychon: '',
+      mota: '',
+      trangthai: true,
       tuyChonCanNangs: []
     });
   }
@@ -58,11 +59,10 @@ const addTuyChon = () => {
 
 const addCanNang = (tuyChon: any) => {
   tuyChon.tuyChonCanNangs.push({
-    id: Date.now(), // Temporary ID
-    canNangMin: 0,
-    canNangMax: null,
-    giaTien: 0,
-    trangThai: true
+    cannangmin: 0,
+    cannangmax: 0,
+    giatien: 0,
+    trangthai: true
   });
 };
 
@@ -77,127 +77,146 @@ const removeCanNang = (tuyChon: any, index: number) => {
 };
 
 const fileInput = ref<HTMLInputElement | null>(null);
-
-const handleFileUpload = async (event: Event) => {
-  const target = event.target as HTMLInputElement;
-  if (!target.files?.length) return;
-
-  const file = target.files[0];
-  const formData = new FormData();
-  formData.append('file', file);
-
-  try {
-    // Assume we have an API endpoint for file upload
-    const response = await fetch('/api/upload', {
-      method: 'POST',
-      body: formData
-    });
-    const result = await response.json();
-    if (result.url && editedService.value) {
-      editedService.value.anh = result.url;
-    }
-  } catch (error) {
-    console.error('Error uploading file:', error);
-    // Handle error (e.g., show error message to user)
-  }
-};
 </script>
 
 <template>
-  <div class="container mt-4">
-    <h1 class="mb-4">Chi tiết dịch vụ {{ id }}</h1>
-    <div v-if="editedService" class="card">
-      <div class="card-body">
-        <div class="mb-3">
-          <label class="form-label">Tên dịch vụ:</label>
-          <input v-model="editedService.tendichvu" class="form-control">
-        </div>
-        <div class="mb-3">
-          <label class="form-label">Mô tả:</label>
-          <textarea v-model="editedService.mota" class="form-control"></textarea>
-        </div>
-        <div class="mb-3 form-check">
-          <input v-model="editedService.trangthai" type="checkbox" class="form-check-input" id="trangThai">
-          <label class="form-check-label" for="trangThai">Hoạt động</label>
-        </div>
-        <div class="mb-3 form-check">
-          <input v-model="editedService.hien" type="checkbox" class="form-check-input" id="hienThi">
-          <label class="form-check-label" for="hienThi">Hiển thị</label>
-        </div>
-        <div class="mb-3">
-          <label class="form-label">Ảnh:</label>
-          <div class="d-flex align-items-center">
-            <input
-                type="file"
-                ref="fileInput"
-                @change="handleFileUpload"
-                accept="image/*"
-                class="form-control"
-                style="max-width: 300px;"
-            >
-            <button @click="fileInput?.click()" class="btn btn-outline-secondary ms-2">Chọn file</button>
-          </div>
-          <img
-              v-if="editedService?.anh"
-              :src="editedService.anh"
-              alt="Ảnh dịch vụ"
-              class="img-fluid mt-2"
-              style="max-width: 200px;"
-          >
-        </div>
+  <div class="container mt-4" v-if="editedService">
+    <h1 class="mb-4">{{t('service_update')}}</h1>
+    <form @submit.prevent="saveChanges" class="needs-validation" novalidate>
+      <div class="mb-3">
+        <label for="tendichvu" class="form-label">{{t('serviceName')}}</label>
+        <input
+          type="text"
+          class="form-control"
+          id="tendichvu"
+          v-model="editedService.tendichvu"
+          required
+        />
+      </div>
 
-        <h3 class="mt-4">Tùy chọn dịch vụ:</h3>
-        <div v-for="(tuyChon, index) in editedService.tuyChonDichVus" :key="tuyChon.id" class="card mt-3">
-          <div class="card-body">
-            <div class="d-flex justify-content-between align-items-center mb-2">
-              <h5 class="mb-0">Tùy chọn {{ index + 1 }}</h5>
-              <button @click="removeTuyChon(index)" class="btn btn-danger btn-sm">Xóa</button>
-            </div>
-            <input v-model="tuyChon.tentuychon" class="form-control mb-2" placeholder="Tên tùy chọn">
-            <textarea v-model="tuyChon.mota" class="form-control mb-2" placeholder="Mô tả"></textarea>
-            <div class="form-check mb-2">
-              <input v-model="tuyChon.trangthai" type="checkbox" class="form-check-input"
-                     :id="'trangThai' + tuyChon.id">
-              <label class="form-check-label" :for="'trangThai' + tuyChon.id">Hoạt động</label>
-            </div>
+      <div class="mb-3">
+        <label for="mota" class="form-label">{{t('serviceDescription')}}</label>
+        <textarea
+          class="form-control"
+          id="mota"
+          v-model="editedService.mota"
+          rows="3"
+        ></textarea>
+      </div>
 
-            <h6 class="mt-3">Tùy chọn cân nặng:</h6>
-            <ul class="list-group">
-              <li v-for="(canNang, canNangIndex) in tuyChon.tuyChonCanNangs" :key="canNang.id" class="list-group-item">
-                <div class="row align-items-center">
-                  <div class="col">
-                    <input v-model="canNang.cannangmin" type="number" class="form-control" placeholder="Cân nặng min">
-                  </div>
-                  <div class="col">
-                    <input v-model="canNang.cannangmax" type="number" class="form-control" placeholder="Cân nặng max">
-                  </div>
-                  <div class="col">
-                    <input v-model="canNang.giatien" type="number" class="form-control" placeholder="Giá tiền">
-                  </div>
-                  <div class="col">
-                    <div class="form-check">
-                      <input v-model="canNang.trangthai" type="checkbox" class="form-check-input"
-                             :id="'trangThaiCanNang' + canNang.id">
-                      <label class="form-check-label" :for="'trangThaiCanNang' + canNang.id">Hoạt động</label>
-                    </div>
-                  </div>
-                  <div class="col-auto">
-                    <button @click="removeCanNang(tuyChon, canNangIndex)" class="btn btn-danger btn-sm">Xóa</button>
-                  </div>
-                </div>
-              </li>
-            </ul>
-            <button @click="addCanNang(tuyChon)" class="btn btn-secondary mt-2">Thêm cân nặng</button>
-          </div>
-        </div>
-        <button @click="addTuyChon" class="btn btn-secondary mt-3">Thêm tùy chọn dịch vụ</button>
+      <div class="mb-3">
+        <label for="fileUpdate" class="form-label">{{t('image')}}</label>
+        <input
+          type="file"
+          class="form-control"
+          id="fileUpdate"
+          accept="image/*"
+        />
+      </div>
 
-        <div class="mt-4">
-          <button @click="saveChanges" class="btn btn-success">Lưu thay đổi</button>
+      <div class="mb-3">
+        <label class="form-label">{{t('status')}}</label>
+        <div class="form-check">
+          <input
+            class="form-check-input"
+            type="checkbox"
+            id="trangthai"
+            v-model="editedService.trangthai"
+          />
+          <label class="form-check-label" for="trangthai">
+            {{t('active')}}
+          </label>
         </div>
       </div>
-    </div>
-    <p v-else class="alert alert-warning">Không tìm thấy thông tin dịch vụ</p>
+
+      <div class="mb-3">
+        <h3>{{t('serviceOptions')}}</h3>
+        <button type="button" class="btn btn-success mb-3" @click="addTuyChon">
+          {{t('add_options')}}
+        </button>
+
+        <div v-for="(tuyChon, index) in editedService.tuyChonDichVus" :key="index" class="card mb-3">
+          <div class="card-body">
+            <div class="mb-3">
+              <label :for="'tentuychon-' + index" class="form-label">{{t('options_name')}}</label>
+              <input
+                type="text"
+                class="form-control"
+                :id="'tentuychon-' + index"
+                v-model="tuyChon.tentuychon"
+                required
+              />
+            </div>
+
+            <div class="mb-3">
+              <label :for="'mota-tuychon-' + index" class="form-label">{{t('option_description')}}</label>
+              <textarea
+                class="form-control"
+                :id="'mota-tuychon-' + index"
+                v-model="tuyChon.mota"
+                rows="2"
+              ></textarea>
+            </div>
+
+            <div class="mb-3">
+              <h4>{{t('weightOptions')}}</h4>
+              <button type="button" class="btn btn-info mb-2" @click="addCanNang(tuyChon)">
+                {{t('add_weight')}}
+              </button>
+
+              <div v-for="(canNang, canNangIndex) in tuyChon.tuyChonCanNangs" :key="canNangIndex" class="card mb-2">
+                <div class="card-body">
+                  <div class="row">
+                    <div class="col">
+                      <label :for="'cannangmin-' + index + '-' + canNangIndex" class="form-label">{{t('minimum_weight')}}</label>
+                      <input
+                        type="number"
+                        class="form-control"
+                        :id="'cannangmin-' + index + '-' + canNangIndex"
+                        v-model="canNang.cannangmin"
+                        required
+                      />
+                    </div>
+                    <div class="col">
+                      <label :for="'cannangmax-' + index + '-' + canNangIndex" class="form-label">{{t('maximum_weight')}}</label>
+                      <input
+                        type="number"
+                        class="form-control"
+                        :id="'cannangmax-' + index + '-' + canNangIndex"
+                        v-model="canNang.cannangmax"
+                        required
+                      />
+                    </div>
+                    <div class="col">
+                      <label :for="'giatien-' + index + '-' + canNangIndex" class="form-label">{{t('price')}}</label>
+                      <input
+                        type="number"
+                        class="form-control"
+                        :id="'giatien-' + index + '-' + canNangIndex"
+                        v-model="canNang.giatien"
+                        required
+                      />
+                    </div>
+                  </div>
+                  <button type="button" class="btn btn-danger mt-2" @click="removeCanNang(tuyChon, canNangIndex)">
+                    {{t('lose_weight')}}
+                  </button>
+                </div>
+              </div>
+            </div>
+
+            <button type="button" class="btn btn-danger" @click="removeTuyChon(index)">
+              {{t('clear_option')}}
+            </button>
+          </div>
+        </div>
+      </div>
+
+      <button type="submit" class="btn btn-primary">{{t('save_service')}}</button>
+    </form>
+  </div>
+  <div v-else class="container mt-4">
+    <p>{{t('loading')}}</p>
   </div>
 </template>
 

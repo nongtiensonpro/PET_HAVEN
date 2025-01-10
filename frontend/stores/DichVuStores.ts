@@ -227,59 +227,53 @@ export const useServiceStore = defineStore('serviceStore', {
             }
         },
         async updateService(dichVu: DichVu) {
-            console.log("Dữ liệu sẽ gửi đi " + JSON.stringify(dichVu));
-            const updateDichVuUrl = API_ENDPOINTS.API_ENDPOINTS.dichVu.updateDichVu + dichVu.id;
             const token = localStorage.getItem('access_token');
+            const formData = new FormData();
 
-            // Tạo đối tượng DichVuDTO phù hợp với backend
             const dichVuDTO = {
                 tenDichVu: dichVu.tendichvu,
                 moTa: dichVu.mota,
-                anh: dichVu.anh, // Assuming 'anh' is a property of DichVu
                 trangThai: dichVu.trangthai,
-                hien: dichVu.hien,
                 tuyChonDichVu: dichVu.tuyChonDichVus.map(tuyChon => ({
-                    id: tuyChon.id,
-                    tenTuyChon: tuyChon.tenTuyChon,
-                    moTa: tuyChon.moTa,
-                    trangThai: tuyChon.trangThai,
+                    tenTuyChon: tuyChon.tentuychon,
+                    moTa: tuyChon.mota,
+                    trangThai: tuyChon.trangthai,
                     tuyChonCanNang: tuyChon.tuyChonCanNangs.map(canNang => ({
-                        id: canNang.id,
-                        canNangMin: canNang.canNangMin,
-                        canNangMax: canNang.canNangMax,
-                        giaTien: canNang.giaTien,
-                        trangThai: canNang.trangThai
+                        canNangMin: canNang.cannangmin,
+                        canNangMax: canNang.cannangmax,
+                        giaTien: canNang.giatien,
+                        trangThai: canNang.trangthai
                     }))
                 }))
             };
 
+            // Thêm dữ liệu JSON vào FormData với tên "dichVu"
+            formData.append('dichVu', JSON.stringify(dichVuDTO));
+
+            // Thêm file nếu có
+            const fileInput = document.querySelector('#fileUpdate') as HTMLInputElement;
+            if (fileInput && fileInput.files && fileInput.files.length > 0) {
+                formData.append('file', fileInput.files[0]);
+            }
+
             try {
-                const response = await fetch(updateDichVuUrl, {
+                const response = await fetch(`${API_ENDPOINTS.API_ENDPOINTS.dichVu.updateDichVu}${dichVu.id}`, {
                     method: 'PUT',
                     headers: {
-                        'Authorization': `Bearer ${token}`,
-                        'Content-Type': 'application/json'
+                        'Authorization': `Bearer ${token}`
                     },
-                    body: JSON.stringify(dichVuDTO)
+                    body: formData
                 });
 
                 if (!response.ok) {
                     throw new Error(`Đã có lỗi xảy ra: ${response.status}`);
                 }
 
-                const data = await response.json();
-                console.log("Dữ liệu nhận được từ server:", data);
-
-                // Cập nhật state
-                const index = this.services.findIndex(s => s.id === dichVu.id);
-                if (index !== -1) {
-                    this.services[index] = data;
-                }
-
-                return {success: true, message: 'Cập nhật dịch vụ thành công'};
+                await this.fetchServices();
+                return { success: true, message: 'Cập nhật dịch vụ thành công' };
             } catch (error) {
                 console.error('Lỗi khi cập nhật dịch vụ:', error);
-                return {success: false, message: `Đã có lỗi xảy ra: `};
+                throw error;
             }
         },
         // Hàm làm sạch payload

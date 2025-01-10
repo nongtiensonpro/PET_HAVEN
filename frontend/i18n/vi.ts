@@ -305,4 +305,13 @@ export default {
     options_name:'Tên tùy chọn',
     save_new_service:'Lưu dịch vụ mới',
     new_service_added_successfully:'Thêm dịch vụ mới thành công!',
+    service_update:'Cập nhật dịch vụ',
+    add_options:'Thêm tùy chọn',
+    option_description:'Mô tả tùy chọn',
+    add_weight:'Thêm cân nặng',
+    minimum_weight:'Cân nặng tối thiểu',
+    maximum_weight:'Cân nặng tối đa',
+    lose_weight:'Xóa cân nặng cân',
+    clear_option:'Xóa tùy chọn',
+    save_service:'Lưu dịch vụ',
 }as const;
