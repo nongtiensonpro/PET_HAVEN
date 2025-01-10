@@ -298,4 +298,13 @@ export default {
   paymentMethod:'Payment Method',
   transaction_code:'Transaction Code',
   payer:'Payer',
+  add_new_service:'Add New Service',
+  display:'Display',
+  image:'Image',
+  select:'Select',
+  options:'Options',
+  options_name:'Options Name',
+  save_new_service:'Save New Service',
+  new_service_added_successfully:'New Service Added Successfully',
+  error_adding_new_service:'Error Adding New Service',
 }as const;

@@ -22,28 +22,47 @@ export const useServiceStore = defineStore('serviceStore', {
                 console.error('Error fetching services:', error);
             }
         },
-        async addDichVu(service: DichVu) {
+        async addDichVu(service: DichVu, file?: File) {
             const token = localStorage.getItem('access_token');
 
-            // Create a DichVuDTO object
+            const formData = new FormData();
+
             const dichVuDTO = {
                 tenDichVu: service.tendichvu,
                 moTa: service.mota,
-                anh: service.anh,
                 trangThai: service.trangthai,
-                hien: true,
-                tuyChonDichVu: service.tuyChonDichVus
+                tuyChonDichVu: service.tuyChonDichVus.map(tuyChon => ({
+                    tenTuyChon: tuyChon.tenTuyChon,
+                    moTa: tuyChon.moTa,
+                    trangThai: tuyChon.trangThai,
+                    tuyChonCanNang: tuyChon.tuyChonCanNangs.map(canNang => ({
+                        canNangMin: canNang.canNangMin,
+                        canNangMax: canNang.canNangMax,
+                        giaTien: canNang.giaTien,
+                        trangThai: true
+                    }))
+                }))
             };
 
-            console.log("Dịch vụ đã được tạo:", dichVuDTO);
+            formData.append('dichVu', JSON.stringify(dichVuDTO));
+
+            if (file) {
+                formData.append('file', file);
+            }
+
+            console.log('Sending data to server:', {
+                service: service,
+                file: file ? file.name : 'No file',
+                formData: Object.fromEntries(formData)
+            });
+
             try {
                 const response = await fetch(API_ENDPOINTS.API_ENDPOINTS.dichVu.addDichVu, {
                     method: 'POST',
                     headers: {
                         'Authorization': `Bearer ${token}`,
-                        'Content-Type': 'application/json'
                     },
-                    body: JSON.stringify(dichVuDTO)
+                    body: formData
                 });
 
                 if (!response.ok) {
@@ -53,13 +72,10 @@ export const useServiceStore = defineStore('serviceStore', {
                 const data = await response.json();
                 console.log("Dịch vụ đã được thêm:", data);
 
-                // Update the local state if necessary
-                // this.services.push(data);
-
                 return {success: true, message: 'Thêm dịch vụ thành công'};
             } catch (error) {
                 console.error('Lỗi khi thêm dịch vụ:', error);
-                return {success: false, message: 'Lỗi thêm dịch vụ: ' + error.message};
+                return {success: false, message: 'Lỗi thêm dịch vụ: '};
             }
         },
         async updateDichVu(service: DichVu) {
@@ -69,8 +85,7 @@ export const useServiceStore = defineStore('serviceStore', {
 
             formDataUpdate.append('tenDichVu', service.tendichvu);
             formDataUpdate.append('moTa', service.mota);
-            formDataUpdate.append('giaTien', service.giatien);
-            formDataUpdate.append('trangThai', service.trangthai);
+
 
             const fileInput = document.querySelector('#fileUpdate') as HTMLInputElement;
             if (fileInput && fileInput.files && fileInput.files.length > 0) {
@@ -95,7 +110,7 @@ export const useServiceStore = defineStore('serviceStore', {
                 this.pageable = data.page;
                 return {success: true, message: 'Lưu thành công'};
             } catch (error) {
-                return {success: false, message: `Đã có lỗi xảy ra: ` + error.message};
+                return {success: false, message: `Đã có lỗi xảy ra: `};
             }
         }
         ,
@@ -120,7 +135,7 @@ export const useServiceStore = defineStore('serviceStore', {
                 return {success: true};
             } catch (error) {
                 console.error('Error deleting service:', error);
-                return {success: false, message: response.status};
+                return {success: false};
             }
         },
         async getDichVuByName(name: string) {
@@ -225,15 +240,15 @@ export const useServiceStore = defineStore('serviceStore', {
                 hien: dichVu.hien,
                 tuyChonDichVu: dichVu.tuyChonDichVus.map(tuyChon => ({
                     id: tuyChon.id,
-                    tenTuyChon: tuyChon.tentuychon,
-                    moTa: tuyChon.mota,
-                    trangThai: tuyChon.trangthai,
+                    tenTuyChon: tuyChon.tenTuyChon,
+                    moTa: tuyChon.moTa,
+                    trangThai: tuyChon.trangThai,
                     tuyChonCanNang: tuyChon.tuyChonCanNangs.map(canNang => ({
                         id: canNang.id,
-                        canNangMin: canNang.cannangmin,
-                        canNangMax: canNang.cannangmax,
-                        giaTien: canNang.giatien,
-                        trangThai: canNang.trangthai
+                        canNangMin: canNang.canNangMin,
+                        canNangMax: canNang.canNangMax,
+                        giaTien: canNang.giaTien,
+                        trangThai: canNang.trangThai
                     }))
                 }))
             };
@@ -264,7 +279,7 @@ export const useServiceStore = defineStore('serviceStore', {
                 return {success: true, message: 'Cập nhật dịch vụ thành công'};
             } catch (error) {
                 console.error('Lỗi khi cập nhật dịch vụ:', error);
-                return {success: false, message: `Đã có lỗi xảy ra: ${error.message}`};
+                return {success: false, message: `Đã có lỗi xảy ra: `};
             }
         },
         // Hàm làm sạch payload

@@ -3,10 +3,11 @@ import { ref } from 'vue';
 import { useServiceStore } from '~/stores/DichVuStores';
 import DichVu from '~/models/DichVu';
 import { useToast } from 'vue-toastification';
+import {useI18n} from "vue-i18n";
 
 const toast = useToast();
 const serviceStore = useServiceStore();
-
+const { t } = useI18n();
 const newService = ref<DichVu>({
   id: 0,
   tendichvu: '',
@@ -16,19 +17,6 @@ const newService = ref<DichVu>({
   anh: '',
   tuyChonDichVus: []
 });
-
-const { addDichVu } = serviceStore;
-
-const saveNewService = async () => {
-  try {
-    await addDichVu(newService.value);
-    toast.success('Thêm dịch vụ mới thành công!');
-    navigateTo('/admin/service/servicelist');
-  } catch (error) {
-    toast.error('Lỗi khi thêm dịch vụ mới!');
-  }
-};
-
 const addTuyChon = () => {
   newService.value.tuyChonDichVus.push({
     id: Date.now(),
@@ -42,13 +30,41 @@ const addTuyChon = () => {
 
 const addCanNang = (tuyChon: any) => {
   tuyChon.tuyChonCanNangs.push({
-    id: Date.now(),
     canNangMin: 0,
     canNangMax: null,
     giaTien: 0,
     trangThai: true
   });
 };
+const { addDichVu } = serviceStore;
+
+const selectedFile = ref<File | null>(null);
+
+const isLoading = ref(false);
+const countdown = ref(3);
+
+const saveNewService = async () => {
+  try {
+    isLoading.value = true;
+    countdown.value = 10;
+
+    const countdownInterval = setInterval(() => {
+      countdown.value--;
+    }, 1000);
+
+    await addDichVu(newService.value, selectedFile.value || undefined);
+
+    clearInterval(countdownInterval);
+    isLoading.value = false;
+    toast.success(t('new_service_added_successfully'));
+    navigateTo('/admin/service/servicelist');
+  } catch (error) {
+    isLoading.value = false;
+    toast.error(t('error_adding_new_service'));
+  }
+};
+
+
 
 const removeTuyChon = (index: number) => {
   newService.value.tuyChonDichVus.splice(index, 1);
@@ -58,55 +74,31 @@ const removeCanNang = (tuyChon: any, index: number) => {
   tuyChon.tuyChonCanNangs.splice(index, 1);
 };
 
-const fileInput = ref<HTMLInputElement | null>(null);
-
-const handleFileUpload = async (event: Event) => {
+const handleFileUpload = (event: Event) => {
   const target = event.target as HTMLInputElement;
   if (!target.files?.length) return;
-
-  const file = target.files[0];
-  const formData = new FormData();
-  formData.append('file', file);
-
-  try {
-    const response = await fetch('/api/upload', {
-      method: 'POST',
-      body: formData
-    });
-    const result = await response.json();
-    if (result.url) {
-      newService.value.anh = result.url;
-    }
-  } catch (error) {
-    console.error('Error uploading file:', error);
-    toast.error('Lỗi khi tải lên ảnh!');
-  }
+  selectedFile.value = target.files[0];
 };
+
+const fileInput = ref<HTMLInputElement | null>(null);
+
 </script>
 
 <template>
   <div class="container mt-4">
-    <h1 class="mb-4">Thêm Dịch Vụ Mới</h1>
+    <h1 class="mb-4">{{t('add_new_service')}}</h1>
     <div class="card">
       <div class="card-body">
         <div class="mb-3">
-          <label class="form-label">Tên dịch vụ:</label>
+          <label class="form-label">{{t('serviceName')}}:</label>
           <input v-model="newService.tendichvu" class="form-control">
         </div>
         <div class="mb-3">
-          <label class="form-label">Mô tả:</label>
+          <label class="form-label">{{t('serviceDescription')}}:</label>
           <textarea v-model="newService.mota" class="form-control"></textarea>
         </div>
-        <div class="mb-3 form-check">
-          <input v-model="newService.trangthai" type="checkbox" class="form-check-input" id="trangThai">
-          <label class="form-check-label" for="trangThai">Hoạt động</label>
-        </div>
-        <div class="mb-3 form-check">
-          <input v-model="newService.hien" type="checkbox" class="form-check-input" id="hienThi">
-          <label class="form-check-label" for="hienThi">Hiển thị</label>
-        </div>
         <div class="mb-3">
-          <label class="form-label">Ảnh:</label>
+          <label class="form-label">{{t('image')}}:</label>
           <div class="d-flex align-items-center">
             <input
               type="file"
@@ -116,60 +108,63 @@ const handleFileUpload = async (event: Event) => {
               class="form-control"
               style="max-width: 300px;"
             >
-            <button @click="fileInput?.click()" class="btn btn-outline-secondary ms-2">Chọn file</button>
+            <button @click="fileInput?.click()" class="btn btn-outline-secondary ms-2">{{t('select')}} file</button>
           </div>
           <img
             v-if="newService.anh"
             :src="newService.anh"
-            alt="Ảnh dịch vụ"
+            :alt="t('image')"
             class="img-fluid mt-2"
             style="max-width: 200px;"
           >
         </div>
-        <h3 class="mt-4">Tùy chọn dịch vụ:</h3>
+        <h3 class="mt-4">{{t('serviceOptions')}}</h3>
         <div v-for="(tuyChon, index) in newService.tuyChonDichVus" :key="tuyChon.id" class="card mt-3">
           <div class="card-body">
             <div class="d-flex justify-content-between align-items-center mb-2">
-              <h5 class="mb-0">Tùy chọn {{ index + 1 }}</h5>
-              <button @click="removeTuyChon(index)" class="btn btn-danger btn-sm">Xóa</button>
+              <h5 class="mb-0">{{t('options')}} {{ index + 1 }}</h5>
+              <button @click="removeTuyChon(index)" class="btn btn-danger btn-sm">{{t('delete')}}</button>
             </div>
-            <input v-model="tuyChon.tenTuyChon" class="form-control mb-2" placeholder="Tên tùy chọn">
-            <textarea v-model="tuyChon.moTa" class="form-control mb-2" placeholder="Mô tả"></textarea>
-            <div class="form-check mb-2">
-              <input v-model="tuyChon.trangThai" type="checkbox" class="form-check-input" :id="'trangThai' + tuyChon.id">
-              <label class="form-check-label" :for="'trangThai' + tuyChon.id">Hoạt động</label>
-            </div>
-            <h6 class="mt-3">Tùy chọn cân nặng:</h6>
+            <input v-model="tuyChon.tenTuyChon" class="form-control mb-2" :placeholder="t('options_name')">
+            <textarea v-model="tuyChon.moTa" class="form-control mb-2" :placeholder="t('description')"></textarea>
+            <h6 class="mt-3">{{t('weightOptions')}}</h6>
             <ul class="list-group">
               <li v-for="(canNang, canNangIndex) in tuyChon.tuyChonCanNangs" :key="canNang.id" class="list-group-item">
                 <div class="row align-items-center">
                   <div class="col">
-                    <input v-model="canNang.canNangMin" type="number" class="form-control" placeholder="Cân nặng min">
+                    <input v-model="canNang.canNangMin" type="number" class="form-control" :placeholder="t('weight')+ 'min'">
                   </div>
                   <div class="col">
-                    <input v-model="canNang.canNangMax" type="number" class="form-control" placeholder="Cân nặng max">
+                    <input v-model="canNang.canNangMax" type="number" class="form-control" :placeholder="t('weight') + 'max'">
                   </div>
                   <div class="col">
-                    <input v-model="canNang.giaTien" type="number" class="form-control" placeholder="Giá tiền">
+                    <input v-model="canNang.giaTien" type="number" class="form-control" :placeholder="t('price')">
                   </div>
                   <div class="col">
                     <div class="form-check">
                       <input v-model="canNang.trangThai" type="checkbox" class="form-check-input" :id="'trangThaiCanNang' + canNang.id">
-                      <label class="form-check-label" :for="'trangThaiCanNang' + canNang.id">Hoạt động</label>
+                      <label class="form-check-label" :for="'trangThaiCanNang' + canNang.id">{{t('active')}}</label>
                     </div>
                   </div>
                   <div class="col-auto">
-                    <button @click="removeCanNang(tuyChon, canNangIndex)" class="btn btn-danger btn-sm">Xóa</button>
+                    <button @click="removeCanNang(tuyChon, canNangIndex)" class="btn btn-danger btn-sm">{{t('delete')}}</button>
                   </div>
                 </div>
               </li>
             </ul>
-            <button @click="addCanNang(tuyChon)" class="btn btn-secondary mt-2">Thêm cân nặng</button>
+            <button @click="addCanNang(tuyChon)" class="btn btn-secondary mt-2">{{t('addTimeSlot')}} {{t('weight')}}</button>
           </div>
         </div>
-        <button @click="addTuyChon" class="btn btn-secondary mt-3">Thêm tùy chọn dịch vụ</button>
+        <button @click="addTuyChon" class="btn btn-secondary mt-3">{{t('addTimeSlot')}} {{t('serviceOptions')}}</button>
         <div class="mt-4">
-          <button @click="saveNewService" class="btn btn-success">Lưu dịch vụ mới</button>
+          <button @click="saveNewService" class="btn btn-success" :disabled="isLoading">
+        <span v-if="isLoading">
+          {{ t('processing') }} ({{ countdown }})
+        </span>
+            <span v-else>
+          {{ t('save_new_service') }}
+        </span>
+          </button>
         </div>
       </div>
     </div>
@@ -177,4 +172,5 @@ const handleFileUpload = async (event: Event) => {
 </template>
 
 <style scoped>
+
 </style>
