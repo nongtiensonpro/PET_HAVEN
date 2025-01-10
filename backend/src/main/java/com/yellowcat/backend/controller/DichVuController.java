@@ -74,7 +74,7 @@ public class DichVuController {
                     .body(Map.of("message", "Dữ liệu JSON không hợp lệ"));
         }
 
-        dichVuService.updateDichVu( id, dichVuDTO, file);
+        dichVuService.capNhatDichVu( id, dichVuDTO, file);
 
         return ResponseEntity.ok(Map.of("message", "Cập nhật dịch vụ thành công"));
     }

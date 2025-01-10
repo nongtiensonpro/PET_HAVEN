@@ -8,6 +8,7 @@ import com.yellowcat.backend.repository.DichvuRepository;
 import com.yellowcat.backend.repository.TuyChonCanNangRepository;
 import com.yellowcat.backend.repository.TuyChonDichVuRepository;
 import jakarta.transaction.Transactional;
+import jakarta.ws.rs.NotFoundException;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
@@ -135,71 +136,91 @@ public class DichVuService {
 
 
     @Transactional
-    public void updateDichVu(int idDichVu, DichVuDTO request, MultipartFile file) {
+    public void capNhatDichVu(int id, DichVuDTO request, MultipartFile file) {
         try {
-            // Tìm dịch vụ cần cập nhật
-            Dichvu dichVu = dichvuRepository.findById((long) idDichVu)
-                    .orElseThrow(() -> new RuntimeException("Dịch vụ không tồn tại!"));
+            // 1. Tìm dịch vụ theo ID
+            Dichvu dichVu = dichvuRepository.findById((long) id)
+                    .orElseThrow(() -> new NotFoundException("Dịch vụ không tồn tại"));
 
-            // Xử lý upload ảnh nếu có
-            if (file != null && !file.isEmpty()) {
-                // Xác thực tên file và loại bỏ các ký tự nguy hiểm
-                String fileName = StringUtils.cleanPath(file.getOriginalFilename());
-
-                if (!isValidFileName(fileName)) {
-                    throw new IllegalArgumentException("Tên file không hợp lệ.");
-                }
-
-                // Tạo tệp tạm thời
-                File tempFile = File.createTempFile("upload_", fileName);
-                file.transferTo(tempFile);  // Chuyển MultipartFile thành File
-
-                // Upload file lên Cloudinary
-                Map<?, ?> uploadResult = cloudinaryService.uploadFile(tempFile);
-                String imageUrl = uploadResult.get("url").toString();
-
-                // Cập nhật URL ảnh mới
-                dichVu.setAnh(imageUrl);
-
-                // Xóa file tạm sau khi upload
-                if (!tempFile.delete()) {
-                    System.err.println("Không thể xóa file tạm.");
-                }
-            }
-
-            // Cập nhật thông tin dịch vụ
+            // 2. Cập nhật thông tin cơ bản
             dichVu.setTendichvu(request.getTenDichVu());
             dichVu.setMota(request.getMoTa());
             dichVu.setTrangthai(request.isTrangThai());
-            dichVu = dichvuRepository.save(dichVu);
 
-            // Xóa tất cả các tùy chọn dịch vụ cũ
-            tuyChonDichVuRepository.deleteByDichvu(dichVu);
+            // 3. Cập nhật ảnh nếu có file mới
+            if (file != null && !file.isEmpty()) {
+                String fileName = StringUtils.cleanPath(file.getOriginalFilename());
+                File tempFile = File.createTempFile("upload_", fileName);
+                file.transferTo(tempFile);
 
-            // Thêm tùy chọn dịch vụ mới
+                Map<?, ?> uploadResult = cloudinaryService.uploadFile(tempFile);
+                dichVu.setAnh(uploadResult.get("url").toString());
+
+                tempFile.delete();
+            }
+
+            // 4. Cập nhật hoặc thêm mới tùy chọn dịch vụ
             for (DichVuDTO.TuyChonDichVuRequest tcRequest : request.getTuyChonDichVu()) {
-                TuyChonDichVu tuyChon = new TuyChonDichVu();
-                tuyChon.setDichvu(dichVu);
-                tuyChon.setTentuychon(tcRequest.getTenTuyChon());
-                tuyChon.setMota(tcRequest.getMoTa());
-                tuyChon.setTrangthai(tcRequest.isTrangThai());
-                tuyChon = tuyChonDichVuRepository.save(tuyChon);
+                TuyChonDichVu tuyChon = null;
 
-                // Thêm tùy chọn cân nặng mới
+                // Tìm tùy chọn dịch vụ theo ID
+                if (tcRequest.getId() != null) {
+                    tuyChon = tuyChonDichVuRepository.findById(tcRequest.getId())
+                            .orElse(null);
+                }
+
+                // Nếu tồn tại, cập nhật thông tin
+                if (tuyChon != null) {
+                    tuyChon.setTentuychon(tcRequest.getTenTuyChon());
+                    tuyChon.setMota(tcRequest.getMoTa());
+                    tuyChon.setTrangthai(tcRequest.isTrangThai());
+                } else {
+                    // Nếu không tồn tại, tạo mới
+                    tuyChon = new TuyChonDichVu();
+                    tuyChon.setDichvu(dichVu);
+                    tuyChon.setTentuychon(tcRequest.getTenTuyChon());
+                    tuyChon.setMota(tcRequest.getMoTa());
+                    tuyChon.setTrangthai(tcRequest.isTrangThai());
+                    tuyChonDichVuRepository.save(tuyChon);
+                }
+
+                // 5. Cập nhật hoặc thêm mới tùy chọn cân nặng
                 for (DichVuDTO.TuyChonDichVuRequest.TuyChonCanNangRequest cnRequest : tcRequest.getTuyChonCanNang()) {
-                    TuyChonCanNang canNang = new TuyChonCanNang();
-                    canNang.setTuyChonDichVu(tuyChon);
-                    canNang.setCannangmin(cnRequest.getCanNangMin());
-                    canNang.setCannangmax(cnRequest.getCanNangMax());
-                    canNang.setGiatien(cnRequest.getGiaTien());
-                    canNang.setTrangthai(cnRequest.isTrangThai());
-                    tuyChonCanNangRepository.save(canNang);
+                    TuyChonCanNang canNang = null;
+
+                    // Tìm tùy chọn cân nặng theo ID
+                    if (cnRequest.getId() != null) {
+                        canNang = tuyChonCanNangRepository.findById(cnRequest.getId())
+                                .orElse(null);
+                    }
+
+                    // Nếu tồn tại, cập nhật thông tin
+                    if (canNang != null) {
+                        canNang.setCannangmin(cnRequest.getCanNangMin());
+                        canNang.setCannangmax(cnRequest.getCanNangMax());
+                        canNang.setGiatien(cnRequest.getGiaTien());
+                        canNang.setTrangthai(cnRequest.isTrangThai());
+                    } else {
+                        // Nếu không tồn tại, tạo mới
+                        canNang = new TuyChonCanNang();
+                        canNang.setTuyChonDichVu(tuyChon);
+                        canNang.setCannangmin(cnRequest.getCanNangMin());
+                        canNang.setCannangmax(cnRequest.getCanNangMax());
+                        canNang.setGiatien(cnRequest.getGiaTien());
+                        canNang.setTrangthai(cnRequest.isTrangThai());
+                        tuyChonCanNangRepository.save(canNang);
+                    }
                 }
             }
+
+            // 6. Lưu dịch vụ
+            dichvuRepository.save(dichVu);
+
         } catch (IOException ex) {
             throw new RuntimeException("Lỗi xử lý file: " + ex.getMessage(), ex);
         } catch (IllegalArgumentException ex) {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, ex.getMessage());
         }
     }
+
 }
