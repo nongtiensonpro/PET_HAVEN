@@ -306,6 +306,7 @@ export default {
   options_name:'Options Name',
   save_new_service:'Save New Service',
   new_service_added_successfully:'New Service Added Successfully',
+  service_update_successfully:'Service Update Successfully',
   error_adding_new_service:'Error Adding New Service',
   service_update:'Service Update',
   add_options:'Add Option',
@@ -316,4 +317,5 @@ export default {
   lose_weight:'Delete Weight',
   clear_option:'Delete Option',
   save_service:'Save Service',
+  service_update_error:'Error Updating Service',
 }as const;

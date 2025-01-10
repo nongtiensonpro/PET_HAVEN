@@ -32,15 +32,28 @@ onMounted(async () => {
     }
   }
 });
-
+const isUpdating = ref(false);
+const updateCounter = ref(0);
+const updateInterval = ref<NodeJS.Timeout | null>(null);
 const saveChanges = async () => {
   if (editedService.value) {
     try {
+      isUpdating.value = true;
+      updateCounter.value = 0;
+      updateInterval.value = setInterval(() => {
+        updateCounter.value++;
+      }, 1000);
+
       await updateService(editedService.value);
-      toast.success('Cập nhật dịch vụ thành công!');
+
+      clearInterval(updateInterval.value!);
+      isUpdating.value = false;
+      toast.success(t('service_update_successfully'));
       navigateTo('/admin/service/servicelist');
     } catch (error) {
-      toast.error('Lỗi cập nhật dịch vụ!');
+      clearInterval(updateInterval.value!);
+      isUpdating.value = false;
+      toast.error(t('service_update_error'));
       console.error('Error updating service:', error);
     }
   }
@@ -212,7 +225,10 @@ const fileInput = ref<HTMLInputElement | null>(null);
         </div>
       </div>
 
-      <button type="submit" class="btn btn-primary">{{t('save_service')}}</button>
+      <button type="submit" class="btn btn-primary" :disabled="isUpdating">
+        <span v-if="!isUpdating">{{t('save_service')}}</span>
+        <span v-else>{{t('loading')}} ({{ updateCounter }} s)</span>
+      </button>
     </form>
   </div>
   <div v-else class="container mt-4">
