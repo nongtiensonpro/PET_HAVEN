@@ -306,6 +306,7 @@ export default {
     save_new_service:'Lưu dịch vụ mới',
     new_service_added_successfully:'Thêm dịch vụ mới thành công!',
     service_update:'Cập nhật dịch vụ',
+    service_update_successfully:'Cập nhật dịch vụ',
     add_options:'Thêm tùy chọn',
     option_description:'Mô tả tùy chọn',
     add_weight:'Thêm cân nặng',
@@ -314,4 +315,5 @@ export default {
     lose_weight:'Xóa cân nặng cân',
     clear_option:'Xóa tùy chọn',
     save_service:'Lưu dịch vụ',
+    service_update_error:'Cập nhật dịch vụ thất bại!',
 }as const;
