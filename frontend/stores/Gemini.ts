@@ -13,9 +13,9 @@ export const useAIStore = defineStore('ai', () => {
     const lichHenStore = useQuanLyLichHenKhachHang();
     const refreshInterval = ref(null);
 
-    const apiKey = 'AIzaSyAngio9lHhhKrSYBeh_RBYxnQvkflv8CXQ';
+    const apiKey = 'AIzaSyD8o_ySu5vMp-7mDotkFsTZ_V2-OwlQkNk';
     const genAI = new GoogleGenerativeAI(apiKey);
-    const model = genAI.getGenerativeModel({ model: 'gemini-1.5-pro'});
+    const model = genAI.getGenerativeModel({ model: 'gemini-2.0-flash-exp'});
 
     const generationConfig = {
         temperature: 1,

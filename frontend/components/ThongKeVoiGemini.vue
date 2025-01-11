@@ -1,23 +1,37 @@
 <script setup lang="ts">
-import { onMounted, ref, onUnmounted } from 'vue';
+import {onMounted, ref, onUnmounted, computed} from 'vue';
 import { useQuanLyLichHenAdminStore } from '~/stores/QuanLyLichHenAdmin';
 import { useAIThongKeStore } from '~/stores/AiThongKe';
-import type { Lichhen } from "~/models/LichSuDatLich";
+import DichVu from "~/models/DichVu";
+import {useServiceStore} from "~/stores/DichVuStores";
+import {useVoucherStore} from "~/stores/VorchersStores";
 
 const useQuanLyAdmin = useQuanLyLichHenAdminStore();
 const aiStore = useAIThongKeStore();
+const aiThongKeStore = useAIThongKeStore();
 
-const lichhen = ref<Lichhen[]>([]);
+const lichhen = ref([]);
 const userInput = ref('');
 const chatHistory = ref([]);
 const isLoading = ref(false);
 const isThinking = ref(false);
+const thongKeData = ref([]);
 
 const loadData = async () => {
   const data = await useQuanLyAdmin.fetchHoaDonKhachHangs();
   lichhen.value = data;
   await getInitialSummary();
 };
+const serviceStore = useServiceStore();
+const voucherStore = useVoucherStore();
+
+const services = computed(() =>
+    serviceStore.services.filter((service: DichVu) => service.trangthai && service.hien)
+);
+
+const vouchers = computed(() =>
+    voucherStore.ListVoucher.filter(voucher => voucher.trangthai)
+);
 
 const getInitialSummary = async () => {
   isLoading.value = true;
@@ -26,7 +40,20 @@ const getInitialSummary = async () => {
 
   try {
     const dataForAnalysis = JSON.stringify(lichhen.value);
-    const prompt = `Phân tích dữ liệu sau đây và cung cấp bản tóm tắt ngắn gọn về các số liệu kinh doanh chính: ${dataForAnalysis}`;
+    const prompt = `Phân tích dữ liệu sau đây và cung cấp bản tóm tắt ngắn gọn về các số liệu kinh doanh chính: ${dataForAnalysis}
+     Chú giải:
+            """
+            0: Trạng thái thành công,
+            1: Trạng thái đã thay đổi,
+            2: Trạng thái đã hủy,
+            3: Trạng thái đang chờ thanh toán,
+            4: Trạng thái đang chờ xác nhận,
+            5: Trạng thái trống,
+            6: Trạng thái thanh toán thành công,
+            7: Trạng thái đã hoàn tiền,
+            8: Trạng thái đang chờ dịch vụ
+            """
+    `;
 
     const response = await aiStore.sendMessage(prompt);
     chatHistory.value.pop(); // Remove the thinking message
@@ -40,8 +67,15 @@ const getInitialSummary = async () => {
     isThinking.value = false;
   }
 };
+const loadThongKeData = async () => {
+  await aiThongKeStore.fetchThongKeData('2000-01-01', '2050-01-31'); // Example dates
+  thongKeData.value = aiThongKeStore.detailedStats.doanhThuTheoDichVu;
+};
 
-onMounted(loadData);
+onMounted(async () => {
+  await loadData();
+  await loadThongKeData();
+});
 
 const sendMessageToAI = async () => {
   if (!userInput.value.trim()) return;
@@ -99,7 +133,6 @@ const sendMessageToAI = async () => {
     </div>
   </div>
 </template>
-
 
 <style scoped>
 .chat-container {
@@ -172,7 +205,6 @@ input {
   border: 1px solid #ccc;
   border-radius: 4px;
 }
-
 
 .custom-button:disabled {
   background-color: #cccccc;
