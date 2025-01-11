@@ -210,7 +210,7 @@ export const useServiceStore = defineStore('serviceStore', {
                     method: 'PUT',
                     headers: {
                         'Content-Type': 'application/json',
-                        'Authorization': `Bearer ${token}` // Gửi token trong header
+                        'Authorization': `Bearer ${token}`
                     },
 
                 });
@@ -235,10 +235,12 @@ export const useServiceStore = defineStore('serviceStore', {
                 moTa: dichVu.mota,
                 trangThai: dichVu.trangthai,
                 tuyChonDichVu: dichVu.tuyChonDichVus.map(tuyChon => ({
+                    id:tuyChon.id,
                     tenTuyChon: tuyChon.tentuychon,
                     moTa: tuyChon.mota,
                     trangThai: tuyChon.trangthai,
                     tuyChonCanNang: tuyChon.tuyChonCanNangs.map(canNang => ({
+                        id: canNang.id,
                         canNangMin: canNang.cannangmin,
                         canNangMax: canNang.cannangmax,
                         giaTien: canNang.giatien,
@@ -247,10 +249,8 @@ export const useServiceStore = defineStore('serviceStore', {
                 }))
             };
 
-            // Thêm dữ liệu JSON vào FormData với tên "dichVu"
             formData.append('dichVu', JSON.stringify(dichVuDTO));
 
-            // Thêm file nếu có
             const fileInput = document.querySelector('#fileUpdate') as HTMLInputElement;
             if (fileInput && fileInput.files && fileInput.files.length > 0) {
                 formData.append('file', fileInput.files[0]);
@@ -275,15 +275,6 @@ export const useServiceStore = defineStore('serviceStore', {
                 console.error('Lỗi khi cập nhật dịch vụ:', error);
                 throw error;
             }
-        },
-        // Hàm làm sạch payload
-        cleanPayload(payload: any) {
-            return JSON.parse(JSON.stringify(payload, (key, value) => {
-                if (typeof value === 'function') {
-                    return undefined;
-                }
-                return value;
-            }));
         }
     },
 });
