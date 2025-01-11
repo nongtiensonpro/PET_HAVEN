@@ -1,10 +1,12 @@
 <script setup lang="ts">
-import {onMounted, ref, onUnmounted, computed} from 'vue';
+import {onMounted, ref, computed} from 'vue';
 import { useQuanLyLichHenAdminStore } from '~/stores/QuanLyLichHenAdmin';
 import { useAIThongKeStore } from '~/stores/AiThongKe';
 import DichVu from "~/models/DichVu";
 import {useServiceStore} from "~/stores/DichVuStores";
 import {useVoucherStore} from "~/stores/VorchersStores";
+import { useI18n } from 'vue-i18n';
+const { t } = useI18n();
 
 const useQuanLyAdmin = useQuanLyLichHenAdminStore();
 const aiStore = useAIThongKeStore();
@@ -36,11 +38,15 @@ const vouchers = computed(() =>
 const getInitialSummary = async () => {
   isLoading.value = true;
   isThinking.value = true;
-  chatHistory.value.push({ role: 'thinking', content: 'Đang phân tích yêu cầu...' });
+  chatHistory.value.push({ role: 'thinking', content: t('wait_a_minute_master_I_m_thinking') });
 
   try {
     const dataForAnalysis = JSON.stringify(lichhen.value);
-    const prompt = `Phân tích dữ liệu sau đây và cung cấp bản tóm tắt ngắn gọn về các số liệu kinh doanh chính: ${dataForAnalysis}
+    const dichVuForAnalysis = JSON.stringify(services.value);
+    const khuyenMaiForAnalysis = JSON.stringify(vouchers.value);
+    const prompt = `
+    Bạn là một chuyên gia phân tích dữ liệu cho cửa hàng thú cưng PetHaven.
+    Phân tích dữ liệu sau đây và cung cấp bản về các số liệu kinh doanh chính: === ${dataForAnalysis}
      Chú giải:
             """
             0: Trạng thái thành công,
@@ -53,6 +59,20 @@ const getInitialSummary = async () => {
             7: Trạng thái đã hoàn tiền,
             8: Trạng thái đang chờ dịch vụ
             """
+     Dịch vụ có trong cửa hàng
+     === ${dichVuForAnalysis}
+     Các voucher có trong cửa hàng
+     === ${ khuyenMaiForAnalysis } ====
+     Hãy tuân thủ các quy tắc sau:
+
+            1. Phân tích và tổng hợp dữ liệu về dịch vụ, khuyến mãi, và lịch hẹn của khách hàng.
+            2. Đưa ra các nhận xét và xu hướng dựa trên dữ liệu được cung cấp.
+            3. Tập trung vào các chỉ số quan trọng như doanh thu, tần suất sử dụng dịch vụ, và hiệu quả của các chương trình khuyến mãi.
+            4. Đề xuất các chiến lược để cải thiện hiệu suất kinh doanh dựa trên phân tích dữ liệu.
+            5. Sử dụng các số liệu cụ thể khi có thể để hỗ trợ các nhận định.
+            6. Nếu không có đủ dữ liệu để đưa ra kết luận chính xác, hãy nêu rõ và đề xuất cách thu thập thêm dữ liệu.
+     =================
+     Hãy trả lời chủ cửa hàng thú cưng PetHaven một cách đầy đủ nhất có thể.
     `;
 
     const response = await aiStore.sendMessage(prompt);
@@ -86,7 +106,7 @@ const sendMessageToAI = async () => {
   isThinking.value = true;
 
   try {
-    chatHistory.value.push({ role: 'thinking', content: 'Đang phân tích dữ liệu...' });
+    chatHistory.value.push({ role: 'thinking', content: t('analyzing_data') });
 
     // Prepare the data for AI analysis
     const dataForAnalysis = JSON.stringify(lichhen.value);
@@ -108,7 +128,7 @@ const sendMessageToAI = async () => {
 
 <template>
   <div class="container p-4">
-    <h2 class="mb-4">Phân tích dữ liệu cửa hàng với AI</h2>
+    <h2 class="mb-4">{{t('analyzing_store_data_with_AI')}}</h2>
     <div class="chat-container">
       <div class="chat-history">
         <div v-for="(message, index) in chatHistory" :key="index" class="message-wrapper">
@@ -121,15 +141,15 @@ const sendMessageToAI = async () => {
         </div>
       </div>
       <div class="input-container row p-3">
-        <input class="col-10" v-model="userInput" @keyup.enter="sendMessageToAI" placeholder="Nhập câu hỏi của bạn..."
+        <input class="col-10" v-model="userInput" @keyup.enter="sendMessageToAI"  :placeholder="t('enter_your_message')"
           :disabled="isLoading" />
         <button @click="sendMessageToAI" :disabled="isLoading" class="custom-button col-2">
-          {{ isLoading ? 'Đang xử lý...' : 'Gửi' }}
+          {{ isLoading ? t('sending') : t('send') }}
         </button>
       </div>
     </div>
     <div class="text-center p-4 text fs-6">
-      AI có thể mắc lỗi. Hãy kiểm tra các thông tin quan trọng.
+      {{t('chatBotsGod')}}
     </div>
   </div>
 </template>

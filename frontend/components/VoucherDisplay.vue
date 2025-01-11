@@ -24,7 +24,8 @@
       </div>
     </div>
     <div v-else>
-      <p class="text-center">{{ t('noVouchers') }}</p>
+      <iframe src="https://giphy.com/embed/o722MCBurUlRAtZkka" width="280" height="280" style="" frameBorder="0" class="giphy-embed" allowFullScreen></iframe><p><a href="https://giphy.com/stickers/cat-ardhemis-biueversailles-o722MCBurUlRAtZkka"></a></p>
+<!--      <p class="text-center">{{ t('noVouchers') }}</p>-->
     </div>
   </div>
 </template>

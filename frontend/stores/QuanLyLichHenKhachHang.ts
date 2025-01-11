@@ -40,6 +40,7 @@ export const useQuanLyLichHenKhachHang = defineStore('quanLyLichHenKhachHang', (
       
       const data = await response.json();
       appointments.value = data.content;
+      return data.content;
     } catch (err) {
       // error.value = 'Không thể tải lịch hẹn';
       console.error(err);

@@ -1,7 +1,14 @@
 <script setup lang="ts">
-import {onUnmounted, ref} from 'vue'
-import { useAIStore } from '~/stores/Gemini'
+import {computed, onMounted, onUnmounted, ref} from 'vue'
+import {useAIStore} from '~/stores/Gemini'
 import {useQuanLyLichHenKhachHang} from "~/stores/QuanLyLichHenKhachHang";
+import {useUserStore} from "~/stores/user";
+import {useServiceStore} from "~/stores/DichVuStores";
+import {useVoucherStore} from "~/stores/VorchersStores";
+import {useI18n} from 'vue-i18n';
+
+const {t} = useI18n();
+
 
 const lichHenStore = useQuanLyLichHenKhachHang();
 const aiStore = useAIStore()
@@ -9,35 +16,82 @@ const userInput = ref('')
 const chatHistory = ref([])
 const isLoading = ref(false)
 const isThinking = ref(false)
+const userStore = useUserStore();
+const serviceStore = useServiceStore();
+const voucherStore = useVoucherStore();
+
+const user = computed(() => userStore.userInfo);
+
+onMounted(() => {
+  sendWelcomeMessage()
+})
 
 onUnmounted(() => {
   lichHenStore.fetchAppointments();
 })
 
+const userForAnalysis = JSON.stringify(user.value);
+const dichVuForAnalysis = JSON.stringify(serviceStore.fetchServices());
+const khuyenMaiForAnalysis = JSON.stringify(voucherStore.fetchVoucher());
+const history = JSON.stringify(lichHenStore.appointments);
+const sendWelcomeMessage = async () => {
+  isThinking.value = true
+  chatHistory.value.push({role: 'thinking', content: t('wait_a_minute_master_I_m_thinking')})
+
+  try {
+    const welcomeMessage = `
+          Bạn là 'Yellow Cat', nhân viên chăm sóc khách hàng của PetHaven. Hãy:
+          1. Gọi khách bằng biệt danh dễ thương kèm icon phù hợp với thú cưng.
+          2. Trả lời về thú cưng, chăm sóc và hoạt động của PetHaven.
+          3. Chỉ dùng thông tin từ danh sách dịch vụ/khuyến mãi khi được hỏi.
+          4. Trả lời hài hước, thân thiện, ngắn gọn, đầy đủ, thêm icon chó mèo.
+          5. Dùng số liệu chính xác về giá/giảm giá nếu có.
+          6. Đề nghị liên hệ trực tiếp nếu không chắc chắn.
+
+          Dịch vụ: ${dichVuForAnalysis}
+          Khuyến mãi: ${khuyenMaiForAnalysis}
+          Thông tin khách hàng: ${userForAnalysis}
+          Lịch sử hẹn: ${history}
+
+          🐶🐕🐩🐾 | 🐱🐈🐈‍⬛🐾
+          `
+    const response = await aiStore.sendMessage(welcomeMessage)
+    chatHistory.value.pop() // Remove the thinking message
+    chatHistory.value.push({role: 'ai', content: response})
+  } catch (error) {
+    console.error("Error sending welcome message:", error)
+    chatHistory.value.pop() // Remove the thinking message
+    chatHistory.value.push({role: 'system', content: t('sleepdeep')})
+  } finally {
+    isThinking.value = false
+  }
+}
+
 const sendMessageToAI = async () => {
   if (!userInput.value.trim()) return
 
   const userMessage = userInput.value
-  chatHistory.value.push({ role: 'user', content: userMessage })
+  chatHistory.value.push({role: 'user', content: userMessage})
   userInput.value = ''
   isLoading.value = true
   isThinking.value = true
 
   try {
-    chatHistory.value.push({ role: 'thinking', content: 'Thưa cậu chủ em đang suy nghĩ' })
+    chatHistory.value.push({role: 'thinking', content: t('wait_a_minute_master_I_m_thinking')})
     const response = await aiStore.sendMessage(userMessage)
     chatHistory.value.pop() // Remove the thinking message
-    chatHistory.value.push({ role: 'ai', content: response })
+    chatHistory.value.push({role: 'ai', content: response})
   } catch (error) {
     console.error("Error sending message to AI:", error)
     chatHistory.value.pop() // Remove the thinking message
-    chatHistory.value.push({ role: 'system', content: 'Xin lỗi, có lỗi xảy ra khi xử lý yêu cầu của bạn.' })
+    chatHistory.value.push({role: 'system', content: t('sleepdeep')})
   } finally {
     isLoading.value = false
     isThinking.value = false
   }
 }
 </script>
+
 
 <template>
   <div class="chat-container">
@@ -53,18 +107,18 @@ const sendMessageToAI = async () => {
     </div>
     <div class="input-container row p-3">
       <input class="col-10"
-        v-model="userInput"
-        @keyup.enter="sendMessageToAI"
-        placeholder="Nhập tin nhắn của bạn..."
-        :disabled="isLoading"
+             v-model="userInput"
+             @keyup.enter="sendMessageToAI"
+             :placeholder="t('enter_your_message')"
+             :disabled="isLoading"
       />
       <button @click="sendMessageToAI" :disabled="isLoading" class="custom-button col-2">
-        {{ isLoading ? 'Đang gửi...' : 'Gửi' }}
+        {{ isLoading ? t('sending') : t('send') }}
       </button>
     </div>
   </div>
   <div class="text-center p-4 text fs-6">
-    ChatBot có thể mắc lỗi. Hãy kiểm tra các thông tin quan trọng.
+    {{ t('chatBotsGod') }}
   </div>
 </template>
 
@@ -91,6 +145,7 @@ const sendMessageToAI = async () => {
   margin-bottom: 10px;
   width: 100%;
 }
+
 .message {
   padding: 8px;
   border-radius: 8px;
@@ -115,7 +170,6 @@ const sendMessageToAI = async () => {
   margin-left: auto;
   margin-right: auto;
 }
-
 
 
 input {

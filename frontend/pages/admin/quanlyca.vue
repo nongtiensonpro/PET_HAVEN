@@ -3,9 +3,6 @@ import { onMounted, ref, onUnmounted, computed } from "vue";
 import { useCaLichHenStore } from "~/stores/QuanLyCaLichHen"
 import type NgayNghi from "~/models/NgayNghi";
 import type CaLichHen from "~/models/CaHen";
-import ThemCa from '~/pages/admin/themthoigian.vue'
-import CapNhatCaHen from '~/pages/admin/capnhatcalichhen/[id].vue'
-import CapNhatNgayNghi from "~/pages/admin/capnhatngaynghi.vue";
 import Swal from 'sweetalert2';
 import { useToast } from 'vue-toastification';
 import { useI18n } from 'vue-i18n';

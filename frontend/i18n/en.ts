@@ -318,4 +318,13 @@ export default {
   clear_option:'Delete Option',
   save_service:'Save Service',
   service_update_error:'Error Updating Service',
+  chatBotsGod:'AI can make mistakes. Please check important information.',
+  enter_your_message:'Enter your message...',
+  send:'Send',
+  sending:'Sending...',
+  wait_a_minute_master_I_m_thinking:'Wait a minute Master! I am thinking...',
+  sleepdeep:'Sorry, I was sleepy and fell asleep.',
+  analyzing_store_data_with_AI:'Analyzing store data with AI...',
+  analyzing_data:'Analyzing data...',
+  continute:'Continue',
 }as const;

@@ -316,4 +316,13 @@ export default {
     clear_option:'Xóa tùy chọn',
     save_service:'Lưu dịch vụ',
     service_update_error:'Cập nhật dịch vụ thất bại!',
+    chatBotsGod:'AI có thể mắc lỗi. Hãy kiểm tra các thông tin quan trọng..',
+    send:'Gửi',
+    sending:'Đang gửi...',
+    wait_a_minute_master_I_m_thinking:'Đợt chút chủ nhân em đang suy nghĩ...',
+    sleepdeep:'Xin lỗi em buồn ngủ nên ngủ say rồi',
+    enter_your_message:'Nhập tin nhắn của bạn',
+    analyzing_store_data_with_AI:'Phân tích dữ liệu cửa hàng với AI',
+    analyzing_data:'Đang phân tích dữ liệu...',
+    continute:'Tiếp tục'
 }as const;

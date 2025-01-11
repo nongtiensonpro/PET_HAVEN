@@ -3,16 +3,18 @@ import type Service from "~/models/DichVu";
 import { useUserStore } from '~/stores/user'
 import { useAIStore } from '~/stores/Gemini'
 import { ref, onMounted, computed } from 'vue'
-
+import { useI18n } from 'vue-i18n';
 const props = defineProps<{
   service: Service
 }>();
 
+const { t } = useI18n();
 const aiStore = useAIStore()
 const userStore = useUserStore()
 
 const greeting = ref('')
 const isLoading = ref(true)
+const relatedServices = ref([])
 
 const userInfo = computed(() => {
   if (!userStore.userInfo) return null
@@ -25,7 +27,8 @@ const userInfo = computed(() => {
   }
   return {
     name: userStore.userInfo.name,
-    petInfo
+    petInfo,
+    pets
   }
 })
 
@@ -33,49 +36,70 @@ onMounted(async () => {
   try {
     let prompt
     if (userInfo.value) {
-      prompt = `Chào mừng ${userInfo.value.name} ${userInfo.value.petInfo} đến với PetHaven.
-      Bạn đang xem dịch vụ "${props.service.tendichvu}".
-      Hãy tạo một lời chào ngắn gọn, thân thiện và dễ thương, đề cập đến cả thú cưng (nếu có) và dịch vụ đang xem.`
+      prompt = `Chủ nhân ${userInfo.value.name} có thú  ${userInfo.value.petInfo} đến với PetHaven. Mình là Yellow Cat nhân viên cửa hàng . Mình xin phép gọi bạn bằng một biệt danh kèm icon  dựa trên thông tin  của bạn  để phù hợp với thú cưng một tên thật dễ thương đáng yêu nha.
+      Đang xem dịch vụ "${props.service.tendichvu}".
+      Hãy giúp chủ nhân lựa chọn dịch vụ phù hợp với thú cưng, thân thiện và dễ thương, đề cập đến cả thú cưng và dịch vụ đang xem.
+      Đề xuất 1 dịch vụ liên quan có thể phù hợp và giải thích vì sao nên sử dụng dịch vụ đó một cách dễ thương đáng yêu.`
     } else {
-      prompt = `Chào mừng quý khách đến với PetHaven.
+      prompt = `Chào mừng chủ nhân với thú cưng đến với PetHaven. Mình là Yellow Cat nhân viên cửa hàng . Mình xin phép gọi bạn bằng một biệt danh kèm icon  dựa trên thông tin dịch vụ của cửa hàng của mình  một tên thật dễ thương đáng yêu nha.
       Bạn đang xem dịch vụ "${props.service.tendichvu}".
-      Hãy tạo một lời chào chung chung, thân thiện và dễ thương cho khách hàng mới, đề cập đến dịch vụ đang xem.`
+      Hãy tạo một lời chào thân thiện, dễ thương cho chủ nhân  mới, đề cập đến dịch vụ đang xem và gợi 1 dịch vụ liên quan và giải thích vì sao nên sử dụng dịch vụ đó một cách dễ thương đáng yêu..`
     }
-    greeting.value = await aiStore.sendMessage(prompt)
+    const response = await aiStore.sendMessage(prompt)
+    const [greetingText, servicesText] = response.split('Các dịch vụ liên quan:')
+    greeting.value = greetingText.trim()
+    relatedServices.value = servicesText ? servicesText.trim().split('\n').map(s => s.trim()) : []
   } catch (error) {
     console.error('Error fetching AI greeting:', error)
-    if (userInfo.value) {
-      greeting.value = `Xin chào ${userInfo.value.name}${userInfo.value.petInfo ? ` và ${userInfo.value.petInfo}` : ''}!
-      Chào mừng bạn đến với PetHaven. Chúng tôi hy vọng bạn sẽ thích dịch vụ "${props.service.tendichvu}" của chúng tôi. 🐾`
-    } else {
-      greeting.value = `Chào mừng quý khách đến với PetHaven!
-      Chúng tôi rất vui được phục vụ bạn và thú cưng của bạn.
-      Dịch vụ "${props.service.tendichvu}" của chúng tôi đang chờ đón bạn. 🐾`
-    }
+    setDefaultGreeting()
   } finally {
     isLoading.value = false
   }
 })
+
+function setDefaultGreeting() {
+  if (userInfo.value) {
+    greeting.value = `Xin chào ${userInfo.value.name}${userInfo.value.petInfo ? ` và ${userInfo.value.petInfo}` : ''}!
+    Chào mừng bạn đến với PetHaven. Chúng tôi hy vọng bạn sẽ thích dịch vụ "${props.service.tendichvu}" của chúng tôi. ${t('always_reply_in_english')}.🐾`
+  } else {
+    greeting.value = `Chào mừng quý khách đến với PetHaven!
+    Chúng tôi rất vui được phục vụ bạn và thú cưng của bạn.
+    Dịch vụ "${props.service.tendichvu}" của chúng tôi đang chờ đón bạn. ${t('always_reply_in_english')}.🐾`
+  }
+}
+
 function tiepTucChat() {
   return navigateTo('/chat');
+}
+
+function datLichNgay() {
+  return navigateTo(`/customer/calendar/newuser`);
 }
 </script>
 
 <template>
   <div class="greeting-container">
     <div v-if="isLoading" class="loading">
-      Thưa cậu chủ em đang suy nghĩ 🤔💭🧠
+      {{t('wait_a_minute_master_I_m_thinking')}} 🤔💭🧠
     </div>
     <div v-else class="greeting">
-      <div class="row">
+      <div class="row mb-3">
         <div class="col-10">
           {{ greeting }}
         </div>
-        <div class="col-2 custom-button" @click="tiepTucChat" style="border: none; background: none">
-          Tiếp tục Chat
-          <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="currentColor" class="bi bi-chat-right-dots-fill" viewBox="0 0 16 16">
-            <path d="M16 2a2 2 0 0 0-2-2H2a2 2 0 0 0-2 2v8a2 2 0 0 0 2 2h9.586a1 1 0 0 1 .707.293l2.853 2.853a.5.5 0 0 0 .854-.353zM4.5 5.5a.5.5 0 0 1 .5-.5h7a.5.5 0 0 1 0 1h-7a.5.5 0 0 1-.5-.5m0 3a.5.5 0 0 1 .5-.5h7a.5.5 0 0 1 0 1h-7a.5.5 0 0 1-.5-.5m0 3a.5.5 0 0 1 .5-.5h4a.5.5 0 0 1 0 1h-4a.5.5 0 0 1-.5-.5"/>
-          </svg>
+        <div class="col-2 row">
+          <div class="col-12">
+            <button class="custom-button" @click="datLichNgay">
+              Đặt lịch ngay
+              <i class="bi bi-calendar-check"></i>
+            </button>
+          </div>
+          <div class="col-12">
+            <button class="custom-button" @click="tiepTucChat">
+              Tiếp tục Chat
+              <i class="bi bi-chat-right-dots-fill"></i>
+            </button>
+          </div>
         </div>
       </div>
     </div>
@@ -85,6 +109,9 @@ function tiepTucChat() {
 <style scoped>
 .greeting-container {
   padding: 20px;
+  background-color: #f8f9fa;
+  border-radius: 10px;
+  box-shadow: 0 2px 4px rgba(0,0,0,0.1);
 }
 
 .loading {
@@ -95,5 +122,10 @@ function tiepTucChat() {
 .greeting {
   font-size: 1.2em;
   color: #333;
+}
+
+.btn {
+  width: 100%;
+  margin-top: 10px;
 }
 </style>

@@ -2,13 +2,16 @@
 import { useUserStore } from '~/stores/user'
 import { useAIStore } from '~/stores/Gemini'
 import { ref, onMounted, computed } from 'vue'
+import {useServiceStore}  from '~/stores/DichVuStores'
+import {useI18n} from "vue-i18n";
 
+const serviceStore = useServiceStore()
 const aiStore = useAIStore()
 const userStore = useUserStore()
 
 const greeting = ref('')
 const isLoading = ref(true)
-
+const { t } = useI18n();
 const userInfo = computed(() => {
   if (!userStore.userInfo) return null
   const pets = userStore.userInfo.listThuCung || []
@@ -26,19 +29,33 @@ const userInfo = computed(() => {
 
 onMounted(async () => {
   try {
+    try {
+      await lamMoiThongTinNguoiDung();
+    }catch (error) {
+
+    }
+    await serviceStore.fetchServices()
     let prompt
     if (userInfo.value) {
-      prompt = `Chào mừng ${userInfo.value.name} ${userInfo.value.petInfo} đến với PetHaven. Hãy tạo một lời chào ngắn gọn, thân thiện và dễ thương, đề cập đến cả thú cưng nếu có.`
+      prompt = `Chào mừng chủ nhân ${userInfo.value.name} có thú cưng ${userInfo.value.petInfo} đến với PetHaven. Mình xin phép gọi bạn bằng một biệt danh kèm icon  dựa trên thông tin  của bạn  để phù hợp với thú cưng một tên thật dễ thương đáng yêu nha.
+        Mình tên là Yellow Cat. Nhân viên cửa hàng PetHaven. Mình rất vui được phục vụ bạn và thú cưng của bạn. 🐾
+        Đây là dịch vụ cửa hàng mình ${serviceStore.services} và giải thích vì sao nên sử dụng dịch vụ đó một cách dễ thương đáng yêu..
+      `
     } else {
-      prompt = 'Hãy tạo một lời chào chung chung, thân thiện và dễ thương cho khách hàng mới đến PetHaven.'
+      prompt = `Chào mừng chủ nhân đến với PetHaven! Mình tên là Yellow Cat. Mình rất vui được phục vụ bạn và thú cưng của bạn. 🐾
+      Đây là dịch vụ cửa hàng mình ${serviceStore.services}   và giải thích vì sao nên sử dụng dịch vụ đó một cách dễ thương đáng yêu..`
     }
     greeting.value = await aiStore.sendMessage(prompt)
   } catch (error) {
     console.error('Error fetching AI greeting:', error)
     if (userInfo.value) {
-      greeting.value = `Xin chào ${userInfo.value.name}${userInfo.value.petInfo ? ` và ${userInfo.value.petInfo}` : ''}! Chào mừng bạn đến với PetHaven. 🐾`
+      greeting.value = `Chào mừng chủ nhân ${userInfo.value.name}  có thú cưng ${userInfo.value.petInfo} đến với PetHaven. Mình xin phép gọi bạn bằng một biệt danh kèm icon  dựa trên thông tin  của bạn  để phù hợp với thú cưng một tên thật dễ thương đáng yêu nha.
+        Mình tên là Yellow Cat. Nhân viên cửa hàng PetHaven. Mình rất vui được phục vụ bạn và thú cưng của bạn. 🐾
+        Đây là dịch vụ cửa hàng mình ${serviceStore.services} và giải thích vì sao nên sử dụng dịch vụ đó một cách dễ thương đáng yêu..
+      `
     } else {
-      greeting.value = 'Chào mừng quý khách đến với PetHaven! Chúng tôi rất vui được phục vụ bạn và thú cưng của bạn. 🐾'
+      greeting.value = `Chào mừng chủ nhân đến với PetHaven! Mình tên là Yellow Cat. Mình rất vui được phục vụ bạn và thú cưng của bạn. 🐾
+      Đây là dịch vụ cửa hàng mình ${serviceStore.services}   và giải thích vì sao nên sử dụng dịch vụ đó một cách dễ thương đáng yêu..`
     }
   } finally {
     isLoading.value = false
@@ -49,19 +66,56 @@ function tiepTucChat() {
   return navigateTo('/chat');
 }
 
+async function lamMoiThongTinNguoiDung() {
+  const refreshToken = localStorage.getItem('refresh_token');
+  if (!refreshToken) {
+    return navigateTo('/');
+  }
+
+  const url = 'http://localhost:9082/realms/spring/protocol/openid-connect/token';
+  const params = new URLSearchParams({
+    grant_type: 'refresh_token',
+    refresh_token: refreshToken,
+    client_id: 'PetHaven',
+    client_secret: 'GuFIaAADNfBUpuahqxLvMPWzqt6g8fRL',
+  });
+  try {
+    const response = await fetch(url, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/x-www-form-urlencoded',
+      },
+      body: params.toString()
+    });
+
+    if (!response.ok) {
+      // return navigateTo('/');
+    }
+
+    const data = await response.json();
+    localStorage.setItem('access_token', data.access_token);
+    localStorage.setItem('refresh_token', data.refresh_token);
+
+
+    return;
+  } catch (error) {
+    // return navigateTo('/');
+  }
+}
+
 </script>
 
 <template>
   <div class="greeting-container">
     <div v-if="isLoading" class="loading">
-      <i class="fas fa-spinner fa-spin me-2"></i> Thưa cậu chủ em đang suy nghĩ 🤔💭🧠
+      <i class="fas fa-spinner fa-spin me-2"></i> {{t('wait_a_minute_master_I_m_thinking')}} 🤔💭🧠
     </div>
     <div v-else class="greeting">
       <div class="text fs-4 justify-content-around">
         {{ greeting }}
       </div>
       <button class="custom-button" @click="tiepTucChat">
-        <span class="button-text">Tiếp tục Chat</span>
+        <span class="button-text">{{t('continute')}} Chat</span>
         <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="currentColor" class="bi bi-chat-right-dots-fill" viewBox="0 0 16 16">
           <path d="M16 2a2 2 0 0 0-2-2H2a2 2 0 0 0-2 2v8a2 2 0 0 0 2 2h9.586a1 1 0 0 1 .707.293l2.853 2.853a.5.5 0 0 0 .854-.353zM4.5 5.5a.5.5 0 0 1 .5-.5h7a.5.5 0 0 1 0 1h-7a.5.5 0 0 1-.5-.5m0 3a.5.5 0 0 1 .5-.5h7a.5.5 0 0 1 0 1h-7a.5.5 0 0 1-.5-.5m0 3a.5.5 0 0 1 .5-.5h4a.5.5 0 0 1 0 1h-4a.5.5 0 0 1-.5-.5"/>
         </svg>

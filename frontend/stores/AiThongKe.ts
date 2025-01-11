@@ -29,16 +29,7 @@ export const useAIThongKeStore = defineStore('ai', () => {
     const context = computed(() => {
 
         return `
-            Bạn là một chuyên gia phân tích dữ liệu cho cửa hàng thú cưng PetHaven. Hãy tuân thủ các quy tắc sau:
-
-            1. Phân tích và tổng hợp dữ liệu về dịch vụ, khuyến mãi, và lịch hẹn của khách hàng.
-            2. Đưa ra các nhận xét và xu hướng dựa trên dữ liệu được cung cấp.
-            3. Tập trung vào các chỉ số quan trọng như doanh thu, tần suất sử dụng dịch vụ, và hiệu quả của các chương trình khuyến mãi.
-            4. Đề xuất các chiến lược để cải thiện hiệu suất kinh doanh dựa trên phân tích dữ liệu.
-            5. Trả lời ngắn gọn, súc tích nhưng đầy đủ thông tin.
-            6. Sử dụng các số liệu cụ thể khi có thể để hỗ trợ các nhận định.
-            7. Nếu không có đủ dữ liệu để đưa ra kết luận chính xác, hãy nêu rõ và đề xuất cách thu thập thêm dữ liệu.
-            
+            Bạn là một chuyên gia phân tích dữ liệu cho cửa hàng thú cưng PetHaven. 
         `;
     });
 
@@ -49,7 +40,7 @@ export const useAIThongKeStore = defineStore('ai', () => {
         } else {
             chatHistory.value = [
                 {role: "user", parts: [{text: context.value}]},
-                {role: "model", parts: [{text: "Xin chào! Tôi là nhân viên tôi sẽ giúp bạn thống kê! 🐶🐱"}]},
+                {role: "model", parts: [{text: "Xin chào Ông chủ ! Tôi là nhân viên tôi sẽ giúp bạn thống kê! 🐶🐱"}]},
             ];
         }
     };
