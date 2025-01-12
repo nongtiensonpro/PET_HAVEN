@@ -9,9 +9,11 @@ import com.yellowcat.backend.repository.TuyChonCanNangRepository;
 import com.yellowcat.backend.repository.TuyChonDichVuRepository;
 import jakarta.transaction.Transactional;
 import jakarta.ws.rs.NotFoundException;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
 import org.springframework.web.multipart.MultipartFile;
@@ -221,6 +223,28 @@ public class DichVuService {
         } catch (IllegalArgumentException ex) {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, ex.getMessage());
         }
+    }
+
+    public ResponseEntity<?> doittTC(int id){
+        Optional<TuyChonDichVu> tuyChonDichVuOptional = tuyChonDichVuRepository.findById(id);
+        if (!tuyChonDichVuOptional.isPresent()){
+            return ResponseEntity.notFound().build();
+        }
+        TuyChonDichVu tuyChonDichVu = tuyChonDichVuOptional.get();
+        tuyChonDichVu.setTrangthai(!tuyChonDichVu.getTrangthai());
+        tuyChonDichVuRepository.save(tuyChonDichVu);
+        return ResponseEntity.ok(tuyChonDichVu);
+    }
+
+    public ResponseEntity<?> doittCN(int id){
+        Optional<TuyChonCanNang> tuyChonCanNangOptional = tuyChonCanNangRepository.findById(id);
+        if (!tuyChonCanNangOptional.isPresent()){
+            return ResponseEntity.notFound().build();
+        }
+        TuyChonCanNang tuyChonCanNang = tuyChonCanNangOptional.get();
+        tuyChonCanNang.setTrangthai(!tuyChonCanNang.getTrangthai());
+        tuyChonCanNangRepository.save(tuyChonCanNang);
+        return ResponseEntity.ok(tuyChonCanNang);
     }
 
 }

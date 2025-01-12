@@ -63,7 +63,7 @@ public class DatLichController {
         }
 
         // Lấy danh sách dịch vụ
-        List<Dichvu> danhSachDichVu = dichVuService.getListTrangThaiTrue();
+        List<?> danhSachDichVu = tuyChonCanNangService.findalltrue();
         response.put("dichVu", danhSachDichVu);
 
         // Lấy danh sách thú cưng
