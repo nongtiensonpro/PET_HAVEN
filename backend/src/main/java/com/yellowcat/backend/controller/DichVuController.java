@@ -4,8 +4,11 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.yellowcat.backend.DTO.DichVuDTO;
 import com.yellowcat.backend.model.Dichvu;
+import com.yellowcat.backend.model.TuyChonDichVu;
 import com.yellowcat.backend.service.CloudinaryService;
 import com.yellowcat.backend.service.DichVuService;
+import com.yellowcat.backend.service.TuyChonCanNangService;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
@@ -28,10 +31,12 @@ public class DichVuController {
     private final CloudinaryService cloudinaryService;
 
     private final DichVuService dichVuService;
+    private final TuyChonCanNangService tuyChonCanNangService;
 
-    public DichVuController(CloudinaryService cloudinaryService, DichVuService dichVuService) {
+    public DichVuController(CloudinaryService cloudinaryService, DichVuService dichVuService, TuyChonCanNangService tuyChonCanNangService) {
         this.cloudinaryService = cloudinaryService;
         this.dichVuService = dichVuService;
+        this.tuyChonCanNangService = tuyChonCanNangService;
     }
 
     @RequestMapping("/all")
@@ -125,4 +130,17 @@ public class DichVuController {
         dichVuService.addOrUpdateDichVu(dichvu);
         return ResponseEntity.ok(dichvu);
     }
+
+    @PreAuthorize("hasAnyRole('admin')")
+    @PutMapping("/update-trang-thai-tuy-chon/{id}")
+    public ResponseEntity<?> updateTrangThaiTC(@PathVariable Integer id) {
+        return dichVuService.doittTC(id);
+    }
+
+    @PreAuthorize("hasAnyRole('admin')")
+    @PutMapping("/update-trang-thai-can-nang/{id}")
+    public ResponseEntity<?> updateTrangThaiCN(@PathVariable Integer id) {
+        return dichVuService.doittCN(id);
+    }
+
 }
