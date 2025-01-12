@@ -125,6 +125,7 @@ const fileInput = ref<HTMLInputElement | null>(null);
           id="fileUpdate"
           accept="image/*"
         />
+        <img v-if="editedService.anh" :src="editedService.anh" alt="Service Image">
       </div>
 
       <div class="mb-3">
