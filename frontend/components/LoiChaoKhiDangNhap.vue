@@ -26,24 +26,21 @@ const userInfo = computed(() => {
     petInfo
   }
 })
-
+const dichVuJson = JSON.stringify(serviceStore.services);
 onMounted(async () => {
   try {
-    try {
-      await lamMoiThongTinNguoiDung();
-    }catch (error) {
-
-    }
-    await serviceStore.fetchServices()
     let prompt
     if (userInfo.value) {
       prompt = `Chào mừng chủ nhân ${userInfo.value.name} có thú cưng ${userInfo.value.petInfo} đến với PetHaven. Mình xin phép gọi bạn bằng một biệt danh kèm icon  dựa trên thông tin  của bạn  để phù hợp với thú cưng một tên thật dễ thương đáng yêu nha.
         Mình tên là Yellow Cat. Nhân viên cửa hàng PetHaven. Mình rất vui được phục vụ bạn và thú cưng của bạn. 🐾
-        Đây là dịch vụ cửa hàng mình ${serviceStore.services} và giải thích vì sao nên sử dụng dịch vụ đó một cách dễ thương đáng yêu..
+        Đây là dịch vụ cửa hàng mình ${dichVuJson} và giải thích vì sao nên sử dụng dịch vụ đó một cách dễ thương đáng yêu..
+        Hãy trả lời thật ngắn gọn nhưng đầy đủ thông tin nha bạn yêu.
       `
     } else {
       prompt = `Chào mừng chủ nhân đến với PetHaven! Mình tên là Yellow Cat. Mình rất vui được phục vụ bạn và thú cưng của bạn. 🐾
-      Đây là dịch vụ cửa hàng mình ${serviceStore.services}   và giải thích vì sao nên sử dụng dịch vụ đó một cách dễ thương đáng yêu..`
+      Đây là dịch vụ cửa hàng mình ${dichVuJson}   và giải thích vì sao nên sử dụng dịch vụ đó một cách dễ thương đáng yêu..
+      Hãy trả lời thật ngắn gọn nhưng đầy đủ thông tin nha bạn yêu.
+      `
     }
     greeting.value = await aiStore.sendMessage(prompt)
   } catch (error) {
@@ -51,11 +48,13 @@ onMounted(async () => {
     if (userInfo.value) {
       greeting.value = `Chào mừng chủ nhân ${userInfo.value.name}  có thú cưng ${userInfo.value.petInfo} đến với PetHaven. Mình xin phép gọi bạn bằng một biệt danh kèm icon  dựa trên thông tin  của bạn  để phù hợp với thú cưng một tên thật dễ thương đáng yêu nha.
         Mình tên là Yellow Cat. Nhân viên cửa hàng PetHaven. Mình rất vui được phục vụ bạn và thú cưng của bạn. 🐾
-        Đây là dịch vụ cửa hàng mình ${serviceStore.services} và giải thích vì sao nên sử dụng dịch vụ đó một cách dễ thương đáng yêu..
+        Đây là dịch vụ cửa hàng mình ${dichVuJson} và giải thích vì sao nên sử dụng dịch vụ đó một cách dễ thương đáng yêu..
+        Hãy trả lời thật ngắn gọn nhưng đầy đủ thông tin nha bạn yêu.
       `
     } else {
       greeting.value = `Chào mừng chủ nhân đến với PetHaven! Mình tên là Yellow Cat. Mình rất vui được phục vụ bạn và thú cưng của bạn. 🐾
-      Đây là dịch vụ cửa hàng mình ${serviceStore.services}   và giải thích vì sao nên sử dụng dịch vụ đó một cách dễ thương đáng yêu..`
+      Đây là dịch vụ cửa hàng mình ${dichVuJson}   và giải thích vì sao nên sử dụng dịch vụ đó một cách dễ thương đáng yêu..
+      Hãy trả lời thật ngắn gọn nhưng đầy đủ thông tin nha bạn yêu.`
     }
   } finally {
     isLoading.value = false
@@ -65,44 +64,6 @@ onMounted(async () => {
 function tiepTucChat() {
   return navigateTo('/chat');
 }
-
-async function lamMoiThongTinNguoiDung() {
-  const refreshToken = localStorage.getItem('refresh_token');
-  if (!refreshToken) {
-    return navigateTo('/');
-  }
-
-  const url = 'http://localhost:9082/realms/spring/protocol/openid-connect/token';
-  const params = new URLSearchParams({
-    grant_type: 'refresh_token',
-    refresh_token: refreshToken,
-    client_id: 'PetHaven',
-    client_secret: 'GuFIaAADNfBUpuahqxLvMPWzqt6g8fRL',
-  });
-  try {
-    const response = await fetch(url, {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/x-www-form-urlencoded',
-      },
-      body: params.toString()
-    });
-
-    if (!response.ok) {
-      // return navigateTo('/');
-    }
-
-    const data = await response.json();
-    localStorage.setItem('access_token', data.access_token);
-    localStorage.setItem('refresh_token', data.refresh_token);
-
-
-    return;
-  } catch (error) {
-    // return navigateTo('/');
-  }
-}
-
 </script>
 
 <template>
@@ -111,7 +72,7 @@ async function lamMoiThongTinNguoiDung() {
       <i class="fas fa-spinner fa-spin me-2"></i> {{t('wait_a_minute_master_I_m_thinking')}} 🤔💭🧠
     </div>
     <div v-else class="greeting">
-      <div class="text fs-4 justify-content-around">
+      <div class="text fs-6 justify-content-around">
         {{ greeting }}
       </div>
       <button class="custom-button" @click="tiepTucChat">

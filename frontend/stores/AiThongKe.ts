@@ -74,32 +74,7 @@ export const useAIThongKeStore = defineStore('ai', () => {
         await lichHenStore.fetchAppointments();
     };
 
-    const fetchThongKeData = async (startDate: string, endDate: string) => {
-        try {
-            const responseNgay = await fetch('/api/thong-ke/ngay', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                },
-                body: JSON.stringify({ startDate, endDate }),
-            });
-            const dataNgay = await responseNgay.json();
 
-            const responseThang = await fetch('/api/thong-ke/thang', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                },
-                body: JSON.stringify({ startDate, endDate }),
-            });
-            const dataThang = await responseThang.json();
-
-            detailedStats.value.doanhThuTheoDichVu = dataNgay.data;
-            detailedStats.value.thuCungTheoLoai = dataThang.data;
-        } catch (error) {
-            console.error('Error fetching statistics data:', error);
-        }
-    };
 
     onMounted(async () => {
         loadChatHistory();
@@ -112,7 +87,6 @@ export const useAIThongKeStore = defineStore('ai', () => {
         sendMessage,
         context,
         fetchData,
-        fetchThongKeData,
         detailedStats
     };
 });

@@ -5,13 +5,14 @@ import { useAIThongKeStore } from '~/stores/AiThongKe';
 import DichVu from "~/models/DichVu";
 import {useServiceStore} from "~/stores/DichVuStores";
 import {useVoucherStore} from "~/stores/VorchersStores";
+import {useThongKeStore} from '~/stores/ThongKeStores'
 import { useI18n } from 'vue-i18n';
 const { t } = useI18n();
 
 const useQuanLyAdmin = useQuanLyLichHenAdminStore();
 const aiStore = useAIThongKeStore();
-const aiThongKeStore = useAIThongKeStore();
 
+const thongKe = useThongKeStore();
 const lichhen = ref([]);
 const userInput = ref('');
 const chatHistory = ref([]);
@@ -41,60 +42,86 @@ const getInitialSummary = async () => {
   chatHistory.value.push({ role: 'thinking', content: t('wait_a_minute_master_I_m_thinking') });
 
   try {
+    // Lấy dữ liệu từ các nguồn khác nhau
     const dataForAnalysis = JSON.stringify(lichhen.value);
     const dichVuForAnalysis = JSON.stringify(services.value);
     const khuyenMaiForAnalysis = JSON.stringify(vouchers.value);
+    
+    // Lấy thêm dữ liệu từ ThongKeStore
+    const startDate = '2000-01-01';
+    const endDate = new Date().toISOString().split('T')[0];
+    
+    await thongKe.getUserThongKeTheoNgay(startDate, endDate);
+    await thongKe.getDoanhThuTheoDichVu(startDate, endDate);
+    
+    const thongKeDataForAI = {
+      doanhThuTheoNgay: thongKe.thongKeItems,
+      doanhThuDichVu: thongKe.doanhThuDichVu,
+      thongTinKinhDoanh: thongKeData.value
+    };
+
     const prompt = `
     Bạn là một chuyên gia phân tích dữ liệu cho cửa hàng thú cưng PetHaven.
-    Phân tích dữ liệu sau đây và cung cấp bản về các số liệu kinh doanh chính: === ${dataForAnalysis}  === ${thongKeData}
-     Chú giải:
-            """
-            0: Trạng thái thành công,
-            1: Trạng thái đã thay đổi,
-            2: Trạng thái đã hủy,
-            3: Trạng thái đang chờ thanh toán,
-            4: Trạng thái đang chờ xác nhận,
-            5: Trạng thái trống,
-            6: Trạng thái thanh toán thành công,
-            7: Trạng thái đã hoàn tiền,
-            8: Trạng thái đang chờ dịch vụ
-            """
-     Dịch vụ có trong cửa hàng
-     === ${dichVuForAnalysis}
-     Các voucher có trong cửa hàng
-     === ${ khuyenMaiForAnalysis } ====
-     Hãy tuân thủ các quy tắc sau:
+    Phân tích các dữ liệu sau đây và cung cấp bản về các số liệu kinh doanh chính:
+    
+    1. Dữ liệu lịch hẹn và hóa đơn: 
+    ${dataForAnalysis}
+    
+    2. Dữ liệu thống kê:
+    ${JSON.stringify(thongKeDataForAI, null, 2)}
+    
+    3. Dịch vụ có trong cửa hàng:
+    ${dichVuForAnalysis}
+    
+    4. Các voucher có trong cửa hàng:
+    ${khuyenMaiForAnalysis}
 
-            1. Phân tích và tổng hợp dữ liệu về dịch vụ, khuyến mãi, và lịch hẹn của khách hàng.
-            2. Đưa ra các nhận xét và xu hướng dựa trên dữ liệu được cung cấp.
-            3. Tập trung vào các chỉ số quan trọng như doanh thu, tần suất sử dụng dịch vụ, và hiệu quả của các chương trình khuyến mãi.
-            4. Đề xuất các chiến lược để cải thiện hiệu suất kinh doanh dựa trên phân tích dữ liệu.
-            5. Sử dụng các số liệu cụ thể khi có thể để hỗ trợ các nhận định.
-            6. Nếu không có đủ dữ liệu để đưa ra kết luận chính xác, hãy nêu rõ và đề xuất cách thu thập thêm dữ liệu.
-     =================
-     Hãy trả lời chủ cửa hàng thú cưng PetHaven một cách đầy đủ nhất có thể.
+    Chú giải trạng thái:
+    """
+    0: Trạng thái thành công
+    1: Trạng thái đã thay đổi
+    2: Trạng thái đã hủy
+    3: Trạng thái đang chờ thanh toán
+    4: Trạng thái đang chờ xác nhận
+    5: Trạng thái trống
+    6: Trạng thái thanh toán thành công
+    7: Trạng thái đã hoàn tiền
+    8: Trạng thái đang chờ dịch vụ
+    """
+
+    Hãy tuân thủ các quy tắc sau:
+    1. Phân tích và tổng hợp tất cả các nguồn dữ liệu trên.
+    2. Đưa ra các nhận xét về:
+       - Doanh thu theo từng dịch vụ và xu hướng
+       - Top khách hàng và hành vi của họ
+       - Hiệu quả của các chương trình khuyến mãi
+       - Tỷ lệ hủy/thay đổi lịch hẹn
+    3. Đề xuất các chiến lược cụ thể để:
+       - Tăng doanh thu cho các dịch vụ hiệu quả thấp
+       - Giữ chân top khách hàng
+       - Cải thiện tỷ lệ hoàn thành lịch hẹn
+    4. Sử dụng số liệu cụ thể để hỗ trợ các nhận định
+    5. Nếu phát hiện điểm bất thường trong dữ liệu, hãy nêu rõ
+
+    Hãy trả lời một cách ngắn gọn, súc tích nhưng đầy đủ thông tin quan trọng.
     `;
 
     const response = await aiStore.sendMessage(prompt);
-    chatHistory.value.pop(); // Remove the thinking message
+    chatHistory.value.pop();
     chatHistory.value.push({ role: 'ai', content: response });
   } catch (error) {
     console.error("Error getting initial summary:", error);
-    chatHistory.value.pop(); // Remove the thinking message
+    chatHistory.value.pop();
     chatHistory.value.push({ role: 'system', content: 'Xin lỗi, có lỗi xảy ra khi tạo tóm tắt ban đầu.' });
   } finally {
     isLoading.value = false;
     isThinking.value = false;
   }
 };
-const loadThongKeData = async () => {
-  const result = await aiStore.fetchThongKeData('2000-01-01', '2050-01-31');
-  thongKeData.value = result?.doanhThuTheoDichVu || [];
-};
+
 
 onMounted(async () => {
   await loadData();
-  await loadThongKeData();
 });
 
 const sendMessageToAI = async () => {
@@ -107,17 +134,43 @@ const sendMessageToAI = async () => {
 
   try {
     chatHistory.value.push({ role: 'thinking', content: t('analyzing_data') });
+    
+    // Cập nhật dữ liệu mới nhất
+    const startDate = '2000-01-01';
+    const endDate = new Date().toISOString().split('T')[0];
+    
+    await thongKe.getUserThongKeTheoNgay(startDate, endDate);
+    await thongKe.getTop10User(startDate, endDate);
+    await thongKe.getDoanhThuTheoDichVu(startDate, endDate);
+    
+    const thongKeDataForAI = {
+      doanhThuTheoNgay: thongKe.thongKeItems,
+      top10Users: thongKe.topUsers,
+      doanhThuDichVu: thongKe.doanhThuDichVu,
+      thongTinKinhDoanh: thongKeData.value
+    };
 
-    // Prepare the data for AI analysis
     const dataForAnalysis = JSON.stringify(lichhen.value);
-    const prompt = `Phân tích dữ liệu sau đây và cung cấp số liệu kinh doanh: ${dataForAnalysis}\n\nUser question: ${userMessage}`;
+    const prompt = `
+    Dựa trên dữ liệu sau đây:
+    
+    1. Dữ liệu lịch hẹn và hóa đơn: 
+    ${dataForAnalysis}
+    
+    2. Dữ liệu thống kê:
+    ${JSON.stringify(thongKeDataForAI, null, 2)}
+    
+    Câu hỏi của người dùng: ${userMessage}
+    
+    Hãy trả lời câu hỏi trên dựa vào dữ liệu được cung cấp. Nếu câu hỏi liên quan đến doanh thu hoặc hiệu quả kinh doanh, hãy sử dụng số liệu cụ thể để minh họa.
+    `;
 
     const response = await aiStore.sendMessage(prompt);
-    chatHistory.value.pop(); // Remove the thinking message
+    chatHistory.value.pop();
     chatHistory.value.push({ role: 'ai', content: response });
   } catch (error) {
-    console.error("Xin lỗi, có lỗi xảy ra khi xử lý yêu cầu của bạn:", error);
-    chatHistory.value.pop(); // Remove the thinking message
+    console.error("Error:", error);
+    chatHistory.value.pop();
     chatHistory.value.push({ role: 'system', content: 'Xin lỗi, có lỗi xảy ra khi xử lý yêu cầu của bạn.' });
   } finally {
     isLoading.value = false;

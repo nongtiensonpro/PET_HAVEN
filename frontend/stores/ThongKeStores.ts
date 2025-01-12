@@ -1,4 +1,3 @@
-
 interface ThongKeItem {
     date: Date;
     amount: number;
@@ -8,7 +7,8 @@ export const useThongKeStore = defineStore('thongKe', {
     state: () => ({
         thongKeItems: [] as ThongKeItem[],
         error: null as string | null,
-        topUsers: [] as { userId: any, totalAmount: number }[]
+        topUsers: [] as { userId: any, totalAmount: number }[],
+        doanhThuDichVu: [] as { tenDichVu: string, doanhThu: number }[]
     }),
     actions: {
         async getUserThongKeTheoNgay(ngayBatDau: string, ngayKetThuc: string) {
@@ -194,6 +194,75 @@ export const useThongKeStore = defineStore('thongKe', {
                 this.error = error instanceof Error ? error.message : 'An unknown error occurred';
                 throw error;
             }
-        }
+        },
+        async thongTinKinhDoanh(startDate: string, endDate: string) {
+            try {
+                const responseNgay = await fetch('/api/thong-ke/ngay', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({startDate, endDate}),
+                });
+                const dataNgay = await responseNgay;
+
+                const responseThang = await fetch('/api/thong-ke/thang', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({startDate, endDate}),
+                });
+                const dataThang = await responseThang;
+                console.log(dataNgay + '=====' + dataThang);
+                return  dataNgay + '=====' +dataThang;
+            } catch (error) {
+                console.error('Error fetching statistics data:', error);
+            }
+        },
+        async getDoanhThuTheoDichVu(ngayBatDau: string, ngayKetThuc: string) {
+            this.error = null;
+            try {
+                const token = localStorage.getItem('access_token');
+                if (!token) {
+                    throw new Error('No access token found');
+                }
+
+                const url = new URL('http://localhost:8080/api/thong-ke/doanh-thu-theo-dich-vu');
+
+                const response = await fetch(url, {
+                    method: 'POST',
+                    headers: {
+                        'Authorization': `Bearer ${token}`,
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({
+                        'startDate': ngayBatDau,
+                        'endDate': ngayKetThuc
+                    })
+                });
+
+                if (!response.ok) {
+                    const errorBody = await response.text();
+                    console.error('Error response:', errorBody);
+                    throw new Error(`HTTP error! status: ${response.status}, body: ${errorBody}`);
+                }
+
+                const responseData = await response.json();
+                if (responseData.data) {
+                    this.doanhThuDichVu = Object.entries(responseData.data).map(([tenDichVu, doanhThu]: [string, any]) => ({
+                        tenDichVu,
+                        doanhThu
+                    }));
+                } else {
+                    console.error('Unexpected data format:', responseData);
+                    throw new Error('Unexpected data format received from server');
+                }
+            } catch (error) {
+                console.error('Error fetching doanh thu theo dich vu:', error);
+                this.error = error instanceof Error ? error.message : 'An unknown error occurred';
+                throw error;
+            }
+        },
     },
 });
