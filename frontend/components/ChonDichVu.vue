@@ -3,7 +3,7 @@
     <div class="card-header">
       <div class="row">
         <div class="col">
-          <button v-for="option in serviceOptions"
+          <button v-for="option in activeServiceOptions"
                   :key="option.id"
                   type="button"
                   class="custom-button me-2 mb-2"
@@ -15,10 +15,10 @@
       </div>
     </div>
     <div class="card-body">
-      <div v-for="option in serviceOptions" :key="option.id">
+      <div v-for="option in activeServiceOptions" :key="option.id">
         <div v-if="selectedOption === option.id">
           <div class="d-flex flex-wrap">
-            <button v-for="weight in option.tuyChonCanNangs"
+            <button v-for="weight in activeWeightOptions(option)"
                     :key="weight.id"
                     class="custom-button me-2 mb-2"
                     :class="{ 'selected': selectedWeight && selectedWeight.id === weight.id }"
@@ -37,7 +37,7 @@
 </template>
 
 <script setup lang="ts">
-import { ref, onMounted, watch } from 'vue';
+import { ref, onMounted, watch, computed } from 'vue';
 
 const props = defineProps({
   serviceOptions: {
@@ -49,15 +49,28 @@ const props = defineProps({
 const selectedOption = ref<number | null>(null);
 const selectedWeight = ref<any>(null);
 
+const activeServiceOptions = computed(() => {
+  return props.serviceOptions.filter(option => option.trangthai);
+});
+
+const activeWeightOptions = (option) => {
+  return option.tuyChonCanNangs.filter(weight => weight.trangthai);
+};
+
 const toggleOption = (optionId: number) => {
   selectedOption.value = optionId;
   selectFirstWeight();
 };
 
 const selectFirstWeight = () => {
-  const selectedOptionData = props.serviceOptions.find(option => option.id === selectedOption.value);
-  if (selectedOptionData && selectedOptionData.tuyChonCanNangs.length > 0) {
-    selectedWeight.value = selectedOptionData.tuyChonCanNangs[0];
+  const selectedOptionData = activeServiceOptions.value.find(option => option.id === selectedOption.value);
+  if (selectedOptionData) {
+    const activeWeights = activeWeightOptions(selectedOptionData);
+    if (activeWeights.length > 0) {
+      selectedWeight.value = activeWeights[0];
+    } else {
+      selectedWeight.value = null;
+    }
   } else {
     selectedWeight.value = null;
   }
@@ -79,15 +92,15 @@ const formatCurrency = (value: number): string => {
 };
 
 onMounted(() => {
-  if (props.serviceOptions.length > 0) {
-    selectedOption.value = props.serviceOptions[0].id;
+  if (activeServiceOptions.value.length > 0) {
+    selectedOption.value = activeServiceOptions.value[0].id;
     selectFirstWeight();
   }
 });
 
-watch(() => props.serviceOptions, (newOptions) => {
-  if (newOptions.length > 0 && !selectedOption.value) {
-    selectedOption.value = newOptions[0].id;
+watch(() => props.serviceOptions, () => {
+  if (activeServiceOptions.value.length > 0 && !selectedOption.value) {
+    selectedOption.value = activeServiceOptions.value[0].id;
     selectFirstWeight();
   }
 }, { immediate: true });

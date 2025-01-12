@@ -343,4 +343,6 @@ export default {
     print_invoice:'In hóa đơn',
     invoice_information_not_found:'Không tìm thấy thông tin hóa đơn',
     no_value:'Không có giá trị',
+    status_update_error:'Cập nhật trạng thái thất bại!',
+    status_updated_successfully:'Cập nhật trạng thái thành công!',
 }as const;

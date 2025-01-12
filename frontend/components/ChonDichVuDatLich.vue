@@ -3,7 +3,7 @@
     <div class="card-header">
       <h2 class="mb-3">{{ t('chooseService') }}</h2>
       <div class="service-buttons-container">
-        <button v-for="dichVu in listDichVu"
+        <button v-for="dichVu in activeDichVus"
                 :key="dichVu.id"
                 type="button"
                 class="custom-button"
@@ -22,7 +22,7 @@
         <div class="mt-3">
           <h4>{{ t('serviceOptions') }}</h4>
           <div class="d-flex flex-wrap">
-            <button v-for="option in selectedService.tuyChonDichVus"
+            <button v-for="option in activeTuyChonDichVus"
                     :key="option.id"
                     class="custom-button me-2 mb-2"
                     :class="{ 'selected': isTuyChonDichVuSelected(option) }"
@@ -36,7 +36,7 @@
         <div class="mt-3">
           <h4>{{ t('weightOptions') }}</h4>
           <div class="d-flex flex-wrap">
-            <button v-for="option in selectedTuyChonDichVu.tuyChonCanNangs"
+            <button v-for="option in activeTuyChonCanNangs"
                     :key="option.id"
                     class="custom-button me-2 mb-2"
                     :class="{ 'selected': isTuyChonCanNangSelected(option) }"
@@ -72,13 +72,22 @@ const selectedService = ref<DichVu | null>(null);
 const selectedTuyChonDichVu = ref<any>(null);
 const selectedTuyChonCanNang = ref<any>(null);
 const emit = defineEmits(['serviceSelected']);
-const hasTuyChonDichVus = computed(() =>
-  selectedService.value?.tuyChonDichVus && selectedService.value.tuyChonDichVus.length > 0
+
+const activeDichVus = computed(() =>
+  listDichVu.value.filter(dichVu => dichVu.trangthai && dichVu.hien)
 );
 
-const hasTuyChonCanNangs = computed(() =>
-  selectedTuyChonDichVu.value && selectedTuyChonDichVu.value.tuyChonCanNangs
+const activeTuyChonDichVus = computed(() =>
+  selectedService.value?.tuyChonDichVus.filter(option => option.trangthai) || []
 );
+
+const activeTuyChonCanNangs = computed(() =>
+  selectedTuyChonDichVu.value?.tuyChonCanNangs.filter(option => option.trangthai) || []
+);
+
+const hasTuyChonDichVus = computed(() => activeTuyChonDichVus.value.length > 0);
+
+const hasTuyChonCanNangs = computed(() => activeTuyChonCanNangs.value.length > 0);
 
 const canConfirm = computed(() =>
   selectedService.value && selectedTuyChonDichVu.value && selectedTuyChonCanNang.value

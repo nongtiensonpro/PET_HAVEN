@@ -275,6 +275,42 @@ export const useServiceStore = defineStore('serviceStore', {
                 console.error('Lỗi khi cập nhật dịch vụ:', error);
                 throw error;
             }
+        },
+        async doiTrangThaiTuyChonDichVu(id : number){
+            try {
+                const response = await fetch('http://localhost:8080/api/dich-vu/update-trang-thai-tuy-chon/'+id,{
+                    method: 'PUT',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Authorization': `Bearer ${localStorage.getItem('access_token')}`
+                    },
+                });
+                if (!response.ok) {
+                    throw new Error(`Error: ${response.statusText}`);
+                }
+                await this.fetchServices();
+                return { success: true, message: 'Cập nhật trạng thái tuy chọn dịch vụ thành công' };
+            } catch (error) {
+                return { success: false, message: 'Cập nhật trạng thái tuy chọn dịch vụ thất bại' };
+            }
+        },
+        async doiTrangThaiTuyChonCanNang(id : number){
+            try {
+                const response = await fetch('http://localhost:8080/api/dich-vu/update-trang-thai-can-nang/'+id,{
+                    method: 'PUT',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Authorization': `Bearer ${localStorage.getItem('access_token')}`
+                    },
+                });
+                if (!response.ok) {
+                    throw new Error(`Error: ${response.statusText}`);
+                }
+                await this.fetchServices();
+                return { success: true, message: 'Cập nhật trạng thái tuy cân nặng vụ thành công' };
+            } catch (error) {
+                return { success: false, message: 'Cập nhật trạng thái tuy chọn cân nặng thất bại' };
+            }
         }
     },
 });

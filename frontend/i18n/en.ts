@@ -347,4 +347,6 @@ export default {
   print_invoice:'Print Invoice',
   invoice_information_not_found:'Invoice information not found',
   no_value:'No value',
+  status_update_error:'Error updating status',
+  status_updated_successfully:'Status updated successfully',
 }as const;
