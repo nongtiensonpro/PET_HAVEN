@@ -60,11 +60,11 @@ onMounted(async () => {
 function setDefaultGreeting() {
   if (userInfo.value) {
     greeting.value = `Xin chào ${userInfo.value.name}${userInfo.value.petInfo ? ` và ${userInfo.value.petInfo}` : ''}!
-    Chào mừng bạn đến với PetHaven. Chúng tôi hy vọng bạn sẽ thích dịch vụ "${props.service.tendichvu}" của chúng tôi. ${t('always_reply_in_english')}.🐾`
+    Chào mừng bạn đến với PetHaven. Chúng tôi hy vọng bạn sẽ thích dịch vụ "${props.service.tendichvu}" của chúng tôi.🐾`
   } else {
     greeting.value = `Chào mừng quý khách đến với PetHaven!
     Chúng tôi rất vui được phục vụ bạn và thú cưng của bạn.
-    Dịch vụ "${props.service.tendichvu}" của chúng tôi đang chờ đón bạn. ${t('always_reply_in_english')}.🐾`
+    Dịch vụ "${props.service.tendichvu}" của chúng tôi đang chờ đón bạn .🐾`
   }
 }
 

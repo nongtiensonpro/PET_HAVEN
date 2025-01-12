@@ -79,7 +79,7 @@
         <div v-html="selectedTuyChonDichVu.mota"></div>
       </div>
       <div>
-        <h4>Ghi chú</h4>
+        <h4>{{t('note')}}</h4>
         <textarea v-model="ghichu" cols="30" rows="10"></textarea>
       </div>
       <button @click="doiDichVu" class="custom-button mt-3" :disabled="!canConfirm">

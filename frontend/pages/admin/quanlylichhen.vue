@@ -45,7 +45,7 @@
                     </button>
                   </div>
                   <div class="col">
-                    <button type="button" class="btn btn-sm btn-outline-info" @click="viewHoaDon(lichhen.idcalichhen.id)">
+                    <button type="button" class="btn btn-sm btn-outline-info" @click="viewHoaDon(lichhen.id)">
                       {{ t('viewDetails') }}
                     </button>
                   </div>

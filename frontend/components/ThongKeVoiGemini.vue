@@ -46,7 +46,7 @@ const getInitialSummary = async () => {
     const khuyenMaiForAnalysis = JSON.stringify(vouchers.value);
     const prompt = `
     Bạn là một chuyên gia phân tích dữ liệu cho cửa hàng thú cưng PetHaven.
-    Phân tích dữ liệu sau đây và cung cấp bản về các số liệu kinh doanh chính: === ${dataForAnalysis}
+    Phân tích dữ liệu sau đây và cung cấp bản về các số liệu kinh doanh chính: === ${dataForAnalysis}  === ${thongKeData}
      Chú giải:
             """
             0: Trạng thái thành công,
@@ -88,8 +88,8 @@ const getInitialSummary = async () => {
   }
 };
 const loadThongKeData = async () => {
-  await aiThongKeStore.fetchThongKeData('2000-01-01', '2050-01-31'); // Example dates
-  thongKeData.value = aiThongKeStore.detailedStats.doanhThuTheoDichVu;
+  const result = await aiStore.fetchThongKeData('2000-01-01', '2050-01-31');
+  thongKeData.value = result?.doanhThuTheoDichVu || [];
 };
 
 onMounted(async () => {
