@@ -131,7 +131,8 @@ CREATE TABLE HoaDonDoiDichVu
     GhiChu              VARCHAR(1000),
     TrangThai           INT            not null,
     NguoiThanhToan      VARCHAR(255),
-    TrangThaiThanhToan         BOOLEAN
+    TrangThaiThanhToan         BOOLEAN,
+    NgayTao             DATE
 );
 -- 1: Hoàn tiền
 -- 2: Nhận tiền
