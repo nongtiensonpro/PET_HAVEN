@@ -140,7 +140,6 @@ const sendMessageToAI = async () => {
     const endDate = new Date().toISOString().split('T')[0];
     
     await thongKe.getUserThongKeTheoNgay(startDate, endDate);
-    await thongKe.getTop10User(startDate, endDate);
     await thongKe.getDoanhThuTheoDichVu(startDate, endDate);
     
     const thongKeDataForAI = {
