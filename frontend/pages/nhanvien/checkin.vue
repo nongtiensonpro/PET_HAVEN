@@ -230,10 +230,10 @@ const getTrangThai = (status: number): string => {
 
 const getTrangThaiHoaDon = (status: number): string => {
   const trangThaiMap: { [key: number]: string } = {
-    0: t('invoicePaid'),
+    2: t('invoicePaid'),
     1: t('invoicePending'),
-    2: t('invoiceCancelled'),
-    3: t('invoiceRefunded')
+    3: t('invoiceCancelled'),
+    4: t('invoiceRefunded')
   };
   return trangThaiMap[status] || t('statusUnknown');
 };

@@ -3,7 +3,9 @@ package com.yellowcat.backend.service;
 import com.yellowcat.backend.DTO.ThongKeResponDTO;
 import com.yellowcat.backend.model.*;
 import com.yellowcat.backend.repository.HoadonRepository;
+import com.yellowcat.backend.repository.HoadondoidichvuRepository;
 import com.yellowcat.backend.repository.TuyChonCanNangRepository;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -22,6 +24,8 @@ public class HoaDonService {
     private final GiamGiaService giamGiaService;
     private final EmailService emailService;
     private final TuyChonCanNangRepository tuyChonCanNangRepository;
+    @Autowired
+    HoadondoidichvuRepository hoadondoidichvuRepository;
 
     private static final String CHARACTERS = "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
     private static final int LENGTH = 17;
@@ -88,7 +92,7 @@ public class HoaDonService {
 
 
     public List<Hoadon> getAllHoaDonChuaThanhToan() {
-        return hoadonRepository.findByIdlichhen_DateAndIdlichhen_Trangthaica(LocalDate.now(),true);
+        return hoadonRepository.findByIdlichhen_DateAndIdlichhen_TrangthaicaAndIdlichhen_TrangthaiNot(LocalDate.now(),true,2);
     }
 
     public List<Hoadon> getALl() {

@@ -22,11 +22,11 @@ public class Hoadondoidichvu {
     @Column(name = "magiaodich", nullable = false)
     private String magiaodich;
 
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "idhoadon")
     private Hoadon idhoadon;
 
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "idtuychoncannang")
     private TuyChonCanNang idtuychoncannang;
 
@@ -57,6 +57,17 @@ public class Hoadondoidichvu {
     @JsonProperty
     @Column(name = "trangthaithanhtoan")
     private Boolean trangthaithanhtoan;
+
+    @Column(name = "ngaytao")
+    private LocalDate ngaytao;
+
+    public LocalDate getNgaytao() {
+        return ngaytao;
+    }
+
+    public void setNgaytao(LocalDate ngaytao) {
+        this.ngaytao = ngaytao;
+    }
 
     public Boolean getTrangthaithanhtoan() {
         return trangthaithanhtoan;

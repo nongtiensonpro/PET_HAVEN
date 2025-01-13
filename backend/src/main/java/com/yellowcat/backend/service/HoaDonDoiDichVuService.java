@@ -57,7 +57,7 @@ public class HoaDonDoiDichVuService {
         Hoadon hoadon = hoadonOptional.get();
 
         float SoTienChenhLech = (float) (tuyChonCanNang.getGiatien() - hoadon.getIdlichhen().getTuyChonCanNang().getGiatien());
-
+        System.out.println(SoTienChenhLech);
 
             Hoadondoidichvu hoadondoidichvu = new Hoadondoidichvu();
             hoadondoidichvu.setIdhoadon(hoadon);
@@ -70,11 +70,12 @@ public class HoaDonDoiDichVuService {
             hoadondoidichvu.setSotien(Double.valueOf(Math.abs(SoTienChenhLech)));
             hoadondoidichvu.setNgaythanhtoan(LocalDate.now());
             hoadondoidichvu.setTrangthaithanhtoan(false);
+            hoadondoidichvu.setNgaytao(LocalDate.now());
 
             if (SoTienChenhLech <0){
-                hoadondoidichvu.setTrangthai(2);
-            }else {
                 hoadondoidichvu.setTrangthai(1);
+            }else {
+                hoadondoidichvu.setTrangthai(2);
             }
             hoadondoidichvu.setNguoithanhtoan(nguoiThanhToan);
             lichhen.setTuyChonCanNang(tuyChonCanNang);
@@ -93,12 +94,16 @@ public class HoaDonDoiDichVuService {
             return ResponseEntity.notFound().build();
         }
         Hoadondoidichvu hoadondoidichvu = hoadondoidichvuOptional.get();
+        if (hoadondoidichvu.getTrangthaithanhtoan()){
+            return ResponseEntity.notFound().build();
+        }
 
         if (hoadondoidichvu.getTrangthai() == 1){ // hoàn tiền nếu trạng thái là 1 (hoàn tiền)
             Refund refund = payPalService.refundPayment(hoadondoidichvu.getIdhoadon().getMagiaodich(), hoadondoidichvu.getSotien(), "USD");
             System.out.println(refund);
             if ("completed".equals(refund.getState())) {
                 hoadondoidichvu.setTrangthaithanhtoan(true);
+                hoadondoidichvu.setNgaythanhtoan(LocalDate.now());
                 hoadondoidichvuRepository.save(hoadondoidichvu);
             } else {
                 return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
@@ -106,6 +111,7 @@ public class HoaDonDoiDichVuService {
             }
         }else {
             hoadondoidichvu.setTrangthaithanhtoan(true);
+            hoadondoidichvu.setNgaythanhtoan(LocalDate.now());
             hoadondoidichvuRepository.save(hoadondoidichvu);
         }
         return ResponseEntity.ok(hoadondoidichvu);
