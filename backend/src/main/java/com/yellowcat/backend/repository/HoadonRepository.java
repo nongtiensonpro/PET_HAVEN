@@ -11,11 +11,13 @@ import java.util.Optional;
 
 public interface HoadonRepository extends JpaRepository<Hoadon, Integer> {
 
-    List<Hoadon> findByIdlichhen_DateAndIdlichhen_Trangthaica(LocalDate date,boolean tt);
+    List<Hoadon> findByIdlichhen_DateAndIdlichhen_TrangthaicaAndIdlichhen_TrangthaiNot(LocalDate date,boolean tt,int TT);
 
     @Query("SELECT h FROM Hoadon h WHERE h.nguoithanhtoan = :email " +
             "AND h.phuongthucthanhtoan = 'Offline' " +
-            "AND h.date = :date ")
+            "AND h.date = :date " +
+            "AND h.idlichhen.trangthai != 2"
+    )
     List<Hoadon> findByNguoithanhtoanAndPhuongthucthanhtoan(@Param("email") String email
     , @Param("date") LocalDate date);
     Optional<Hoadon> findByIdlichhen_IdAndTrangthai(Integer idlichhen,int tt);
