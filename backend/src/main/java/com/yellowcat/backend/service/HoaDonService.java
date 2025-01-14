@@ -150,14 +150,15 @@ public class HoaDonService {
         hoadonRepository.deleteById(id);
     }
 
-    @Async
+
     public void sendHoaDonSauThanhToan(Lichhen lichhen, byte[] pdfBytes) {
         try {
             // Nội dung email
             String subject = "Hóa đơn thanh toán";
-            String body = "Cảm ơn bạn đã đặt lịch của chúng tôi. Vui lòng xem hóa đơn đính kèm." +
-                    "Nếu gặp bất kì vấn đề gì vui lòng liên hệ fanpage hoặc sdt: 0906194201" +
-                    "Nếu trong hôm nay bạn không liên hệ với chúng tôi, lịch của bạn sẽ bị hủy và được hoàn 80% giá trị hóa đơn";
+            String body = "Cảm ơn bạn đã đặt lịch của chúng tôi. Vui lòng xem hóa đơn đính kèm.<br><br>" +
+                    "Nếu gặp bất kì vấn đề gì vui lòng liên hệ fanpage hoặc sdt: 0906184207.<br><br>" +
+                    "Nếu bạn không checkin hoặc liên hệ với chúng tôi trong ngày đặt, lịch của bạn sẽ bị hủy " +
+                    "và được hoàn 80% giá trị hóa đơn.<br><br>";
 
             emailService.sendEmailWithHoaDon(
                     lichhen.getEmailNguoiDat(),  // Địa chỉ email người nhận

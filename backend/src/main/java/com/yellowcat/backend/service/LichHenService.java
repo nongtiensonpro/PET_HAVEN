@@ -313,12 +313,14 @@ public class LichHenService {
     @Async
     public void sendEmailNhacNho(Lichhen lichhen, String gio) {
         try {
-            String message = "Chào bạn,\n\n"
-                    + "Cảm ơn bạn đã đặt lịch.\n\n"
-                    + "Còn" + gio + " phút nữa là đến lịch hẹn của bạn "
-                    + "Xin hãy sắp xếp thời gian , lịch hẹn của bạn sẽ bắt đầu lúc: " + lichhen.getDate() + ' ' + lichhen.getIdcalichhen().getThoigianca()
-                    +   "\n\n Nếu gặp bất kì vấn đề gì vui lòng liên hệ fanpage hoặc sdt: 0906194201 \n\n" +
-                            "Nếu trong hôm nay bạn không liên hệ với chúng tôi, lịch của bạn sẽ bị hủy và được hoàn 80% giá trị hóa đơn nếu đã thanh toán";
+            String message = "Chào bạn,<br><br>"
+                    + "Cảm ơn bạn đã đặt lịch.<br><br>"
+                    + "Còn " + gio + " phút nữa là đến lịch hẹn của bạn. "
+                    + "Xin hãy sắp xếp thời gian, lịch hẹn của bạn sẽ bắt đầu lúc: "
+                    + lichhen.getDate() + " " + lichhen.getIdcalichhen().getThoigianca() + "<br><br>"
+                    + "Nếu gặp bất kỳ vấn đề gì vui lòng liên hệ fanpage hoặc sdt: 0906194201.<br><br>"
+                    + "Nếu trong hôm nay bạn không check-in hoặc liên hệ với chúng tôi, "
+                    + "lịch của bạn sẽ bị hủy và được hoàn 80% giá trị hóa đơn nếu đã thanh toán.<br><br>";
 
             emailService.sendEmail(lichhen.getEmailNguoiDat(), "Nhắc nhở lịch hẹn", message);
             System.out.println("Email nhắc nhở đã được gửi thành công.");
@@ -332,12 +334,11 @@ public class LichHenService {
             List<Hoadon> hoadonList = hoaDonService.getList();
             if (!hoadonList.isEmpty()) {
                 for (Hoadon hoadon : hoadonList) {
-                    // Kiểm tra nếu trạng thái là 8 (Chờ sử dụng)
-                    if (hoadon.getIdlichhen().getTrangthai() == 8) {
+                    // Kiểm tra nếu trạng thái là 8 (Chờ sử dụng) và có ngày đặt trùng với hôm nay thì sẽ hoàn tiền
+                    if (hoadon.getIdlichhen().getTrangthai() == 8 && hoadon.getIdlichhen().getDate().equals(LocalDate.now())) {
                         String magiaodich = hoadon.getMagiaodich();
                         Double sotien = hoadon.getSotien();
 
-                        // Kiểm tra giá trị cần thiết
                         if (magiaodich == null || magiaodich.isEmpty()) {
                             System.err.println("Mã giao dịch không hợp lệ cho hóa đơn ID: " + hoadon.getId());
                             continue;

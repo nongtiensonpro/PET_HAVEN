@@ -6,9 +6,12 @@ import org.springframework.core.io.ByteArrayResource;
 import org.springframework.mail.SimpleMailMessage;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.mail.javamail.MimeMessageHelper;
+import org.springframework.scheduling.annotation.Async;
+import org.springframework.scheduling.annotation.EnableAsync;
 import org.springframework.stereotype.Service;
 
 @Service
+@EnableAsync
 public class EmailService {
 
 
@@ -18,6 +21,7 @@ public class EmailService {
         this.mailSender = mailSender;
     }
 
+    @Async("taskExecutor")
     public void sendEmail(String to, String subject, String body) {
         SimpleMailMessage message = new SimpleMailMessage();
         message.setTo(to);
@@ -26,6 +30,7 @@ public class EmailService {
         mailSender.send(message);
     }
 
+    @Async("taskExecutor")
     public void sendEmailWithHoaDon(String to, String subject, String body, byte[] pdfBytes, String pdfFileName) {
         MimeMessage message = mailSender.createMimeMessage();
 
