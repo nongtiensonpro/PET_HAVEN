@@ -126,4 +126,18 @@ public class HoaDonController {
         ResponseEntity<?> hoadondoiDV = hoaDonDoiDichVuService.thanhToanHDDoiDV(id);
         return ResponseEntity.ok(hoadondoiDV);
     }
+
+    @PreAuthorize("hasAnyRole('admin', 'manager')")
+    @GetMapping("/hoa-don-doi-dich-vu")
+    public List<?> getHoaDonChuaThanhToanDoiDV(){
+        List<Hoadondoidichvu> listHdChuaTT = hoaDonService.listHoadondoidichvu();
+        return listHdChuaTT;
+    }
+
+    @PreAuthorize("hasAnyRole('admin')")
+    @GetMapping("/all-hoa-don-doi-dich-vu")
+    public List<?> getAllHoaDonChuaThanhToanDoiDV(){
+        List<Hoadondoidichvu> listHdChuaTT = hoaDonService.listHoadondoidichvuAll();
+        return listHdChuaTT;
+    }
 }

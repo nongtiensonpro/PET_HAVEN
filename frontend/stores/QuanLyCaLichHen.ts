@@ -84,7 +84,7 @@ export const useCaLichHenStore = defineStore('useCalichhen', {
                     const message = `${data.message}\n\nDanh sách lịch trùng:\n` +
                         data.lichDaDat
                             .map((lich: any) =>
-                                `- Dịch vụ: ${lich.dichvu.tendichvu}, Ngày: ${lich.date}, Ca: ${lich.idcalichhen.tenca}`
+                                `- Dịch vụ: , Ngày: ${lich.date}, Ca: ${lich.idcalichhen.thoigianca}`
                             )
                             .join("\n");
 

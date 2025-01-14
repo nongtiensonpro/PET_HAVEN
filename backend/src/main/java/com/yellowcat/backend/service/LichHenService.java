@@ -56,7 +56,7 @@ public class LichHenService {
     }
 
     public List<Lichhen> getAllPageLichHen() {
-        return lichhenRepository.findByTrangthaicaTrue();
+        return lichhenRepository.findByTrangthaicaTrueAndEmailNguoiDatNot("default-email@example.com");
     }
 
     public Optional<Lichhen> getLichHenByDateandCa(LocalDate date, Integer idCa) {
