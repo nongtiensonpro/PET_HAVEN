@@ -95,6 +95,14 @@ public class HoaDonService {
         return hoadonRepository.findByIdlichhen_DateAndIdlichhen_TrangthaicaAndIdlichhen_TrangthaiNot(LocalDate.now(),true,2);
     }
 
+    public List<Hoadondoidichvu> listHoadondoidichvu() {
+        return hoadondoidichvuRepository.findByIdhoadon_Idlichhen_Date(LocalDate.now());
+    }
+
+    public List<Hoadondoidichvu> listHoadondoidichvuAll() {
+        return hoadondoidichvuRepository.findAll();
+    }
+
     public List<Hoadon> getALl() {
         return hoadonRepository.findAll();
     }

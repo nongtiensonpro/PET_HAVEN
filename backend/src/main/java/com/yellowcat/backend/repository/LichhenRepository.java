@@ -34,7 +34,7 @@ public interface LichhenRepository extends JpaRepository<Lichhen, Integer> {
 
     List<Lichhen> findByIdcalichhen_IdAndDateAfter(int idcalichhen_Id, LocalDate date);
 
-    List<Lichhen> findByTrangthaicaTrue();
+    List<Lichhen> findByTrangthaicaTrueAndEmailNguoiDatNot(String emailNguoiDat);
 
     @Modifying
     @Transactional
