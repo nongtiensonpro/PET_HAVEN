@@ -35,17 +35,17 @@
                   <td><span class="badge bg-warning">{{ getTrangThai(hoaDon.idlichhen.trangthai) }}</span></td>
                   <td>
                     <button
-                        v-if="hoaDon.idlichhen.trangthai === 3 || hoaDon.idlichhen.trangthai === 4"
-                        @click="thanhToanHoaDon(hoaDon.idlichhen.id)"
-                        class="btn btn-sm btn-outline-primary m-1">
-                      {{ t('pay') }}
-                    </button>
-                    <button
-                        v-if="hoaDon.idlichhen.trangthai === 8"
+                        v-if="hoaDon.idlichhen.trangthai === 0 || hoaDon.idlichhen.trangthai === 3 || hoaDon.idlichhen.trangthai === 4 ||hoaDon.idlichhen.trangthai === 6 ||hoaDon.idlichhen.trangthai === 8"
                         @click="thanhToanHoaDon(hoaDon.idlichhen.id)"
                         class="btn btn-sm btn-outline-primary m-1">
                       {{ t('checkin') }}
                     </button>
+<!--                    <button-->
+<!--                        v-if="hoaDon.idlichhen.trangthai === 8"-->
+<!--                        @click="thanhToanHoaDon(hoaDon.idlichhen.id)"-->
+<!--                        class="btn btn-sm btn-outline-primary m-1">-->
+<!--                       {{ t('pay') }}-->
+<!--                    </button>-->
                     <button
                         @click="viewHoaDon(hoaDon.idlichhen.id)"
                         class="btn btn-sm btn-outline-primary m-1">

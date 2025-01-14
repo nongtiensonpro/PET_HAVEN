@@ -33,8 +33,8 @@
               <td>{{ formatDate(lichhen.date) }}</td>
               <td><span class="badge bg-success">{{ getTrangThai(lichhen.trangthai) }}</span></td>
               <td>
-                <div class="row">
-                  <div class="col">
+                <div class="row" v-if="lichhen.trangthai!=2">
+                  <div class="col" >
                     <button type="button" class="btn btn-sm btn-outline-danger" @click="thayDoiThoiGian(lichhen)">
                       {{ t('changeTime') }}
                     </button>

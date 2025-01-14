@@ -1,13 +1,14 @@
 <script setup lang="ts">
 import {onMounted, ref, computed} from 'vue';
-import { useQuanLyLichHenAdminStore } from '~/stores/QuanLyLichHenAdmin';
-import { useAIThongKeStore } from '~/stores/AiThongKe';
+import {useQuanLyLichHenAdminStore} from '~/stores/QuanLyLichHenAdmin';
+import {useAIThongKeStore} from '~/stores/AiThongKe';
 import DichVu from "~/models/DichVu";
 import {useServiceStore} from "~/stores/DichVuStores";
 import {useVoucherStore} from "~/stores/VorchersStores";
 import {useThongKeStore} from '~/stores/ThongKeStores'
-import { useI18n } from 'vue-i18n';
-const { t } = useI18n();
+import {useI18n} from 'vue-i18n';
+
+const {t} = useI18n();
 
 const useQuanLyAdmin = useQuanLyLichHenAdminStore();
 const aiStore = useAIThongKeStore();
@@ -36,29 +37,30 @@ const vouchers = computed(() =>
     voucherStore.ListVoucher.filter(voucher => voucher.trangthai)
 );
 
+const startDate = '2000-01-01';
+const endDate = new Date().toISOString().split('T')[0];
+const top10Users = thongKe.topUsers;
+const thongTinKinhDoanh = thongKeData.value;
+const doanhThuTheoNgay = thongKe.thongKeItems;
+
+const dataForAnalysis = JSON.stringify(lichhen.value);
+const doanhThuTheoDichVu = ref(null);
+
+
+await thongKe.getUserThongKeTheoNgay(startDate, endDate);
+doanhThuTheoDichVu.value = await thongKe.getDoanhThuTheoDichVu(startDate, endDate);
 const getInitialSummary = async () => {
   isLoading.value = true;
   isThinking.value = true;
-  chatHistory.value.push({ role: 'thinking', content: t('wait_a_minute_master_I_m_thinking') });
+  chatHistory.value.push({role: 'thinking', content: t('wait_a_minute_master_I_m_thinking')});
 
   try {
     // Lấy dữ liệu từ các nguồn khác nhau
+    console.log(doanhThuTheoDichVu.value+'Miu miu miu')
     const dataForAnalysis = JSON.stringify(lichhen.value);
     const dichVuForAnalysis = JSON.stringify(services.value);
     const khuyenMaiForAnalysis = JSON.stringify(vouchers.value);
-    
     // Lấy thêm dữ liệu từ ThongKeStore
-    const startDate = '2000-01-01';
-    const endDate = new Date().toISOString().split('T')[0];
-    
-    await thongKe.getUserThongKeTheoNgay(startDate, endDate);
-    await thongKe.getDoanhThuTheoDichVu(startDate, endDate);
-    
-    const thongKeDataForAI = {
-      doanhThuTheoNgay: thongKe.thongKeItems,
-      doanhThuDichVu: thongKe.doanhThuDichVu,
-      thongTinKinhDoanh: thongKeData.value
-    };
 
     const prompt = `
     Bạn là một chuyên gia phân tích dữ liệu cho cửa hàng thú cưng PetHaven.
@@ -66,9 +68,11 @@ const getInitialSummary = async () => {
     
     1. Dữ liệu lịch hẹn và hóa đơn: 
     ${dataForAnalysis}
-    
-    2. Dữ liệu thống kê:
-    ${JSON.stringify(thongKeDataForAI, null, 2)}
+
+   2. Dữ liệu thống kê:
+      - Doanh thu theo dịch vụ :  ${doanhThuTheoDichVu.value} theo quy tắc (tendichvu,idTuyChonDichVu,giaTien) :: Dịch vụ chi tiết  ${JSON.stringify(serviceStore.services)}
+      - Doanh thu theo ngày : ${JSON.stringify(doanhThuTheoNgay, null, 2)} hãy  tự tổng hợp và phân tích ra tháng và năm tương ứng
+      - Thông tin kinh doanh : ${JSON.stringify(thongTinKinhDoanh, null, 2)}
     
     3. Dịch vụ có trong cửa hàng:
     ${dichVuForAnalysis}
@@ -108,11 +112,11 @@ const getInitialSummary = async () => {
 
     const response = await aiStore.sendMessage(prompt);
     chatHistory.value.pop();
-    chatHistory.value.push({ role: 'ai', content: response });
+    chatHistory.value.push({role: 'ai', content: response});
   } catch (error) {
     console.error("Error getting initial summary:", error);
     chatHistory.value.pop();
-    chatHistory.value.push({ role: 'system', content: 'Xin lỗi, có lỗi xảy ra khi tạo tóm tắt ban đầu.' });
+    chatHistory.value.push({role: 'system', content: 'Xin lỗi, có lỗi xảy ra khi tạo tóm tắt ban đầu.'});
   } finally {
     isLoading.value = false;
     isThinking.value = false;
@@ -127,29 +131,15 @@ onMounted(async () => {
 const sendMessageToAI = async () => {
   if (!userInput.value.trim()) return;
   const userMessage = userInput.value;
-  chatHistory.value.push({ role: 'user', content: userMessage });
+  chatHistory.value.push({role: 'user', content: userMessage});
   userInput.value = '';
   isLoading.value = true;
   isThinking.value = true;
 
   try {
-    chatHistory.value.push({ role: 'thinking', content: t('analyzing_data') });
-    
-    // Cập nhật dữ liệu mới nhất
-    const startDate = '2000-01-01';
-    const endDate = new Date().toISOString().split('T')[0];
-    
-    await thongKe.getUserThongKeTheoNgay(startDate, endDate);
-    await thongKe.getDoanhThuTheoDichVu(startDate, endDate);
-    
-    const thongKeDataForAI = {
-      doanhThuTheoNgay: thongKe.thongKeItems,
-      top10Users: thongKe.topUsers,
-      doanhThuDichVu: thongKe.doanhThuDichVu,
-      thongTinKinhDoanh: thongKeData.value
-    };
+    chatHistory.value.push({role: 'thinking', content: t('analyzing_data')});
 
-    const dataForAnalysis = JSON.stringify(lichhen.value);
+
     const prompt = `
     Dựa trên dữ liệu sau đây:
     
@@ -157,7 +147,10 @@ const sendMessageToAI = async () => {
     ${dataForAnalysis}
     
     2. Dữ liệu thống kê:
-    ${JSON.stringify(thongKeDataForAI, null, 2)}
+      - Doanh thu theo dịch vụ :  ${doanhThuTheoDichVu.value} theo quy tắc (tên dịch vụ , số lần sử dụng , giá tiền) :: Dịch vụ chi tiết  ${JSON.stringify(serviceStore.services)}
+      - Doanh thu theo ngày : ${JSON.stringify(doanhThuTheoNgay, null, 2)} hãy  tự tổng hợp và phân tích ra tháng và năm tương ứng
+      - Thông tin kinh doanh : ${JSON.stringify(thongTinKinhDoanh, null, 2)}
+      - Top 10 khách hàng : ${JSON.stringify(top10Users, null, 2)}
     
     Câu hỏi của người dùng: ${userMessage}
     
@@ -166,11 +159,11 @@ const sendMessageToAI = async () => {
 
     const response = await aiStore.sendMessage(prompt);
     chatHistory.value.pop();
-    chatHistory.value.push({ role: 'ai', content: response });
+    chatHistory.value.push({role: 'ai', content: response});
   } catch (error) {
     console.error("Error:", error);
     chatHistory.value.pop();
-    chatHistory.value.push({ role: 'system', content: 'Xin lỗi, có lỗi xảy ra khi xử lý yêu cầu của bạn.' });
+    chatHistory.value.push({role: 'system', content: 'Xin lỗi, có lỗi xảy ra khi xử lý yêu cầu của bạn.'});
   } finally {
     isLoading.value = false;
     isThinking.value = false;
@@ -180,7 +173,7 @@ const sendMessageToAI = async () => {
 
 <template>
   <div class="container p-4">
-    <h2 class="mb-4">{{t('analyzing_store_data_with_AI')}}</h2>
+    <h2 class="mb-4">{{ t('analyzing_store_data_with_AI') }}</h2>
     <div class="chat-container">
       <div class="chat-history">
         <div v-for="(message, index) in chatHistory" :key="index" class="message-wrapper">
@@ -193,15 +186,15 @@ const sendMessageToAI = async () => {
         </div>
       </div>
       <div class="input-container row p-3">
-        <input class="col-10" v-model="userInput" @keyup.enter="sendMessageToAI"  :placeholder="t('enter_your_message')"
-          :disabled="isLoading" />
+        <input class="col-10" v-model="userInput" @keyup.enter="sendMessageToAI" :placeholder="t('enter_your_message')"
+               :disabled="isLoading"/>
         <button @click="sendMessageToAI" :disabled="isLoading" class="custom-button col-2">
           {{ isLoading ? t('sending') : t('send') }}
         </button>
       </div>
     </div>
     <div class="text-center p-4 text fs-6">
-      {{t('chatBotsGod')}}
+      {{ t('chatBotsGod') }}
     </div>
   </div>
 </template>

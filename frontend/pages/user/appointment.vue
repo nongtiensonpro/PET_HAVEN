@@ -214,7 +214,7 @@ const prevPage = () => {
                         @click="thayDoiLichHen(item.id)">
                   Hủy/Đổi
                 </button>
-                <button v-if="item.trangthai === 0 || item.trangthai === 6 || item.trangthai === 8"
+                <button v-if="item.trangthai === 0 ||item.trangthai === 3 ||item.trangthai === 4 || item.trangthai === 6 || item.trangthai === 8"
                         class="btn btn-outline-info btn-sm me-2"
                         @click="chiTietLichHen(item.id)">
                   Chi tiết

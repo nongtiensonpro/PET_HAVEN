@@ -16,7 +16,7 @@
           <p><strong>{{t('status')}}:</strong> {{ getTrangThai(hoaDon.trangthai) }}</p>
           <p><strong>{{t('paymentMethod')}}:</strong> {{ hoaDon.phuongthucthanhtoan }}</p>
           <p><strong>{{t('transaction_code')}}:</strong> {{ hoaDon.magiaodich }}</p>
-          <p><strong>{{t('payer')}}:</strong> {{ hoaDon.nguoithanhtoan }}</p>
+<!--          <p><strong>{{t('payer')}}:</strong> {{ hoaDon.nguoithanhtoan }}</p>-->
         </div>
 
         <!-- Thông tin thanh toán -->
@@ -48,8 +48,8 @@
           <p><strong>{{t('email_of_the_booker')}}:</strong> {{ hoaDon.idlichhen.emailNguoiDat }}</p>
           <p><strong>{{t('timeLabel')}}:</strong> {{ hoaDon.idlichhen.idcalichhen.thoigianca }}</p>
           <p><strong>{{t('status')}}:</strong> {{ hoaDon.idlichhen.trangthaica ? 'Đã xác nhận' : 'Chưa xác nhận' }}</p>
-          <p><strong>{{t('number_of_changes')}}:</strong> {{ hoaDon.idlichhen.solanthaydoi }}</p>
-          <p><strong>{{t('number_of_reminders')}}:</strong> {{ hoaDon.idlichhen.solannhacnho }}</p>
+<!--          <p><strong>{{t('number_of_changes')}}:</strong> {{ hoaDon.idlichhen.solanthaydoi }}</p>-->
+<!--          <p><strong>{{t('number_of_reminders')}}:</strong> {{ hoaDon.idlichhen.solannhacnho }}</p>-->
         </div>
 
         <!-- Thông tin thú cưng -->

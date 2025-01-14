@@ -22,8 +22,8 @@ export default defineNuxtConfig({
             enabled: true
         }
     },
-    server: {
-        port: 3000,
+    nitro: {
+        port: 3000
     },
     compatibilityDate: '2024-10-03',
     modules: ['@nuxtjs/i18n', '@pinia/nuxt', '@vee-validate/nuxt'],

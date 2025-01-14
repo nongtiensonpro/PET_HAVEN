@@ -7,8 +7,7 @@ export const useThongKeStore = defineStore('thongKe', {
     state: () => ({
         thongKeItems: [] as ThongKeItem[],
         error: null as string | null,
-        topUsers: [] as { userId: any, totalAmount: number }[],
-        doanhThuDichVu: [] as { tenDichVu: string, doanhThu: number }[]
+        topUsers: [] as { userId: any, totalAmount: number }[]
     }),
     actions: {
         async getUserThongKeTheoNgay(ngayBatDau: string, ngayKetThuc: string) {
@@ -215,7 +214,7 @@ export const useThongKeStore = defineStore('thongKe', {
                 });
                 const dataThang = await responseThang;
                 console.log(dataNgay + '=====' + dataThang);
-                return  dataNgay + '=====' +dataThang;
+                return dataNgay + '=====' + dataThang;
             } catch (error) {
                 console.error('Error fetching statistics data:', error);
             }
@@ -243,23 +242,17 @@ export const useThongKeStore = defineStore('thongKe', {
                 });
 
                 if (!response.ok) {
-                    const errorBody = await response.text();
+                    const errorBody = await response.json();
                     console.error('Error response:', errorBody);
-                    throw new Error(`HTTP error! status: ${response.status}, body: ${errorBody}`);
+                    throw new Error(`HTTP error! status: ${response.status}, body: ${JSON.stringify(errorBody)}`);
                 }
 
                 const responseData = await response.json();
-                if (responseData.data) {
-                    this.doanhThuDichVu = Object.entries(responseData.data).map(([tenDichVu, doanhThu]: [string, any]) => ({
-                        tenDichVu,
-                        doanhThu
-                    }));
-                } else {
-                    console.error('Unexpected data format:', responseData);
-                    throw new Error('Unexpected data format received from server');
-                }
+                console.log('Response data:', responseData.data.data);
+
+                return responseData.data.data
             } catch (error) {
-                console.error('Error fetching doanh thu theo dich vu:', error);
+                console.error('Error fetching doanh thu dich vu:', error);
                 this.error = error instanceof Error ? error.message : 'An unknown error occurred';
                 throw error;
             }
