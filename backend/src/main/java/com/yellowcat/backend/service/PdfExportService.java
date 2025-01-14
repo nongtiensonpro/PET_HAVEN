@@ -41,12 +41,55 @@ public class PdfExportService {
 
             // Thêm các hàng thông tin
             addTableRowWithBorder(table, "Ngày thanh toán", NgayThanhToan, vietnameseFont);
-            addTableRowWithBorder(table, "Số đơn đặt hàng", MaHoaDon, vietnameseFont);
+            addTableRowWithBorder(table, "Mã hóa đơn đơn", MaHoaDon, vietnameseFont);
             addTableRowWithBorder(table, "Phương thức thanh toán", PhuongThucThanhToan, vietnameseFont);
             addTableRowWithBorder(table, "Dịch vụ", DichVu, vietnameseFont);
             addTableRowWithBorder(table, "Số tiền đầu", String.valueOf(SoTienBanDau), vietnameseFont);
             addTableRowWithBorder(table, "Số tiền cuối", String.valueOf(SoTien), vietnameseFont);
-            addTableRowWithBorder(table, "Thời gian", ThoiGian, vietnameseFont);
+            addTableRowWithBorder(table, "Thời gian lịch", ThoiGian, vietnameseFont);
+
+            // Thêm bảng vào document
+            document.add(table);
+
+            // Đóng document
+            document.close();
+            return outputStream.toByteArray();
+        } catch (Exception e) {
+            throw new RuntimeException("Lỗi khi tạo PDF", e);
+        }
+    }
+
+    public byte[] genHdDoiDV(String NgayThanhToan, String MaHoaDon, String PhuongThucThanhToan, String DichVu, String DichVuDoi, double SoTien, String ThoiGian) {
+        try (ByteArrayOutputStream outputStream = new ByteArrayOutputStream()) {
+            PdfWriter writer = new PdfWriter(outputStream);
+            com.itextpdf.kernel.pdf.PdfDocument pdfDoc = new com.itextpdf.kernel.pdf.PdfDocument(writer);
+            Document document = new Document(pdfDoc);
+
+            // Load font hỗ trợ tiếng Việt
+            String fontPath = "fonts/arial.ttf";
+            PdfFont vietnameseFont = PdfFontFactory.createFont(fontPath, PdfEncodings.IDENTITY_H);
+
+            // Tiêu đề hóa đơn
+            document.add(new Paragraph("HÓA ĐƠN THANH TOÁN")
+                    .setFont(vietnameseFont) // Cài đặt font tiếng Việt
+                    .setBold()
+                    .setFontSize(18)
+                    .setMarginBottom(20));
+
+            // Tạo bảng với 2 cột
+            float[] columnWidths = {3, 7}; // Độ rộng các cột
+            Table table = new Table(columnWidths)
+                    .setWidth(500)
+                    .setMarginBottom(10);
+
+            // Thêm các hàng thông tin
+            addTableRowWithBorder(table, "Ngày thanh toán", NgayThanhToan, vietnameseFont);
+            addTableRowWithBorder(table, "Mã hóa đơn", MaHoaDon, vietnameseFont);
+            addTableRowWithBorder(table, "Phương thức thanh toán", PhuongThucThanhToan, vietnameseFont);
+            addTableRowWithBorder(table, "Dịch vụ đầu", DichVu, vietnameseFont);
+            addTableRowWithBorder(table, "Dịch vụ đổi", DichVuDoi, vietnameseFont);
+            addTableRowWithBorder(table, "Số tiền thanh toán", String.valueOf(SoTien), vietnameseFont);
+            addTableRowWithBorder(table, "Thời gian lịch", ThoiGian, vietnameseFont);
 
             // Thêm bảng vào document
             document.add(table);

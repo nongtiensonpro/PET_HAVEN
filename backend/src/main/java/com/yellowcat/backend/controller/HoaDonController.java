@@ -140,4 +140,14 @@ public class HoaDonController {
         List<Hoadondoidichvu> listHdChuaTT = hoaDonService.listHoadondoidichvuAll();
         return listHdChuaTT;
     }
+
+    @PreAuthorize("hasAnyRole('admin')")
+    @GetMapping("/all-hoa-don-doi-dich-vu-online")
+    public ResponseEntity<?> doiDichVuOn(@RequestBody DoiDichVuDTO dto){
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        Jwt jwt = (Jwt) authentication.getPrincipal();
+        String username = jwt.getClaimAsString("preferred_username");
+        ResponseEntity<?> hoadondoidichvu = hoaDonDoiDichVuService.DoiDichVu(dto,username);
+        return ResponseEntity.ok(hoadondoidichvu);
+    }
 }

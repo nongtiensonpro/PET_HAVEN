@@ -38,6 +38,7 @@ public class HoaDonDoiDichVuService {
          hoadondoidichvuRepository.save(hoadondoidichvu);
     }
 
+
     @Transactional
     public ResponseEntity<?> DoiDichVu(DoiDichVuDTO dto,String nguoiThanhToan){
         Optional<Hoadon> hoadonOptional = hoaDonService.finHoadonByIdLich(dto.getIdLichHen());
@@ -48,11 +49,6 @@ public class HoaDonDoiDichVuService {
         if (!tuyChonCanNangOptional.isPresent()){
             return ResponseEntity.notFound().build();
         }
-        Optional<Lichhen> lichhenOptional = Optional.ofNullable(lichHenService.findById(dto.getIdLichHen()));
-        if (!lichhenOptional.isPresent()){
-            return ResponseEntity.notFound().build();
-        }
-        Lichhen lichhen = lichhenOptional.get();
         TuyChonCanNang tuyChonCanNang = tuyChonCanNangOptional.get();
         Hoadon hoadon = hoadonOptional.get();
 
@@ -78,8 +74,6 @@ public class HoaDonDoiDichVuService {
                 hoadondoidichvu.setTrangthai(2);
             }
             hoadondoidichvu.setNguoithanhtoan(nguoiThanhToan);
-            lichhen.setTuyChonCanNang(tuyChonCanNang);
-            lichHenService.addOrUpdate(lichhen);
             hoadondoidichvuRepository.save(hoadondoidichvu);
             return ResponseEntity.ok(hoadondoidichvu);
     }
@@ -97,6 +91,11 @@ public class HoaDonDoiDichVuService {
         if (hoadondoidichvu.getTrangthaithanhtoan()){
             return ResponseEntity.notFound().build();
         }
+        Optional<Lichhen> lichhenOptional = Optional.ofNullable(lichHenService.findById(hoadondoidichvu.getIdhoadon().getIdlichhen().getId()));
+        if (!lichhenOptional.isPresent()){
+            return ResponseEntity.notFound().build();
+        }
+        Lichhen lichhen = lichhenOptional.get();
 
         if (hoadondoidichvu.getTrangthai() == 1){ // hoàn tiền nếu trạng thái là 1 (hoàn tiền)
             Refund refund = payPalService.refundPayment(hoadondoidichvu.getIdhoadon().getMagiaodich(), hoadondoidichvu.getSotien(), "USD");
@@ -104,6 +103,8 @@ public class HoaDonDoiDichVuService {
             if ("completed".equals(refund.getState())) {
                 hoadondoidichvu.setTrangthaithanhtoan(true);
                 hoadondoidichvu.setNgaythanhtoan(LocalDate.now());
+                lichhen.setTuyChonCanNang(hoadondoidichvu.getIdtuychoncannang());
+                lichHenService.addOrUpdate(lichhen);
                 hoadondoidichvuRepository.save(hoadondoidichvu);
             } else {
                 return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
@@ -112,6 +113,8 @@ public class HoaDonDoiDichVuService {
         }else {
             hoadondoidichvu.setTrangthaithanhtoan(true);
             hoadondoidichvu.setNgaythanhtoan(LocalDate.now());
+            lichhen.setTuyChonCanNang(hoadondoidichvu.getIdtuychoncannang());
+            lichHenService.addOrUpdate(lichhen);
             hoadondoidichvuRepository.save(hoadondoidichvu);
         }
         return ResponseEntity.ok(hoadondoidichvu);
