@@ -294,14 +294,6 @@ const doiDichVu = async () => {
 
       try {
         await doiDichVuKhachHang();
-        if (priceDifference.value > 0) {
-          // Giá mới thấp hơn giá cũ
-          await doiDichVuKH.thanhToanDichVuKhiSoTienThayDoiBangHoacNhoHon(currentHoaDon.value.idlichhen.id);
-        } else if (priceDifference.value < 0) {
-          // Giá mới cao hơn giá cũ
-          await doiDichVuKH.thanhToanDichVuKhiSoTienThayDoiLonHon(currentHoaDon.value.idlichhen.id);
-        }
-
       } catch (error) {
         console.error('Error:', error);
         toast.error(t('connection_error'));
