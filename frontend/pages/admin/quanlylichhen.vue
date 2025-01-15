@@ -1,6 +1,11 @@
 <template>
   <div class="container">
-    <div class="card">
+    <div v-if="isLoading" class="text-center my-4">
+      <div class="spinner-border text-primary" role="status">
+        <span class="visually-hidden">Loading...</span>
+      </div>
+    </div>
+    <div v-else class="card">
       <div class="card-header text-white d-flex justify-content-between align-items-center">
         <h5 class="mb-0 text fs-4">{{ t('allAppointments') }}</h5>
         <button @click="fetchHoaDon" class="btn btn-sm btn-outline-success">
@@ -99,7 +104,7 @@
           </thead>
           <tbody>
           <tr v-for="hoadon in paginatedHoaDonChuaThanhToan" :key="hoadon.id">
-            <td>{{ hoadon.id }}</td>
+            <td>{{ hoadon.idhoadon.idlichhen.id }}</td>
             <td>{{ hoadon.nguoithanhtoan }}</td>
             <td>{{ hoadon.idhoadon.idlichhen.thucung.ten }}</td>
             <td>{{ hoadon.idhoadon.idlichhen.idcalichhen.thoigianca }}</td>
@@ -147,23 +152,59 @@ const useQuanLyAdmin = useQuanLyLichHenAdminStore();
 const lichhen = ref<Lichhen[]>([]);
 const filteredHoaDon = ref<Lichhen[]>([]);
 const toast = useToast();
+const isLoading = ref(true);
 let refreshInterval: NodeJS.Timeout;
 const itemsPerPage = 5;
 const currentPage = ref(1);
 const searchQuery = ref('');
 const listAllHoaDonThayDoiDichVu = ref<HoaDonDoiDichVu[]>([]);
 const useDoiDichVu = useDoiDichVuStores();
-onMounted(() => {
-  useDoiDichVu.fetchAllHoaDonDoiDichVu();
-  fetchHoaDon();
-  listAllHoaDonThayDoiDichVu.value = useDoiDichVu.listAllHoaDonDoiDichVu;
-  fetchHoaDonChuaThanhToan();
-  refreshInterval = setInterval(fetchHoaDon, 5 * 60 * 1000);
+
+// Debounce function
+const debounce = (fn: Function, delay: number) => {
+  let timeoutId: NodeJS.Timeout;
+  return (...args: any[]) => {
+    clearTimeout(timeoutId);
+    timeoutId = setTimeout(() => fn(...args), delay);
+  };
+};
+
+onMounted(async () => {
+  try {
+    isLoading.value = true;
+    await Promise.all([
+      fetchHoaDon(),
+      useDoiDichVu.fetchAllHoaDonDoiDichVu()
+    ]);
+    listAllHoaDonThayDoiDichVu.value = useDoiDichVu.listAllHoaDonDoiDichVu;
+    refreshInterval = setInterval(fetchHoaDon, 5 * 60 * 1000);
+  } catch (error) {
+    console.error('Error loading initial data:', error);
+    toast.error(t('errorLoadingData'));
+  } finally {
+    isLoading.value = false;
+  }
 });
+
 async function fetchHoaDonChuaThanhToan() {
-  useDoiDichVu.fetchAllHoaDonDoiDichVu;
-  listAllHoaDonThayDoiDichVu.value = useDoiDichVu.listAllHoaDonDoiDichVu;
+  try {
+    await useDoiDichVu.fetchAllHoaDonDoiDichVu();
+    listAllHoaDonThayDoiDichVu.value = useDoiDichVu.listAllHoaDonDoiDichVu;
+  } catch (error) {
+    console.error('Error fetching unpaid invoices:', error);
+    toast.error(t('errorFetchingUnpaidInvoices'));
+  }
 }
+
+const handleSearch = debounce(() => {
+  filteredHoaDon.value = lichhen.value.filter(hoaDon =>
+    hoaDon.emailNguoiDat.toLowerCase().includes(searchQuery.value.toLowerCase()) ||
+    hoaDon.thucung.ten.toLowerCase().includes(searchQuery.value.toLowerCase()) ||
+    hoaDon.dichvu.tendichvu.toLowerCase().includes(searchQuery.value.toLowerCase())
+  );
+  currentPage.value = 1;
+}, 300);
+
 const totalPages = computed(() => Math.ceil(filteredHoaDon.value.length / itemsPerPage));
 
 const paginatedHoaDon = computed(() => {
@@ -172,15 +213,6 @@ const paginatedHoaDon = computed(() => {
   return filteredHoaDon.value.slice(start, end);
 });
 
-const handleSearch = () => {
-  filteredHoaDon.value = lichhen.value.filter(hoaDon =>
-    hoaDon.emailNguoiDat.toLowerCase().includes(searchQuery.value.toLowerCase()) ||
-    hoaDon.thucung.ten.toLowerCase().includes(searchQuery.value.toLowerCase()) ||
-    hoaDon.dichvu.tendichvu.toLowerCase().includes(searchQuery.value.toLowerCase())
-  );
-  currentPage.value = 1;
-};
-
 const changePage = (page: number) => {
   if (page >= 1 && page <= totalPages.value) {
     currentPage.value = page;
@@ -188,6 +220,8 @@ const changePage = (page: number) => {
 };
 
 onUnmounted(() => {
+  fetchHoaDon();
+  fetchHoaDonChuaThanhToan();
   if (refreshInterval) clearInterval(refreshInterval);
 });
 

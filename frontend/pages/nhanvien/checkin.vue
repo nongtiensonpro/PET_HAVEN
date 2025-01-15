@@ -166,7 +166,7 @@
                 <tbody>
                 <tr v-for="hoaDon in paginatedHoaDonDoiDichVuList" :key="hoaDon.id">
                   <td>{{ hoaDon.idhoadon.idlichhen.idcalichhen.thoigianca }}</td>
-                  <td>{{ hoaDon.idhoadon.id }}</td>
+                  <td>{{ hoaDon.idhoadon.idlichhen.id }}</td>
                   <td>{{ hoaDon.nguoithanhtoan}}</td>
                   <td>{{ hoaDon.idhoadon.idlichhen.thucung.ten }}</td>
                   <td>{{ formatDate(hoaDon.ngaythanhtoan) }}</td>
