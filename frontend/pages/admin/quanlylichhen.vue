@@ -56,7 +56,7 @@
                   </div>
                   <div class="col">
                     <button
-                        @click="DoiDichVu(lichhen.idcalichhen.id)"
+                        @click="DoiDichVu(lichhen.id)"
                         class="btn btn-sm btn-outline-primary m-1">
                       {{t('change_service')}}
                     </button>
