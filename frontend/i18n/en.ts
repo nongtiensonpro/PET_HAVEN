@@ -349,4 +349,5 @@ export default {
   no_value:'No value',
   status_update_error:'Error updating status',
   status_updated_successfully:'Status updated successfully',
+  listOfInvoicesAfterServiceChange:'List of invoices after service change',
 }as const;

@@ -74,41 +74,96 @@
         </div>
       </div>
     </div>
+    <div class="card">
+      <div class="card-header row">
+        <p class="col">
+          {{ t('listOfInvoicesAfterServiceChange') }}
+        </p>
+        <div class="col">
+          <button type="button" class="custom-button" @click="fetchHoaDonChuaThanhToan">{{ t('refresh') }}</button>
+        </div>
+      </div>
+      <div class="card-body">
+        <table class="table">
+          <thead>
+          <tr>
+            <th>{{ t('appointmentId') }}</th>
+            <th>{{ t('customerEmail') }}</th>
+            <th>{{ t('petName') }}</th>
+            <th>{{ t('time') }}</th>
+            <th>{{ t('appointmentDate') }}</th>
+            <th>{{ t('status') }}</th>
+            <th>{{ t('note') }}</th>
+            <th>{{ t('actions') }}</th>
+          </tr>
+          </thead>
+          <tbody>
+          <tr v-for="hoadon in paginatedHoaDonChuaThanhToan" :key="hoadon.id">
+            <td>{{ hoadon.id }}</td>
+            <td>{{ hoadon.nguoithanhtoan }}</td>
+            <td>{{ hoadon.idhoadon.idlichhen.thucung.ten }}</td>
+            <td>{{ hoadon.idhoadon.idlichhen.idcalichhen.thoigianca }}</td>
+            <td>{{ hoadon.idhoadon.idlichhen.date }}</td>
+            <td><span class="badge bg-success">{{getTrangThai(hoadon.idhoadon.idlichhen.trangthai) }}</span></td>
+            <td>{{hoadon.ghichu}}</td>
+            <td>
+              <div class="row">
+                <div class="col">
+                  <button type="button" class="btn btn-sm btn-outline-info">Meo Meo</button>
+                </div>
+              </div>
+            </td>
+
+          </tr>
+          </tbody>
+        </table>
+        <div class="d-flex justify-content-center align-items-center mt-4">
+          <div class="d-flex align-items-center">
+            <button @click="changePageHoaDon(currentPageHoaDon - 1)" :disabled="currentPageHoaDon === 1" class="custom-button me-3">
+              {{ t('previous') }}
+            </button>
+            <span class="fs-5 mx-3">{{ t('page') }} {{ currentPageHoaDon }} / {{ totalPagesHoaDon }}</span>
+            <button @click="changePageHoaDon(currentPageHoaDon + 1)" :disabled="currentPageHoaDon === totalPagesHoaDon" class="custom-button ms-3">
+              {{ t('next') }}
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
   </div>
 </template>
 
 <script setup lang="ts">
 import { onMounted, ref, onUnmounted, computed } from 'vue';
-import HoaDonKhachHang from '~/models/HoaDonKhachHang';
 import { useQuanLyLichHenAdminStore } from '~/stores/QuanLyLichHenAdmin';
-import Swal from 'sweetalert2';
 import { useToast } from 'vue-toastification';
 import { useI18n } from 'vue-i18n';
-import CalendarAdmin from "~/pages/admin/thaydoithoigian/[id].vue";
 import type { Lichhen } from "~/models/LichSuDatLich";
-import Thaydoitrangthai from "~/pages/admin/thaydoitrangthai/[id].vue";
+import {useDoiDichVuStores} from "~/stores/DoiDichVuStores";
+import type {HoaDonDoiDichVu} from "~/models/HoaDonDoiDV";
 
 const { t } = useI18n();
 const useQuanLyAdmin = useQuanLyLichHenAdminStore();
 const lichhen = ref<Lichhen[]>([]);
 const filteredHoaDon = ref<Lichhen[]>([]);
-const selectedTrangThai = ref<number>(0);
 const toast = useToast();
 let refreshInterval: NodeJS.Timeout;
 const itemsPerPage = 5;
 const currentPage = ref(1);
 const searchQuery = ref('');
-const selectedLichHen = ref<Lichhen | null>(null);
-
-function selectLichHen(lichHenItem: Lichhen) {
-  selectedLichHen.value = lichHenItem;
-}
-
+const listAllHoaDonThayDoiDichVu = ref<HoaDonDoiDichVu[]>([]);
+const useDoiDichVu = useDoiDichVuStores();
 onMounted(() => {
+  useDoiDichVu.fetchAllHoaDonDoiDichVu();
   fetchHoaDon();
+  listAllHoaDonThayDoiDichVu.value = useDoiDichVu.listAllHoaDonDoiDichVu;
+  fetchHoaDonChuaThanhToan();
   refreshInterval = setInterval(fetchHoaDon, 5 * 60 * 1000);
 });
-
+async function fetchHoaDonChuaThanhToan() {
+  useDoiDichVu.fetchAllHoaDonDoiDichVu;
+  listAllHoaDonThayDoiDichVu.value = useDoiDichVu.listAllHoaDonDoiDichVu;
+}
 const totalPages = computed(() => Math.ceil(filteredHoaDon.value.length / itemsPerPage));
 
 const paginatedHoaDon = computed(() => {
@@ -146,7 +201,37 @@ const fetchHoaDon = async () => {
     toast.error(t('loadDataError'));
   }
 };
+const currentPageHoaDon = ref(1);
+const itemsPerPageHoaDon = 5;
 
+const totalPagesHoaDon = computed(() => Math.ceil(listAllHoaDonThayDoiDichVu.value.length / itemsPerPageHoaDon));
+
+const paginatedHoaDonChuaThanhToan = computed(() => {
+  const start = (currentPageHoaDon.value - 1) * itemsPerPageHoaDon;
+  const end = start + itemsPerPageHoaDon;
+  return listAllHoaDonThayDoiDichVu.value.slice(start, end);
+});
+
+const changePageHoaDon = (page: number) => {
+  if (page >= 1 && page <= totalPagesHoaDon.value) {
+    currentPageHoaDon.value = page;
+  }
+};
+
+const getBadgeClass = (status: number): string => {
+  const statusClasses: { [key: number]: string } = {
+    0: 'bg-success',
+    1: 'bg-warning',
+    2: 'bg-danger',
+    3: 'bg-info',
+    4: 'bg-primary',
+    5: 'bg-secondary',
+    6: 'bg-success',
+    7: 'bg-danger',
+    8: 'bg-info'
+  };
+  return statusClasses[status] || 'bg-secondary';
+};
 const formatDate = (dateString: string): string => {
   const date = new Date(dateString);
   return date.toLocaleDateString('vi-VN');
@@ -170,29 +255,6 @@ const getTrangThai = (status: number): string => {
   };
   return trangThaiMap[status] || t('statusUnknown');
 };
-
-async function doiNgayHen(ngayHen: string, idcalichhen: number) {
-  const result = await Swal.fire({
-    title: t('confirmTitle'),
-    text: t('confirmChangeTime'),
-    icon: 'warning',
-    showCancelButton: true,
-    confirmButtonColor: '#3085d6',
-    cancelButtonColor: '#d33',
-    confirmButtonText: t('yes'),
-    cancelButtonText: t('no'),
-  });
-  if (result.isConfirmed) {
-    try {
-      await useQuanLyAdmin.doiThoiGian(ngayHen, idcalichhen);
-      toast.success(t('changeTimeSuccess'), { timeout: 3000 });
-      await fetchHoaDon();
-    } catch (error) {
-      toast.error(t('changeTimeFailed'), { timeout: 3000 });
-    }
-  }
-}
-
 const viewHoaDon = (id: number) => {
   navigateTo(`/nhanvien/chitiethoadon/${id}`);
 };

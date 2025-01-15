@@ -54,6 +54,7 @@ export default class Hoadon {
     nguoithanhtoan: string;
     magiaodich: string;
     idgiamgia: string | null;
+    ghichu: string | null;
 
     constructor(
         id: number,
@@ -66,7 +67,8 @@ export default class Hoadon {
         trangthai: number,
         nguoithanhtoan: string,
         magiaodich: string,
-        idgiamgia: string | null
+        idgiamgia: string | null,
+        ghichu: string | null = null
     ) {
         this.id = id;
         this.idlichhen = idlichhen;
@@ -79,6 +81,7 @@ export default class Hoadon {
         this.nguoithanhtoan = nguoithanhtoan;
         this.magiaodich = magiaodich;
         this.idgiamgia = idgiamgia;
+        this.ghichu = ghichu;
     }
 
     static fromJSON(json: any): Hoadon {

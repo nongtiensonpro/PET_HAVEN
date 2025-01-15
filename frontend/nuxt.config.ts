@@ -54,5 +54,8 @@ export default defineNuxtConfig({
         { src: '~/plugins/vee-validate.ts' },
         { src: '~/plugins/vue-toastification.ts', mode: 'client' },
     ],
-    ssr: false
+    ssr: false,
+    middleware: [
+        { handler: 'manifest-route-rule', override: true },
+    ]
 } );

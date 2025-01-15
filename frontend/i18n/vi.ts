@@ -345,4 +345,5 @@ export default {
     no_value:'Không có giá trị',
     status_update_error:'Cập nhật trạng thái thất bại!',
     status_updated_successfully:'Cập nhật trạng thái thành công!',
+    listOfInvoicesAfterServiceChange:'Danh sách hóa đơn sau khi đổi dịch vụ',
 }as const;
