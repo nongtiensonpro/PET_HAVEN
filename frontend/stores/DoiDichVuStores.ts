@@ -109,7 +109,7 @@ export const useDoiDichVuStores = defineStore('useDoiDichVuStores', {
       }
     },
 
-    async thanhToanDichVuKhiSoTienThayDoiBangHoacNhoHon(idHoaDonDoiDV: number) {
+    async thanhToanDichVuKhiSoTienThayDoiBangHoacNhoHon(id: number) {
       const toast = useToast();
       this.isLoading = true;
       try {
@@ -118,8 +118,8 @@ export const useDoiDichVuStores = defineStore('useDoiDichVuStores', {
           throw new Error('No access token found');
         }
 
-        const response = await fetch(`http://localhost:8080/api/hoa-don/hoa-don-doi-dich-vu/${idHoaDonDoiDV}`, {
-          method: 'POST',
+        const response = await fetch(`http://localhost:8080/api/hoa-don/thanh-toan-hoa-don-doiDV/${id}`, {
+          method: 'PUT',
           headers: {
             'Authorization': `Bearer ${token}`,
             'Content-Type': 'application/json',
