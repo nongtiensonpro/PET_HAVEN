@@ -198,6 +198,7 @@ public class DatLichController {
             lichhenNew.setTuyChonCanNang(lichhen.getTuyChonCanNang());
             lichhenNew.setDate(lichhen.getDate());
             lichhenNew.setTrangthaica(true);
+            lichhenNew.setSolannhacnho(1);
             lichHenService.addOrUpdate(lichhenNew);
 
 //            Hoàn tiền

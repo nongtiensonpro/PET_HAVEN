@@ -40,14 +40,14 @@ public class HoaDonDoiDichVuService {
 
 
     @Transactional
-    public ResponseEntity<?> DoiDichVu(DoiDichVuDTO dto,String nguoiThanhToan){
+    public Hoadondoidichvu DoiDichVu(DoiDichVuDTO dto,String nguoiThanhToan){
         Optional<Hoadon> hoadonOptional = hoaDonService.finHoadonByIdLich(dto.getIdLichHen());
         if (!hoadonOptional.isPresent()){
-            return ResponseEntity.notFound().build();
+            return null;
         }
         Optional<TuyChonCanNang> tuyChonCanNangOptional = tuyChonCanNangService.findById(dto.getIdTuyChonCanNang());
         if (!tuyChonCanNangOptional.isPresent()){
-            return ResponseEntity.notFound().build();
+            return null;
         }
         TuyChonCanNang tuyChonCanNang = tuyChonCanNangOptional.get();
         Hoadon hoadon = hoadonOptional.get();
@@ -75,7 +75,7 @@ public class HoaDonDoiDichVuService {
             }
             hoadondoidichvu.setNguoithanhtoan(nguoiThanhToan);
             hoadondoidichvuRepository.save(hoadondoidichvu);
-            return ResponseEntity.ok(hoadondoidichvu);
+            return hoadondoidichvu;
     }
 
     public Optional<Hoadondoidichvu> findHoadondoidichvuById(Integer id){

@@ -206,7 +206,7 @@ public class LichHenService {
                 System.out.println("Tiến trình bị hủy.");
                 return CompletableFuture.completedFuture(ResponseEntity.ok().build()); // Nếu tiến trình bị hủy thì kết thúc
             }
-            Thread.sleep( 40 * 1000);
+            Thread.sleep( 30 * 1000);
             // Lấy ID mới từ Map nếu có
             currentId = scheduleMap.getOrDefault(lichhenId, lichhenId);
             System.out.println(currentId);

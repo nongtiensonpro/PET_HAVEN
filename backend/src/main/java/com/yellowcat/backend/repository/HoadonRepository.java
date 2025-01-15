@@ -24,7 +24,7 @@ public interface HoadonRepository extends JpaRepository<Hoadon, Integer> {
 
     @Query("SELECT hd FROM Hoadon hd " +
             "JOIN Lichhen lh ON lh.id = hd.idlichhen.id " +
-            "WHERE hd.trangthai != 3 "+
+            "WHERE hd.trangthai != 3 AND hd.trangthai != 4"+
             "AND lh.id = :idlichhen")
     Optional<Hoadon> findByIdlichhen_Id(Integer idlichhen);
 

@@ -113,12 +113,16 @@ public class HoaDonController {
     }
 
     @PutMapping("/doi-dich-vu")
-    public ResponseEntity<?> doiDichVu(@RequestBody DoiDichVuDTO dto){
+    public ResponseEntity<?> doiDichVu(@RequestBody DoiDichVuDTO dto) throws PayPalRESTException {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         Jwt jwt = (Jwt) authentication.getPrincipal();
         String username = jwt.getClaimAsString("preferred_username");
-        ResponseEntity<?> hoadondoidichvu = hoaDonDoiDichVuService.DoiDichVu(dto,username);
-        return ResponseEntity.ok(hoadondoidichvu);
+        Hoadondoidichvu hoadondoidichvu = hoaDonDoiDichVuService.DoiDichVu(dto,username);
+        if (hoadondoidichvu == null) {
+            return ResponseEntity.badRequest().build();
+        }
+        ResponseEntity<?> hoadondoiDV = hoaDonDoiDichVuService.thanhToanHDDoiDV(hoadondoidichvu.getId());
+        return ResponseEntity.ok(hoadondoiDV);
     }
 
     @PutMapping("/thanh-toan-hoa-don-doiDV/{id}")
@@ -141,13 +145,4 @@ public class HoaDonController {
         return listHdChuaTT;
     }
 
-    @PreAuthorize("hasAnyRole('admin')")
-    @GetMapping("/all-hoa-don-doi-dich-vu-online")
-    public ResponseEntity<?> doiDichVuOn(@RequestBody DoiDichVuDTO dto){
-        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-        Jwt jwt = (Jwt) authentication.getPrincipal();
-        String username = jwt.getClaimAsString("preferred_username");
-        ResponseEntity<?> hoadondoidichvu = hoaDonDoiDichVuService.DoiDichVu(dto,username);
-        return ResponseEntity.ok(hoadondoidichvu);
-    }
 }
