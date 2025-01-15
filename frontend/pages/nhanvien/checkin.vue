@@ -161,6 +161,7 @@
                   <th>{{ t('amount') }}</th>
                   <th>{{ t('status') }}</th>
                   <th>{{ t('note') }}</th>
+                  <th>{{t('actions')}}</th>
                 </tr>
                 </thead>
                 <tbody>
@@ -171,9 +172,12 @@
                   <td>{{ hoaDon.idhoadon.idlichhen.thucung.ten }}</td>
                   <td>{{ formatDate(hoaDon.ngaythanhtoan) }}</td>
                   <td>{{ formatCurrency(hoaDon.idhoadon.sotien ) }}</td>
-                  <td><span class="badge bg-success">{{ getTrangThaiHoaDon(hoaDon.idhoadon.trangthai) }}
+                  <td><span class="badge bg-success">{{getTrangThaiDoiDichVu(hoaDon.trangthai)}}
                   </span></td>
                   <td>{{ hoaDon.ghichu || '-' }}</td>
+                  <td>
+                    <button type="button" class="btn btn-sm btn-outline-primary m-1" @click="thanhToanOffice(hoaDon.id)" v-if="!hoaDon.trangthaithanhtoan && hoaDon.trangthai===2">Thanh toán</button>
+                  </td>
                 </tr>
                 </tbody>
               </table>
@@ -313,6 +317,14 @@ const getTrangThaiHoaDon = (status: number): string => {
   return trangThaiMap[status] || t('statusUnknown');
 };
 
+const getTrangThaiDoiDichVu = (status: number): string => {
+  const trangThaiMap: { [key: number]: string } = {
+    1: t('refund'),
+    2: t('receive_money'),
+  };
+  return trangThaiMap[status] || t('statusUnknown');
+}
+
 const taiHoaDon = async (id: number) => {
   window.open(`/api/hoadon/download/${id}`, '_blank');
 };
@@ -357,6 +369,29 @@ const viewHoaDon = (id: number) => {
 const DoiDichVu = (id: number) => {
   navigateTo(`/thaydoidichvu/${id}`)
 }
+
+async function thanhToanOffice(id : number) {
+  try {
+    const result = await Swal.fire({
+      title: t('are_you_sure_you_want_to_change'),
+      text: `Bạn có chắc chắn muốn thanh toán hóa đơn đã đối dịch vụ?`,
+      icon: 'warning',
+      showCancelButton: true,
+      confirmButtonColor: '#3085d6',
+      cancelButtonColor: '#d33',
+      confirmButtonText: t('yes'),
+      cancelButtonText: t('no')
+    });
+    if(result.isConfirmed) {
+      await useDoiDichVu.thanhToanDichVuKhiSoTienOffice(id);
+      toast.success(t('payment_office_success'));
+      await fetchHoaDoiDoiDichVu();
+    }
+  } catch (error) {
+    toast.error(t('payment_office_error'));
+  }
+}
+
 </script>
 
 <style scoped>

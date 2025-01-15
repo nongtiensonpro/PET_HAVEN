@@ -358,4 +358,6 @@ export default {
     error_processing_request:'Lỗi xử lý yêu cầu',
     service_changed_successfully:'Đổi dịch vụ thành công!',
     error_changing_service:'Đổi dịch vụ thất bại!',
+    refund:'Hoàn tiền',
+    receive_money:'Nhận tiền',
 }as const;

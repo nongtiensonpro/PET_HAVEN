@@ -77,7 +77,7 @@ export const useDoiDichVuStores = defineStore('useDoiDichVuStores', {
       }
     },
 
-    async thanhToanDichVuKhiSoTienThayDoiLonHon(idHoaDonDoiDV: number) {
+    async thanhToanDichVuKhiSoTienOnline(idHoaDonDoiDV: number) {
       const toast = useToast();
       this.isLoading = true;
       try {
@@ -109,7 +109,7 @@ export const useDoiDichVuStores = defineStore('useDoiDichVuStores', {
       }
     },
 
-    async thanhToanDichVuKhiSoTienThayDoiBangHoacNhoHon(id: number) {
+    async thanhToanDichVuKhiSoTienOffice(id: number) {
       const toast = useToast();
       this.isLoading = true;
       try {

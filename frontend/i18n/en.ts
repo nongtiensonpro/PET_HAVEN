@@ -362,4 +362,6 @@ export default {
   error_processing_request:'Error processing request. Please try again later',
   service_changed_successfully:'Service changed successfully',
   error_changing_service:'Error changing service. Please try again later',
+  refund:'Refund',
+  receive_money:'Receive Money',
 }as const;
