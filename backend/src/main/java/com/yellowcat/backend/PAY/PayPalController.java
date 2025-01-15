@@ -76,7 +76,7 @@ public class PayPalController {
     }
 
     @PostMapping("/payment/create/thanh-toan-hdDoiDVOnline")
-    public ResponseEntity<String> createPaymentHDDV(@RequestHeader String idHoaDonDoiDV) throws PayPalRESTException {
+    public ResponseEntity<?> createPaymentHDDV(@RequestHeader String idHoaDonDoiDV) throws PayPalRESTException {
         Optional<Hoadondoidichvu> hoadonOptional = hoaDonDoiDichVuService.findHoadondoidichvuById(Integer.parseInt(idHoaDonDoiDV));
 
         if (!hoadonOptional.isPresent()) {
@@ -84,7 +84,8 @@ public class PayPalController {
         }
         Hoadondoidichvu hoadon = hoadonOptional.get();
         if (hoadon.getTrangthai() == 1){
-            return ResponseEntity.badRequest().build();
+            ResponseEntity<?> hoadondoidichvu = hoaDonDoiDichVuService.thanhToanHDDoiDV(Integer.valueOf(idHoaDonDoiDV));
+            return hoadondoidichvu;
         }
         if (hoadon.getTrangthaithanhtoan()){
             return ResponseEntity.badRequest().build();
