@@ -480,4 +480,5 @@ export default {
   number_of_uses:'Number of Uses',
 
   revenue:'Revenue',
+  error_occurred:'An error occurred.',
 } as const;

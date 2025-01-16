@@ -475,4 +475,5 @@ export default {
 
     number_of_uses:'Số lần sử dụng',
     revenue:'Doanh thu',
+    error_occurred:'Đã xảy ra lỗi',
 } as const;
