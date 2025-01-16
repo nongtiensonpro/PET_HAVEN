@@ -1,6 +1,7 @@
 package com.yellowcat.backend.repository;
 
 import com.yellowcat.backend.model.Hoadon;
+import com.yellowcat.backend.model.Hoadondoidichvu;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
@@ -45,23 +46,44 @@ public interface HoadonRepository extends JpaRepository<Hoadon, Integer> {
 //    List<Hoadon> findByIdlichhen_TrangthaicaAndIdlichhen_IdkhachhangAndTrangthai(boolean tt,String idKhach,int ttHD);
 //    ________________Thống kê______________________
 // Thống kê theo ngày
-    @Query("SELECT FUNCTION('DATE', h.date) AS ngay, SUM(h.sotien) AS doanhthu " +
-            "FROM Hoadon h " +
-            "WHERE h.trangthai = 2 AND FUNCTION('DATE', h.date) BETWEEN :startDate AND :endDate " +
-            "GROUP BY FUNCTION('DATE', h.date) " +
-            "ORDER BY FUNCTION('DATE', h.date)")
-    List<Object[]> thongKeTheoNgay(@Param("startDate") LocalDate startDate, @Param("endDate") LocalDate endDate);
+@Query("SELECT h.date, " +
+        "SUM(h.sotien) +" +
+        "SUM(CASE WHEN x.trangthai = 2 THEN x.sotien ELSE 0 END) - " +
+        "SUM(CASE WHEN x.trangthai = 1 THEN x.sotien ELSE 0 END) AS doanhthu " +
+        "FROM Hoadon h " +
+        "LEFT JOIN Hoadondoidichvu x ON h.id = x.idhoadon.id " + // Sử dụng LEFT JOIN
+        "WHERE h.trangthai = 2 " +
+        "AND h.date BETWEEN :startDate AND :endDate " +
+        "AND (x.ngaytao BETWEEN :startDate AND :endDate OR x.ngaytao IS NULL) " + // Lọc theo ngày của Hoadondoidichvu, nếu không có thì cho phép NULL
+        "AND (x.trangthaithanhtoan = true OR x.trangthaithanhtoan IS NULL) " + // Lọc theo trạng thái thanh toán, nếu không có thì cho phép NULL
+        "GROUP BY h.date " +
+        "ORDER BY h.date")
+List<Object[]> thongKeTheoNgay(@Param("startDate") LocalDate startDate, @Param("endDate") LocalDate endDate);
 
-    @Query("SELECT FUNCTION('DATE_TRUNC', 'month', h.date) AS thang, SUM(h.sotien) AS doanhthu " +
+    @Query("SELECT FUNCTION('DATE_TRUNC', 'month', h.date) AS thang, " +
+            "SUM(h.sotien) + " +
+            "SUM(CASE WHEN x.trangthai = 2 THEN x.sotien ELSE 0 END) - " +
+            "SUM(CASE WHEN x.trangthai = 1 THEN x.sotien ELSE 0 END) AS doanhthu " +
             "FROM Hoadon h " +
-            "WHERE h.trangthai = 2 AND h.date BETWEEN :startDate AND :endDate " +
+            "LEFT JOIN Hoadondoidichvu x ON h.id = x.idhoadon.id " +
+            "WHERE h.trangthai = 2 " +
+            "AND h.date BETWEEN :startDate AND :endDate " +
+            "AND (x.ngaytao BETWEEN :startDate AND :endDate OR x.ngaytao IS NULL) " +
+            "AND (x.trangthaithanhtoan = true OR x.trangthaithanhtoan IS NULL) " +
             "GROUP BY FUNCTION('DATE_TRUNC', 'month', h.date) " +
             "ORDER BY FUNCTION('DATE_TRUNC', 'month', h.date)")
     List<Object[]> thongKeTheoThang(@Param("startDate") LocalDate startDate, @Param("endDate") LocalDate endDate);
 
-    @Query("SELECT FUNCTION('DATE_TRUNC', 'year', h.date) AS nam, SUM(h.sotien) AS doanhthu " +
+    @Query("SELECT FUNCTION('DATE_TRUNC', 'year', h.date) AS nam, " +
+            "SUM(h.sotien) + " +
+            "SUM(CASE WHEN x.trangthai = 2 THEN x.sotien ELSE 0 END) - " +
+            "SUM(CASE WHEN x.trangthai = 1 THEN x.sotien ELSE 0 END) AS doanhthu " +
             "FROM Hoadon h " +
-            "WHERE h.trangthai = 2 AND h.date BETWEEN :startDate AND :endDate " +
+            "LEFT JOIN Hoadondoidichvu x ON h.id = x.idhoadon.id " +
+            "WHERE h.trangthai = 2 " +
+            "AND h.date BETWEEN :startDate AND :endDate " +
+            "AND (x.ngaytao BETWEEN :startDate AND :endDate OR x.ngaytao IS NULL) " +
+            "AND (x.trangthaithanhtoan = true OR x.trangthaithanhtoan IS NULL) " +
             "GROUP BY FUNCTION('DATE_TRUNC', 'year', h.date) " +
             "ORDER BY FUNCTION('DATE_TRUNC', 'year', h.date)")
     List<Object[]> thongKeTheoNam(@Param("startDate") LocalDate startDate, @Param("endDate") LocalDate endDate);
