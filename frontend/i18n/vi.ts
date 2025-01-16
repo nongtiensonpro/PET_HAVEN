@@ -472,4 +472,7 @@ export default {
     updateReviewSecc:'Đánh giá đã được cập nhật thành công!',
 
     updateReview:'Cập nhật đánh giá',
+
+    number_of_uses:'Số lần sử dụng',
+    revenue:'Doanh thu',
 } as const;

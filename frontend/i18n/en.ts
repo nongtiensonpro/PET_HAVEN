@@ -476,4 +476,8 @@ export default {
   updateReviewSecc:'Review updated successfully.',
 
   updateReview:'Update Review',
+
+  number_of_uses:'Number of Uses',
+
+  revenue:'Revenue',
 } as const;

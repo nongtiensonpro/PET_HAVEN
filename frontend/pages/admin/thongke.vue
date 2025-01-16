@@ -101,9 +101,9 @@
           <table class="table">
             <thead>
             <tr>
-              <th>Tên dịch vụ</th>
-              <th>Số lần sử dụng</th>
-              <th>Doanh thu</th>
+              <th>{{t('serviceName')}}</th>
+              <th>{{t('number_of_uses')}}</th>
+              <th>{{t('revenue')}}</th>
             </tr>
             </thead>
             <tbody>
@@ -150,14 +150,6 @@ const error = ref<string | null>(null);
 
 const serviceRevenueData = ref([]);
 const doanhThuTheoDichVu = ref(null);
-
-const top10User = ref(null);
-
-
-doanhThuTheoDichVu.value = await store.getDoanhThuTheoDichVu(startDate, endDate);
-// top10User.value = await store.getTop10User(startDate, endDate);
-
-
 
 const hasData = computed(() => store.thongKeItems.length > 0);
 const hasServiceData = computed(() => serviceRevenueData.value.length > 0);
