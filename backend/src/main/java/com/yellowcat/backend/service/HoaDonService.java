@@ -165,7 +165,7 @@ public class HoaDonService {
                     subject,                     // Tiêu đề email
                     body,                        // Nội dung email
                     pdfBytes,                    // File PDF dưới dạng byte[]
-                    "invoice.pdf"                // Tên file đính kèm
+                    "HoaDon.pdf"                // Tên file đính kèm
             );
 
             System.out.println("Email hóa đơn đã được gửi thành công.");

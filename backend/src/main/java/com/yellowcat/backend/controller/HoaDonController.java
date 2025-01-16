@@ -19,8 +19,12 @@ import org.springframework.security.oauth2.jwt.Jwt;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 
+import java.sql.Time;
+import java.sql.Timestamp;
 import java.util.List;
 import java.util.Optional;
+
+import static com.yellowcat.backend.PAY.PayPalController.convertTimestamp;
 
 @Controller
 @RestController
@@ -85,7 +89,18 @@ public class HoaDonController {
         Hoadon hoadon = hoadonOptional.get();
         String thoiGian = hoadon.getIdlichhen().getDate().toString()+ ' ' + hoadon.getIdlichhen().getIdcalichhen().getThoigianca();
         String tenDichVu = hoadon.getIdlichhen().getTuyChonCanNang().getTuyChonDichVu().getDichvu().getTendichvu() + " -> " + hoadon.getIdlichhen().getTuyChonCanNang().getTuyChonDichVu().getTentuychon();
-        byte[] pdfBytes = pdfExportService.generateInvoice(hoadon.getNgaythanhtoan().toString(),hoadon.getMagiaodich(),hoadon.getPhuongthucthanhtoan(),tenDichVu,hoadon.getSotienbandau(),hoadon.getSotien(),thoiGian);
+        Timestamp time = Timestamp.valueOf(hoadon.getNgaythanhtoan());
+        String ngayThanhToan = convertTimestamp(time);
+        String giamGia;
+        if (hoadon.getIdgiamgia() == null || hoadon.getIdgiamgia().getPhantramgiam() == null) {
+            giamGia = "Không";
+        } else {
+            giamGia = hoadon.getIdgiamgia().getPhantramgiam().toString() + "%";
+        }        String tenKhach = hoadon.getIdlichhen().getEmailNguoiDat();
+        String soTien = hoadon.getSotien() + "USD";
+        String soTienDau = hoadon.getSotienbandau() + "USD";
+        // Định dạng ngày giờ
+        byte[] pdfBytes = pdfExportService.generateInvoice(ngayThanhToan,hoadon.getMagiaodich(),hoadon.getPhuongthucthanhtoan(),giamGia,tenDichVu,soTienDau,soTien,thoiGian,tenKhach);
 
         HttpHeaders headers = new HttpHeaders();
         headers.setContentType(MediaType.APPLICATION_PDF);
@@ -101,9 +116,26 @@ public class HoaDonController {
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         }
         Hoadondoidichvu hoadon = hoadonOptional.get();
+        String ngayThanhToan = String.valueOf(hoadon.getNgaythanhtoan());
         String thoiGian = hoadon.getIdhoadon().getIdlichhen().getDate().toString()+ ' ' + hoadon.getIdhoadon().getIdlichhen().getIdcalichhen().getThoigianca();
         String tenDichVu = hoadon.getIdhoadon().getIdlichhen().getTuyChonCanNang().getTuyChonDichVu().getDichvu().getTendichvu() + " -> " + hoadon.getIdhoadon().getIdlichhen().getTuyChonCanNang().getTuyChonDichVu().getTentuychon();
-        byte[] pdfBytes = pdfExportService.generateInvoice(hoadon.getNgaythanhtoan().toString(),hoadon.getMagiaodich(),hoadon.getIdhoadon().getPhuongthucthanhtoan(),tenDichVu,hoadon.getSotien(),hoadon.getSotien(),thoiGian);
+        String tenDichVuDoi = hoadon.getIdtuychoncannang().getTuyChonDichVu().getDichvu().getTendichvu() + " -> " + hoadon.getIdtuychoncannang().getTuyChonDichVu().getTentuychon();
+        String tenKhach = hoadon.getIdhoadon().getIdlichhen().getEmailNguoiDat();
+        String giaDVDau = hoadon.getIdhoadon().getSotienbandau() + "USD";
+        String soTienTTDVDau = hoadon.getIdhoadon().getSotien() + "USD";
+        String giaDVSau = hoadon.getGiadichvudoi() + "USD";
+        byte[] pdfBytes = pdfExportService.genHdDoiDV(
+                giaDVDau,
+                tenKhach,
+                soTienTTDVDau,
+                giaDVSau,
+                ngayThanhToan
+                ,hoadon.getMagiaodich()
+                ,hoadon.getIdhoadon().getPhuongthucthanhtoan()
+                ,tenDichVu
+                ,tenDichVuDoi
+                ,hoadon.getSotien().toString()
+                ,thoiGian);
 
         HttpHeaders headers = new HttpHeaders();
         headers.setContentType(MediaType.APPLICATION_PDF);

@@ -18,7 +18,9 @@ import org.springframework.web.bind.annotation.*;
 import java.net.URI;
 import java.net.URLEncoder;
 import java.nio.charset.StandardCharsets;
+import java.sql.Timestamp;
 import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.Optional;
 
 @RestController
@@ -155,7 +157,19 @@ public class PayPalController {
                     // Tạo file PDF hóa đơn
                     String thoiGian = hoadon.getIdlichhen().getDate().toString()+ ' ' + hoadon.getIdlichhen().getIdcalichhen().getThoigianca();
                     String tenDichVu = hoadon.getIdlichhen().getTuyChonCanNang().getTuyChonDichVu().getDichvu().getTendichvu() + " -> " + hoadon.getIdlichhen().getTuyChonCanNang().getTuyChonDichVu().getTentuychon();
-                    byte[] pdfBytes = pdfExportService.generateInvoice(hoadon.getNgaythanhtoan().toString(),hoadon.getMagiaodich(),hoadon.getPhuongthucthanhtoan(),tenDichVu,hoadon.getSotienbandau(),hoadon.getSotien(),thoiGian);
+                    Timestamp time = Timestamp.valueOf(hoadon.getNgaythanhtoan());
+                    String ngayThanhToan = convertTimestamp(time);
+                    String giamGia;
+                    if (hoadon.getIdgiamgia() == null || hoadon.getIdgiamgia().getPhantramgiam() == null) {
+                        giamGia = "Không";
+                    } else {
+                        giamGia = hoadon.getIdgiamgia().getPhantramgiam().toString() + "%";
+                    }
+                    String tenKhach = hoadon.getIdlichhen().getEmailNguoiDat();
+                    String soTien = hoadon.getSotien() + "USD";
+                    String soTienDau = hoadon.getSotienbandau() + "USD";
+                    // Định dạng ngày giờ
+                    byte[] pdfBytes = pdfExportService.generateInvoice(ngayThanhToan,hoadon.getMagiaodich(),hoadon.getPhuongthucthanhtoan(),giamGia,tenDichVu,soTienDau,soTien,thoiGian,tenKhach);
 
                     hoaDonService.sendHoaDonSauThanhToan(lichhen,pdfBytes);
 
@@ -205,20 +219,31 @@ public class PayPalController {
                     return ResponseEntity.notFound().build();
                 }
 
-                Hoadondoidichvu hoadondoidichvu = hoadondoidichvuOptional.get();
+                Hoadondoidichvu hoadon = hoadondoidichvuOptional.get();
                 hoaDonDoiDichVuService.thanhToanHDDoiDV(id);
-                String thoiGian = hoadondoidichvu.getIdhoadon().getIdlichhen().getDate().toString()+ ' ' + hoadondoidichvu.getIdhoadon().getIdlichhen().getIdcalichhen().getThoigianca();
-                String tenDichVu = hoadondoidichvu.getIdhoadon().getIdlichhen().getTuyChonCanNang().getTuyChonDichVu().getDichvu().getTendichvu() + " --- " + hoadondoidichvu.getIdhoadon().getIdlichhen().getTuyChonCanNang().getTuyChonDichVu().getTentuychon();
-                String tenDichVuDoi = hoadondoidichvu.getIdtuychoncannang().getTuyChonDichVu().getDichvu().getTendichvu() + " --- " + hoadondoidichvu.getIdtuychoncannang().getTuyChonDichVu().getTentuychon();
-                byte[] pdfBytes = pdfExportService.genHdDoiDV(hoadondoidichvu.getIdhoadon().getNgaythanhtoan().toString(),
-                        hoadondoidichvu.getIdhoadon().getMagiaodich(),
-                        hoadondoidichvu.getIdhoadon().getPhuongthucthanhtoan(),
-                        tenDichVu,
-                        tenDichVuDoi,
-                        hoadondoidichvu.getSotien(),
-                        thoiGian);
+                Timestamp time = Timestamp.valueOf(hoadon.getNgaythanhtoan());
+                String ngayThanhToan = convertTimestamp(time);
+                String thoiGian = hoadon.getIdhoadon().getIdlichhen().getDate().toString()+ ' ' + hoadon.getIdhoadon().getIdlichhen().getIdcalichhen().getThoigianca();
+                String tenDichVu = hoadon.getIdhoadon().getIdlichhen().getTuyChonCanNang().getTuyChonDichVu().getDichvu().getTendichvu() + " -> " + hoadon.getIdhoadon().getIdlichhen().getTuyChonCanNang().getTuyChonDichVu().getTentuychon();
+                String tenDichVuDoi = hoadon.getIdtuychoncannang().getTuyChonDichVu().getDichvu().getTendichvu() + " -> " + hoadon.getIdtuychoncannang().getTuyChonDichVu().getTentuychon();
+                String tenKhach = hoadon.getIdhoadon().getIdlichhen().getEmailNguoiDat();
+                String giaDVDau = hoadon.getIdhoadon().getSotienbandau() + "USD";
+                String soTienTTDVDau = hoadon.getIdhoadon().getSotien() + "USD";
+                String giaDVSau = hoadon.getGiadichvudoi() + "USD";
+                byte[] pdfBytes = pdfExportService.genHdDoiDV(
+                        giaDVDau,
+                        tenKhach,
+                        soTienTTDVDau,
+                        giaDVSau,
+                        ngayThanhToan
+                        ,hoadon.getMagiaodich()
+                        ,hoadon.getIdhoadon().getPhuongthucthanhtoan()
+                        ,tenDichVu
+                        ,tenDichVuDoi
+                        ,hoadon.getSotien().toString()
+                        ,thoiGian);
 
-                hoaDonService.sendHoaDonSauThanhToan(hoadondoidichvu.getIdhoadon().getIdlichhen(),pdfBytes);
+                hoaDonService.sendHoaDonSauThanhToan(hoadon.getIdhoadon().getIdlichhen(),pdfBytes);
 
                 String redirectUrl = "http://localhost:3000/";
                 return ResponseEntity.status(HttpStatus.FOUND)
@@ -233,5 +258,15 @@ public class PayPalController {
             e.printStackTrace();
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Lỗi khi xử lý thanh toán.");
         }
+    }
+    public static String convertTimestamp(Timestamp timestamp) {
+        // Chuyển đổi Timestamp sang LocalDateTime
+        LocalDateTime dateTime = timestamp.toLocalDateTime();
+
+        // Định dạng ngày giờ
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd/MM/yyyy HH:mm");
+
+        // Chuyển LocalDateTime sang chuỗi định dạng
+        return dateTime.format(formatter);
     }
 }
