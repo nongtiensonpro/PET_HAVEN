@@ -7,26 +7,16 @@
           <div class="row p-4">
             <div class="col">
               <label class="block text-sm font-medium text-gray-700 mb-2">{{ t('selectDateRange') }}</label>
-              <date-picker
-                  v-model="dateRange"
-                  range
-                  @change="updateDateRange"
-                  value-type="format"
-                  format="YYYY-MM-DD"
-                  :placeholder="[t('startDate'), t('endDate')]"
-
-                  class="w-full border rounded-md p-2 focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
-              />
+              <date-picker v-model="dateRange" range @change="updateDateRange" value-type="format" format="YYYY-MM-DD"
+                :placeholder="[t('startDate'), t('endDate')]"
+                class="w-full border rounded-md p-2 focus:ring-2 focus:ring-blue-500 focus:border-blue-500" />
             </div>
             <div class="col">
               <label for="statisticType" class="block text-sm font-medium text-gray-700 mb-2">{{
-                  t('statisticType')
-                }}</label>
-              <select
-                  v-model="statisticType"
-                  id="statisticType"
-                  class="w-full border rounded-md p-2 focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
-              >
+                t('statisticType')
+              }}</label>
+              <select v-model="statisticType" id="statisticType"
+                class="w-full border rounded-md p-2 focus:ring-2 focus:ring-blue-500 focus:border-blue-500">
                 <option value="day">{{ t('byDay') }}</option>
                 <option value="month">{{ t('byMonth') }}</option>
                 <option value="year">{{ t('byYear') }}</option>
@@ -36,16 +26,17 @@
         </div>
         <div class="flex justify-between items-center">
           <p v-if="dateRange[0] && dateRange[1]" class="text-sm text-gray-600">
-            {{ t('selectedTimeRange', {start: formatDisplayDate(dateRange[0]), end: formatDisplayDate(dateRange[1])}) }}
+            {{ t('selectedTimeRange', { start: formatDisplayDate(dateRange[0]), end: formatDisplayDate(dateRange[1]) }) }}
+            <button @click="fetchData" class="custom-button">
+              {{ t('getData') }}
+            </button>
           </p>
-          <button @click="fetchData" class="custom-button">
-            {{ t('getData') }}
-          </button>
+
         </div>
       </div>
     </div>
     <div>
-      <div class="card m-4">
+      <div class="card">
         <div class="card-body">
           <div v-if="loading" class="mt-8 text-center">
             <p class="text-gray-600">{{ t('loading') }}</p>
@@ -59,29 +50,29 @@
 
             <!-- ECharts Component -->
             <div class="bg-white shadow-lg rounded-lg overflow-hidden p-4 mb-8">
-              <v-chart class="chart" :option="chartOption" autoresize/>
+              <v-chart class="chart" :option="chartOption" autoresize />
             </div>
 
             <div class="bg-white shadow-lg rounded-lg overflow-hidden">
               <table class="min-w-full divide-y divide-gray-200 m-4 p-4">
                 <thead class="bg-gray-50">
-                <tr>
-                  <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                    {{ t('date') }}
-                  </th>
-                  <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                    {{ t('amount') }}
-                  </th>
-                </tr>
+                  <tr>
+                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                      {{ t('date') }}
+                    </th>
+                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                      {{ t('amount') }}
+                    </th>
+                  </tr>
                 </thead>
                 <tbody class="bg-white divide-y divide-gray-200">
-                <tr v-for="(item, index) in store.thongKeItems" :key="index"
+                  <tr v-for="(item, index) in store.thongKeItems" :key="index"
                     class="hover:bg-gray-50 transition-colors duration-200">
-                  <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
-                    {{ formatDisplayDate(item.date.toString()) }}
-                  </td>
-                  <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">{{ item.amount }} USD</td>
-                </tr>
+                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
+                      {{ formatDisplayDate(item.date.toString()) }}
+                    </td>
+                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">{{ item.amount }} USD</td>
+                  </tr>
                 </tbody>
               </table>
             </div>
@@ -91,67 +82,64 @@
           </div>
         </div>
       </div>
-      <div class="card m-4">
+      <div class="card">
         <div class="card-body">
           <h3 class="text-xl font-semibold mb-4 text-gray-800">{{ t('serviceUsage') }}</h3>
           <div v-if="hasServiceData" class="bg-white shadow-lg rounded-lg overflow-hidden p-4 mb-8">
-            <v-chart class="chart" :option="serviceChartOption" autoresize/>
+            <v-chart class="chart" :option="serviceChartOption" autoresize />
           </div>
           <div v-else class="mt-8 text-center">
             <p class="text-gray-600">{{ t('noServiceData') }}</p>
           </div>
         </div>
       </div>
+      <div class="card">
+        <div class="card-header text fs-4">
+          {{ t('serviceRevenue') }}
+        </div>
+        <div class="card-body">
+          <table class="table">
+            <thead>
+            <tr>
+              <th>Tên dịch vụ</th>
+              <th>Số lần sử dụng</th>
+              <th>Doanh thu</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr v-for="dt in doanhThuTheoDichVu" :key="dt[0]">
+              <td>{{ dt[0] }}</td>
+              <td>{{ dt[1] }}</td>
+              <td>{{ dt[2] }} USD</td>
+            </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
       <div>
-        <div class="card">
-          <div class="card-header text fs-4">
-            {{t('serviceRevenue')}}
-          </div>
-          <div class="card-body">
-            <table class="table">
-              <thead>
-              <tr>
-                <th>Tên dịch vụ</th>
-                <th>Số lần sử dụng</th>
-                <th>Doanh thu</th>
-              </tr>
-              </thead>
-              <tbody>
-              <tr v-for="dt in doanhThuTheoDichVu" :key="dt[0]">
-                <td>{{ dt[0] }}</td>
-                <td>{{ dt[1] }}</td>
-                <td>{{ dt[2] }} USD</td>
-              </tr>
-              </tbody>
-            </table>
-          </div>
-        </div>
-        <div class="card">
 
-        </div>
       </div>
     </div>
   </div>
 </template>
 
 <script setup lang="ts">
-import {ref, onMounted, watch, computed, onUnmounted} from 'vue';
-import {useThongKeStore} from '~/stores/ThongKeStores';
+import { ref, onMounted, watch, computed, onUnmounted } from 'vue';
+import { useThongKeStore } from '~/stores/ThongKeStores';
 import DatePicker from 'vue-datepicker-next';
 import 'vue-datepicker-next/index.css';
-import {useToast} from 'vue-toastification';
+import { useToast } from 'vue-toastification';
 import VChart from 'vue-echarts';
-import {use} from 'echarts/core';
-import {CanvasRenderer} from 'echarts/renderers';
-import {LineChart, PieChart} from 'echarts/charts';
-import {GridComponent, TooltipComponent, LegendComponent} from 'echarts/components';
-import ThongKeVoiGemini from "~/components/ThongKeVoiGemini.vue";
-import {useI18n} from 'vue-i18n';
+import { use } from 'echarts/core';
+import { CanvasRenderer } from 'echarts/renderers';
+import { LineChart, PieChart } from 'echarts/charts';
+import { GridComponent, TooltipComponent, LegendComponent } from 'echarts/components';
+import { useI18n } from 'vue-i18n';
 
 // Register ECharts components
 use([CanvasRenderer, LineChart, PieChart, GridComponent, TooltipComponent, LegendComponent]);
 
-const {t} = useI18n();
+const { t } = useI18n();
 const toast = useToast();
 const store = useThongKeStore();
 const dateRange = ref<[string | null, string | null]>([null, null]);
@@ -160,16 +148,8 @@ const loading = ref(false);
 const error = ref<string | null>(null);
 
 
-const startDate = '2000-01-01';
-const endDate = new Date().toISOString().split('T')[0];
 const serviceRevenueData = ref([]);
 const doanhThuTheoDichVu = ref(null);
-const top10User = ref(null);
-
-
-doanhThuTheoDichVu.value = await store.getDoanhThuTheoDichVu(startDate, endDate);
-// top10User.value = await store.getTop10User(startDate, endDate);
-
 
 const hasData = computed(() => store.thongKeItems.length > 0);
 const hasServiceData = computed(() => serviceRevenueData.value.length > 0);
@@ -232,17 +212,18 @@ const serviceChartOption = computed(() => ({
   ]
 }));
 
-const {data: initialData, refresh} = await useAsyncData(
-    'thongKeData',
-    async () => {
-      const today = new Date();
-      const oneMonthAgo = new Date(today.getFullYear(), today.getMonth() - 1, today.getDate());
-      const formatDate = (date: Date) => date.toISOString().split('T')[0];
-      const startDate = formatDate(oneMonthAgo);
-      const endDate = formatDate(today);
-      dateRange.value = [startDate, endDate];
-      return await fetchDataInternal(startDate, endDate);
-    }
+const { data: initialData, refresh } = await useAsyncData(
+  'thongKeData',
+  async () => {
+    const today = new Date();
+    const oneMonthAgo = new Date(today.getFullYear(), today.getMonth() - 1, today.getDate());
+    const formatDate = (date: Date) => date.toISOString().split('T')[0];
+    const startDate = formatDate(oneMonthAgo);
+    const endDate = formatDate(today);
+    dateRange.value = [startDate, endDate];
+    doanhThuTheoDichVu.value = await store.getDoanhThuTheoDichVu(startDate, endDate);
+    return await fetchDataInternal(startDate, endDate);
+  }
 );
 
 const updateDateRange = (dates: [string, string]) => {
@@ -252,7 +233,7 @@ const updateDateRange = (dates: [string, string]) => {
 const formatDisplayDate = (dateString: string) => {
   if (!dateString) return '';
   const date = new Date(dateString);
-  return date.toLocaleDateString('vi-VN', {day: '2-digit', month: '2-digit', year: 'numeric'});
+  return date.toLocaleDateString('vi-VN', { day: '2-digit', month: '2-digit', year: 'numeric' });
 };
 
 const fetchDataInternal = async (startDate: string, endDate: string) => {
@@ -309,32 +290,4 @@ onMounted(() => {
   height: 400px;
 }
 
-:deep(.mx-input) {
-  height: 40px;
-  padding: 0 10px;
-  font-size: 14px;
-  border: 1px solid #ddd;
-  border-radius: 4px;
-  width: 100%;
-}
-
-:deep(.mx-datepicker) {
-  width: 100%;
-}
-
-:deep(.mx-calendar) {
-  color: #400D01;
-  font-family: 'Baloo 2', sans-serif;
-}
-
-:deep(.mx-btn:hover) {
-  color: #400D01;
-  background-color: rgba(246, 246, 234, 0.9);
-}
-
-:deep(.mx-datepicker-main) {
-  border: 1px solid #ddd;
-  border-radius: 4px;
-  box-shadow: 0 2px 12px 0 rgba(0, 0, 0, 0.1);
-}
 </style>

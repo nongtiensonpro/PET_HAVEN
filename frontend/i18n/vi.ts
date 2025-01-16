@@ -454,4 +454,22 @@ export default {
     noServiceData:'Không có dữ liệu dịch vụ nào',
 
     timesUsed:'Sử dụng lần',
+
+    useService:'Bạn cần sử dụng dịch vụ sau đó mới có quyền đánh giá dịch vụ !',
+    noReview:'Chưa có đánh giá nào cho lịch hẹn này hãy thêm đánh giá ! ',
+
+    saveReview:'Lưu đánh giá',
+
+    description_is_required:'Mô tả không được để trống',
+
+    number_of_stars_is_required:'Số sao không được để trống',
+
+    review_added_successfully:'Đánh giá đã được thêm thành công!',
+    error_adding_review:'Đã xảy ra lỗi khi thêm đánh giá',
+    cofimUpdateReview:'Bạn có muốn cập nhật đánh giá không',
+
+    updateReviewFall:'Đã xảy ra lỗi khi cập nhật đánh giá',
+    updateReviewSecc:'Đánh giá đã được cập nhật thành công!',
+
+    updateReview:'Cập nhật đánh giá',
 } as const;

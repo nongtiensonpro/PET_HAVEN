@@ -7,69 +7,58 @@
             <div v-if="thayDoiLichHenStore.lichHenDetails">
               <!-- Thông tin lịch hẹn -->
               <div class="mb-4">
-                <h5 class="text-primary"><i class="fas fa-calendar-alt me-2"></i>Thông tin lịch hẹn</h5>
+                <h5 class="text-primary"><i class="fas fa-calendar-alt me-2"></i>{{t('appointment_information')}}</h5>
                 <div class="row">
                   <div class="col-md-6">
                     <p><strong>ID:</strong> {{ thayDoiLichHenStore.lichHenDetails.id }}</p>
-                    <p><strong>Ngày hẹn:</strong> {{ formatDate(thayDoiLichHenStore.getDate) }}</p>
-                    <p><strong>Giờ hẹn:</strong> {{ thayDoiLichHenStore.getCaLichHen.thoigianca }}</p>
-                    <p><strong>Email người đặt:</strong> {{ thayDoiLichHenStore.lichHenDetails.emailNguoiDat }}</p>
-                  </div>
-                  <div class="col-md-6">
-                    <p><strong>Trạng thái ca:</strong> {{ thayDoiLichHenStore.lichHenDetails.trangthaica ? 'Còn trống' : 'Đã đặt' }}</p>
-                    <p><strong>Số lần thay đổi:</strong> {{ thayDoiLichHenStore.lichHenDetails.solanthaydoi }}</p>
-                    <p><strong>Số lần nhắc nhở:</strong> {{ thayDoiLichHenStore.lichHenDetails.solannhacnho }}</p>
-                    <p><strong>Trạng thái:</strong> {{ ['Thành công', 'Đã hủy', 'Chờ xác nhận'][thayDoiLichHenStore.lichHenDetails.trangthai] || 'Không xác định' }}</p>
+                    <p><strong>{{t('appointment_date')}}:</strong> {{ formatDate(thayDoiLichHenStore.getDate) }}</p>
+                    <p><strong>{{t('timeSlotLabel')}}:</strong> {{ thayDoiLichHenStore.getCaLichHen.thoigianca }}</p>
+                    <p><strong>{{t('email_of_the_booker')}}</strong> {{ thayDoiLichHenStore.lichHenDetails.emailNguoiDat }}</p>
                   </div>
                 </div>
               </div>
 
               <!-- Thông tin dịch vụ -->
               <div class="mb-4">
-                <h5 class="text-primary"><i class="fas fa-clipboard-list me-2"></i>Thông tin dịch vụ</h5>
+                <h5 class="text-primary"><i class="fas fa-clipboard-list me-2"></i>{{t('selectedService')}}</h5>
                 <div class="row">
                   <div class="col-md-6">
-                    <p><strong>Tùy chọn dịch vụ:</strong> {{ thayDoiLichHenStore.lichHenDetails.tuyChonCanNang?.giatien }} USD</p>
-                    <p><strong>Cân nặng tối thiểu:</strong> {{ thayDoiLichHenStore.lichHenDetails.tuyChonCanNang?.cannangmin }} kg</p>
-                    <p><strong>Cân nặng tối đa:</strong> {{ thayDoiLichHenStore.lichHenDetails.tuyChonCanNang?.cannangmax || 'Không giới hạn' }} kg</p>
-                  </div>
-                  <div class="col-md-6">
-                    <p><strong>ID Ca lịch hẹn:</strong> {{ thayDoiLichHenStore.getCaLichHen.id }}</p>
-                    <p><strong>Thời gian hủy:</strong> {{ thayDoiLichHenStore.lichHenDetails.thoigianhuy ? formatDate(thayDoiLichHenStore.lichHenDetails.thoigianhuy) : 'Chưa hủy' }}</p>
-                    <p><strong>Thời gian thay đổi:</strong> {{ thayDoiLichHenStore.lichHenDetails.thoigianthaydoi ? formatDate(thayDoiLichHenStore.lichHenDetails.thoigianthaydoi) : 'Chưa thay đổi' }}</p>
+                    <p><strong>{{t('serviceOption')}}:</strong> {{ thayDoiLichHenStore.lichHenDetails.tuyChonCanNang?.giatien }} USD</p>
+                    <p><strong>{{t('minimum_weight')}}:</strong> {{ thayDoiLichHenStore.lichHenDetails.tuyChonCanNang?.cannangmin }} kg</p>
+                    <p><strong>{{t('maximum_weight')}}:</strong> {{ thayDoiLichHenStore.lichHenDetails.tuyChonCanNang?.cannangmax || 'Không giới hạn' }} kg</p>
                   </div>
                 </div>
               </div>
-
               <!-- Thông tin thú cưng -->
               <div class="mb-4">
                 <h5 class="text-primary"><i class="fas fa-paw me-2"></i>Thông tin thú cưng</h5>
                 <div class="row">
                   <div class="col-md-6">
-                    <p><strong>Tên:</strong> {{ thayDoiLichHenStore.getThuCung.ten }}</p>
-                    <p><strong>Tuổi:</strong> {{ thayDoiLichHenStore.getThuCung.tuoi }}</p>
-                    <p><strong>Giống:</strong> {{ thayDoiLichHenStore.getThuCung.giong }}</p>
-                    <p><strong>Cân nặng:</strong> {{ thayDoiLichHenStore.getThuCung.cannang }} kg</p>
+                    <p><strong>{{t('name')}}:</strong> {{ thayDoiLichHenStore.getThuCung.ten }}</p>
+                    <p><strong>{{t('age')}}:</strong> {{ thayDoiLichHenStore.getThuCung.tuoi }}</p>
+                    <p><strong>{{t('breed')}}:</strong> {{ thayDoiLichHenStore.getThuCung.giong }}</p>
+                    <p><strong>{{t('weight')}}:</strong> {{ thayDoiLichHenStore.getThuCung.cannang }} kg</p>
                   </div>
                   <div class="col-md-6">
-                    <p><strong>Giới tính:</strong> {{ thayDoiLichHenStore.getThuCung.gioitinh ? 'Đực' : 'Cái' }}</p>
-                    <p><strong>Loại:</strong> {{ thayDoiLichHenStore.getThuCung.cophaimeokhong ? 'Mèo' : 'Chó' }}</p>
-                    <p><strong>Tình trạng sức khỏe:</strong> {{ thayDoiLichHenStore.getThuCung.tinhtrangsuckhoe }}</p>
-                    <p v-if="thayDoiLichHenStore.getThuCung.mota"><strong>Mô tả:</strong> {{ thayDoiLichHenStore.getThuCung.mota }}</p>
+                    <p><strong>{{t('gender')}}:</strong> {{ thayDoiLichHenStore.getThuCung.gioitinh ? t('male') : t('female') }}</p>
+                    <p><strong>{{t('petType')}}:</strong> {{ thayDoiLichHenStore.getThuCung.cophaimeokhong ? t('cat') : t('dog') }}</p>
+                    <p><strong>{{t('healthStatus')}}:</strong> {{ thayDoiLichHenStore.getThuCung.tinhtrangsuckhoe }}</p>
+                    <p v-if="thayDoiLichHenStore.getThuCung.mota"><strong>{{t('description')}}:</strong> {{ thayDoiLichHenStore.getThuCung.mota }}</p>
                   </div>
                 </div>
               </div>
 
               <!-- Thông tin khách hàng -->
               <div>
-                <h5 class="text-primary"><i class="fas fa-user me-2"></i>Thông tin khách hàng</h5>
-                <p><strong>ID Khách hàng:</strong> {{ thayDoiLichHenStore.lichHenDetails.idkhachhang }}</p>
+                <h5 class="text-primary"><i class="fas fa-user me-2"></i>{{t('customerInfo')}}</h5>
+                <p><strong>ID:</strong> {{ thayDoiLichHenStore.lichHenDetails.idkhachhang }}</p>
+                <p><strong>Email:</strong> {{ thayDoiLichHenStore.lichHenDetails.emailNguoiDat }}</p>
               </div>
             </div>
             <div v-else class="text-center">
               <img src="/assets/image/cat3.jpg" alt="Chọn dịch vụ" class="img-fluid rounded mb-3"
                    style="max-height: 200px;">
-              <p class="lead">Đang tải thông tin lịch hẹn...</p>
+              <p class="lead">{{t('loading')}}...</p>
             </div>
           </div>
         </div>
@@ -86,14 +75,14 @@
           </div>
           <div v-else>
             <ThemDanhGia :idLichHen="String(thayDoiLichHenStore.lichHenDetails.id)"/>
-            <p class="text-center text fs-4">Chưa có đánh giá nào cho lịch hẹn này hãy thêm đánh giá!</p>
+            <p class="text-center text fs-4">{{t('noReview')}}</p>
           </div>
         </div>
       </div>
       <div v-else class="col">
         <div class="card">
           <div class="card-body">
-            <h4 class="card-title text-center text fs-4">Bạn cần sử dụng dịch vụ sau đó mới có quyền đánh giá dịch vụ</h4>
+            <h4 class="card-title text-center text fs-4">{{t('useService')}}</h4>
           </div>
         </div>
       </div>
@@ -107,10 +96,12 @@ import {ref, onMounted} from 'vue';
 import {useThayDoiLichHenStore} from '~/stores/ThayDoiLichHen'
 import {useDanhGiaStore} from '~/stores/DanhGiaStores';
 import type {ChiTietDanhGia} from '~/models/ChiTietDanhGia';
-import {useToast} from "vue-toastification";
 import CapNhatDanhGia from "~/components/CapNhatDanhGia.vue";
 
-const toast = useToast();
+import {useI18n} from 'vue-i18n';
+
+const {t} = useI18n();
+
 
 
 const thayDoiLichHenStore = useThayDoiLichHenStore()
