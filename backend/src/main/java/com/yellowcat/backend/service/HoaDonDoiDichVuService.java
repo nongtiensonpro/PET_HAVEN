@@ -15,6 +15,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.Optional;
 
 @Service
@@ -64,9 +65,10 @@ public class HoaDonDoiDichVuService {
             hoadondoidichvu.setMagiaodich(maGiaoDich);
             hoadondoidichvu.setIdtuychoncannang(tuyChonCanNang);
             hoadondoidichvu.setSotien(Double.valueOf(Math.abs(SoTienChenhLech)));
-            hoadondoidichvu.setNgaythanhtoan(LocalDate.now());
+            hoadondoidichvu.setNgaythanhtoan(LocalDateTime.now());
             hoadondoidichvu.setTrangthaithanhtoan(false);
             hoadondoidichvu.setNgaytao(LocalDate.now());
+            hoadondoidichvu.setGiadichvudoi(tuyChonCanNang.getGiatien());
 
             if (SoTienChenhLech <0){
                 hoadondoidichvu.setTrangthai(1);
@@ -102,7 +104,7 @@ public class HoaDonDoiDichVuService {
             System.out.println(refund);
             if ("completed".equals(refund.getState())) {
                 hoadondoidichvu.setTrangthaithanhtoan(true);
-                hoadondoidichvu.setNgaythanhtoan(LocalDate.now());
+                hoadondoidichvu.setNgaythanhtoan(LocalDateTime.now());
                 lichhen.setTuyChonCanNang(hoadondoidichvu.getIdtuychoncannang());
                 lichHenService.addOrUpdate(lichhen);
                 hoadondoidichvuRepository.save(hoadondoidichvu);
@@ -112,7 +114,7 @@ public class HoaDonDoiDichVuService {
             }
         }else {
             hoadondoidichvu.setTrangthaithanhtoan(true);
-            hoadondoidichvu.setNgaythanhtoan(LocalDate.now());
+            hoadondoidichvu.setNgaythanhtoan(LocalDateTime.now());
             lichhen.setTuyChonCanNang(hoadondoidichvu.getIdtuychoncannang());
             lichHenService.addOrUpdate(lichhen);
             hoadondoidichvuRepository.save(hoadondoidichvu);

@@ -5,7 +5,9 @@ import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
 
+import java.math.BigDecimal;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 
 @Entity
 @Table(name = "hoadondoidichvu")
@@ -37,7 +39,7 @@ public class Hoadondoidichvu {
 
     @JsonProperty
     @Column(name = "ngaythanhtoan")
-    private LocalDate ngaythanhtoan;
+    private LocalDateTime ngaythanhtoan;
 
     @JsonProperty
     @Size(max = 1000)
@@ -60,6 +62,19 @@ public class Hoadondoidichvu {
 
     @Column(name = "ngaytao")
     private LocalDate ngaytao;
+
+    @NotNull
+    @JsonProperty
+    @Column(name = "giadichvudoi", nullable = false)
+    private Double giadichvudoi;
+
+    public Double getGiadichvudoi() {
+        return giadichvudoi;
+    }
+
+    public void setGiadichvudoi(Double giadichvudoi) {
+        this.giadichvudoi = giadichvudoi;
+    }
 
     public LocalDate getNgaytao() {
         return ngaytao;
@@ -117,12 +132,12 @@ public class Hoadondoidichvu {
         this.sotien = sotien;
     }
 
-    public LocalDate getNgaythanhtoan() {
-        return ngaythanhtoan;
+    public void setNgaythanhtoan(LocalDateTime ngaythanhtoan) {
+        this.ngaythanhtoan = ngaythanhtoan;
     }
 
-    public void setNgaythanhtoan(LocalDate ngaythanhtoan) {
-        this.ngaythanhtoan = ngaythanhtoan;
+    public LocalDateTime getNgaythanhtoan() {
+        return ngaythanhtoan;
     }
 
     public String getGhichu() {
