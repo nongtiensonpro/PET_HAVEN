@@ -1,5 +1,5 @@
 <template>
-  <form  class="needs-validation" novalidate>
+  <form class="needs-validation" novalidate>
     <div class="mb-3">
       <label for="mota" class="form-label">{{t('description')}}:</label>
       <input type="text" class="form-control" id="mota" v-model="voucher.mota" required>
@@ -41,24 +41,69 @@ const voucher = ref(new Voucher(0, 0, new Date(), new Date(), '', true));
 const errors = ref<{ [key: string]: string }>({});
 
 function validate() {
-  errors.value = {};
-  if (!voucher.value.mota) {
-    errors.value.mota = 'Mô tả là bắt buộc.';
+  const allErrors: string[] = [];
+
+  // Validate description
+  if (!voucher.value.mota || voucher.value.mota.trim().length < 3) {
+    allErrors.push(t('description_required_min_length'));
   }
-  if (voucher.value.phantramgiam < 1 || voucher.value.phantramgiam > 100) {
-    errors.value.phantramgiam = 'Giảm giá phải từ 1 đến 100.';
+
+  // Validate discount percentage
+  if (!isNumeric(voucher.value.phantramgiam)) {
+    allErrors.push(t('discount_must_be_numeric'));
   }
+
+  if (!isPositiveNumber(voucher.value.phantramgiam)) {
+    allErrors.push(t('discount_must_be_positive'));
+  }
+
+  const discountValue = parseFloat(voucher.value.phantramgiam);
+  if (discountValue < 1 || discountValue > 100) {
+    allErrors.push(t('discount_range_invalid'));
+  }
+
+  // Validate start date
   if (!voucher.value.ngaybatdau) {
-    errors.value.ngaybatdau = 'Ngày bắt đầu là bắt buộc.';
+    allErrors.push(t('start_date_required'));
   }
+
+  // Validate end date
   if (!voucher.value.ngayketthuc) {
-    errors.value.ngayketthuc = 'Ngày kết thúc là bắt buộc.';
+    allErrors.push(t('end_date_required'));
   }
-  if (new Date(voucher.value.ngaybatdau) >= new Date(voucher.value.ngayketthuc)) {
-    errors.value.ngayketthuc = 'Ngày kết thúc phải sau ngày bắt đầu.';
+
+  // Validate date range
+  const startDate = new Date(voucher.value.ngaybatdau);
+  const endDate = new Date(voucher.value.ngayketthuc);
+  const today = new Date();
+
+  if (startDate < today) {
+    allErrors.push(t('start_date_must_be_future'));
   }
-  return Object.keys(errors.value).length === 0;
+
+  if (startDate >= endDate) {
+    allErrors.push(t('end_date_must_be_after_start_date'));
+  }
+
+  // Hiển thị lỗi nếu có
+  if (allErrors.length > 0) {
+    allErrors.forEach(error => {
+      toast.error(error);
+    });
+    return false;
+  }
+
+  return true;
 }
+
+// Thêm các hàm validation
+const isNumeric = (value: any): boolean => {
+  return !isNaN(parseFloat(value)) && isFinite(value);
+};
+
+const isPositiveNumber = (value: any): boolean => {
+  return isNumeric(value) && parseFloat(value) >= 0;
+};
 
 async function submitVoucher() {
   const result = await Swal.fire({
@@ -71,19 +116,19 @@ async function submitVoucher() {
     confirmButtonText: t('yes'),
     cancelButtonText: t('no')
   });
+
   if (result.isConfirmed) {
     if (validate()) {
       try {
         await voucherStore.addVoucher(voucher.value);
-        voucher.value = new Voucher(0, 0, new Date(), new Date(), '', true);
-        toast.success(t('statusSuccess'));
+        toast.success(t('voucher_added_successfully'));
         return navigateTo('/admin/vouchers');
-      }catch (error) {
-        toast.error(t('failure'));
+      } catch (error) {
+        toast.error(t('error_adding_voucher'));
+        console.error('Error adding voucher:', error);
       }
     }
   }
-
 }
 </script>
 

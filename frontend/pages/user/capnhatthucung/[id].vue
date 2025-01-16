@@ -5,12 +5,14 @@ import ThuCungKhachHang from '../../../models/ThuCungKhachHang';
 import { useToast } from 'vue-toastification';
 import {useUserStore} from '~/stores/user';
 import {useStore} from "~/stores/UserStores";
+import { useI18n } from 'vue-i18n';
 
 const userStores = useStore();
 const route = useRoute();
 const router = useRouter();
 const store = useUserStore();
 const toast = useToast();
+const { t } = useI18n();
 
 const userInfo = computed(() => store.userInfo);
 const thuCung = ref<ThuCungKhachHang | null>(null);
@@ -35,12 +37,12 @@ onMounted(async () => {
       initializeForm(thuCung.value);
       console.log('Form initialized with:', thuCung.value);
     } else {
-      toast.error('Không tìm thấy thông tin thú cưng.');
-      router.push('/user/infouser');
+      toast.error(t('pet_not_found'));
+      await router.push('/user/infouser');
     }
   } else {
-    toast.error('Không có thông tin người dùng hoặc ID thú cưng.');
-    router.push('/user/infouser');
+    toast.error(t('user_info_not_found'));
+    await router.push('/user/infouser');
   }
 });
 
@@ -55,14 +57,78 @@ const initializeForm = (pet: ThuCungKhachHang) => {
   mota.value = pet.mota;
 };
 
+const isNumeric = (value: any): boolean => {
+  return !isNaN(parseFloat(value)) && isFinite(value);
+};
+
+const isPositiveNumber = (value: any): boolean => {
+  return isNumeric(value) && parseFloat(value) > 0;
+};
+
 const validateForm = () => {
-  errors.value = [];
-  if (!ten.value.trim()) errors.value.push('Tên không được để trống.');
-  if (cannang.value === null || cannang.value <= 0) errors.value.push('Cân nặng phải lớn hơn 0.');
-  if (tuoi.value === null || tuoi.value < 0) errors.value.push('Tuổi không hợp lệ.');
-  if (!giong.value.trim()) errors.value.push('Giống không được để trống.');
-  if (!tinhtrangsuckhoe.value.trim()) errors.value.push('Tình trạng sức khỏe không được để trống.');
-  return errors.value.length === 0;
+  const allErrors: string[] = [];
+  // Validate name
+  if (!ten.value.trim()) {
+    allErrors.push(t('pet_name_empty'));
+  } else if (ten.value.trim().length < 2) {
+    allErrors.push(t('pet_name_min_length'));
+  } else if (ten.value.trim().length > 50) {
+    allErrors.push(t('pet_name_max_length'));
+  }
+
+  // Validate weight
+  if (cannang.value === null) {
+    allErrors.push(t('pet_weight_empty'));
+  } else if (!isNumeric(cannang.value)) {
+    allErrors.push(t('pet_weight_numeric'));
+  } else if (!isPositiveNumber(cannang.value)) {
+    allErrors.push(t('pet_weight_positive'));
+  } else if (cannang.value > 100) {
+    allErrors.push(t('pet_weight_max'));
+  } else if (cannang.value < 0.1) {
+    allErrors.push(t('pet_weight_min'));
+  }
+
+  // Validate age
+  if (tuoi.value === null) {
+    allErrors.push(t('pet_age_empty'));
+  } else if (!isNumeric(tuoi.value)) {
+    allErrors.push(t('pet_age_numeric'));
+  } else if (!Number.isInteger(tuoi.value)) {
+    allErrors.push(t('pet_age_integer'));
+  } else if (tuoi.value < 0) {
+    allErrors.push(t('pet_age_negative'));
+  } else if (tuoi.value > 30) {
+    allErrors.push(t('pet_age_max'));
+  }
+
+  // Validate breed
+  if (!giong.value.trim()) {
+    allErrors.push(t('pet_breed_empty'));
+  } else if (giong.value.trim().length < 2) {
+    allErrors.push(t('pet_breed_min_length'));
+  } else if (giong.value.trim().length > 50) {
+    allErrors.push(t('pet_breed_max_length'));
+  }
+
+  // Validate health status
+  if (!tinhtrangsuckhoe.value.trim()) {
+    allErrors.push(t('pet_health_status_empty'));
+  } else if (tinhtrangsuckhoe.value.trim().length < 5) {
+    allErrors.push(t('pet_health_status_min_length'));
+  } else if (tinhtrangsuckhoe.value.trim().length > 200) {
+    allErrors.push(t('pet_health_status_max_length'));
+  }
+
+  // Hiển thị lỗi nếu có
+  if (allErrors.length > 0) {
+    allErrors.forEach(error => {
+      toast.error(error);
+    });
+    return false;
+  }
+
+  return true;
 };
 
 const saveChanges = async () => {
@@ -81,11 +147,11 @@ const saveChanges = async () => {
         mota.value
       );
       await userStores.updatePet(updatedThuCung);
-      toast.success('Thú cưng đã được cập nhật thành công.');
+      toast.success(t('pet_update_success'));
       router.push('/user/infouser');
     } catch (error) {
       console.error('Lỗi khi cập nhật thú cưng:', error);
-      toast.error('Lỗi khi cập nhật thú cưng. Vui lòng thử lại.');
+      toast.error(t('pet_update_error'));
     }
   }
 };
@@ -93,7 +159,7 @@ const saveChanges = async () => {
 
 <template>
   <div class="container mt-4">
-    <h2 class="mb-4">Cập nhật thông tin thú cưng</h2>
+    <h2 class="mb-4">{{ t('pet_update_title') }}</h2>
     <div v-if="errors.length" class="alert alert-danger">
       <ul>
         <li v-for="error in errors" :key="error">{{ error }}</li>
@@ -101,58 +167,58 @@ const saveChanges = async () => {
     </div>
     <form @submit.prevent="saveChanges" v-if="thuCung">
       <div class="mb-3">
-        <label for="ten" class="form-label">Tên</label>
+        <label for="ten" class="form-label">{{ t('petName') }}</label>
         <input type="text" class="form-control" id="ten" v-model="ten" required>
       </div>
       <div class="mb-3">
-        <label for="cannang" class="form-label">Cân nặng (kg)</label>
+        <label for="cannang" class="form-label">{{ t('weight') }}</label>
         <input type="number" class="form-control" id="cannang" v-model.number="cannang" step="0.1" required>
       </div>
       <div class="mb-3">
-        <label for="tuoi" class="form-label">Tuổi</label>
+        <label for="tuoi" class="form-label">{{ t('age') }}</label>
         <input type="number" class="form-control" id="tuoi" v-model.number="tuoi" required>
       </div>
       <div class="mb-3">
-        <label for="giong" class="form-label">Giống</label>
+        <label for="giong" class="form-label">{{ t('breed') }}</label>
         <input type="text" class="form-control" id="giong" v-model="giong" required>
       </div>
       <div class="mb-3">
-        <label class="form-label d-block">Giới tính</label>
+        <label class="form-label d-block">{{ t('gender') }}</label>
         <div class="form-check form-check-inline">
           <input class="form-check-input" type="radio" id="male" :value="true" v-model="gioitinh">
-          <label class="form-check-label" for="male">Đực</label>
+          <label class="form-check-label" for="male">{{ t('male') }}</label>
         </div>
         <div class="form-check form-check-inline">
           <input class="form-check-input" type="radio" id="female" :value="false" v-model="gioitinh">
-          <label class="form-check-label" for="female">Cái</label>
+          <label class="form-check-label" for="female">{{ t('female') }}</label>
         </div>
       </div>
       <div class="mb-3">
-        <label class="form-label d-block">Loại thú cưng</label>
+        <label class="form-label d-block">{{ t('petType') }}</label>
         <div class="form-check form-check-inline">
           <input class="form-check-input" type="radio" id="cat" :value="true" v-model="cophaimeokhong">
-          <label class="form-check-label" for="cat">Mèo</label>
+          <label class="form-check-label" for="cat">{{ t('cat') }}</label>
         </div>
         <div class="form-check form-check-inline">
           <input class="form-check-input" type="radio" id="dog" :value="false" v-model="cophaimeokhong">
-          <label class="form-check-label" for="dog">Chó</label>
+          <label class="form-check-label" for="dog">{{ t('dog') }}</label>
         </div>
       </div>
       <div class="mb-3">
-        <label for="tinhtrangsuckhoe" class="form-label">Tình trạng sức khỏe</label>
+        <label for="tinhtrangsuckhoe" class="form-label">{{ t('healthStatus') }}</label>
         <textarea class="form-control" id="tinhtrangsuckhoe" v-model="tinhtrangsuckhoe" required></textarea>
       </div>
       <div class="mb-3">
-        <label for="mota" class="form-label">Mô tả</label>
+        <label for="mota" class="form-label">{{ t('description') }}</label>
         <textarea class="form-control" id="mota" v-model="mota"></textarea>
       </div>
       <div class="mb-3">
-        <button type="submit" class="btn btn-primary me-2">Lưu thay đổi</button>
-        <button type="button" class="btn btn-secondary" @click="router.push('/user/infouser')">Hủy</button>
+        <button type="submit" class="custom-button">{{ t('saveInfo') }}</button>
+        <button type="button" class="custom-button" @click="router.push('/user/infouser')">{{ t('cancel') }}</button>
       </div>
     </form>
     <div v-else class="alert alert-warning">
-      Đang tải thông tin thú cưng...
+      {{ t('loading_pet_info') }}
     </div>
   </div>
 </template>

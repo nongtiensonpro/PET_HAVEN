@@ -18,9 +18,9 @@ const danhGias = ref(props.danhGias);
 const aiSummary = ref('');
 const isLoading = ref(true);
 
-const apiKey = 'AIzaSyClcxWPh0hpZrh9Cf996fL3X0dUPjwYuOQ';
+const apiKey = 'AIzaSyCW1jh4rRrAIDeji8I1pwSt_6JraiyY_CY';
 const genAI = new GoogleGenerativeAI(apiKey);
-const model = genAI.getGenerativeModel({ model: 'gemini-1.5-pro' });
+const model = genAI.getGenerativeModel({ model: 'gemini-1.5-flash' });
 
 const generateSummary = async () => {
   try {

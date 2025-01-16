@@ -2,7 +2,9 @@
 import {computed, ref} from 'vue';
 import {useStore} from '~/stores/UserStores';
 import {useUserStore} from '~/stores/user';
+import {useI18n} from 'vue-i18n';
 
+const {t} = useI18n();
 const userStoreNe = useUserStore();
 const userInfo = computed(() => userStoreNe.userInfo);
 import {useToast} from 'vue-toastification';
@@ -31,27 +33,27 @@ function validateFields() {
   errors.value = {name: '', weight: '', breed: '', age: '', healthStatus: '', description: ''};
 
   if (!petName.value) {
-    errors.value.name = 'Tên thú cưng không được để trống';
+    errors.value.name = t('pet_name_empty');
     isValid = false;
   }
   if (!petWeight.value || isNaN(Number(petWeight.value))) {
-    errors.value.weight = 'Cân nặng phải là một số';
+    errors.value.weight = t('pet_weight_numeric');
     isValid = false;
   }
   if (!petBreed.value) {
-    errors.value.breed = 'Giống không được để trống';
+    errors.value.breed = t('same_cannot_be_left_blank');
     isValid = false;
   }
   if (!petAge.value || isNaN(Number(petAge.value))) {
-    errors.value.age = 'Tuổi phải là một số';
+    errors.value.age = t('pet_age_numeric');
     isValid = false;
   }
   if (!healthStatus.value) {
-    errors.value.healthStatus = 'Tình trạng sức khỏe không được để trống';
+    errors.value.healthStatus = t('pet_health_status_empty');
     isValid = false;
   }
   if (!description.value) {
-    errors.value.description = 'Mô tả không được để trống';
+    errors.value.description = t('description_cannot_be_empty');
     isValid = false;
   }
 
@@ -87,59 +89,59 @@ function addPet() {
     healthStatus.value = '';
     description.value = '';
 
-    toast.success('Thêm thú cưng thành công');
-    const modalElement = document.getElementById('exampleModal');
+    toast.success(t('pet_added_successfully'));
+    document.getElementById('exampleModal');
     return navigateTo('/user/infouser');
   } catch (error) {
-    toast.error('Thêm thú cưng thất bại');
+    toast.error(t('add_pet_failed'));
   }
 }
 </script>
 
 <template>
   <div class="card">
-    <label>Tên thú cưng:</label>
+    <label>{{t('petName')}}:</label>
     <input type="text" v-model="petName" class="form-control"/>
     <span class="text-danger">{{ errors.name }}</span><br>
 
-    <label>Cân nặng:</label>
+    <label>{{t('weight')}}:</label>
     <input type="text" v-model="petWeight" class="form-control"/>
     <span class="text-danger">{{ errors.weight }}</span><br>
 
-    <label>Giống:</label>
+    <label>{{t('breed')}}:</label>
     <input type="text" v-model="petBreed" class="form-control"/>
     <span class="text-danger">{{ errors.breed }}</span><br>
 
-    <label>Tuổi:</label>
+    <label>{{t('age')}}:</label>
     <input type="text" v-model="petAge" class="form-control"/>
     <span class="text-danger">{{ errors.age }}</span><br>
 
-    <label>Giới tính:</label>
+    <label>{{t('gender')}}:</label>
     <div>
       <input type="radio" id="male" v-model="petGender" :value="true">
-      <label for="male">Đực</label>
+      <label for="male">{{t('male')}}</label>
       <input type="radio" id="female" v-model="petGender" :value="false">
-      <label for="female">Cái</label>
+      <label for="female">{{t('female')}}</label>
     </div>
     <br>
 
-    <label>Loại thú cưng:</label>
+    <label>{{t('petType')}}:</label>
     <div>
       <input type="radio" id="cat" v-model="isCat" :value="true">
-      <label for="cat">Mèo</label>
+      <label for="cat">{{t('cat')}}</label>
       <input type="radio" id="dog" v-model="isCat" :value="false">
-      <label for="dog">Chó</label>
+      <label for="dog">{{t('dog')}}</label>
     </div>
     <br>
 
-    <label>Tình trạng sức khỏe:</label>
+    <label>{{t('healthStatus')}}:</label>
     <textarea v-model="healthStatus" class="form-control"></textarea>
     <span class="text-danger">{{ errors.healthStatus }}</span><br>
 
-    <label>Mô tả:</label>
+    <label>{{t('description')}}:</label>
     <textarea v-model="description" class="form-control"></textarea>
     <span class="text-danger">{{ errors.description }}</span><br>
-    <button type="button" class="custom-button" @click="addPet">Thêm</button>
+    <button type="button" class="custom-button" @click="addPet">{{t('addTimeSlot')}}</button>
   </div>
 </template>
 

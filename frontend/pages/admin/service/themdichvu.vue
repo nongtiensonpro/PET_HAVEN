@@ -43,7 +43,99 @@ const selectedFile = ref<File | null>(null);
 const isLoading = ref(false);
 const countdown = ref(3);
 
+const isNumeric = (value: any): boolean => {
+  return !isNaN(parseFloat(value)) && isFinite(value);
+};
+
+const isPositiveNumber = (value: any): boolean => {
+  return isNumeric(value) && parseFloat(value) >= 0;
+};
+
 const saveNewService = async () => {
+  // Kiểm tra và thu thập tất cả các lỗi
+  const allErrors: string[] = [];
+
+  // Validate service name
+  if (!newService.value.tendichvu || newService.value.tendichvu.trim().length < 3) {
+    allErrors.push(t('service_name_invalid'));
+  }
+
+  // Validate service options
+  if (newService.value.tuyChonDichVus.length === 0) {
+    allErrors.push(t('at_least_one_option_required'));
+  }
+
+  newService.value.tuyChonDichVus.forEach((tuyChon, index) => {
+    // Validate option name
+    if (!tuyChon.tenTuyChon || tuyChon.tenTuyChon.trim().length < 2) {
+      allErrors.push(`${t('option')} ${index + 1}: ${t('option_name_invalid')}`);
+    }
+
+    // Validate weight options
+    if (tuyChon.tuyChonCanNangs.length === 0) {
+      allErrors.push(`${t('option')} ${index + 1}: ${t('at_least_one_weight_option_required')}`);
+    }
+
+    tuyChon.tuyChonCanNangs.forEach((canNang, canNangIndex) => {
+      // Validate canNangMin and canNangMax are numeric
+      if (!isNumeric(canNang.canNangMin)) {
+        allErrors.push(`${t('option')} ${index + 1}, ${t('weight_option')} ${canNangIndex + 1}: ${t('minimum_weight_invalid')}`);
+      }
+
+      if (!isNumeric(canNang.canNangMax)) {
+        allErrors.push(`${t('option')} ${index + 1}, ${t('weight_option')} ${canNangIndex + 1}: ${t('maximum_weight_invalid')}`);
+      }
+
+      // Validate canNangMin and canNangMax are non-negative
+      if (!isPositiveNumber(canNang.canNangMin)) {
+        allErrors.push(`${t('option')} ${index + 1}, ${t('weight_option')} ${canNangIndex + 1}: ${t('minimum_weight_negative')}`);
+      }
+
+      if (!isPositiveNumber(canNang.canNangMax)) {
+        allErrors.push(`${t('option')} ${index + 1}, ${t('weight_option')} ${canNangIndex + 1}: ${t('maximum_weight_negative')}`);
+      }
+
+      // Validate maximum weight is greater than minimum weight
+      if (parseFloat(canNang.canNangMin) >= parseFloat(canNang.canNangMax)) {
+        allErrors.push(`${t('option')} ${index + 1}, ${t('weight_option')} ${canNangIndex + 1}: ${t('weight_range_invalid')}`);
+      }
+
+      // Validate price is numeric and non-negative
+      if (!isNumeric(canNang.giaTien)) {
+        allErrors.push(`${t('option')} ${index + 1}, ${t('weight_option')} ${canNangIndex + 1}: ${t('price_invalid')}`);
+      }
+
+      if (!isPositiveNumber(canNang.giaTien)) {
+        allErrors.push(`${t('option')} ${index + 1}, ${t('weight_option')} ${canNangIndex + 1}: ${t('price_negative')}`);
+      }
+    });
+  });
+
+  // Validate file upload
+  if (!selectedFile.value) {
+    allErrors.push(t('image_required'));
+  } else {
+    const validImageTypes = ['image/jpeg', 'image/png', 'image/gif'];
+    const maxSizeMB = 5;
+
+    if (!validImageTypes.includes(selectedFile.value.type)) {
+      allErrors.push(t('invalid_image_type'));
+    }
+
+    if (selectedFile.value.size > maxSizeMB * 1024 * 1024) {
+      allErrors.push(t('image_too_large', { maxSize: maxSizeMB }));
+    }
+  }
+
+  // Nếu có lỗi, hiển thị toast và không submit
+  if (allErrors.length > 0) {
+    // Hiển thị từng lỗi riêng biệt
+    allErrors.forEach(error => {
+      toast.error(error);
+    });
+    return;
+  }
+
   try {
     isLoading.value = true;
     countdown.value = 10;

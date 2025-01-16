@@ -366,4 +366,89 @@ export default {
   receive_money:'Receive Money',
   moved_to_staff:'Moved to Staff interface',
   moved_to_ustomer_interface:'Moved to Customer interface',
-}as const;
+  weight_range_invalid:'Weight range is invalid',
+  service_name_invalid:'Service name is invalid',
+  option_name_invalid:'Option name is invalid',
+  price_invalid:'Price is invalid',
+  invalid_image_type:'Invalid image type. Only JPEG and PNG are allowed',
+  image_too_large:'Image is too large. Maximum size is 1MB',
+  form_validation_error:'Form validation error',
+  minimum_weight_invalid:'Minimum weight is invalid',
+  maximum_weight_invalid:'Maximum weight is invalid',
+  minimum_weight_negative:'Minimum weight cannot be negative',
+  maximum_weight_negative:'Maximum weight cannot be negative',
+  price_negative:'Price cannot be negative',
+  weight_option:'Weight Option',
+  option:'Option',
+  at_least_one_option_required:'At least one option is required',
+  at_least_one_weight_option_required:'At least one weight option is required',
+  image_required:'Image is required',
+  description_required_min_length:'Description is required and must be at least 10 characters long',
+  discount_must_be_numeric:'Discount must be a number',
+  discount_must_be_positive:'Discount must be a positive number',
+  start_date_required:'Start date is required',
+  end_date_required:'End date is required',
+  start_date_must_be_future:'Start date must be a future date',
+  end_date_must_be_after_start_date:'End date must be after start date',
+  voucher_added_successfully:'Voucher added successfully',
+  error_adding_voucher:'Error adding voucher. Please try again later',
+  discount_range_invalid:'Discount range is invalid',
+  voucher_updated_successfully:'Voucher updated successfully',
+  error_updating_voucher:'Error updating voucher. Please try again later',
+  voucher_not_found:'Voucher not found',
+  // Thêm các bản dịch cho trang cập nhật thú cưng
+  updatePetTitle: 'Update Pet Information',
+  pet_name_empty: 'Pet name cannot be empty.',
+  pet_name_min_length: 'Pet name must be at least 2 characters long.',
+  pet_name_max_length: 'Pet name cannot exceed 50 characters.',
+  
+  pet_weight_empty: 'Weight cannot be empty.',
+  pet_weight_numeric: 'Weight must be a number.',
+  pet_weight_positive: 'Weight must be a positive number.',
+  pet_weight_max: 'Weight cannot exceed 100 kg.',
+  pet_weight_min: 'Weight must be greater than 0.1 kg.',
+
+
+  same_cannot_be_left_blank:'Same cannot be left blank.',
+
+  pet_age_empty: 'Age cannot be empty.',
+  pet_age_numeric: 'Age must be a number.',
+  pet_age_integer: 'Age must be an integer.',
+  pet_age_negative: 'Age cannot be negative.',
+  pet_age_max: 'Age cannot exceed 30.',
+  
+  pet_breed_empty: 'Pet breed cannot be empty.',
+  pet_breed_min_length: 'Pet breed must be at least 2 characters long.',
+  pet_breed_max_length: 'Pet breed cannot exceed 50 characters.',
+  
+  pet_health_status_empty: 'Health status cannot be empty.',
+  pet_health_status_min_length: 'Health status must be at least 5 characters long.',
+  pet_health_status_max_length: 'Health status cannot exceed 200 characters.',
+  
+  pet_update_success: 'Pet has been updated successfully.',
+  pet_update_error: 'Error updating pet. Please try again.',
+
+  description_cannot_be_empty:'Description cannot be empty.',
+
+  pet_added_successfully:'Pet has been added successfully.',
+  add_pet_failed:'Error adding pet. Please try again.',
+
+  pet_update_title:'Update Pet Information',
+  loading_pet_info:'Loading pet information...',
+  pet_not_found:'Pet not found.',
+  user_info_not_found:'User information not found.',
+
+  list_pet:'List of owner\'s pets',
+  add_pet:'Add Pet',
+
+  list_pet_null:'You have not saved any pet information!',
+
+  role_admin_info:'You are logged in with an account with Admin rights',
+
+  role_user_info:'Welcome customer thank you for using the service!',
+
+  role_user_evo:'You are logged in with an account with employee rights.',
+
+
+
+} as const;

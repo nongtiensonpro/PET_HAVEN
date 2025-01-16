@@ -2,6 +2,9 @@
 import {useUserStore} from '~/stores/user';
 import {computed} from "vue";
 import type {ThuCung} from "~/models/ChiTietDanhGia";
+import {useI18n} from 'vue-i18n';
+
+const {t} = useI18n();
 
 
 const userStore = useUserStore();
@@ -157,17 +160,17 @@ function capNhatThuCung(thuCung : ThuCung) {
                   v-if="Array.isArray(userInfo.role) && userInfo.role.includes('admin') || userInfo.role.includes('manager')">
                 <div class="p-4 text fs-4">
                   <div v-if="userInfo.role.includes('admin')">
-                    Bạn đang đăng nhập với tài khoản có quyền Admin
+                    {{t('role_admin_info')}}
                   </div>
                   <div v-else-if="userInfo.role.includes('manager')">
-                    Bạn đang đăng nhập với tài khoản có quyền nhân viên
+                   {{t('role_user_evo')}}
                   </div>
                   <div v-else>
-                    Chào mừng khách hàng cảm ơn bạn đã sử dụng dịch vụ !
+                    {{t('role_user_info')}}
                   </div>
                 </div>
               </div>
-              <label for="">Tên người dùng</label>
+              <label for="">{{t('userName')}}</label>
               <input type="text" class="form-control" name="" id="name" aria-describedby="helpId" placeholder=""
                      v-model="userInfo.name">
             </div>
@@ -175,20 +178,20 @@ function capNhatThuCung(thuCung : ThuCung) {
           <div class="container p-4">
             <div class="row">
               <div class="col-2">
-                <button type="button" class="custom-button" @click="themThuCung">Thêm thú cưng</button>
+                <button type="button" class="custom-button" @click="themThuCung">{{t('add_pet')}}</button>
               </div>
             </div>
             <div v-if="userInfo?.listThuCung == 0">
-              Bạn chưa lưu thông tin thú cưng nào !
+             {{t('list_pet_null')}}
             </div>
             <div v-else>
               <div class="text fs-4">
                <div class="row">
                  <div class="col">
-                   Danh sách thú cưng của của chủ nhân :
+                   {{t('list_pet')}} :
                  </div>
                  <div class="col">
-                   <button type="button" class="btn btn-sm btn-warning m-1" @click="restUser">Làm mới</button>
+                   <button type="button" class="btn btn-sm btn-warning m-1" @click="restUser">{{t('refresh')}}</button>
                  </div>
                </div>
               </div>
@@ -198,13 +201,13 @@ function capNhatThuCung(thuCung : ThuCung) {
                   <table class="table">
                     <thead>
                     <tr>
-                      <th>Tên</th>
-                      <th>Cân nặng</th>
-                      <th>Giống</th>
-                      <th>Giới tính</th>
-                      <th>Loại thú cưng</th>
-                      <th>Tuổi</th>
-                      <th>Thao tác</th>
+                      <th>{{t('name')}}</th>
+                      <th>{{t('weight')}}</th>
+                      <th>{{t('breed')}}</th>
+                      <th>{{t('gender')}}</th>
+                      <th>{{t('petType')}}</th>
+                      <th>{{t('age')}}</th>
+                      <th>{{t('actions')}}</th>
                     </tr>
                     </thead>
                     <tbody>
@@ -212,12 +215,12 @@ function capNhatThuCung(thuCung : ThuCung) {
                       <td>{{ thuCung.ten }}</td>
                       <td>{{ thuCung.cannang }}</td>
                       <td>{{ thuCung.giong }}</td>
-                      <td>{{thuCung.gioitinh?'Cái':'Đựa'}}</td>
-                      <td>{{thuCung.cophaimeokhong?'Mèo':'Chó'}}</td>
+                      <td>{{thuCung.gioitinh?t('female'):t('male')}}</td>
+                      <td>{{thuCung.cophaimeokhong?t('cat'):t('dog')}}</td>
                       <td>{{ thuCung.tuoi }}</td>
 
                       <td>
-                        <button type="button" class="btn btn-sm btn-warning m-1" @click="capNhatThuCung(thuCung)">Cập nhật thú cưng</button>
+                        <button type="button" class="btn btn-sm btn-warning m-1" @click="capNhatThuCung(thuCung)">{{t('updatePetTitle')}}</button>
                       </td>
                     </tr>
                     </tbody>
