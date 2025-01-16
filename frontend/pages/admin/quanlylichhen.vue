@@ -55,9 +55,9 @@
                     </button>
                   </div>
                   <div class="col">
-                    <button
+                    <button v-if="lichhen.trangthai !== 7"
                         @click="DoiDichVu(lichhen.id)"
-                        class="btn btn-sm btn-outline-primary m-1">
+                        class="btn btn-sm btn-outline-primary">
                       {{t('change_service')}}
                     </button>
                   </div>
@@ -80,12 +80,12 @@
       </div>
     </div>
     <div class="card">
-      <div class="card-header row">
-        <p class="col">
+      <div class="card-header text-white d-flex justify-content-between align-items-center">
+        <p class="col text fs-4">
           {{ t('listOfInvoicesAfterServiceChange') }}
         </p>
-        <div class="col">
-          <button type="button" class="custom-button" @click="fetchHoaDonChuaThanhToan">{{ t('refresh') }}</button>
+        <div class="col   ">
+          <button type="button" class="btn btn-sm btn-outline-success" @click="fetchHoaDonChuaThanhToan">{{ t('refresh') }}</button>
         </div>
       </div>
       <div class="card-body">
@@ -110,11 +110,11 @@
             <td>{{ hoadon.idhoadon.idlichhen.idcalichhen.thoigianca }}</td>
             <td>{{ hoadon.idhoadon.idlichhen.date }}</td>
             <td><span class="badge bg-success">{{getTrangThai(hoadon.idhoadon.idlichhen.trangthai) }}</span></td>
-            <td>{{hoadon.ghichu}}</td>
+            <td>{{hoadon.ghichu?hoadon.ghichu:'-'}}</td>
             <td>
               <div class="row">
                 <div class="col">
-                  <button type="button" class="btn btn-sm btn-outline-info">Meo Meo</button>
+                    <button type="button" class="btn btn-sm btn-outline-primary m-1" @click="thanhToanOffice(hoadon.id)" v-if="!hoadon.trangthaithanhtoan && hoadon.trangthai===2">Thanh toán</button>
                 </div>
               </div>
             </td>
@@ -146,6 +146,7 @@ import { useI18n } from 'vue-i18n';
 import type { Lichhen } from "~/models/LichSuDatLich";
 import {useDoiDichVuStores} from "~/stores/DoiDichVuStores";
 import type {HoaDonDoiDichVu} from "~/models/HoaDonDoiDV";
+import Swal from "sweetalert2";
 
 const { t } = useI18n();
 const useQuanLyAdmin = useQuanLyLichHenAdminStore();
@@ -199,8 +200,8 @@ async function fetchHoaDonChuaThanhToan() {
 const handleSearch = debounce(() => {
   filteredHoaDon.value = lichhen.value.filter(hoaDon =>
     hoaDon.emailNguoiDat.toLowerCase().includes(searchQuery.value.toLowerCase()) ||
-    hoaDon.thucung.ten.toLowerCase().includes(searchQuery.value.toLowerCase()) ||
-    hoaDon.dichvu.tendichvu.toLowerCase().includes(searchQuery.value.toLowerCase())
+    hoaDon.thucung.ten.toLowerCase().includes(searchQuery.value.toLowerCase())||
+    hoaDon.id.toString().includes(searchQuery.value)
   );
   currentPage.value = 1;
 }, 300);
@@ -303,6 +304,29 @@ const thayDoiThoiGian = (lichHen: Lichhen) => {
 
 const DoiDichVu = (id : number) => {
   navigateTo(`/thaydoidichvu/${id}`)
+}
+
+
+async function thanhToanOffice(id : number) {
+  try {
+    const result = await Swal.fire({
+      title: t('are_you_sure_you_want_to_change'),
+      text: `Bạn có chắc chắn muốn thanh toán hóa đơn đã đối dịch vụ?`,
+      icon: 'warning',
+      showCancelButton: true,
+      confirmButtonColor: '#3085d6',
+      cancelButtonColor: '#d33',
+      confirmButtonText: t('yes'),
+      cancelButtonText: t('no')
+    });
+    if(result.isConfirmed) {
+      await useDoiDichVu.thanhToanDichVuKhiSoTienOffice(id);
+      toast.success(t('payment_office_success'));
+      await fetchHoaDonChuaThanhToan();
+    }
+  } catch (error) {
+    toast.error(t('payment_office_error'));
+  }
 }
 </script>
 

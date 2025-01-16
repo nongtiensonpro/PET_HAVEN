@@ -364,4 +364,6 @@ export default {
   error_changing_service:'Error changing service. Please try again later',
   refund:'Refund',
   receive_money:'Receive Money',
+  moved_to_staff:'Moved to Staff interface',
+  moved_to_ustomer_interface:'Moved to Customer interface',
 }as const;

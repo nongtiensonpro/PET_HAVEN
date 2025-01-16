@@ -9,9 +9,6 @@
             <div class="col">
               <LoiChaoKhiDangNhap />
             </div>
-            <div class="col">
-              <VoucherDisplay :vouchers="vouchers" />
-            </div>
           </div>
           <h2 class="text text-center">{{wecomehome}}</h2>
 
@@ -48,7 +45,6 @@
               </nuxt-link>
             </div>
           </div>
-
           <div class="pagination d-flex justify-content-center align-items-center mt-3">
             <div class="row">
               <div class="col">
@@ -75,6 +71,9 @@
                 </button>
               </div>
             </div>
+          </div>
+          <div class="col">
+            <VoucherDisplay :vouchers="vouchers" />
           </div>
         </div>
       </div>

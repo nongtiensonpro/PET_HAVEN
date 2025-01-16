@@ -360,4 +360,7 @@ export default {
     error_changing_service:'Đổi dịch vụ thất bại!',
     refund:'Hoàn tiền',
     receive_money:'Nhận tiền',
+    moved_to_staff:'Đã chuyển sang giao diện Nhân viên',
+    moved_to_ustomer_interface:'Đã chuyển sang giao diện Khách hàng',
+    payment_date:'Ngày thanh toán'
 }as const;

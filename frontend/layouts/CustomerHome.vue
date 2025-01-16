@@ -471,14 +471,14 @@ const changeRole = () => {
     if (viewRole.value === 0) {
       viewRole.value = 1;
       localStorage.setItem('viewRole', '1');
-      addNotification('Đã chuyển sang giao diện Nhân viên', 'system');
-      toast.success('Đã chuyển sang giao diện Nhân viên');
+      addNotification(t('moved_to_staff'), 'system');
+      toast.success(t('moved_to_staff'));
       return navigateTo('/admin/adminhome');
     } else {
       viewRole.value = 0;
       localStorage.setItem('viewRole', '0');
-      addNotification('Đã chuyển sang giao diện Khách hàng', 'system');
-      toast.success('Đã chuyển sang giao diện Khách hàng')
+      addNotification(t('moved_to_ustomer_interface'), 'system');
+      toast.success(t('moved_to_ustomer_interface'))
       return navigateTo('/');
     }
   }
@@ -529,7 +529,7 @@ const exchangeAuthorizationCodeForToken = async (code: string) => {
       localStorage.setItem('access_token', data.access_token);
       localStorage.setItem('refresh_token', data.refresh_token);
 
-      router.push('/');
+      await router.push('/');
       await fetchUserInfo(data.access_token);
 
 

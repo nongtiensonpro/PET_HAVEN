@@ -21,7 +21,7 @@
               <p>{{ t('weight') }}: {{ currentHoaDon.idlichhen.tuyChonCanNang.cannangmin }} kg -
                 {{ currentHoaDon.idlichhen.tuyChonCanNang.cannangmax ? currentHoaDon.idlichhen.tuyChonCanNang.cannangmax
                   + ' kg' : 'Không giới hạn' }}</p>
-              <p>Giá tiền: {{ currentHoaDon.idlichhen.tuyChonCanNang.giatien }} USD</p>
+              <p>{{t('price')}}: {{ currentHoaDon.idlichhen.tuyChonCanNang.giatien }} USD</p>
             </div>
           </div>
 

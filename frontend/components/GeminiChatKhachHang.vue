@@ -48,10 +48,10 @@ const sendWelcomeMessage = async () => {
           5. Dùng số liệu chính xác về giá/giảm giá nếu có.
           6. Đề nghị liên hệ trực tiếp nếu không chắc chắn.
 
-          Dịch vụ: ${dichVuForAnalysis}
-          Khuyến mãi: ${khuyenMaiForAnalysis}
-          Thông tin khách hàng: ${userForAnalysis}
-          Lịch sử hẹn: ${history}
+          - Dịch vụ: ${dichVuForAnalysis} (Đơn vị tiền USD)
+          - Khuyến mãi: ${khuyenMaiForAnalysis}
+          - Thông tin khách hàng: ${userForAnalysis}
+          - Lịch sử hẹn: ${history}
 
           🐶🐕🐩🐾 | 🐱🐈🐈‍⬛🐾
           `
