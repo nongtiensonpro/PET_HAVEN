@@ -449,6 +449,12 @@ export default {
 
   role_user_evo:'You are logged in with an account with employee rights.',
 
+  serviceRevenue:'Services Revenue',
 
+  serviceUsage:'Services Usage',
+
+  noServiceData:'No service data available.',
+
+  timesUsed:'Times Used',
 
 } as const;

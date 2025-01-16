@@ -188,6 +188,7 @@ export const useThongKeStore = defineStore('thongKe', {
                     console.error('Unexpected data format:', responseData);
                     throw new Error('Unexpected data format received from server');
                 }
+                return responseData;
             } catch (error) {
                 console.error('Error fetching top 10 users data:', error);
                 this.error = error instanceof Error ? error.message : 'An unknown error occurred';

@@ -445,5 +445,13 @@ export default {
 
     role_user_info:'Chào mừng khách hàng cảm ơn bạn đã sử dụng dịch vụ !',
 
-    role_user_evo:' Bạn đang đăng nhập với tài khoản có quyền nhân viên'
+    role_user_evo:' Bạn đang đăng nhập với tài khoản có quyền nhân viên',
+
+    serviceRevenue:'Doanh thu dịch vụ',
+
+    serviceUsage:'Sử dụng dịch vụ',
+
+    noServiceData:'Không có dữ liệu dịch vụ nào',
+
+    timesUsed:'Sử dụng lần',
 } as const;
