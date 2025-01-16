@@ -457,4 +457,23 @@ export default {
 
   timesUsed:'Times Used',
 
+
+  useService:'You need to use the service before you can rate the service ! ',
+  noReview:'There are no reviews for this appointment yet, add a review ! ',
+
+  saveReview:'Save Review',
+
+  description_is_required:'Description is required.',
+
+  number_of_stars_is_required:'Number of stars is required.',
+
+  review_added_successfully:'Review added successfully.',
+
+  error_adding_review:'An error occurred while adding a review.',
+  cofimUpdateReview:'Are you sure you want to update this review?',
+
+  updateReviewFall:'An error occurred while updating a review.',
+  updateReviewSecc:'Review updated successfully.',
+
+  updateReview:'Update Review',
 } as const;
