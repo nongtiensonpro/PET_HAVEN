@@ -114,7 +114,12 @@ public class PayPalController {
 
                     String emaiKhach = hoadon.getIdhoadon().getIdlichhen().getEmailNguoiDat();
                     String linkTT = links.getHref();
-                    emailService.sendEmail(emaiKhach, "Thanh toán hóa đơn", "Vui lòng thanh toán tại link sau để đổi dịch vụ: " + linkTT);
+                    emailService.sendEmail(emaiKhach,
+                            "Thanh toán hóa đơn",
+                            "<html><body>Vui lòng thanh toán tại link sau để đổi dịch vụ: " + linkTT +
+                                    "<br> Dịch vụ bạn muốn đổi là: " + hoadon.getIdtuychoncannang().getTuyChonDichVu().getDichvu().getTendichvu() + " -- " + hoadon.getIdtuychoncannang().getTuyChonDichVu().getTentuychon()
+                                    +
+                                    "<br> Lưu ý bạn chỉ có thể thay đổi dịch vụ 1 lần.Hãy kiểm tra kĩ lại trước khi thanh toán nhé.</body></html>");
                     return ResponseEntity.ok(links.getHref());
                 }
             }
@@ -175,10 +180,10 @@ public class PayPalController {
 
 
                     // Redirect đến trang chi tiết lịch hẹn
-                    String redirectUrl = "http://localhost:3000/chi-tiet-lich/" + id;
-                    HttpHeaders headers = new HttpHeaders();
-                    headers.setLocation(URI.create(redirectUrl));
-                    return new ResponseEntity<>(headers, HttpStatus.FOUND);
+                    String redirectUrl = "http://localhost:3000/user/appointment";
+                    return ResponseEntity.status(HttpStatus.FOUND)
+                            .location(URI.create(redirectUrl))
+                            .build();
                 } else {
                     // Trả về lỗi nếu không tìm thấy hóa đơn
                     return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Không tìm thấy hóa đơn tương ứng.");
@@ -245,7 +250,7 @@ public class PayPalController {
 
                 hoaDonService.sendHoaDonSauThanhToan(hoadon.getIdhoadon().getIdlichhen(),pdfBytes);
 
-                String redirectUrl = "http://localhost:3000/";
+                String redirectUrl = "http://localhost:3000/user/appointment";
                 return ResponseEntity.status(HttpStatus.FOUND)
                         .location(URI.create(redirectUrl))
                         .build();

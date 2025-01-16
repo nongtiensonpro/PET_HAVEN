@@ -41,18 +41,23 @@ public class HoaDonDoiDichVuService {
 
 
     @Transactional
-    public Hoadondoidichvu DoiDichVu(DoiDichVuDTO dto,String nguoiThanhToan){
+    public ResponseEntity<?> DoiDichVu(DoiDichVuDTO dto,String nguoiThanhToan){
         Optional<Hoadon> hoadonOptional = hoaDonService.finHoadonByIdLich(dto.getIdLichHen());
         if (!hoadonOptional.isPresent()){
-            return null;
+            return ResponseEntity.notFound().build();
         }
         Optional<TuyChonCanNang> tuyChonCanNangOptional = tuyChonCanNangService.findById(dto.getIdTuyChonCanNang());
         if (!tuyChonCanNangOptional.isPresent()){
-            return null;
+            return ResponseEntity.notFound().build();
         }
         TuyChonCanNang tuyChonCanNang = tuyChonCanNangOptional.get();
         Hoadon hoadon = hoadonOptional.get();
-
+        if (dto.getIdTuyChonCanNang() == hoadon.getIdlichhen().getTuyChonCanNang().getId()){
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).build();
+        }
+        if (hoadon.getIdlichhen().getDoidichvu()){
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).build();
+        }
         float SoTienChenhLech = (float) (tuyChonCanNang.getGiatien() - hoadon.getIdlichhen().getTuyChonCanNang().getGiatien());
         System.out.println(SoTienChenhLech);
 
@@ -77,7 +82,7 @@ public class HoaDonDoiDichVuService {
             }
             hoadondoidichvu.setNguoithanhtoan(nguoiThanhToan);
             hoadondoidichvuRepository.save(hoadondoidichvu);
-            return hoadondoidichvu;
+            return ResponseEntity.ok(hoadondoidichvu);
     }
 
     public Optional<Hoadondoidichvu> findHoadondoidichvuById(Integer id){
@@ -106,6 +111,7 @@ public class HoaDonDoiDichVuService {
                 hoadondoidichvu.setTrangthaithanhtoan(true);
                 hoadondoidichvu.setNgaythanhtoan(LocalDateTime.now());
                 lichhen.setTuyChonCanNang(hoadondoidichvu.getIdtuychoncannang());
+                lichhen.setDoidichvu(true);
                 lichHenService.addOrUpdate(lichhen);
                 hoadondoidichvuRepository.save(hoadondoidichvu);
             } else {

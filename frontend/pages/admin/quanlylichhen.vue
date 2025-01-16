@@ -294,16 +294,34 @@ const viewHoaDon = (id: number) => {
   navigateTo(`/nhanvien/chitiethoadon/${id}`);
 };
 
-const thayDoiTrangThai = (lichHen: Lichhen) => {
-  navigateTo(`/admin/thaydoitrangthai/${lichHen.id}`);
-}
+const token = localStorage.getItem('access_token');
+
+const thayDoiTrangThai = async (lichHen: Lichhen) => {
+  try {
+    const response = await fetch(`http://localhost:8080/api/lich-hen/updateTrangThai/${lichHen.id}`, {
+      method: "PUT",
+      headers: {
+        "Content-Type": "application/json",
+        "Authorization": `Bearer ${token}`,
+      },
+    });
+    if (response.ok) {
+      console.log("ok");
+    } else {
+      console.error("Failed to update status", await response.text());
+    }
+  } catch (error) {
+    console.error("Error updating status:", error);
+  }
+};
+
 
 const thayDoiThoiGian = (lichHen: Lichhen) => {
   navigateTo(`/admin/thaydoithoigian/${lichHen.id}`);
 }
 
 const DoiDichVu = (id : number) => {
-  navigateTo(`/thaydoidichvu/${id}`)
+  navigateTo(`/thay-doi-lich/${id}`)
 }
 
 

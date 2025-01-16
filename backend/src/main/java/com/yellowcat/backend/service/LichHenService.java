@@ -206,7 +206,7 @@ public class LichHenService {
                 System.out.println("Tiến trình bị hủy.");
                 return CompletableFuture.completedFuture(ResponseEntity.ok().build()); // Nếu tiến trình bị hủy thì kết thúc
             }
-            Thread.sleep( 30 * 1000);
+            Thread.sleep( 20* 60 * 1000);
             // Lấy ID mới từ Map nếu có
             currentId = scheduleMap.getOrDefault(lichhenId, lichhenId);
             System.out.println(currentId);
@@ -247,6 +247,7 @@ public class LichHenService {
             lichhenNew.setTuyChonCanNang(lichhen.getTuyChonCanNang());
             lichhenNew.setDate(lichhen.getDate());
             lichhenNew.setTrangthaica(true);
+            lichhenNew.setDoidichvu(false);
 
             // Cập nhật lịch gốc với trạng thái đã hủy
             lichhen.setIdkhachhang("demo");
@@ -254,6 +255,7 @@ public class LichHenService {
             lichhen.setEmailNguoiDat("default-email@example.com");
             lichhen.setThucung(null);
             lichhen.setTuyChonCanNang(null);
+            lichhen.setDoidichvu(false);
             if (lichhen.getTrangthaica()) {
                 lichhen.setTrangthaica(false);
             } else {

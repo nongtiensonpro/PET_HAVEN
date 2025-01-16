@@ -227,7 +227,7 @@ export default {
   add: 'Add',
   searchVoucherPlaceholder: 'Search voucher...',
   update: 'Update',
-  changeStatus: 'Change Status',
+  changeStatus: 'Cancel',
   refreshVouchersSuccess: 'Vouchers refreshed successfully!',
   refreshVouchersFailed: 'Failed to refresh vouchers!',
   confirmUpdateVoucherStatus: 'Do you want to update the Voucher status?',

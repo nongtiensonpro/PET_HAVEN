@@ -339,7 +339,27 @@ async function doiDichVuKhachHang() {
       const result = await response.json();
       console.log("Dữ liệu trả về từ server:", result);
       toast.success(t('service_changed_successfully'));
-      return navigateTo('/nhanvien/checkin');
+
+      // Lấy `id` từ dữ liệu trả về
+      const idHDDoiDV = result.body.id;
+
+      const paymentResponse = await fetch(`http://localhost:8080/api/hoa-don/thanh-toan-hoa-don-doiDV/${idHDDoiDV}`, {
+        method: "PUT",
+        headers: {
+          "Content-Type": "application/json",
+          "Authorization": `Bearer ${token}`,
+        },
+      });
+
+      if (paymentResponse.ok) {
+        const paymentResult = await paymentResponse.json();
+        console.log("Kết quả thanh toán:", paymentResult);
+        toast.success(t('payment_successful'));
+        return navigateTo('/nhanvien/checkin');
+      } else {
+        const errorData = await paymentResponse.json().catch(() => null);
+        toast.error(errorData?.message || t('error_processing_payment'));
+      }
     } else {
       const errorData = await response.json().catch(() => null);
       toast.error(errorData?.message || t('error_changing_service'));
@@ -349,6 +369,7 @@ async function doiDichVuKhachHang() {
     toast.error(t('connection_error'));
     throw error;
   }
+
 }
 </script>
 

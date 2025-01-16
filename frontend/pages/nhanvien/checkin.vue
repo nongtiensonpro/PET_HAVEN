@@ -75,71 +75,71 @@
         </div>
       </div>
 
-      <div class="col-12">
-        <div class="card shadow">
-          <div class="card-header text d-flex justify-content-between align-items-center">
-            <h5 class="mb-0">{{ t('paidInvoices') }}</h5>
-            <button @click="refreshData" class="btn btn-light btn-sm">
-              <i class="fas fa-sync-alt me-1"></i> {{ t('refresh') }}
-            </button>
-          </div>
-          <div class="card-body">
-            <div class="table-responsive">
-              <table class="table table-hover">
-                <thead class="table-light">
-                <tr>
-                  <th>{{ t('invoiceId') }}</th>
-                  <th>{{ t('appointmentId') }}</th>
-                  <th>{{ t('customerEmail') }}</th>
-                  <th>{{ t('petName') }}</th>
-                  <th>{{ t('appointmentDate') }}</th>
-                  <th>{{ t('amount') }}</th>
-                  <th>{{ t('status') }}</th>
-                  <th>{{ t('actions') }}</th>
-                </tr>
-                </thead>
-                <tbody>
-                <tr v-for="hoaDon in paginatedHoaDonThanhToanList" :key="hoaDon.id">
-                  <td>{{ hoaDon.id }}</td>
-                  <td>{{ hoaDon.idlichhen.id }}</td>
-                  <td>{{ hoaDon.idlichhen.emailNguoiDat }}</td>
-                  <td>{{ hoaDon.idlichhen.thucung.ten }}</td>
-                  <td>{{ formatDate(hoaDon.date) }}</td>
-                  <td>{{ formatCurrency(hoaDon.sotien) }}</td>
-                  <td><span class="badge bg-success">{{ getTrangThaiHoaDon(hoaDon.trangthai) }}</span></td>
-                  <td>
-                    <button @click="taiHoaDon(hoaDon.id)" class="btn btn-sm btn-outline-success">
-                      <i class="fas fa-check-circle me-1"></i> {{ t('downloadInvoice') }}
-                    </button>
-                    <button
-                        @click="viewHoaDon(hoaDon.idlichhen.id)"
-                        class="btn btn-sm btn-outline-primary m-1">
-                      {{ t('viewDetails') }}
-                    </button>
-                  </td>
-                </tr>
-                </tbody>
-              </table>
-              <nav aria-label="Page navigation">
-                <ul class="pagination justify-content-center">
-                  <li class="page-item" :class="{ disabled: currentPage2 === 1 }">
-                    <a class="page-link" href="#" @click.prevent="changePage(currentPage2 - 1, 2)">{{
-                        t('previous')
-                      }}</a>
-                  </li>
-                  <li v-for="page in totalPages2" :key="page" class="page-item"
-                      :class="{ active: currentPage2 === page }">
-                    <a class="page-link" href="#" @click.prevent="changePage(page, 2)">{{ page }}</a>
-                  </li>
-                  <li class="page-item" :class="{ disabled: currentPage2 === totalPages2 }">
-                    <a class="page-link" href="#" @click.prevent="changePage(currentPage2 + 1, 2)">{{ t('next') }}</a>
-                  </li>
-                </ul>
-              </nav>
-            </div>
-          </div>
-        </div>
-      </div>
+<!--      <div class="col-12">-->
+<!--        <div class="card shadow">-->
+<!--          <div class="card-header text d-flex justify-content-between align-items-center">-->
+<!--            <h5 class="mb-0">{{ t('paidInvoices') }}</h5>-->
+<!--            <button @click="refreshData" class="btn btn-light btn-sm">-->
+<!--              <i class="fas fa-sync-alt me-1"></i> {{ t('refresh') }}-->
+<!--            </button>-->
+<!--          </div>-->
+<!--          <div class="card-body">-->
+<!--            <div class="table-responsive">-->
+<!--              <table class="table table-hover">-->
+<!--                <thead class="table-light">-->
+<!--                <tr>-->
+<!--                  <th>{{ t('invoiceId') }}</th>-->
+<!--                  <th>{{ t('appointmentId') }}</th>-->
+<!--                  <th>{{ t('customerEmail') }}</th>-->
+<!--                  <th>{{ t('petName') }}</th>-->
+<!--                  <th>{{ t('appointmentDate') }}</th>-->
+<!--                  <th>{{ t('amount') }}</th>-->
+<!--                  <th>{{ t('status') }}</th>-->
+<!--                  <th>{{ t('actions') }}</th>-->
+<!--                </tr>-->
+<!--                </thead>-->
+<!--                <tbody>-->
+<!--                <tr v-for="hoaDon in paginatedHoaDonThanhToanList" :key="hoaDon.id">-->
+<!--                  <td>{{ hoaDon.id }}</td>-->
+<!--                  <td>{{ hoaDon.idlichhen.id }}</td>-->
+<!--                  <td>{{ hoaDon.idlichhen.emailNguoiDat }}</td>-->
+<!--                  <td>{{ hoaDon.idlichhen.thucung.ten }}</td>-->
+<!--                  <td>{{ formatDate(hoaDon.date) }}</td>-->
+<!--                  <td>{{ formatCurrency(hoaDon.sotien) }}</td>-->
+<!--                  <td><span class="badge bg-success">{{ getTrangThaiHoaDon(hoaDon.trangthai) }}</span></td>-->
+<!--                  <td>-->
+<!--                    <button @click="taiHoaDon(hoaDon.id)" class="btn btn-sm btn-outline-success">-->
+<!--                      <i class="fas fa-check-circle me-1"></i> {{ t('downloadInvoice') }}-->
+<!--                    </button>-->
+<!--                    <button-->
+<!--                        @click="viewHoaDon(hoaDon.idlichhen.id)"-->
+<!--                        class="btn btn-sm btn-outline-primary m-1">-->
+<!--                      {{ t('viewDetails') }}-->
+<!--                    </button>-->
+<!--                  </td>-->
+<!--                </tr>-->
+<!--                </tbody>-->
+<!--              </table>-->
+<!--              <nav aria-label="Page navigation">-->
+<!--                <ul class="pagination justify-content-center">-->
+<!--                  <li class="page-item" :class="{ disabled: currentPage2 === 1 }">-->
+<!--                    <a class="page-link" href="#" @click.prevent="changePage(currentPage2 - 1, 2)">{{-->
+<!--                        t('previous')-->
+<!--                      }}</a>-->
+<!--                  </li>-->
+<!--                  <li v-for="page in totalPages2" :key="page" class="page-item"-->
+<!--                      :class="{ active: currentPage2 === page }">-->
+<!--                    <a class="page-link" href="#" @click.prevent="changePage(page, 2)">{{ page }}</a>-->
+<!--                  </li>-->
+<!--                  <li class="page-item" :class="{ disabled: currentPage2 === totalPages2 }">-->
+<!--                    <a class="page-link" href="#" @click.prevent="changePage(currentPage2 + 1, 2)">{{ t('next') }}</a>-->
+<!--                  </li>-->
+<!--                </ul>-->
+<!--              </nav>-->
+<!--            </div>-->
+<!--          </div>-->
+<!--        </div>-->
+<!--      </div>-->
       <div class="col-12">
         <div class="card shadow">
           <div class="card-header text d-flex justify-content-between align-items-center">

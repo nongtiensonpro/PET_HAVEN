@@ -227,7 +227,7 @@ export default {
     searchVoucherPlaceholder: 'Tìm kiếm voucher...',
     discount: 'Giảm giá',
     update: 'Cập nhật',
-    changeStatus: 'Đổi trạng thái',
+    changeStatus: 'Hủy lịch',
     refreshVouchersSuccess: 'Làm mới vouchers thành công!',
     refreshVouchersFailed: 'Làm mới vouchers thất bại!',
     confirmUpdateVoucherStatus: 'Bạn có muốn cập nhật trạng thái Voucher không?',

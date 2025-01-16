@@ -1,12 +1,16 @@
 package com.yellowcat.backend.controller;
 
+import com.paypal.api.payments.Refund;
+import com.paypal.base.rest.PayPalRESTException;
 import com.yellowcat.backend.DTO.DoiLichDTO;
+import com.yellowcat.backend.PAY.PayPalService;
 import com.yellowcat.backend.model.Hoadon;
 import com.yellowcat.backend.model.Lichhen;
 import com.yellowcat.backend.service.HoaDonService;
 import com.yellowcat.backend.service.LichHenService;
 import com.yellowcat.backend.service.PdfExportService;
 import jakarta.validation.Valid;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
@@ -20,7 +24,9 @@ import org.springframework.web.bind.annotation.*;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 
 @RestController
@@ -30,6 +36,8 @@ public class LichHenController {
     private final LichHenService lichHenService;
     private final HoaDonService hoaDonService;
     private final PdfExportService pdfExportService;
+    @Autowired
+    PayPalService payPalService;
 
     public LichHenController(LichHenService lichHenService, HoaDonService hoaDonService, PdfExportService pdfExportService) {
         this.lichHenService = lichHenService;
@@ -70,35 +78,94 @@ public class LichHenController {
     }
 
     @PreAuthorize("hasAnyRole('admin', 'manager')")
-    @PutMapping("/updateTrangThai/{id}/{idTT}")
-    public ResponseEntity<Lichhen> updateMore(@PathVariable int id, @PathVariable int idTT) {
+    @PutMapping("/updateTrangThai/{id}")
+    public ResponseEntity<?> updateMore(@PathVariable int id) throws PayPalRESTException {
 
-        // Tìm lịch hẹn
-        Lichhen datLaiLich = lichHenService.findById(id);
-        Optional<Hoadon> hoadonOptional = hoaDonService.finHoadonByIdLich(id);
-        if (datLaiLich == null) {
-            return new ResponseEntity<>(HttpStatus.NOT_FOUND); // Trả về 404 nếu không tìm thấy lịch hẹn
+        Optional<Hoadon> hoadonOptional1 = hoaDonService.finHoadonByIdLich2(id, 1);
+        Optional<Hoadon> hoadonOptional2 = hoaDonService.finHoadonByIdLich2(id, 2);
+
+        Hoadon hoadonOptional;
+
+        hoadonOptional = hoadonOptional2.orElse(null);
+        if (hoadonOptional1.isPresent()) {
+            hoadonOptional = hoadonOptional1.get();
         }
-        if (!hoadonOptional.isPresent()) {
-            return ResponseEntity.notFound().build();
+        if (hoadonOptional == null) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Không tìm thấy hóa đơn phù hợp.");
+        }
+        if (hoadonOptional1.isPresent() && hoadonOptional2.isPresent() || !hoadonOptional1.isPresent() && !hoadonOptional2.isPresent()) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Hóa đơn ko hợp lệ");
         }
 
-//        if (lichHenService.isCaTrungTrongNgay(datLaiLich.getDate(), datLaiLich.getIdcalichhen().getId())) {
-//            return new ResponseEntity<>(HttpStatus.BAD_REQUEST); // Trả về lỗi nếu trùng ca
-//        }
-        if (idTT == 1 || idTT == 2){
-            Hoadon hoadon = hoadonOptional.get();
-            if (hoadon != null){
-                hoadon.setTrangthai(3);
-                hoaDonService.addOrUpdate(hoadon);
+        Lichhen lichhen = lichHenService.findById(id);
+        Map<String, String> response = new HashMap<>();
+        if (lichhen == null) {
+            System.out.println(1);
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Lịch hẹn không tồn tại.");
+        }
+
+        if (lichhen.getTrangthai() == 4 || lichhen.getTrangthai() == 6 || lichhen.getTrangthai() == 8) {
+            // Tạo bản ghi lưu lại lịch sử đặt với trạng thái hủy
+            lichhen.setSolanthaydoi(lichhen.getSolanthaydoi() + 1);
+
+            Lichhen lichhenNew = new Lichhen();
+            lichhenNew.setSolanthaydoi(lichhen.getSolanthaydoi());
+            lichhenNew.setEmailNguoiDat(lichhen.getEmailNguoiDat());
+            lichhenNew.setIdkhachhang(lichhen.getIdkhachhang());
+            lichhenNew.setTrangthai(2); // Đặt trạng thái là "Đã hủy"
+            lichhenNew.setIdcalichhen(lichhen.getIdcalichhen());
+            lichhenNew.setThoigianhuy(LocalDateTime.now());
+            lichhenNew.setThucung(lichhen.getThucung());
+            lichhenNew.setTuyChonCanNang(lichhen.getTuyChonCanNang());
+            lichhenNew.setDate(lichhen.getDate());
+            lichhenNew.setTrangthaica(true);
+            lichhenNew.setSolannhacnho(1);
+            lichhenNew.setDoidichvu(lichhen.getDoidichvu());
+            lichHenService.addOrUpdate(lichhenNew);
+
+//            Hoàn tiền
+            if (lichhen.getTrangthai() == 6) { // Đã thanh toán
+                System.out.println(hoadonOptional.getMagiaodich()+ "   " + hoadonOptional.getSotien() + ":    Meo Meo Hoàn tiền");
+                Refund refund = payPalService.refundPayment(hoadonOptional.getMagiaodich(), hoadonOptional.getSotien(), "USD");
+                System.out.println(refund);
+                if ("completed".equals(refund.getState())) {
+                    hoadonOptional.setTrangthai(4); // Trạng thái: Đã hoàn tiền
+                    hoaDonService.addOrUpdate(hoadonOptional);
+                    lichhenNew.setTrangthai(7); // Trạng thái: Đã hoàn tiền
+                    lichHenService.addOrUpdate(lichhenNew);
+                } else {
+                    return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                            .body("Hoàn tiền thất bại: " + refund.getReason());
+                }
             }
+
+
+//            Xóa hóa đơn chờ
+            if (hoadonOptional.getTrangthai() == 1) {
+                System.out.println("hello");
+                hoadonOptional.setTrangthai(3); //Thất bại
+                hoaDonService.addOrUpdate(hoadonOptional);
+            }
+
+            // Cập nhật lịch gốc với trạng thái rỗng
+            lichhen.setIdkhachhang("demo");
+            lichhen.setTrangthai(5);
+            lichhen.setEmailNguoiDat("default-email@example.com");
+            lichhen.setThucung(null);
+            lichhen.setTuyChonCanNang(null);
+            lichhen.setDoidichvu(false);
+            if (lichhen.getTrangthaica()) {
+                lichhen.setTrangthaica(false);
+            } else {
+                return ResponseEntity.ok("Lỗi ca");
+            }
+            lichHenService.addOrUpdate(lichhen);
+            lichHenService.cancelScheduleChange();
+            response.put("message", "Lịch hẹn đã được hủy thành công.");
+            return ResponseEntity.ok(response);
         }
-
-        // Cập nhật trạng thái
-        datLaiLich.setTrangthai(idTT);
-        Lichhen updateLich = lichHenService.addOrUpdate(datLaiLich);
-
-        return new ResponseEntity<>(updateLich, HttpStatus.OK); // Trả về 200 OK
+        response.put("message", "Lịch hẹn hủy không thành công.");
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(response);
     }
 
     @PreAuthorize("hasAnyRole('admin', 'manager')")
@@ -129,6 +196,7 @@ public class LichHenController {
             lichDoi.setTrangthaica(true);
             lichDoi.setSolanthaydoi(lichhen.getSolanthaydoi());
             lichDoi.setSolannhacnho(0);
+            lichDoi.setDoidichvu(lichhen.getDoidichvu());
 
             Hoadon hoadon = hoadonOptional.get();
             hoadon.setIdlichhen(lichDoi);
@@ -148,12 +216,13 @@ public class LichHenController {
             lichhenNew.setTrangthaica(true);
             lichhenNew.setSolanthaydoi(lichhen.getSolanthaydoi());
             lichhenNew.setSolannhacnho(1);
-
+            lichhenNew.setDoidichvu(false);
 
             lichhen.setIdkhachhang("demo");
             lichhen.setTrangthai(5);
             lichhen.setEmailNguoiDat("default-email@example.com");
             lichhen.setSolannhacnho(0);
+            lichhen.setDoidichvu(false);
             if (lichhen.getTrangthaica()){
                 lichhen.setTrangthaica(false);
             }else {
