@@ -41,6 +41,7 @@ public class LichHenManager {
                         lichHenRong.setTrangthaica(false);
                         lichHenRong.setSolanthaydoi(0);
                         lichHenRong.setSolannhacnho(0);
+                        lichHenRong.setDoidichvu(false);
                         // Lưu vào bảng lichhen
                         lichhenRepository.save(lichHenRong);
                     }

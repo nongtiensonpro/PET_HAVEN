@@ -74,6 +74,17 @@ public class Lichhen {
     @Column(name = "solannhacnho")
     private Integer solannhacnho;
 
+    @Column(name = "doidichvu")
+    private Boolean doidichvu;
+
+    public Boolean getDoidichvu() {
+        return doidichvu;
+    }
+
+    public void setDoidichvu(Boolean doidichvu) {
+        this.doidichvu = doidichvu;
+    }
+
     public Integer getSolannhacnho() {
         return solannhacnho;
     }

@@ -149,12 +149,8 @@ public class HoaDonController {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         Jwt jwt = (Jwt) authentication.getPrincipal();
         String username = jwt.getClaimAsString("preferred_username");
-        Hoadondoidichvu hoadondoidichvu = hoaDonDoiDichVuService.DoiDichVu(dto,username);
-        if (hoadondoidichvu == null) {
-            return ResponseEntity.badRequest().build();
-        }
-        ResponseEntity<?> hoadondoiDV = hoaDonDoiDichVuService.thanhToanHDDoiDV(hoadondoidichvu.getId());
-        return ResponseEntity.ok(hoadondoiDV);
+        ResponseEntity<?> hoadondoidichvu = hoaDonDoiDichVuService.DoiDichVu(dto,username);
+        return ResponseEntity.ok(hoadondoidichvu);
     }
 
     @PutMapping("/thanh-toan-hoa-don-doiDV/{id}")

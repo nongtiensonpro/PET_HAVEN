@@ -121,6 +121,7 @@ public class DatLichController {
         lichhen.setDate(LocalDate.parse(datLichDTO.getDate()));
         lichhen.setTuyChonCanNang(tuyChonCanNang);
         lichhen.setSolannhacnho(0);
+        lichhen.setDoidichvu(false);
         if (!lichhen.getTrangthaica()) {
             lichhen.setTrangthaica(true);
         } else {
@@ -199,6 +200,7 @@ public class DatLichController {
             lichhenNew.setDate(lichhen.getDate());
             lichhenNew.setTrangthaica(true);
             lichhenNew.setSolannhacnho(1);
+            lichhenNew.setDoidichvu(lichhen.getDoidichvu());
             lichHenService.addOrUpdate(lichhenNew);
 
 //            Hoàn tiền
@@ -231,6 +233,7 @@ public class DatLichController {
             lichhen.setEmailNguoiDat("default-email@example.com");
             lichhen.setThucung(null);
             lichhen.setTuyChonCanNang(null);
+            lichhen.setDoidichvu(false);
             if (lichhen.getTrangthaica()) {
                 lichhen.setTrangthaica(false);
             } else {
@@ -297,6 +300,7 @@ public class DatLichController {
             lichDoi.setTrangthaica(true);
             lichDoi.setSolanthaydoi(lichhen.getSolanthaydoi());
             lichDoi.setSolannhacnho(lichhen.getSolannhacnho());
+            lichDoi.setDoidichvu(lichhen.getDoidichvu());
             lichHenService.addOrUpdate(lichDoi);
 
 //            Cập nhập lại hóa đơn chờ
@@ -318,11 +322,13 @@ public class DatLichController {
             lichhenNew.setTrangthaica(true);
             lichhenNew.setSolanthaydoi(lichhen.getSolanthaydoi());
             lichhenNew.setSolannhacnho(lichhen.getSolannhacnho());
+            lichhenNew.setDoidichvu(lichhen.getDoidichvu());
             lichHenService.addOrUpdate(lichhenNew);
 
             lichhen.setTrangthai(5);
             lichhen.setEmailNguoiDat("default-email@example.com");
             lichhen.setIdkhachhang("demo");
+            lichhen.setDoidichvu(false);
             if (lichhen.getTrangthaica()) {
                 lichhen.setTrangthaica(false);
             } else {

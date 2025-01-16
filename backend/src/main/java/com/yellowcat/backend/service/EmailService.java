@@ -23,11 +23,23 @@ public class EmailService {
 
     @Async("taskExecutor")
     public void sendEmail(String to, String subject, String body) {
-        SimpleMailMessage message = new SimpleMailMessage();
-        message.setTo(to);
-        message.setSubject(subject);
-        message.setText(body);
-        mailSender.send(message);
+        try {
+            // Tạo MimeMessage
+            MimeMessage mimeMessage = mailSender.createMimeMessage();
+
+            // Sử dụng MimeMessageHelper để cấu hình email
+            MimeMessageHelper helper = new MimeMessageHelper(mimeMessage, true, "UTF-8");
+            helper.setTo(to);
+            helper.setSubject(subject);
+            helper.setText(body, true); // 'true' để cho phép HTML
+
+            // Gửi email
+            mailSender.send(mimeMessage);
+        } catch (Exception e) {
+            e.printStackTrace();
+            // Log lỗi hoặc xử lý
+            System.err.println("Error while sending email: " + e.getMessage());
+        }
     }
 
     @Async("taskExecutor")
