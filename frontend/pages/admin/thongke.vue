@@ -168,7 +168,7 @@ const top10User = ref(null);
 
 
 doanhThuTheoDichVu.value = await store.getDoanhThuTheoDichVu(startDate, endDate);
-top10User.value = await store.getTop10User(startDate, endDate);
+// top10User.value = await store.getTop10User(startDate, endDate);
 
 
 const hasData = computed(() => store.thongKeItems.length > 0);

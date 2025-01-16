@@ -39,7 +39,8 @@ onMounted(async () => {
       prompt = `Chủ nhân ${userInfo.value.name} có thú  ${userInfo.value.petInfo} đến với PetHaven. Mình là Yellow Cat nhân viên cửa hàng . Mình xin phép gọi bạn bằng một biệt danh kèm icon  dựa trên thông tin  của bạn  để phù hợp với thú cưng một tên thật dễ thương đáng yêu nha.
       Đang xem dịch vụ "${props.service.tendichvu}".
       Hãy giúp chủ nhân lựa chọn dịch vụ phù hợp với thú cưng, thân thiện và dễ thương, đề cập đến cả thú cưng và dịch vụ đang xem.
-      Đề xuất 1 dịch vụ liên quan có thể phù hợp và giải thích vì sao nên sử dụng dịch vụ đó một cách dễ thương đáng yêu. Hãy trả lời dưới dạng HTML sẽ hiển thị trong thẻ V-HTML trong NUXTJS với các thẻ div được style màu sắc và font chữ phù hợp.Không sử dụng margin. Sử dụng màu pastel và font chữ dễ thương. Được biết màu nền đang hiển thị là background: rgba(246, 246, 234, 0.62); Tối thiểu 100 từ và tối đa 150 từ và font-size: 14px`
+      Đề xuất 1 dịch vụ liên quan có thể phù hợp và giải thích vì sao nên sử dụng dịch vụ đó một cách dễ thương đáng yêu.
+      Hãy trả lời dưới dạng HTML sẽ hiển thị trong thẻ V-HTML trong NUXTJS với các thẻ div được style màu sắc và font chữ phù hợp.Không sử dụng margin. Sử dụng màu pastel và font chữ dễ thương. Được biết màu nền đang hiển thị là background: rgba(246, 246, 234, 0.62); Tối thiểu 100 từ và tối đa 150 từ và font-size: 14px`
     } else {
       prompt = `Chào mừng chủ nhân với thú cưng đến với PetHaven. Mình là Yellow Cat nhân viên cửa hàng . Mình xin phép gọi bạn bằng một biệt danh kèm icon  dựa trên thông tin dịch vụ của cửa hàng của mình  một tên thật dễ thương đáng yêu nha.
       Bạn đang xem dịch vụ "${props.service.tendichvu}".
