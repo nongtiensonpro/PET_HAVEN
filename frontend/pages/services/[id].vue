@@ -54,11 +54,15 @@
                 </span>
               </div>
               <small class="text-muted">{{ formatDate(danhGia.date) }}</small>
-              <div v-if="userInfo && Array.isArray(userInfo.roles) &&
-            (userInfo.roles.includes('admin') ||
-             userInfo.roles.includes('manager') ||
-             danhGia.idhoadon.idlichhen.emailNguoiDat === userInfo.name)">
-                <div @click="anDanhGia(danhGia.id)">
+              <div v-if="userInfo && (
+                  (Array.isArray(userInfo.role) && 
+                   userInfo.role.some(role => ['admin', 'manager'].includes(role))) ||
+                  (Array.isArray(userInfo.role) && 
+                   !userInfo.role.some(role => ['admin', 'manager'].includes(role)) && 
+                   danhGia.idhoadon.idlichhen.emailNguoiDat === userInfo.name)
+                )">
+                <div @click="anDanhGia(danhGia.id)" class="text-danger cursor-pointer">
+                  <i class="fas fa-eye-slash me-1"></i>
                   {{ t('hideComment') }}
                 </div>
               </div>
