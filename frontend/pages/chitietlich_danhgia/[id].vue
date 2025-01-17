@@ -7,12 +7,13 @@
             <div v-if="thayDoiLichHenStore.lichHenDetails">
               <!-- Thông tin lịch hẹn -->
               <div class="mb-4">
+
                 <h5 class="text-primary"><i class="fas fa-calendar-alt me-2"></i>{{t('appointment_information')}}</h5>
                 <div class="row">
                   <div class="col-md-6">
                     <p><strong>ID:</strong> {{ thayDoiLichHenStore.lichHenDetails.id }}</p>
                     <p><strong>{{t('appointment_date')}}:</strong> {{ formatDate(thayDoiLichHenStore.getDate) }}</p>
-                    <p><strong>{{t('timeSlotLabel')}}:</strong> {{ thayDoiLichHenStore.getCaLichHen.thoigianca }}</p>
+                    <p><strong>{{t('timeSlotLabel')}} </strong> {{ thayDoiLichHenStore.getCaLichHen.thoigianca }}</p>
                     <p><strong>{{t('email_of_the_booker')}}</strong> {{ thayDoiLichHenStore.lichHenDetails.emailNguoiDat }}</p>
                   </div>
                 </div>
@@ -22,10 +23,16 @@
               <div class="mb-4">
                 <h5 class="text-primary"><i class="fas fa-clipboard-list me-2"></i>{{t('selectedService')}}</h5>
                 <div class="row">
-                  <div class="col-md-6">
+                  <div class="col-md-12">
+
+                    <p><strong>{{t('serviceName')}}:</strong> {{ selectedService?.tendichvu }}</p>
+                    <p><strong>{{t('serviceDescription')}}:</strong> {{ selectedService?.mota }}</p>
                     <p><strong>{{t('serviceOption')}}:</strong> {{ thayDoiLichHenStore.lichHenDetails.tuyChonCanNang?.giatien }} USD</p>
                     <p><strong>{{t('minimum_weight')}}:</strong> {{ thayDoiLichHenStore.lichHenDetails.tuyChonCanNang?.cannangmin }} kg</p>
                     <p><strong>{{t('maximum_weight')}}:</strong> {{ thayDoiLichHenStore.lichHenDetails.tuyChonCanNang?.cannangmax || 'Không giới hạn' }} kg</p>
+                    <div>
+                      <button type="button" class="custom-button" @click="chiTietDichVu(selectedService?.id)">Chi tiết</button>
+                    </div>
                   </div>
                 </div>
               </div>
@@ -69,8 +76,7 @@
           <div v-if="chiTietDanhGia">
             <div class="mb-3 p-3 border rounded">
               <CapNhatDanhGia
-                  :danhGia="convertToDanhGia(chiTietDanhGia)"
-              />
+                  :danhGia="convertToDanhGia(chiTietDanhGia)"/>
             </div>
           </div>
           <div v-else>
@@ -92,7 +98,7 @@
 
 <script setup lang="ts">
 import {useRoute} from 'vue-router'
-import {ref, onMounted} from 'vue';
+import {ref, onMounted, computed} from 'vue';
 import {useThayDoiLichHenStore} from '~/stores/ThayDoiLichHen'
 import {useDanhGiaStore} from '~/stores/DanhGiaStores';
 import type {ChiTietDanhGia} from '~/models/ChiTietDanhGia';
@@ -102,28 +108,30 @@ import {useI18n} from 'vue-i18n';
 
 const {t} = useI18n();
 
-
-
 const thayDoiLichHenStore = useThayDoiLichHenStore()
 const danhGiaStore = useDanhGiaStore()
 const chiTietDanhGia = ref<ChiTietDanhGia | null>(null);
 import type DanhGia from '~/models/DanhGia';
 import type LichHenDetails from "~/models/LichHenDetails";
+import DichVu from "~/models/DichVu";
+import {useServiceStore} from "~/stores/DichVuStores";
 
 const route = useRoute()
 const id = Array.isArray(route.params.id) ? route.params.id[0] : route.params.id;
 definePageMeta({
   middleware: ['auth']
 })
-
-
+const listServices = ref<DichVu[]>([]);
+const serviceStore = useServiceStore();
 const lichHen = ref<LichHenDetails | null>(null);
 
 onMounted(async () => {
   await thayDoiLichHenStore.fetchLichHenDetails(Number(id))
   lichHen.value = thayDoiLichHenStore.lichHenDetails || null;
   await hienThiDanhGia(id)
+  await serviceStore.fetchServices();
 })
+
 const convertToDanhGia = (chiTietDanhGia: ChiTietDanhGia | null): DanhGia | null => {
   if (!chiTietDanhGia) return null;
   return {
@@ -143,7 +151,6 @@ async function hienThiDanhGia(idLichHen: string) {
     chiTietDanhGia.value = result;
   }
 }
-
 
 const formatDate = (date: string | number | Date) => {
   return new Date(date).toLocaleDateString('vi-VN');
@@ -183,6 +190,36 @@ function chiTietDichVu(idDichVu : string){
   return navigateTo('/services/' + idDichVu)
 }
 
+const filteredService = computed(() => {
+  if (!thayDoiLichHenStore.lichHenDetails) return null;
+  const tuyChonCanNangId = thayDoiLichHenStore.lichHenDetails.id;
+  if (!tuyChonCanNangId) return null;
+  return listServices.value.find(dichVu =>
+      dichVu.tuyChonDichVus.some(tuyChon =>
+          tuyChon.tuyChonCanNangs.some(canNang => canNang.id === tuyChonCanNangId)
+      )
+  );
+});
+
+const selectedService = computed(() => {
+  if (!thayDoiLichHenStore.lichHenDetails?.tuyChonCanNang) return null;
+  return serviceStore.services.find(service => 
+    service.tuyChonDichVus.some(option => 
+      option.tuyChonCanNangs.some(weight => 
+        weight.id === thayDoiLichHenStore.lichHenDetails?.tuyChonCanNang?.id
+      )
+    )
+  );
+});
+
+const selectedServiceOption = computed(() => {
+  if (!thayDoiLichHenStore.lichHenDetails?.tuyChonCanNang || !selectedService.value) return null;
+  return selectedService.value.tuyChonDichVus.find(option => 
+    option.tuyChonCanNangs.some(weight => 
+      weight.id === thayDoiLichHenStore.lichHenDetails?.tuyChonCanNang?.id
+    )
+  );
+});
 </script>
 
 <style scoped>
