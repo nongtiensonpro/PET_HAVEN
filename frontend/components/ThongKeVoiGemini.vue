@@ -106,6 +106,8 @@ const getInitialSummary = async () => {
     5. Nếu phát hiện điểm bất thường trong dữ liệu, hãy nêu rõ
 
     Hãy trả lời một cách ngắn gọn, súc tích nhưng đầy đủ thông tin quan trọng.
+    Hãy trả lời dưới dạng HTML sẽ hiển thị trong thẻ V-HTML trong NUXTJS với các thẻ div được style màu sắc và font chữ phù hợp . Sử dụng màu pastel và font chữ dễ thương.
+    Được biết màu nền đang hiển thị là background: rgba(246, 246, 234, 0.62); và font-size: 1rem
     `;
 
     const response = await aiStore.sendMessage(prompt);
