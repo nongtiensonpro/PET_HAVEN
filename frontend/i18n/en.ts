@@ -481,4 +481,14 @@ export default {
 
   revenue:'Revenue',
   error_occurred:'An error occurred.',
+  description_min_length:'Description must be at least 10 characters long.',
+  duplicate_option_name:'Duplicate option name.',
+  minimum_weight_must_be_integer:'Minimum weight must be an integer.',
+  maximum_weight_must_be_integer:'Maximum weight must be an integer.',
+  overlapping_weight_ranges:'Overlapping weight ranges.',
+  change_status:'Change Status',
+  updating:'Updating...',
+  save_changes:'Save Changes',
+  add_weight_option:'Add Weight Option',
+  service_updated_successfully:'Service updated successfully.',
 } as const;
