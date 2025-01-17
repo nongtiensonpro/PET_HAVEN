@@ -45,7 +45,7 @@
                         class="btn btn-sm btn-outline-primary m-1">
                       {{ t('viewDetails') }}
                     </button>
-                    <button
+                    <button v-if="hoaDon.idlichhen.trangthai!=0"
                         @click="DoiDichVu(hoaDon.idlichhen.id)"
                         class="btn btn-sm btn-outline-primary m-1">
                       {{ t('change_service') }}
@@ -176,7 +176,14 @@
                   </span></td>
                   <td>{{ hoaDon.ghichu || '-' }}</td>
                   <td>
-                    <button type="button" class="btn btn-sm btn-outline-primary m-1" @click="thanhToanOffice(hoaDon.id)" v-if="!hoaDon.trangthaithanhtoan && hoaDon.trangthai===2">Thanh toán</button>
+                    <div class="row">
+                      <div class="col">
+                        <button type="button" class="btn btn-sm btn-outline-primary" @click="thanhToanOffice(hoaDon.id)" v-if="!hoaDon.trangthaithanhtoan && hoaDon.trangthai===2">Thanh toán</button>
+                      </div>
+                      <div class="col">
+                        <button @click="inHoaDon(hoaDon.id)" class="btn btn-sm btn-outline-success">{{t('print_invoice')}}</button>
+                      </div>
+                    </div>
                   </td>
                 </tr>
                 </tbody>
@@ -214,6 +221,7 @@ import HoaDonKhachHang from "~/models/HoaDonKhachHang";
 import {useToast} from 'vue-toastification'
 import {useDoiDichVuStores} from "~/stores/DoiDichVuStores";
 import type {HoaDonDoiDichVu} from "~/models/HoaDonDoiDV";
+import {useQuanLyHoaDonStore} from "~/stores/QuanLyHoaDon";
 
 const useDoiDichVu = useDoiDichVuStores();
 const {t} = useI18n();
@@ -391,7 +399,10 @@ async function thanhToanOffice(id : number) {
     toast.error(t('payment_office_error'));
   }
 }
-
+const store = useQuanLyHoaDonStore();
+function inHoaDon(id: number) {
+  store.inHoaDon(id);
+}
 </script>
 
 <style scoped>
