@@ -401,7 +401,7 @@ async function thanhToanOffice(id : number) {
 }
 const store = useQuanLyHoaDonStore();
 function inHoaDon(id: number) {
-  store.inHoaDon(id);
+  store.inHoaDonDoiDichVu(id);
 }
 </script>
 
