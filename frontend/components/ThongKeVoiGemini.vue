@@ -1,12 +1,12 @@
 <script setup lang="ts">
-import { onMounted, ref, computed } from 'vue';
-import { useQuanLyLichHenAdminStore } from '~/stores/QuanLyLichHenAdmin';
-import { useAIThongKeStore } from '~/stores/AiThongKe';
+import {computed, onMounted, ref} from 'vue';
+import {useQuanLyLichHenAdminStore} from '~/stores/QuanLyLichHenAdmin';
+import {useAIThongKeStore} from '~/stores/AiThongKe';
 import DichVu from "~/models/DichVu";
-import { useServiceStore } from "~/stores/DichVuStores";
-import { useVoucherStore } from "~/stores/VorchersStores";
-import { useThongKeStore } from '~/stores/ThongKeStores'
-import { useI18n } from 'vue-i18n';
+import {useServiceStore} from "~/stores/DichVuStores";
+import {useVoucherStore} from "~/stores/VorchersStores";
+import {useThongKeStore} from '~/stores/ThongKeStores'
+import {useI18n} from 'vue-i18n';
 
 const { t } = useI18n();
 
@@ -22,8 +22,7 @@ const isThinking = ref(false);
 const thongKeData = ref([]);
 
 const loadData = async () => {
-  const data = await useQuanLyAdmin.fetchHoaDonKhachHangs();
-  lichhen.value = data;
+  lichhen.value = await useQuanLyAdmin.fetchHoaDonKhachHangs();
   await getInitialSummary();
 };
 const serviceStore = useServiceStore();
@@ -39,7 +38,6 @@ const vouchers = computed(() =>
 
 const startDate = '2000-01-01';
 const endDate = new Date().toISOString().split('T')[0];
-const top10Users = thongKe.topUsers;
 const thongTinKinhDoanh = thongKeData.value;
 const doanhThuTheoNgay = thongKe.thongKeItems;
 
@@ -155,7 +153,6 @@ const sendMessageToAI = async () => {
       - Doanh thu theo dịch vụ :  ${doanhThuTheoDichVu.value} theo quy tắc (tên dịch vụ , số lần sử dụng , giá tiền) :: Dịch vụ chi tiết  ${JSON.stringify(serviceStore.services)} Đơn vị tiền trong hóa đơn và dịch vụ chi tiết là USD ( Đô la Mỹ )
       - Doanh thu theo ngày : ${JSON.stringify(doanhThuTheoNgay, null, 2)} hãy  tự tổng hợp và phân tích ra tháng và năm tương ứng
       - Thông tin kinh doanh : ${JSON.stringify(thongTinKinhDoanh, null, 2)}
-      - Top 10 khách hàng : ${JSON.stringify(top10Users, null, 2)}
     
     Câu hỏi của người dùng: ${userMessage}
 
