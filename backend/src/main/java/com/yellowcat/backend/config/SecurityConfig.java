@@ -49,38 +49,35 @@ public class SecurityConfig{
 
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
-        http.cors();
         http
+                .cors(cors -> cors
+                        .configurationSource(corsConfigurationSource())
+                )
                 .authorizeHttpRequests(authz -> authz
-                        .requestMatchers("/api/dich-vu/all", "/login", "/oauth2/**","/","/Dang-xuat","/images/AvatarDichVu/**","/api/payPal/payment/**","/api/danh-gia/danh-gia-theo-dich-vu/**").permitAll() // Cho phép truy cập không cần xác thực
-                        .anyRequest().authenticated() // Yêu cầu xác thực cho các yêu cầu còn lại
+                        .requestMatchers("/api/dich-vu/all", "/login", "/oauth2/**","/","/Dang-xuat","/images/AvatarDichVu/**","/api/payPal/payment/**","/api/danh-gia/danh-gia-theo-dich-vu/**").permitAll()
+                        .anyRequest().authenticated()
                 )
-
                 .oauth2Login(oauth2 -> oauth2
-                        .defaultSuccessUrl("/home", true) // Đường dẫn đến trang thành công
-                        .failureUrl("/login?error=true") // Đường dẫn đến trang lỗi
+                        .defaultSuccessUrl("/home", true)
+                        .failureUrl("/login?error=true")
                 )
-
                 .logout(logout -> logout
-                        .logoutUrl("/Dang-xuat")  // URL để thực hiện logout
-                        .logoutSuccessUrl("http://localhost:3000")  // URL để chuyển hướng sau khi logout thành công
-                        .invalidateHttpSession(true)  // Hủy session
-                        .clearAuthentication(true)  // Xóa thông tin xác thực
-                        .deleteCookies("JSESSIONID")  // Xóa cookie
+                        .logoutUrl("/Dang-xuat")
+                        .logoutSuccessUrl("http://localhost:3000")
+                        .invalidateHttpSession(true)
+                        .clearAuthentication(true)
+                        .deleteCookies("JSESSIONID")
                         .permitAll()
                 )
                 .oauth2ResourceServer(oauth2 -> oauth2
                         .jwt(jwt -> jwt
-                                .decoder(jwtDecoder()) // Cung cấp JwtDecoder
-                                .jwtAuthenticationConverter(jwtAuthConverter) // Sử dụng JwtAuthenticationConverter
+                                .decoder(jwtDecoder())
+                                .jwtAuthenticationConverter(jwtAuthConverter)
                         )
                 )
-
-                // Cấu hình Stateless session (không sử dụng session)
-                .sessionManagement()
-                .sessionCreationPolicy(SessionCreationPolicy.STATELESS);
-
-
+                .sessionManagement(session -> session
+                        .sessionCreationPolicy(SessionCreationPolicy.STATELESS)
+                );
 
         return http.build();
     }
