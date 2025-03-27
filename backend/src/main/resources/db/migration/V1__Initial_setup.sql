@@ -310,7 +310,7 @@ $$
         dichvu_id  INT;
         tuychon_id INT;
     BEGIN
-        SELECT ID INTO dichvu_id FROM DichVu WHERE TenDichVu = 'Dịch vụ Vệ sinh cho Chó Mèo';
+        SELECT ID INTO dichvu_id FROM DichVu WHERE TenDichVu = 'Dịch vụ Vệ sinh cho Mèo';
 
         -- Thêm các tùy chọn cho dịch vụ
         INSERT INTO TuyChonDichVu (IDDichVu, TenTuyChon, MoTa, TrangThai)
@@ -401,7 +401,7 @@ $$
         dichvu_id  INT;
         tuychon_id INT;
     BEGIN
-        SELECT ID INTO dichvu_id FROM DichVu WHERE TenDichVu = 'Dịch vụ Khám bệnh cho Chó Mèo';
+        SELECT ID INTO dichvu_id FROM DichVu WHERE TenDichVu = 'Dịch vụ Khám bệnh cho Mèo';
 
         -- Thêm các tùy chọn cho dịch vụ
         INSERT INTO TuyChonDichVu (IDDichVu, TenTuyChon, MoTa, TrangThai)
